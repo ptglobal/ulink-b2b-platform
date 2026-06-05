@@ -1,0 +1,45 @@
+# TEST-03 — UAT Checklist & Acceptance Criteria
+
+**Status:** Baseline · **Owner:** BA + ULink · **Basis:** Contract §1.5, PRD §8 · **Sign-off gate**
+
+UAT is run by ULink on staging (Wk7) and on production (Wk8). Each item is a
+verifiable check. Release requires all **must-pass** items ✅ and zero open S1.
+
+## A. Acceptance criteria (contract §1.5 / PRD §8) — must-pass
+- [ ] Stable on **Chrome, Edge, Safari** (desktop + mobile Safari).
+- [ ] **No Critical bug in the RFQ/Order flow.**
+- [ ] Page-load KPI met: **PageSpeed ≥ 90 desktop**, Core Web Vitals good.
+- [ ] Product and **hub (KCN) data display accurately**.
+- [ ] **SEO**: correct URL structure + metadata; sitemap/robots/schema valid.
+
+## B. Functional acceptance by module — must-pass
+- [ ] Homepage sections render and are CMS-managed.
+- [ ] All 5 Regional Hubs show SLA / Warehouse / Team / Cluster.
+- [ ] Product browse + **SKU search**; cached lookup < 50ms.
+- [ ] Product detail: specs, **TDS/MSDS download**, request sample, add to RFQ.
+- [ ] Industry filters (Electronics/Pharma/Cosmetics/Food).
+- [ ] Resource Center: docs, ISO certs, case studies, blog, downloads.
+- [ ] **Quick Order**: SKU input, bulk upload, RFQ cart, submit → Sales.
+- [ ] **B2B Portal**: login, dashboard, order history, scheduled delivery, **debt**, **re-order** — each customer sees only their own data.
+- [ ] **CMS**: all 17 modules CRUD; publish/unpublish; roles Admin/Editor/Sales/Customer.
+- [ ] **i18n**: VI/EN/JP per content policy; switch works; hreflang present.
+- [ ] About pages + Contact (anti-spam).
+
+## C. Non-functional — must-pass
+- [ ] HTTPS everywhere; security headers present.
+- [ ] Anti-spam blocks form floods.
+- [ ] Responsive on desktop/tablet/mobile.
+- [ ] RBAC + row-level verified (A cannot see B's data).
+
+## D. Handover artifacts present (§2.3)
+- [ ] Design System · Source code · API docs · Deployment Guide · UAT results ·
+  SEO setup · User Guide · Training delivered.
+
+## Sign-off
+| Role | Name | Date | Result |
+|---|---|---|---|
+| ULink (Bên A) | | | Accept / Reject |
+| Agency (Bên B) | | | |
+
+**Definition of Done = operator-green:** ULink opens the production URL and confirms
+expected output before sign-off.
