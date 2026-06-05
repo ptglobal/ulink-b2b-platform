@@ -56,6 +56,7 @@ contract for what gets written; nothing is generated until it's approved.
 | ENG-03 | Git & Branching Workflow | Branch model, commit convention, PR flow, releases | P1 | ✅ |
 | ENG-04 | Definition of Done | Per-task DoD incl. operator-green bar | P1 | ✅ |
 | ENG-05 | Local Development Setup | Full env setup beyond the README quickstart | P2 | ✅ |
+| ENG-06 | **Coding Constraints** | Hard rules for complete/clean/inheritable/scalable code; tooling-enforced | P1 | ✅ |
 | — | `CONTRIBUTING.md` (root) | Contributor entry point linking the above | P2 | ✅ |
 
 ## 4. Review — *review* (`docs/review/` + `.github/`)
@@ -107,6 +108,6 @@ contract for what gets written; nothing is generated until it's approved.
 - **Batch 2 — Build support (P2):** SPEC-05, 07, 08, 09, ENG-05, CONTRIBUTING, PR template, TEST-02, TEST-04, PROC-02, PROC-03, PROC-04, issue templates.
 - **Batch 3 — Handover & Go-live (P3):** TEST-03, PROC-05, OPS-01..03, GUIDE-01..03.
 
-**Totals:** 9 specs · 8 ADRs (+index) · 6 engineering · 2 review · 4 testing · 5 process · 3 ops · 3 guides ≈ **40 documents/templates**.
+**Totals:** 9 specs · 8 ADRs (+index) · 7 engineering · 2 review · 4 testing · 5 process · 3 ops · 3 guides ≈ **41 documents/templates** (+ enforcement config: `.editorconfig`, `.prettierrc`, `.eslintrc.json`).
 
 > ✅ **All three batches generated** (2026-06-03), committed per batch. The set above is complete; keep statuses current as docs evolve. Templates (PR / issue / ADR) live under `.github/` and `docs/decisions/`.

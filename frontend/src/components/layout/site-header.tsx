@@ -35,7 +35,12 @@ export async function SiteHeader() {
 
         <div className="flex items-center gap-3 font-mono text-xs uppercase">
           {routing.locales.map((l) => (
-            <Link key={l} href="/" locale={l} className="text-muted-foreground hover:text-foreground">
+            <Link
+              key={l}
+              href="/"
+              locale={l}
+              className="text-muted-foreground hover:text-foreground"
+            >
               {l}
             </Link>
           ))}

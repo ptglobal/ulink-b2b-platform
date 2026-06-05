@@ -5,10 +5,7 @@ import { getRedis } from '@/lib/redis';
 
 // Cached single-SKU lookup. Target: <50ms on a cache hit (Redis), per the
 // delivery plan §11. On a miss we read Directus once and prime the cache.
-export async function GET(
-  _req: Request,
-  { params: { code } }: { params: { code: string } }
-) {
+export async function GET(_req: Request, { params: { code } }: { params: { code: string } }) {
   const redis = getRedis();
   const key = `sku:${code.toLowerCase()}`;
 

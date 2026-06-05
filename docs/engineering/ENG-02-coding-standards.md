@@ -2,6 +2,8 @@
 
 **Status:** Baseline · **Owner:** Dev Lead · **Applies to:** `frontend/`, `directus/`
 
+> The **hard rules** that gate merge are in [ENG-06 Coding Constraints](ENG-06-coding-constraints.md) (complete · clean · inheritable · scalable). This doc is the day-to-day style guide.
+
 ## Language & tooling
 - **TypeScript strict** everywhere (`tsconfig` `strict: true`). No `any` without a
   written reason. `npm run typecheck` must pass.

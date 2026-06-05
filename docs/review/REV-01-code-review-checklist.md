@@ -1,6 +1,6 @@
 # REV-01 — Code Review Checklist
 
-**Status:** Baseline · **Owner:** Reviewers · **Pairs with:** [PR template](../../.github/pull_request_template.md), [ENG-04 DoD](../engineering/ENG-04-definition-of-done.md)
+**Status:** Baseline · **Owner:** Reviewers · **Pairs with:** [PR template](../../.github/pull_request_template.md), [ENG-04 DoD](../engineering/ENG-04-definition-of-done.md), [ENG-06 Coding Constraints](../engineering/ENG-06-coding-constraints.md)
 
 Review for **real problems that matter**. Prefer fewer, high-confidence comments over
 nitpicks. Block on correctness/security; suggest on style.
@@ -27,6 +27,7 @@ nitpicks. Block on correctness/security; suggest on style.
 - [ ] Semantic HTML, labels, focus-visible, AA contrast on changed UI.
 
 ## Conventions & maintainability
+- [ ] Satisfies the [ENG-06 coding constraints](../engineering/ENG-06-coding-constraints.md) (complete · clean · inheritable · scalable).
 - [ ] Follows ENG-02 (naming, tokens not hex, `cn()`, aliases).
 - [ ] Reasonable size/duplication; no dead code; clear names.
 - [ ] Tests present and meaningful (TEST-01).

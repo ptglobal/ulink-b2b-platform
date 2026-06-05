@@ -4,13 +4,14 @@ Welcome. This is the contributor entry point; the deep docs live in [`docs/`](do
 
 ## Before you start
 - Read [ENG-05 Local Setup](docs/engineering/ENG-05-local-development-setup.md).
-- Skim [ENG-02 Coding Standards](docs/engineering/ENG-02-coding-standards.md) and
+- Skim [ENG-02 Coding Standards](docs/engineering/ENG-02-coding-standards.md), the
+  [ENG-06 Coding Constraints](docs/engineering/ENG-06-coding-constraints.md), and
   [ENG-04 Definition of Done](docs/engineering/ENG-04-definition-of-done.md).
 
 ## Workflow ([ENG-03](docs/engineering/ENG-03-git-workflow.md))
 1. Branch off `main`: `feat/…`, `fix/…`, `chore/…`, `docs/…`.
 2. Make focused changes; keep PRs small.
-3. Green locally: `npm run typecheck && npm run lint && npm run build`.
+3. Green locally: `npm run typecheck && npm run lint && npm run format:check && npm run build`.
 4. Open a PR; fill the template; ensure CI is green.
 5. Get ≥1 review ([REV-01](docs/review/REV-01-code-review-checklist.md)); squash-merge.
 

@@ -7,6 +7,7 @@ tests" is *not* Done.
 
 ## Per-task checklist
 - [ ] Meets its acceptance criteria (traces to SPEC-01/02).
+- [ ] Meets the [coding constraints](ENG-06-coding-constraints.md) — complete · clean · inheritable · scalable.
 - [ ] TypeScript: `npm run typecheck` clean.
 - [ ] Lint/format: `npm run lint` clean.
 - [ ] Build: `npm run build` succeeds.
