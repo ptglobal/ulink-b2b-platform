@@ -1,0 +1,48 @@
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, setRequestLocale } from 'next-intl/server';
+import { routing } from '@/i18n/routing';
+import { SiteHeader } from '@/components/layout/site-header';
+import { SiteFooter } from '@/components/layout/site-footer';
+import '../globals.css';
+
+export const metadata: Metadata = {
+  title: {
+    default: 'ULink Industries — B2B Procurement Platform',
+    template: '%s · ULink Industries'
+  },
+  description:
+    'Auxiliary materials for cleanroom & packaging, delivered to Northern Vietnam industrial clusters.'
+};
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
+
+export default async function LocaleLayout({
+  children,
+  params: { locale }
+}: {
+  children: React.ReactNode;
+  params: { locale: string };
+}) {
+  if (!routing.locales.includes(locale as (typeof routing.locales)[number])) {
+    notFound();
+  }
+  setRequestLocale(locale);
+
+  const messages = await getMessages();
+
+  return (
+    <html lang={locale}>
+      <body className="min-h-screen antialiased">
+        <NextIntlClientProvider messages={messages}>
+          <SiteHeader />
+          <main>{children}</main>
+          <SiteFooter />
+        </NextIntlClientProvider>
+      </body>
+    </html>
+  );
+}

@@ -1,0 +1,14 @@
+{
+  "name": "ulink-directus-bootstrap",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Creates ULink collections + roles in a running Directus instance.",
+  "scripts": {
+    "bootstrap": "node bootstrap.mjs"
+  },
+  "dependencies": {
+    "@directus/sdk": "^17.0.1",
+    "dotenv": "^16.4.5"
+  }
+}

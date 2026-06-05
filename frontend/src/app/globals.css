@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ULink — "Japanese Industrial Minimalism":
+       warm paper ground, ink text, restrained steel-indigo, vermilion accent. */
+    --background: 40 30% 98%;
+    --foreground: 220 18% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 18% 12%;
+
+    --primary: 222 38% 22%; /* deep steel indigo */
+    --primary-foreground: 40 30% 98%;
+
+    --accent: 8 72% 52%; /* vermilion / shu-iro — use sparingly */
+    --accent-foreground: 40 30% 98%;
+
+    --muted: 40 16% 94%;
+    --muted-foreground: 220 10% 40%;
+
+    --border: 220 14% 88%;
+    --input: 220 14% 88%;
+    --ring: 222 38% 22%;
+
+    --radius: 0.25rem; /* crisp, industrial — minimal rounding */
+
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+}

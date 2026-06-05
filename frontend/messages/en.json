@@ -1,0 +1,20 @@
+{
+  "nav": {
+    "hubs": "Regional Hubs",
+    "solutions": "Solutions",
+    "industries": "Industries",
+    "resources": "Resources",
+    "quickOrder": "Quick Order",
+    "about": "About"
+  },
+  "home": {
+    "eyebrow": "Industrial Procurement Platform",
+    "title": "Auxiliary materials for cleanroom & packaging — delivered to Northern Vietnam's industrial clusters.",
+    "subtitle": "Cleanroom consumables, packaging, and technical materials with SLA-backed delivery from Dong Van 4, Bac Thang Long, Bac Ninh, Hung Yen and Hai Phong.",
+    "ctaPrimary": "Request a quote",
+    "ctaSecondary": "Browse products"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  }
+}
