@@ -20,8 +20,8 @@ services:
       timeout: 5s
       retries: 5
     # Expose only if you need direct DB access from the host:
-    # ports:
-    #   - '5432:5432'
+    ports:
+      - '5432:5432'
 
   redis:
     image: redis:7-alpine

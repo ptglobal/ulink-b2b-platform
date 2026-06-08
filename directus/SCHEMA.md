@@ -1,62 +1,135 @@
-# Directus Schema — ULink B2B Platform
+# Directus Schema - ULink B2B Platform
 
-Source of truth for collections, fields, roles, and i18n. Implement via
-`bootstrap.mjs` (or the Directus admin UI) and keep this file in sync.
-Conventions: every content collection has `status` (published/draft/archived)
-and, where text-bearing, **Translations** for `vi` / `en` / `ja`.
+This file mirrors the current implementation in `bootstrap.mjs`. If collection
+names, field names, enums, or role rules change in bootstrap, update this file in
+the same change.
 
-> Maps to delivery plan §5. Native Directus features (no collection to build):
-> **Media Library** (Files), **Users/Roles/Permissions**, **Publish state** (`status`),
-> **Translations** (i18n).
+Conventions:
+- Content collections use `status = published | draft | archived`.
+- Portal collections use domain-specific status enums.
+- Primary key is integer `id` on custom collections; Directus native UUIDs stay on
+  `directus_users` and `directus_files`.
+- `orders`, `invoices`, and `deliveries` carry nullable unique `erp_ref`.
+- Text-bearing collections are intended to use Directus Translations for `vi`, `en`,
+  and `ja`, but bootstrap does not provision those translation configs automatically.
+
+> Native Directus features, not custom collections:
+> `directus_users`, `directus_roles`, `directus_files`, `directus_translations`,
+> `directus_activity`.
 
 ## Content collections
 
-| Collection | Key fields | Notes |
+| Collection | Current bootstrap fields | Notes |
 |---|---|---|
-| `hero_banners` | image (file), headline*, subhead, cta_label, cta_link, sort, status | Homepage hero (CMS module 1) |
-| `partners` | name*, logo (file), url, sort, status | Strategic Partners (module 2) — implemented in bootstrap as the example |
-| `product_categories` | name*, slug*, parent (m2o self), icon (file), description, sort, status, `meta_*` | Cleanroom/Packaging tree (module 3) |
-| `products` | name*, slug*, category (m2o), short_desc, long_desc, hero (file), gallery (m2m files), industries (m2m), request_sample (bool), status, `meta_*` | Product Detail (module 5) |
-| `product_skus` | sku_code*, product (m2o), specs (json/repeater), unit, pack_size, status | SKU (module 4) — **Redis-indexed** for `/api/sku` |
-| `documents` | title*, doc_type (TDS/MSDS/cert/brochure), file*, product (m2o), lang, status | TDS/MSDS (module 6) + Download Center (module 10) |
-| `regional_hubs` | name*, slug*, cluster_overview, delivery_sla, warehouse_capacity, technical_team, coords, images (m2m files), status | Hubs (module 7) |
-| `industries` | name*, slug*, description, icon (file), products (m2m), `meta_*` | Electronics/Pharma/Cosmetics/Food |
-| `blog_posts` | title*, slug*, body, cover (file), author, category, published_at, status, `meta_*` | Blog & News (module 8) |
-| `case_studies` | title*, slug*, body, client, industry (m2o), results, images (m2m files), status | Resource Center |
-| `iso_certifications` | name*, issuer, number, valid_until (date), file, image, status | ISO Certs (module 9) |
-| `pages` | title*, slug*, body, `meta_*`, status | About / Sustainability / Careers / Contact |
+| `hero_banners` | `title`, `subtitle`, `image`, `cta_label`, `cta_url`, `sort`, `status` | Homepage hero, module 1 |
+| `partners` | `name`, `logo`, `url`, `sort`, `status` | Strategic partners, module 2 |
+| `product_categories` | `name`, `slug`, `parent`, `description`, `hero_image`, `sort`, `status`, `meta_title`, `meta_description` | Category tree, self-reference on `parent` |
+| `products` | `name`, `slug`, `category`, `short_description`, `specifications`, `hero`, `gallery`, `industries`, `status`, `meta_title`, `meta_description` | Product detail, module 5 |
+| `product_skus` | `sku_code`, `product`, `unit`, `pack_size`, `attributes`, `status` | SKU layer, Redis-backed lookup for `/api/sku` |
+| `documents` | `title`, `doc_type`, `product`, `file`, `language`, `status` | TDS, MSDS, certificate, brochure |
+| `regional_hubs` | `name`, `slug`, `delivery_sla`, `warehouse_capacity`, `technical_team`, `cluster_overview`, `location`, `coordinates`, `status` | Hub landing pages |
+| `industries` | `name`, `slug`, `description`, `icon`, `status` | Industry taxonomy |
+| `blog_posts` | `title`, `slug`, `body`, `cover`, `author`, `published_at`, `status`, `meta_title`, `meta_description` | Blog/news |
+| `case_studies` | `title`, `slug`, `summary`, `body`, `industry`, `cover`, `status` | Resource center content |
+| `iso_certifications` | `name`, `number`, `issuer`, `valid_until`, `file`, `status` | ISO certificates |
+| `pages` | `title`, `slug`, `body`, `status`, `meta_title`, `meta_description` | Static pages |
 
-SEO Metadata (module 11) = `meta_title`, `meta_description`, `og_image` fields on
-each collection above + defaults in a `site_settings` singleton.
+SEO defaults live in singleton `site_settings`. Current bootstrap only adds
+`meta_title` and `meta_description` on content collections; `og_image` exists on
+`site_settings`, not on every collection.
 
-## B2B Portal collections (data source — plan §3)
+## Singleton collections
 
-| Collection | Key fields | Serves |
+| Collection | Current bootstrap fields | Notes |
 |---|---|---|
-| `customers` | user (m2o directus_users), company*, tax_code, contacts | Auth + scoping |
-| `orders` | code*, customer (m2o), order_date, status, hub (m2o), total | Order History |
-| `order_items` | order (m2o), sku (m2o), qty, unit_price | order lines |
-| `invoices` | customer (m2o), order (m2o), amount, due_date, paid_status, balance | Debt / Công nợ |
-| `deliveries` | order (m2o), scheduled_date, status, hub (m2o) | Scheduled Delivery |
-| `rfq_requests` | company*, contact, email*, phone, industry, hub (m2o), line_items (json), message, status (new/quoted/won/lost), assigned_sales (m2o user) | RFQ management |
+| `site_settings` | `logo`, `contact_email`, `contact_phone`, `address`, `meta_title`, `meta_description`, `og_image` | Global contact and default SEO |
+| `homepage` | `title`, `hero_section` | Homepage layout singleton |
 
-Re-order = an action that clones an order's `order_items` into a new RFQ cart / order.
+## Hidden junction collections
 
-**ERP-ready interface (plan §5, Week 6):** standardized REST + CSV-import + webhook
-contract over `orders` / `invoices` / `deliveries` so a future ERP syncs without
-touching core.
+| Collection | Fields | Purpose |
+|---|---|---|
+| `products_industries` | `products_id`, `industries_id` | Product to industry m2m |
+| `products_files` | `products_id`, `directus_files_id` | Product gallery m2m |
 
-## Roles (module 13 / 17)
+## B2B portal collections
 
-| Role | Access |
+| Collection | Current bootstrap fields | Purpose |
+|---|---|---|
+| `customers` | `status`, `user`, `company_name`, `tax_code`, `contact_name`, `email`, `phone`, `address`, `sales_owner` | Auth mapping and account scoping |
+| `orders` | `status`, `code`, `customer`, `order_date`, `hub`, `subtotal`, `tax`, `total`, `notes`, `erp_ref` | Order history |
+| `order_items` | `order`, `sku`, `description`, `qty`, `unit_price`, `line_total` | Order lines |
+| `invoices` | `code`, `customer`, `order`, `issue_date`, `due_date`, `amount`, `paid_amount`, `balance`, `paid_status`, `erp_ref` | Accounts receivable / debt |
+| `deliveries` | `order`, `hub`, `scheduled_date`, `delivered_date`, `status`, `tracking_ref`, `erp_ref` | Scheduled and delivered shipments |
+| `rfq_requests` | `company`, `contact_name`, `email`, `phone`, `industry`, `hub`, `line_items`, `message`, `status`, `assigned_sales`, `source`, `user` | RFQ intake and triage |
+
+Re-order remains an application action that clones prior `order_items` into a new
+RFQ cart or order flow.
+
+## Relationships
+
+| From | Type | To | Notes |
+|---|---|---|---|
+| `product_categories.parent` | m2o | `product_categories` | Self-reference for hierarchy |
+| `products.category` | m2o | `product_categories` | Product belongs to category |
+| `product_skus.product` | m2o | `products` | SKU belongs to product |
+| `documents.product` | m2o | `products` | Product documents |
+| `documents.file` | m2o | `directus_files` | Attached document file |
+| `case_studies.industry` | m2o | `industries` | Industry reference |
+| `customers.user` | m2o | `directus_users` | Auth identity |
+| `customers.sales_owner` | m2o | `directus_users` | Sales owner |
+| `orders.customer` | m2o | `customers` | Order owner |
+| `orders.hub` | m2o | `regional_hubs` | Fulfillment hub |
+| `order_items.order` | m2o | `orders` | Parent order |
+| `order_items.sku` | m2o | `product_skus` | Ordered SKU |
+| `invoices.customer` | m2o | `customers` | Invoice owner |
+| `invoices.order` | m2o | `orders` | Source order |
+| `deliveries.order` | m2o | `orders` | Source order |
+| `deliveries.hub` | m2o | `regional_hubs` | Shipping hub |
+| `rfq_requests.hub` | m2o | `regional_hubs` | Preferred hub |
+| `rfq_requests.assigned_sales` | m2o | `directus_users` | Assigned salesperson |
+| `rfq_requests.user` | m2o | `directus_users` | Portal-origin RFQ user |
+| `products_industries.products_id` | m2o | `products` | Product side of m2m |
+| `products_industries.industries_id` | m2o | `industries` | Industry side of m2m |
+| `products_files.products_id` | m2o | `products` | Product side of gallery m2m |
+| `products_files.directus_files_id` | m2o | `directus_files` | File side of gallery m2m |
+
+## Roles and access
+
+| Role | Current bootstrap access |
 |---|---|
-| **Admin** | Full (default Directus admin) |
-| **Editor** | CRUD all content collections + publish/unpublish; no users/roles |
-| **Sales** | Read content; full CRUD on `rfq_requests`, `orders`, `invoices`, `deliveries`, `customers` |
-| **Customer** | App access; **row-level** read on own `orders`/`invoices`/`deliveries` via filter `{ customer: { user: { _eq: "$CURRENT_USER" } } }` |
+| **Admin** | Full Directus admin access |
+| **Editor** | CRUD on all content collections and singletons `site_settings`, `homepage` |
+| **Sales** | Read all content and singletons; full CRUD on `customers`, `orders`, `order_items`, `invoices`, `deliveries`, `rfq_requests` |
+| **Customer** | Read published content; read singletons; read/update own `customers`; read own `orders`, `order_items`, `invoices`, `deliveries`; create and read own `rfq_requests` |
 
-## i18n (module 15)
+Customer row-level filters in bootstrap:
+- `customers`: `{ user: { _eq: "$CURRENT_USER" } }`
+- `orders`: `{ customer: { user: { _eq: "$CURRENT_USER" } } }`
+- `order_items`: `{ order: { customer: { user: { _eq: "$CURRENT_USER" } } } }`
+- `invoices`: `{ customer: { user: { _eq: "$CURRENT_USER" } } }`
+- `deliveries`: `{ order: { customer: { user: { _eq: "$CURRENT_USER" } } } }`
+- `rfq_requests`: read own via `{ user: { _eq: "$CURRENT_USER" } }`
 
-Enable Directus **Translations** on all text-bearing collections for `vi`, `en`,
-`ja`. Frontend consumes via next-intl (`frontend/src/i18n`). Launch content policy
-in plan §9 (VI 100% · EN 100% · JP key pages).
+## Enums and status values
+
+- Content status: `published`, `draft`, `archived`
+- `customers.status`: `active`, `inactive`
+- `orders.status`: `pending`, `confirmed`, `processing`, `shipped`, `completed`, `cancelled`
+- `invoices.paid_status`: `unpaid`, `partial`, `paid`, `overdue`
+- `deliveries.status`: `scheduled`, `in_transit`, `delivered`, `late`, `cancelled`
+- `rfq_requests.status`: `new`, `quoted`, `won`, `lost`
+- `rfq_requests.source`: `web`, `portal`
+- `documents.doc_type`: `tds`, `msds`, `certificate`, `brochure`
+
+## ERP-ready fields
+
+`orders.erp_ref`, `invoices.erp_ref`, and `deliveries.erp_ref` are reserved for
+future idempotent ERP import and sync contracts.
+
+## i18n
+
+Target model uses Directus Translations for text-bearing content in `vi`, `en`, and
+`ja`. Frontend consumes localized content via `next-intl`. Bootstrap currently does
+not create translation configs automatically, so enabling them in Directus remains a
+manual setup step.
