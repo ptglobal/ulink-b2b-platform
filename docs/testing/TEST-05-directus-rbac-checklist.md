@@ -33,8 +33,8 @@ smoke checks, but pass/fail evidence comes from role-specific API requests.
 - `Sales`: read content and singletons; full CRUD on `customers`, `orders`,
   `order_items`, `invoices`, `deliveries`, `rfq_requests`
 - `Customer`: read published content, read/update own `customers`, read own
-  `orders`, `order_items`, `invoices`, `deliveries`, create and read own
-  `rfq_requests`
+  `orders`, `order_items`, `invoices`, `deliveries`, read own `rfq_requests`;
+  RFQ submission goes through `/api/rfq`
 
 ## Collections under test
 
@@ -72,7 +72,8 @@ smoke checks, but pass/fail evidence comes from role-specific API requests.
 | RBAC-CUS-09 | Customer A | `invoices` | read | B | DENY |
 | RBAC-CUS-10 | Customer A | `deliveries` | read list | own | ALLOW |
 | RBAC-CUS-11 | Customer A | `deliveries` | read | B | DENY |
-| RBAC-CUS-12 | Customer A | `rfq_requests` | create | own payload | ALLOW |
+| RBAC-VIS-01 | Visitor | `rfq_requests` | direct create | new | DENY |
+| RBAC-CUS-12 | Customer A | `rfq_requests` | direct create | own payload | DENY |
 | RBAC-CUS-13 | Customer A | `rfq_requests` | read list | own | ALLOW |
 | RBAC-CUS-14 | Customer A | `rfq_requests` | read | B | DENY |
 | RBAC-CUS-15 | Customer A | `orders` | create | new | DENY |
@@ -94,6 +95,7 @@ smoke checks, but pass/fail evidence comes from role-specific API requests.
 - `PATCH /items/invoices/{id}`
 - `POST /items/orders`
 - `DELETE /items/deliveries/{id}`
+- Application RFQ writes are verified separately through `POST /api/rfq`.
 
 ## Evidence rules
 
@@ -119,3 +121,4 @@ smoke checks, but pass/fail evidence comes from role-specific API requests.
   - Bootstrap now verifies bindings through the Directus `/access` junction endpoint instead of assuming `policy.roles` returns role IDs
   - Runtime verification now passes for all four roles: `Admin`, `Editor`, `Sales`, and both mirrored `Customer` tenants
   - Row-level filters were confirmed working for `customers`, `orders`, `order_items`, `invoices`, `deliveries`, and `rfq_requests`
+  - Direct `POST /items/rfq_requests` is denied for Visitor and Customer roles; app-level submission is covered by `/api/rfq`

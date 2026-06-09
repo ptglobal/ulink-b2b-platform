@@ -1,6 +1,20 @@
-import { EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../constants.mjs';
+import { ADMIN_POLICY_ID, VISITOR_POLICY_ID, EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../constants.mjs';
 
 export const POLICY_DEFS = [
+  {
+    id: ADMIN_POLICY_ID,
+    name: 'Administrator',
+    description: 'Full administrative access',
+    app_access: true,
+    admin_access: true
+  },
+  {
+    id: VISITOR_POLICY_ID,
+    name: '$t:public_label',
+    description: '$t:public_description',
+    app_access: false,
+    admin_access: false
+  },
   {
     id: EDITOR_POLICY_ID,
     name: 'Editor Access Policy',

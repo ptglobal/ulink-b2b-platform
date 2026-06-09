@@ -9,9 +9,9 @@ and **custom Next.js route handlers** for the two latency/spam-sensitive paths.
 - **Base:** `${DIRECTUS_URL}` (e.g. `http://localhost:8055`).
 - **REST:** `/items/{collection}` with `filter`, `fields`, `sort`, `limit`, `deep`.
 - **GraphQL:** `/graphql` (read) and `/graphql/system`.
-- **Auth:** customer JWT (login) or server static token; public role for published content.
+- **Auth:** customer JWT (login) or server static token; public role for published content reads.
 - **i18n:** request translations via `deep`/`translations` per Directus docs.
-- **Conventions:** read published only on the public site (`filter[status][_eq]=published`).
+- **Conventions:** read published only on the public site (`filter[status][_eq]=published`). RFQ writes go through `POST /api/rfq`, not direct anonymous Directus creates.
 
 Example - published products in a category:
 ```
@@ -85,6 +85,7 @@ Purpose: persist an RFQ and route to Sales.
 - **400** -> normalized error envelope with code `BAD_REQUEST` for invalid JSON.
 - **422** -> normalized error envelope with code `UNPROCESSABLE_ENTITY` and `error.details.missingFields`.
 - **502** -> normalized error envelope with code `BAD_GATEWAY` when persistence fails.
+- The handler writes to Directus with `DIRECTUS_TOKEN`; visitor and customer roles do not create `rfq_requests` directly.
 
 ## 3. Error model
 App-owned APIs return `{ "success": false, "error": { ... } }` with appropriate HTTP status.
@@ -94,7 +95,7 @@ Codes in use: `BAD_REQUEST` (400), `UNPROCESSABLE_ENTITY` (422), `NOT_FOUND` (40
 
 ## 4. Rate limiting and security
 - Public mutations (`/api/rfq`, contact) rate-limited per IP via Redis (sliding window).
-- Server-side writes use `DIRECTUS_TOKEN`; never expose admin token to the browser.
+- Server-side writes use `DIRECTUS_TOKEN`; never expose admin token to the browser. RFQ submissions from visitors and customers must go through Next.js.
 - CORS restricted to the site origin in production.
 
 ## 5. ERP-ready interface *(future Integration phase)*

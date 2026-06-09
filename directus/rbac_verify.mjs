@@ -33,12 +33,16 @@ async function login(email, password) {
 }
 
 async function request(token, method, url, body) {
+  const headers = {
+    'Content-Type': 'application/json'
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${BASE_URL}${url}`, {
     method,
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json'
-    },
+    headers,
     body: body ? JSON.stringify(body) : undefined
   });
 
@@ -125,6 +129,24 @@ async function verifyAdmin(adminToken, fixtures) {
 
   const roles = await request(adminToken, 'GET', '/roles');
   assert(roles.ok, 'Admin can read system roles endpoint.');
+}
+
+async function verifyVisitor(fixtures) {
+  const products = await request(null, 'GET', '/items/products');
+  assert(products.ok, 'Visitor can read products.');
+
+  const orders = await request(null, 'GET', '/items/orders');
+  assert(!orders.ok, 'Visitor cannot read orders.');
+
+  const createRfq = await request(null, 'POST', '/items/rfq_requests', {
+    company: 'Visitor Company',
+    contact_name: 'Visitor Temp',
+    email: 'visitor-temp@example.com',
+    phone: '0911111112',
+    message: `RBAC-VISITOR-RFQ-${Date.now()}`,
+    source: 'web'
+  });
+  assert(!createRfq.ok, 'Visitor cannot create RFQ records directly in Directus.');
 }
 
 async function verifyEditor(editorToken) {
@@ -287,7 +309,7 @@ async function verifyCustomer(customerToken, own, foreign) {
     source: 'portal',
     user: own.userId
   });
-  assert(createRfq.ok, `Customer ${own.email} can create RFQ.`);
+  assert(!createRfq.ok, `Customer ${own.email} cannot create RFQ directly in Directus.`);
 
   const createOrder = await request(customerToken, 'POST', '/items/orders', {
     code: `RBAC-FORBIDDEN-${own.label}-${Date.now()}`,
@@ -320,6 +342,7 @@ async function main() {
   const customerBToken = await login('customer-b-rbac@example.com', 'customer-b-password-123');
 
   await verifyAdmin(adminToken, fixtures);
+  await verifyVisitor(fixtures);
   await verifyEditor(editorToken);
   await verifySales(salesToken, fixtures);
   await verifyCustomer(

@@ -1,6 +1,6 @@
 import { readItems } from '@directus/sdk';
 import { errorJson, successJson } from '@/lib/api-response-next';
-import { directus } from '@/lib/directus';
+import { publicDirectus } from '@/lib/directus';
 import { getRedis } from '@/lib/redis';
 
 // Cached single-SKU lookup. Target: <50ms on a cache hit (Redis), per the
@@ -17,7 +17,7 @@ export async function GET(_req: Request, { params: { code } }: { params: { code:
       });
     }
 
-    const items = await directus.request(
+    const items = await publicDirectus.request(
       readItems('product_skus', {
         filter: { sku_code: { _eq: code } },
         limit: 1

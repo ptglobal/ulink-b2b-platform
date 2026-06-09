@@ -1,11 +1,15 @@
 import { createItem } from '@directus/sdk';
 import { errorJson, successJson } from '@/lib/api-response-next';
-import { directus } from '@/lib/directus';
+import { createWriteDirectusClient } from '@/lib/directus';
 
 // RFQ submission endpoint. Anti-spam is layered:
 //   1. Honeypot field ("website") - bots fill it, humans don't.
 //   2. Cloudflare Turnstile token verification (TODO - wire TURNSTILE_SECRET_KEY).
 //   3. IP rate-limiting via Redis (TODO).
+function normalizeSource(source: unknown): 'web' | 'portal' {
+  return source === 'portal' ? 'portal' : 'web';
+}
+
 export async function POST(req: Request) {
   let body: Record<string, unknown>;
   try {
@@ -30,6 +34,7 @@ export async function POST(req: Request) {
   }
 
   try {
+    const directus = createWriteDirectusClient();
     const created = await directus.request(
       createItem('rfq_requests', {
         company: String(body.company),
@@ -39,12 +44,18 @@ export async function POST(req: Request) {
         industry: body.industry ? String(body.industry) : undefined,
         message: body.message ? String(body.message) : undefined,
         line_items: Array.isArray(body.items) ? body.items : [],
-        status: 'new'
+        status: 'new',
+        source: normalizeSource(body.source)
       })
     );
 
     return successJson({ id: created?.id });
   } catch (err) {
+    if (err instanceof Error && err.message.includes('DIRECTUS_TOKEN is required')) {
+      console.error('RFQ submit misconfigured', err);
+      return errorJson(500, 'INTERNAL_SERVER_ERROR', 'RFQ submission is not configured.');
+    }
+
     console.error('RFQ submit failed', err);
     return errorJson(502, 'BAD_GATEWAY', 'Failed to submit RFQ.');
   }

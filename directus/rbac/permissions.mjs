@@ -1,4 +1,4 @@
-import { EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../constants.mjs';
+import { VISITOR_POLICY_ID, EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../constants.mjs';
 
 export const CONTENT_COLLECTIONS = [
   'hero_banners',
@@ -17,6 +17,35 @@ export const CONTENT_COLLECTIONS = [
 
 export function buildPermissionDefs() {
   const permissions = [];
+
+  // Visitor (Public Policy) Permissions
+  for (const col of CONTENT_COLLECTIONS) {
+    permissions.push({
+      policy: VISITOR_POLICY_ID,
+      collection: col,
+      action: 'read',
+      permissions: { status: { _eq: 'published' } },
+      fields: ['*']
+    });
+  }
+
+  for (const col of ['site_settings', 'homepage']) {
+    permissions.push({
+      policy: VISITOR_POLICY_ID,
+      collection: col,
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
+  permissions.push({
+    policy: VISITOR_POLICY_ID,
+    collection: 'directus_files',
+    action: 'read',
+    permissions: {},
+    fields: ['*']
+  });
 
   for (const col of CONTENT_COLLECTIONS) {
     permissions.push({
@@ -84,13 +113,6 @@ export function buildPermissionDefs() {
     {
       policy: CUSTOMER_POLICY_ID,
       collection: 'rfq_requests',
-      action: 'create',
-      permissions: {},
-      fields: ['*']
-    },
-    {
-      policy: CUSTOMER_POLICY_ID,
-      collection: 'rfq_requests',
       action: 'read',
       permissions: { user: { _eq: '$CURRENT_USER' } },
       fields: ['*']
@@ -135,7 +157,28 @@ export function buildPermissionDefs() {
 }
 
 export async function ensurePermissions(helpers) {
-  for (const permission of buildPermissionDefs()) {
+  const desiredPermissions = buildPermissionDefs();
+  const desiredKeys = new Set(
+    desiredPermissions.map((permission) => `${permission.policy}:${permission.collection}:${permission.action}`)
+  );
+  const managedPolicies = new Set([
+    VISITOR_POLICY_ID,
+    EDITOR_POLICY_ID,
+    SALES_POLICY_ID,
+    CUSTOMER_POLICY_ID
+  ]);
+  const currentPermissions = await helpers.listPermissions();
+  const staleIds = currentPermissions
+    .filter((permission) => managedPolicies.has(permission.policy) && !desiredKeys.has(`${permission.policy}:${permission.collection}:${permission.action}`))
+    .map((permission) => permission.id)
+    .filter(Boolean);
+
+  if (staleIds.length > 0) {
+    await helpers.deletePermissionIds(staleIds);
+    console.log(`-  Deleted ${staleIds.length} stale permission(s) from managed policies`);
+  }
+
+  for (const permission of desiredPermissions) {
     await helpers.ensurePermission(permission);
   }
 }

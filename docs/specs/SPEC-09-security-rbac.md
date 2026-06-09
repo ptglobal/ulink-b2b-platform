@@ -5,7 +5,7 @@
 ## Authentication
 - Customer auth via Directus (JWT). Sessions/refresh per Directus defaults.
 - Admin/Editor/Sales authenticate to the Directus admin app.
-- Server-side writes use a scoped `DIRECTUS_TOKEN`; **never** shipped to the browser.
+- Server-side writes use a scoped `DIRECTUS_TOKEN`; **never** shipped to the browser. Visitor/customer RFQ submission goes through Next.js, not direct anonymous Directus writes.
 
 ## Authorization (RBAC)
 | Role | Summary |
@@ -27,6 +27,7 @@ orders/invoices/deliveries; customers read/update own record only.
 ## Input & anti-spam
 - Validate all external input (zod) server-side.
 - Public mutations (RFQ, contact): honeypot + Cloudflare Turnstile + Redis IP rate-limit.
+- `POST /api/rfq` writes with `DIRECTUS_TOKEN`; visitor/customer roles do not create `rfq_requests` directly in Directus.
 - Parameterized/SDK queries only (no raw string SQL); Directus handles escaping.
 
 ## Secrets

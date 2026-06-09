@@ -101,7 +101,9 @@ RFQ cart or order flow.
 | **Admin** | Full Directus admin access |
 | **Editor** | CRUD on all content collections and singletons `site_settings`, `homepage` |
 | **Sales** | Read all content and singletons; full CRUD on `customers`, `orders`, `order_items`, `invoices`, `deliveries`, `rfq_requests` |
-| **Customer** | Read published content; read singletons; read/update own `customers`; read own `orders`, `order_items`, `invoices`, `deliveries`; create and read own `rfq_requests` |
+| **Customer** | Read published content; read singletons; read/update own `customers`; read own `orders`, `order_items`, `invoices`, `deliveries`; read own `rfq_requests` |
+
+Visitor/public users may read published content directly from Directus. RFQ submission for visitors and customers goes through `POST /api/rfq`; Directus visitor/customer roles do not create `rfq_requests` directly.
 
 Customer row-level filters in bootstrap:
 - `customers`: `{ user: { _eq: "$CURRENT_USER" } }`

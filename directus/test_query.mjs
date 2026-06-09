@@ -13,24 +13,10 @@ const PASSWORD = process.env.DIRECTUS_ADMIN_PASSWORD;
 const client = createDirectus(URL).with(authentication('json')).with(rest());
 
 async function run() {
-  await client.login(EMAIL, PASSWORD);
-  console.log('Logged in successfully');
-
-  // Test standard readItems
-  const all = await client.request(readItems('industries'));
-  console.log('All industries count:', all.length);
-  console.log('All industries:', JSON.stringify(all, null, 2));
-
-  // Test filtered readItems
-  const filtered = await client.request(readItems('industries', {
-    filter: {
-      slug: {
-        _eq: 'electronics'
-      }
-    }
-  }));
-  console.log('Filtered industries count:', filtered.length);
-  console.log('Filtered industries:', JSON.stringify(filtered, null, 2));
+  const res = await fetch(`${URL}/items/products`);
+  console.log('Public fetch products status:', res.status);
+  const text = await res.text();
+  console.log('Public fetch products body:', text);
 }
 
 run().catch(console.error);

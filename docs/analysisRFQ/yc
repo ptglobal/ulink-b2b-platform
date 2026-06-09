@@ -1,0 +1,12 @@
+RFQ technical goal:
+
+Accept legit quote request.
+Block spam/bot.
+Rate limit per IP.
+Validate required fields.
+Send write through server only (POST /api/rfq).
+Never expose Directus token to browser.
+Save rfq_requests with status: new.
+Keep source clean (web / portal).
+Return clear success/error response.
+Preserve Sales handoff.

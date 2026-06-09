@@ -4,7 +4,7 @@
 
 <!-- 2. **Kiểm tra bootstrap trên instance sạch.** Dựng Directus/Postgres/Redis mới, chạy bootstrap, xác nhận tạo đủ collections, relations, roles, policies, permissions, singletons, seed. Bước này khóa nền móng. -->
 
-3. **Khóa RBAC thật chắc.** Test 4 role `Admin`, `Editor`, `Sales`, `Customer`. Xác nhận row-level filters chạy đúng, nhất là `orders`, `order_items`, `invoices`, `deliveries`, `customers`, `rfq_requests`.
+<!-- 3. **Khóa RBAC thật chắc.** Test 4 role `Admin`, `Editor`, `Sales`, `Customer`. Xác nhận row-level filters chạy đúng, nhất là `orders`, `order_items`, `invoices`, `deliveries`, `customers`, `rfq_requests`. -->
 
 4. **Chốt access model public/anonymous.** Quyết định rõ public có được đọc published content trực tiếp từ Directus không. Quyết định rõ anonymous RFQ có đi qua Directus permission hay luôn đi qua server token.
 

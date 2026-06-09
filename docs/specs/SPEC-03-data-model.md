@@ -52,10 +52,12 @@ blog_posts   case_studies   iso_certifications   pages   hero_banners   partners
 | orders / order_items | read **own** | CRUD | – | CRUD |
 | invoices | read **own** | CRUD | – | CRUD |
 | deliveries | read **own** | CRUD | – | CRUD |
-| rfq_requests | create + read own | CRUD | – | CRUD |
+| rfq_requests | read own; submit through `/api/rfq` | CRUD | – | CRUD |
 | customers | read/update own | CRUD | – | CRUD |
 
 "Own" = Directus permission filter `{ customer: { user: { _eq: "$CURRENT_USER" } } }`.
+
+Visitor and customer RFQ submission is application-mediated: `POST /api/rfq` writes with a server token; Directus visitor/customer roles do not create `rfq_requests` directly.
 
 ## Conventions
 - **PK:** auto-increment integer `id` (UUID for files/users per Directus default).

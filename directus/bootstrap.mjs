@@ -35,7 +35,8 @@ async function main() {
   await ensureRoles(helpers);
   await ensurePolicies(helpers);
   await ensureAccessLinks(helpers);
-  await ensurePermissions(helpers);
+  const publicPolicyId = await helpers.getPublicPolicyId();
+  await ensurePermissions(helpers, publicPolicyId);
 
   const ids = await seedInitialContent(helpers);
   await seedDemoCommerce(helpers, ids);

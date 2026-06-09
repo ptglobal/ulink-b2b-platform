@@ -1,6 +1,18 @@
-import { EDITOR_ROLE_ID, SALES_ROLE_ID, CUSTOMER_ROLE_ID } from '../constants.mjs';
+import { ADMIN_ROLE_ID, VISITOR_ROLE_ID, EDITOR_ROLE_ID, SALES_ROLE_ID, CUSTOMER_ROLE_ID } from '../constants.mjs';
 
 export const ROLE_DEFS = [
+  {
+    id: ADMIN_ROLE_ID,
+    name: 'Administrator',
+    icon: 'verified',
+    description: 'System Administrator with full access'
+  },
+  {
+    id: VISITOR_ROLE_ID,
+    name: 'Visitor',
+    icon: 'public',
+    description: 'Public/Visitor anonymous access'
+  },
   {
     id: EDITOR_ROLE_ID,
     name: 'Editor',

@@ -7,6 +7,8 @@ import {
   readUsers,
   createItem,
   readItems,
+  readPermissions,
+  deletePermissions,
   createPolicy,
   customEndpoint,
   readSingleton,
@@ -102,6 +104,18 @@ export function createEnsureHelpers(client) {
     }
   }
 
+  async function listPermissions() {
+    return client.request(readPermissions());
+  }
+
+  async function deletePermissionIds(ids) {
+    if (!ids.length) {
+      return;
+    }
+
+    await client.request(deletePermissions(ids));
+  }
+
   async function ensureUser(data) {
     const existing = await client.request(readUsers({ filter: { email: { _eq: data.email } } }));
     if (existing.length > 0) {
@@ -143,6 +157,15 @@ export function createEnsureHelpers(client) {
     return updated.id;
   }
 
+  async function getPublicPolicyId() {
+    const policies = await client.request(customEndpoint({ path: '/policies', method: 'GET' }));
+    const publicPolicy = policies.find((p) => p.name === '$t:public_label');
+    if (!publicPolicy) {
+      throw new Error('Could not find system public policy in Directus.');
+    }
+    return publicPolicy.id;
+  }
+
   return {
     ensureCollection,
     ensureRelation,
@@ -150,8 +173,11 @@ export function createEnsureHelpers(client) {
     ensurePolicy,
     ensureAccess,
     ensurePermission,
+    listPermissions,
+    deletePermissionIds,
     ensureUser,
     ensureItem,
-    ensureSingleton
+    ensureSingleton,
+    getPublicPolicyId
   };
 }
