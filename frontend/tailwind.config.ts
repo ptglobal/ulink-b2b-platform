@@ -25,6 +25,11 @@ const config: Config = {
           DEFAULT: 'hsl(var(--accent))',
           foreground: 'hsl(var(--accent-foreground))'
         },
+        brand: {
+          DEFAULT: 'hsl(var(--brand))',
+          strong: 'hsl(var(--brand-strong))',
+          foreground: 'hsl(var(--brand-foreground))'
+        },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
           foreground: 'hsl(var(--muted-foreground))'
