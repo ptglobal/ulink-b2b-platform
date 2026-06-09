@@ -1,82 +1,52 @@
-Repo này đã có khung lớn trong `directus/SCHEMA.md` + `directus/bootstrap.mjs`. Muốn gọi là `Directus only setup hoàn thiện`, làm hết list này.
+Đúng thứ tự nên làm cho `backend Directus only` từ trạng thái hiện tại:
 
-**1. Infra**
-1. Tạo `.env` backend đủ biến: `POSTGRES_*`, `DIRECTUS_KEY`, `DIRECTUS_SECRET`, `DIRECTUS_ADMIN_EMAIL`, `DIRECTUS_ADMIN_PASSWORD`, `DIRECTUS_PUBLIC_URL`, Redis, CORS.
-2. Chạy `docker compose up -d`. Verify `directus`, `postgres`, `redis` healthy.
-3. Gắn domain `cms...`, reverse proxy `:8055`, bật HTTPS + HSTS.
-4. Chốt storage strategy: local `directus/uploads` hay object storage như R2/S3.
-5. Chốt `PUBLIC_URL`, CORS origin, cookie/session policy cho dev + prod.
+<!-- 1. **Chốt baseline schema.** Giữ [SCHEMA.md](C:\Users\thanh\Desktop\PathtechProject\ulink-b2b-platform\directus\SCHEMA.md) làm doc chuẩn theo [bootstrap.mjs](C:\Users\thanh\Desktop\PathtechProject\ulink-b2b-platform\directus\bootstrap.mjs). Từ đây đổi schema ở đâu thì sync cả 2 chỗ. -->
 
-**2. Bootstrap Core**
-6. Chạy `cd directus && npm install && npm run bootstrap`.
-7. Verify tạo đủ collections: `hero_banners`, `partners`, `product_categories`, `products`, `product_skus`, `documents`, `regional_hubs`, `industries`, `blog_posts`, `case_studies`, `iso_certifications`, `pages`, `customers`, `orders`, `order_items`, `invoices`, `deliveries`, `rfq_requests`.
-8. Verify tạo đủ singletons: `site_settings`, `homepage`.
-9. Verify relations đúng: self-ref category, product-sku, product-industry, product-files, customer-user, order/invoice/delivery links.
-10. Verify rerun bootstrap idempotent, không nhân bản role/policy/seed.
-11. Đồng bộ schema thật với `SCHEMA.md`. Không để UI sửa tay làm lệch spec.
+<!-- 2. **Kiểm tra bootstrap trên instance sạch.** Dựng Directus/Postgres/Redis mới, chạy bootstrap, xác nhận tạo đủ collections, relations, roles, policies, permissions, singletons, seed. Bước này khóa nền móng. -->
 
-**3. Content Model + Admin UX**
-12. Check từng field type đúng: `string`, `text`, `json`, `decimal`, `date`, `uuid`, relation, file.
-13. Check `required`, `unique`, `default`, `enum/status`, `sort`, hidden/read-only fields.
-14. Setup interface tốt cho admin: image picker, file picker, textarea, JSON editor, relation display.
-15. Setup display template/list view/filter preset cho collection sales dùng nhiều: `rfq_requests`, `orders`, `invoices`, `deliveries`.
-16. Setup note/help text cho field dễ nhập sai: `erp_ref`, `paid_status`, `line_items`, SEO fields.
-17. Bật system timestamps và audit fields nếu cần hiển thị trong admin.
+3. **Khóa RBAC thật chắc.** Test 4 role `Admin`, `Editor`, `Sales`, `Customer`. Xác nhận row-level filters chạy đúng, nhất là `orders`, `order_items`, `invoices`, `deliveries`, `customers`, `rfq_requests`.
 
-**4. Auth + RBAC**
-18. Tạo đủ roles: `Admin`, `Editor`, `Sales`, `Customer`.
-19. Cấu hình `public role`: chỉ read content `published`; không chạm portal data.
-20. Cấu hình `Editor`: CRUD content + publish/unpublish; không user/role/policy.
-21. Cấu hình `Sales`: CRUD `rfq_requests`, `customers`, `orders`, `order_items`, `invoices`, `deliveries`; read content.
-22. Cấu hình `Customer`: chỉ read dữ liệu own qua row-level filter theo `$CURRENT_USER`.
-23. Verify `customers.user -> directus_users` map đúng cho portal auth.
-24. Chốt customer onboarding flow: create user, assign `Customer` role, link record `customers`, reset password/invite mail.
-25. Tạo scoped `DIRECTUS_TOKEN` cho server-side writes. Không dùng admin token ở browser.
+4. **Chốt access model public/anonymous.** Quyết định rõ public có được đọc published content trực tiếp từ Directus không. Quyết định rõ anonymous RFQ có đi qua Directus permission hay luôn đi qua server token.
 
-**5. i18n**
-26. Bật `Translations` cho mọi collection có text-bearing fields.
-27. Bật đủ locales: `vi`, `en`, `ja`.
-28. Chốt fallback policy: thiếu bản dịch -> fallback `vi`.
-29. Chốt launch policy: VI 100%, EN trang chính 100%, JP key pages trước.
-30. Verify frontend query lấy đúng translation, không trả raw key hay field rỗng.
+5. **Bật i18n trong Directus.** Enable Translations cho text-bearing collections, tạo `vi/en/ja`, chốt fallback `vi`. Bootstrap chưa làm phần này.
 
-**6. Files + Media**
-31. Chốt rule upload: loại file cho phép, max size, naming convention, folder convention.
-32. Bắt editor nhập alt text/caption nơi cần SEO + a11y.
-33. Check `documents` cho TDS/MSDS/cert/brochure hoạt động đúng với file relation.
-34. Chốt media URL/origin để frontend load ổn trong prod.
+6. **Bổ sung DB indexes.** Thêm index cho FK fields, `status`, `order_date`, `due_date`, `scheduled_date`. Unique đã có phần lớn, query index còn thiếu.
 
-**7. Flows + Automation**
-35. Tạo Flow: publish content -> webhook sang frontend -> revalidate ISR.
-36. Tạo Flow: create/update/publish `product_skus` -> invalidate hoặc prime Redis cache cho `/api/sku`.
-37. Tạo Flow: RFQ mới -> notify Sales, set status `new`, optional auto-assign theo hub.
-38. Tạo Flow: order/invoice/delivery đổi trạng thái -> optional email/notification cho customer hoặc sales.
-39. Giữ sẵn webhook contract cho future ERP trên `orders`, `invoices`, `deliveries` dùng `erp_ref`.
+7. **Chốt media/storage policy.** Quy định loại file, max size, folder convention, naming convention, xóa file, object storage hay local uploads. Không chốt sớm thì sau bẩn kho file.
 
-**8. Data Seed + Contract Test**
-40. Seed dữ liệu thật tối thiểu cho content, SKU, hub, customer, order, invoice, delivery, RFQ.
-41. Verify `/api/sku/{code}` đọc đúng `product_skus`, cache hit/miss đúng.
-42. Verify `/api/rfq` ghi đúng `rfq_requests`, không lộ token, không bypass validation.
-43. Verify public REST/GraphQL chỉ đọc content `published`.
-44. Verify customer A không đọc được order/invoice/delivery customer B.
+8. **Setup email/auth vận hành.** Cấu hình mail cho Directus, reset password, invite user, onboarding customer user, link `directus_users` với `customers`.
 
-**9. Security**
-45. Bật HTTPS everywhere, CORS đúng origin, security headers, frame protection.
-46. Bật anti-spam cho public writes: honeypot, Turnstile, Redis IP rate limit.
-47. Rotate admin password, `DIRECTUS_KEY/SECRET`, server token trước go-live.
-48. Giữ Directus activity log. Review least privilege trước launch.
+9. **Làm Directus Flows.** Ít nhất cần:
+   - publish content -> webhook
+   - SKU create/update/publish -> cache hook
+   - RFQ created -> notify Sales / assign owner
+   - order/invoice/delivery create-update -> outbound webhook future ERP
 
-**10. Ops**
-49. Setup backup DB hằng ngày, backup `directus/uploads`, lưu off-box.
-50. Test restore thật ít nhất 1 lần. Không chỉ backup suông.
-51. Setup monitoring: `cms/.../server/health`, container health, CPU/RAM/disk, Redis/Postgres up.
-52. Setup log retention/rotation, alert khi Directus down hay error spike.
-53. Viết runbook: deploy, bootstrap lại, rotate secrets, restore backup, onboard user.
+10. **Chốt import/process cho dữ liệu thương mại.** Quy định CSV import cho `customers/orders/invoices/deliveries`, validation rules, idempotent key `erp_ref`, ai được import, rollback khi import lỗi.
 
-**11. Handover**
-54. Viết guide cho `Editor`, `Sales`, `Admin`: publish, translations, SEO, RFQ triage, orders/invoices/deliveries, user roles.
-55. Chạy UAT checklist cuối: publish loop, i18n, RFQ, portal row-level, file upload/download, cache, backup restore.
+11. **Setup backup/recovery.** DB dump, uploads backup, off-box storage, restore drill thật. Không test restore = chưa có backup đáng tin.
 
-Thiếu lớn nhất hiện giờ, theo repo này: `translations`, `Flows/webhooks`, `customer onboarding/auth flow`, `anti-spam/rate-limit`, `ops prod`.
+12. **Setup monitoring/logging.** Health check `/server/health`, container health, CPU/RAM/disk, Postgres/Redis up, log rotation, alert khi service down.
 
-Muốn, tôi tách tiếp thành `đã có sẵn` vs `chưa làm` theo đúng `bootstrap.mjs` hiện tại.
+13. **Setup hardening production.** HTTPS, reverse proxy, CORS, secret rotation, scoped tokens, admin password policy, review activity log.
+
+14. **Chạy UAT backend cuối.** Test publish flow, permission isolation, translations, file upload, RFQ flow, import flow, backup restore, webhook flow. Qua bước này mới gọi là hoàn thiện setup.
+
+**Đã xong trước bước 1**
+- collections
+- relations
+- roles
+- policies
+- permissions
+- singletons
+- seed mẫu
+- `SCHEMA.md` sync theo bootstrap
+
+**Nếu muốn làm nhanh, ưu tiên 5 bước kế tiếp**
+1. bootstrap clean verify  
+2. RBAC verify  
+3. i18n enable  
+4. indexes  
+5. Flows/webhooks
+
+Muốn, tôi tách tiếp thành checklist `P1 / P2 / P3` hoặc `1 ngày / 3 ngày / 1 tuần`.

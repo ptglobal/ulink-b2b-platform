@@ -13,7 +13,7 @@ export interface ProductSku {
 export interface RfqRequest {
   id?: number | string;
   company: string;
-  contact: string;
+  contact_name: string;
   email: string;
   phone?: string;
   industry?: string;
