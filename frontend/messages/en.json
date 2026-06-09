@@ -63,20 +63,139 @@
   },
   "nav": {
     "hubs": "Regional Hubs",
-    "solutions": "Solutions",
+    "solutions": "Solutions / Products",
     "industries": "Industries",
     "resources": "Resources",
     "quickOrder": "Quick Order",
-    "about": "About"
+    "about": "About us",
+    "login": "Login",
+    "search": "Search",
+    "cart": "Cart"
   },
   "home": {
-    "eyebrow": "Industrial Procurement Platform",
-    "title": "Auxiliary materials for cleanroom & packaging — delivered to Northern Vietnam's industrial clusters.",
-    "subtitle": "Cleanroom consumables, packaging, and technical materials with SLA-backed delivery from Dong Van 4, Bac Thang Long, Bac Ninh, Hung Yen and Hai Phong.",
-    "ctaPrimary": "Request a quote",
-    "ctaSecondary": "Browse products"
+    "hero": {
+      "eyebrow": "Total solutions provider for cleanrooms and contamination control",
+      "titleLine1": "Clean down to every detail,",
+      "titleLine2": "Safe for the future.",
+      "description": "ULINK Industries delivers high-quality solutions and products that meet manufacturing demands and ensure consistent quality across every process.",
+      "ctaOrder": "Order now",
+      "ctaSolutions": "View solutions"
+    },
+    "trust": {
+      "globalTitle": "Global service",
+      "globalDesc1": "60+ countries",
+      "globalDesc2": "Fast delivery",
+      "sampleTitle": "Samples within 7 days",
+      "sampleDesc1": "Try products before you order",
+      "deliveryTitle": "On-time delivery rate",
+      "deliveryDesc1": "99.8% achieved",
+      "isoTitle": "ISO certified",
+      "isoDesc1": "Meets international standards",
+      "isoDesc2": "Quality assured"
+    },
+    "products": {
+      "sectionTitle": "Solutions / Products",
+      "sectionDesc": "Optimal solutions tailored to your cleanroom needs.",
+      "viewAll": "View all products",
+      "gloves": "Cleanroom gloves",
+      "glovesDesc": "Nitrile, PU, Latex, Vinyl",
+      "wipes": "Cleanroom wipers",
+      "wipesDesc": "Lint-free, Cotton, Paper",
+      "tape": "Cleanroom tape",
+      "tapeDesc": "OPP, Colored, Double-sided",
+      "packaging": "Cleanroom packaging",
+      "packagingDesc": "PE bags, OPP bags, Cartons"
+    },
+    "partners": {
+      "title": "Featured partners",
+      "viewAll": "View all partners",
+      "factoryTitle": "Manufacturing facility built to international standards",
+      "factoryDesc": "A modern cleanroom factory network operated to ISO standards, ensuring consistent quality for every order."
+    },
+    "news": {
+      "title": "Latest news",
+      "viewAll": "View all news",
+      "readMore": "Read more",
+      "item1Date": "2024/05/15",
+      "item1Title": "New trends in cleanroom gloves for 2024",
+      "item2Date": "2024/05/02",
+      "item2Title": "ISO 13485:2016 standard in the medical device industry",
+      "item3Date": "2024/04/20",
+      "item3Title": "How to choose the right cleanroom gloves"
+    },
+    "support": {
+      "title": "Quick support",
+      "consultingTitle": "Product consulting",
+      "consultingDesc": "Recommend the right solution",
+      "guaranteeTitle": "30-day warranty",
+      "guaranteeDesc": "Fast returns & exchanges",
+      "emergencyTitle": "Emergency orders",
+      "emergencyDesc": "Custom specs, fast delivery",
+      "availabilityTitle": "24/7 support",
+      "availabilityDesc": "Experts always on standby"
+    },
+    "serviceBar": {
+      "slaTitle": "Scheduled delivery - SLA",
+      "slaDesc": "Stable supply, on-time commitment",
+      "reorderTitle": "One-click reorder",
+      "reorderDesc": "Order anytime, anywhere",
+      "bufferTitle": "7-day stock buffer",
+      "bufferDesc": "Reliable inventory on hand",
+      "dedicatedTitle": "Dedicated support team",
+      "dedicatedDesc": "Fast and attentive support",
+      "cta": "Contact us now"
+    }
   },
   "footer": {
-    "rights": "All rights reserved."
+    "description": "ULink Industries supplies industrial gloves and high-quality cleanroom solutions for manufacturing sectors demanding the strictest standards.",
+    "contactTitle": "CONTACT INFO",
+    "contact": {
+      "address": "VSIP Industrial Park, Tu Son, Bac Ninh, Vietnam",
+      "phone": "1800 6468",
+      "email": "info@ulink.com.vn",
+      "hours": "Mon – Sat: 08:00 – 17:30"
+    },
+    "aboutTitle": "ABOUT US",
+    "about": {
+      "intro": "Company Introduction",
+      "team": "ULink Team",
+      "certifications": "Certifications & Awards",
+      "news": "News",
+      "careers": "Careers",
+      "contact": "Contact"
+    },
+    "productsTitle": "PRODUCTS & SOLUTIONS",
+    "products": {
+      "gloves": "Cleanroom Gloves",
+      "wipes": "Industrial Wipes",
+      "tape": "Industrial Tape",
+      "packaging": "Value Combo",
+      "accessories": "Equipment & Accessories",
+      "custom": "Custom Solutions"
+    },
+    "servicesTitle": "SERVICES",
+    "services": {
+      "scheduled": "Scheduled Delivery",
+      "reorder": "Reorder Management",
+      "buffer": "Stock Buffer (7 days)",
+      "consolidation": "Supplier Consolidation",
+      "emergency": "Emergency Replacement"
+    },
+    "supportTitle": "SUPPORT",
+    "support": {
+      "documents": "Documents & Catalogue",
+      "specs": "Technical Specifications",
+      "certStandards": "Certifications & Standards",
+      "guides": "User Guides",
+      "faq": "FAQ"
+    },
+    "newsletterTitle": "NEWSLETTER",
+    "newsletterDesc": "Get updates on new products, promotions and solutions tailored to your business.",
+    "newsletterPlaceholder": "Enter your email",
+    "newsletterSubmit": "Submit",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "refund": "Refund Policy"
   }
 }

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+  <rect width="800" height="600" fill="#EEF2F7"/>
+  <rect x="200" y="150" width="400" height="300" rx="8" fill="#D1DAE6"/>
+  <path d="M350 280 L400 230 L450 260 L500 200 L550 270 L550 350 L350 350 Z" fill="#A8B8CC"/>
+  <circle cx="360" cy="220" r="25" fill="#C4D0DE"/>
+  <text x="400" y="420" text-anchor="middle" font-family="Inter, sans-serif" font-size="14" fill="#6B7A8D">Cleanroom Products Hero Image</text>
+</svg>
