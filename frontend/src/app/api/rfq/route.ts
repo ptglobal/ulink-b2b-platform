@@ -1,58 +1,103 @@
-import { createItem } from '@directus/sdk';
-import { errorJson, successJson } from '@/lib/api-response-next';
-import { createWriteDirectusClient } from '@/lib/directus';
+import { createItem, readItems } from '@directus/sdk';
 
-// RFQ submission endpoint. Anti-spam is layered:
-//   1. Honeypot field ("website") - bots fill it, humans don't.
-//   2. Cloudflare Turnstile token verification (TODO - wire TURNSTILE_SECRET_KEY).
-//   3. IP rate-limiting via Redis (TODO).
-function normalizeSource(source: unknown): 'web' | 'portal' {
-  return source === 'portal' ? 'portal' : 'web';
+import { errorJson, successJson } from '@/lib/api-response-next';
+import {
+  createRfqFingerprintReserver,
+  createRfqRateLimiter,
+  createTurnstileVerifier
+} from '@/lib/rfq-anti-spam';
+import { publicDirectus, createWriteDirectusClient } from '@/lib/directus';
+import { submitRfq } from '@/lib/rfq-submit';
+import { getRedis } from '@/lib/redis';
+
+function getClientIp(req: Request): string {
+  const headers = req.headers;
+  const direct = headers.get('cf-connecting-ip') ?? headers.get('x-real-ip');
+  if (direct) {
+    return direct.trim();
+  }
+
+  const forwarded = headers.get('x-forwarded-for');
+  if (forwarded) {
+    return forwarded.split(',')[0]?.trim() || '127.0.0.1';
+  }
+
+  return '127.0.0.1';
+}
+
+function statusFromErrorCode(code: string): number {
+  switch (code) {
+    case 'BAD_REQUEST':
+      return 400;
+    case 'UNPROCESSABLE_ENTITY':
+      return 422;
+    case 'FORBIDDEN':
+      return 403;
+    case 'CONFLICT':
+      return 409;
+    case 'TOO_MANY_REQUESTS':
+      return 429;
+    case 'INTERNAL_SERVER_ERROR':
+      return 500;
+    case 'BAD_GATEWAY':
+      return 502;
+    default:
+      return 500;
+  }
 }
 
 export async function POST(req: Request) {
-  let body: Record<string, unknown>;
+  let body: unknown;
   try {
     body = await req.json();
   } catch {
     return errorJson(400, 'BAD_REQUEST', 'Request body must be valid JSON.');
   }
 
-  // Honeypot: silently accept to avoid signalling bots.
-  if (body.website) {
-    return successJson({ accepted: true });
-  }
-
-  // TODO: verify Turnstile token (body.token) against TURNSTILE_SECRET_KEY.
-  // TODO: rate-limit by client IP using Redis.
-
-  const missingFields = ['company', 'email'].filter((field) => !body[field]);
-  if (missingFields.length > 0) {
-    return errorJson(422, 'UNPROCESSABLE_ENTITY', 'Missing required RFQ fields.', {
-      missingFields
-    });
-  }
+  const ip = getClientIp(req);
+  const redis = getRedis();
 
   try {
-    const directus = createWriteDirectusClient();
-    const created = await directus.request(
-      createItem('rfq_requests', {
-        company: String(body.company),
-        contact_name: body.contact ? String(body.contact) : '',
-        email: String(body.email),
-        phone: body.phone ? String(body.phone) : undefined,
-        industry: body.industry ? String(body.industry) : undefined,
-        message: body.message ? String(body.message) : undefined,
-        line_items: Array.isArray(body.items) ? body.items : [],
-        status: 'new',
-        source: normalizeSource(body.source)
-      })
-    );
+    const writeDirectus = createWriteDirectusClient();
+    const result = await submitRfq(body, {
+      ip,
+      verifyTurnstile: createTurnstileVerifier(),
+      rateLimit: createRfqRateLimiter(redis),
+      reserveFingerprint: createRfqFingerprintReserver(redis),
+      fetchSkus: async (skus: string[]) => {
+        if (skus.length === 0) {
+          return [];
+        }
 
-    return successJson({ id: created?.id });
+        return publicDirectus.request(
+          readItems('product_skus', {
+            filter: {
+              sku_code: { _in: skus },
+              status: { _eq: 'published' }
+            },
+            fields: ['sku_code'],
+            limit: -1
+          })
+        );
+      },
+      createRfq: async (input) => {
+        const created = await writeDirectus.request(createItem('rfq_requests', input));
+        return { id: (created as { id: number | string }).id };
+      }
+    });
+
+    if (result.ok) {
+      return successJson({ id: result.data.id });
+    }
+
+    return errorJson(
+      statusFromErrorCode(result.error.code),
+      result.error.code,
+      result.error.message,
+      result.error.details
+    );
   } catch (err) {
     if (err instanceof Error && err.message.includes('DIRECTUS_TOKEN is required')) {
-      console.error('RFQ submit misconfigured', err);
       return errorJson(500, 'INTERNAL_SERVER_ERROR', 'RFQ submission is not configured.');
     }
 

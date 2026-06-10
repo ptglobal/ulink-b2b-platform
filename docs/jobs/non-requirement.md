@@ -1,0 +1,22 @@
+# Yêu cầu Phi chức năng (Non-Functional Requirements - NFR)
+
+Tài liệu này tổng hợp chi tiết 12 yêu cầu phi chức năng (NFR) của dự án **ULink B2B Procurement Platform**, cách thức triển khai kỹ thuật và phương pháp đo lường/nghiệm thu.
+
+---
+
+## Danh sách các Yêu cầu Phi chức năng (NFR)
+
+| Mã NFR | Tên yêu cầu | Nội dung / Tiêu chuẩn kiểm thử | Giải pháp kỹ thuật | Phương pháp nghiệm thu |
+| :--- | :--- | :--- | :--- | :--- |
+| **NFR-01** | **Hiệu năng Tải trang (Performance)** | Điểm Google PageSpeed Insights trên máy tính (Desktop) ≥ 90; chỉ số Core Web Vitals đạt mức "Tốt" (Good). | Sử dụng Next.js SSG/ISR để phục vụ HTML tĩnh từ Edge CDN; tối ưu hóa hình ảnh (`next/image`); nén CSS/JS và hạn chế thư viện bên thứ ba. | Kiểm tra bằng Lighthouse CI / Google PageSpeed Insights. |
+| **NFR-02** | **Tốc độ tra cứu nhanh (Quick Order SKU)** | Thời gian phản hồi API tra cứu đơn lẻ một mã SKU dưới **50ms** khi trúng cache. | Sử dụng **Redis** để lưu trữ chỉ mục (index) SKU; dữ liệu được nạp sẵn (pre-warm) vào cache mỗi khi Admin cập nhật sản phẩm. | Đo lường bằng nhật ký API (API logs) hoặc kịch bản test tải (k6). |
+| **NFR-03** | **Khả năng tương thích (Compatibility)** | Hoạt động ổn định trên các trình duyệt phổ biến: Chrome, Edge, Safari (phiên bản hiện tại và kế trước - Current - 1). | Viết code tuân thủ tiêu chuẩn web tiêu chuẩn; kiểm tra tương thích CSS/JS chéo trình duyệt. | Kiểm thử thủ công trên thiết bị thực và công cụ Browser QA matrix. |
+| **NFR-04** | **Giao diện đáp ứng (Responsive)** | Giao diện hiển thị tối ưu trên đa màn hình: Desktop (máy tính), Tablet (máy tính bảng), và Mobile (điện thoại). | Sử dụng Tailwind CSS với thiết kế ưu tiên thiết bị di động (Mobile-First). | Kiểm thử giao diện responsive trên nhiều loại thiết bị. |
+| **NFR-05** | **Bảo mật kết nối (Transport Security)** | Mã hóa dữ liệu trên đường truyền bằng giao thức HTTPS trên toàn trang. | Sử dụng chứng chỉ Let's Encrypt (tự động gia hạn qua Caddy/Nginx) và cấu hình SSL trên Vercel. | Đánh giá qua SSL Labs (yêu cầu đạt điểm A) và biểu tượng khóa an toàn trên trình duyệt. |
+| **NFR-06** | **Phân quyền truy cập (Access & RBAC)** | Phân quyền dựa trên vai trò (RBAC); phân quyền bảo mật đến từng dòng dữ liệu (Row-level security) đối với dữ liệu của khách hàng. | Cấu hình Role & Policy trong Directus. Sử dụng điều kiện lọc `user = $CURRENT_USER` trên các collection `orders`, `invoices`, `deliveries`. | Chạy kịch bản kiểm thử bảo mật tự động [rbac_verify.mjs](file:///c:/Users/thanh/Desktop/PathtechProject/ulink-b2b-platform/directus/rbac_verify.mjs). |
+| **NFR-07** | **Bảo mật biểu mẫu (Form Security)** | Chống thư rác (Spam) và Bot tự động tại các biểu mẫu công khai (RFQ/Liên hệ). | Kết hợp 3 lớp bảo mật: Cloudflare Turnstile Captcha + Trường ẩn Honeypot + Giới hạn IP (Rate-limiting) bằng Redis. | Kiểm thử bằng công cụ giả lập gửi yêu cầu hàng loạt (flood test). |
+| **NFR-08** | **Đa ngôn ngữ (i18n)** | Hỗ trợ 3 ngôn ngữ: Tiếng Việt (VI), Tiếng Anh (EN), Tiếng Nhật (JP) với đầy đủ thẻ khai báo ngôn ngữ phục vụ SEO. | Sử dụng tính năng dịch (Translations) của Directus kết hợp với thư viện `next-intl` và thẻ `hreflang` trong Next.js. | Kiểm tra bộ chuyển đổi ngôn ngữ trên giao diện và kiểm tra mã nguồn HTML. |
+| **NFR-09** | **Tối ưu SEO (SEO Technical)** | Cấu trúc URL thân thiện, metadata tùy biến linh hoạt, tích hợp Schema Markup (JSON-LD) cho sản phẩm, doanh nghiệp. | Cấu trúc URL dạng slug và phân tách ngôn ngữ; tự động sinh `sitemap.xml`, `robots.txt`; chèn Schema Markup có sẵn. | Sử dụng công cụ Google Rich Results Test và cấu trúc sitemap. |
+| **NFR-10** | **Độ tin cậy luồng chính (Reliability)** | Đảm bảo không xảy ra lỗi nghiêm trọng (Critical Bug) trên luồng mua hàng / gửi RFQ. | Viết code cẩn thận; phân rã API BFF trung gian; xây dựng bộ unit test cho frontend và backend. | Chạy toàn bộ kịch bản kiểm thử luồng chính (End-to-end test). |
+| **NFR-11** | **Khả năng bảo trì (Maintainability)** | Mã nguồn sạch sẽ, tuân thủ các quy tắc format và linting; có tài liệu hướng dẫn bàn giao kỹ thuật rõ ràng. | Cài đặt các cổng kiểm soát (gate) tự động: ESLint, Prettier, TypeScript typecheck. | Đánh giá qua kết quả chạy lint/format và các tài liệu bàn giao. |
+| **NFR-12** | **Khả năng di động (Portability)** | Dễ dàng đóng gói và tái triển khai ứng dụng trên môi trường khác một cách nhanh chóng. | Sử dụng Docker Compose đóng gói backend (Directus, Postgres, Redis); cấu hình ứng dụng hoàn toàn thông qua biến môi trường `.env`. | Chạy thử nghiệm triển khai từ một instance sạch. |

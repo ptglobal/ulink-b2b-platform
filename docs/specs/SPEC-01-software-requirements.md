@@ -75,7 +75,7 @@ Contract Appendix (Phụ lục, 18/05/2026); PRD & SOW v1.0 (12/05/2026); delive
 | NFR-04 Responsive | Layout | Desktop / Tablet / Mobile |
 | NFR-05 Security | Transport | HTTPS everywhere |
 | NFR-06 Security | Access | Role-based; row-level on customer data |
-| NFR-07 Security | Forms | Anti-spam (Turnstile + honeypot + rate-limit) |
+| NFR-07 Security | Forms | Anti-spam (Turnstile + rate-limit + dedupe) |
 | NFR-08 i18n | Languages | VI / EN / JP with hreflang |
 | NFR-09 SEO | Indexing | Correct URL structure, metadata, schema markup |
 | NFR-10 Reliability | Ordering flow | No Critical Bug in the RFQ/Order path |

@@ -11,10 +11,15 @@ marked ⛔ and must pass before release. Expand as features land.
 | TC-RFQ-01 | Add valid SKU by code | Line added with name/unit |
 | TC-RFQ-02 | Add invalid SKU code | Inline "not found"; no line added |
 | TC-RFQ-03 | Bulk upload CSV `sku,qty` (valid + invalid rows) | Valid rows added; invalid flagged |
-| TC-RFQ-04 | Submit RFQ with company+email+lines | 200; record in `rfq_requests` (status `new`); confirmation shown |
-| TC-RFQ-05 | Submit with empty company/email | 422; validation message |
-| TC-RFQ-06 | Submit with honeypot filled | Silently accepted; no record / flagged |
-| TC-RFQ-07 | Rapid repeat submits | Rate-limited after threshold |
+| TC-RFQ-04 | Submit RFQ with valid company, email, phone, items, and token | 200; record in `rfq_requests` (status `new`); confirmation shown |
+| TC-RFQ-05 | Submit with invalid email | 422; validation message |
+| TC-RFQ-06 | Submit with invalid phone | 422; validation message |
+| TC-RFQ-07 | Submit with zero quantity line item | 422; validation message |
+| TC-RFQ-08 | Submit with empty items array | 422; validation message |
+| TC-RFQ-09 | Submit with unknown SKU | 422; validation message |
+| TC-RFQ-10 | Submit with bad Turnstile token | 403; blocked before persistence |
+| TC-RFQ-11 | Rapid repeat submits from one IP | 429; rate-limited after threshold |
+| TC-RFQ-12 | Repeat the same normalized payload inside dedupe window | 409; duplicate blocked |
 
 ## SKU lookup / cache
 | ID | Steps | Expected |

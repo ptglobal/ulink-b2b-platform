@@ -31,7 +31,17 @@ verifiable check. Release requires all **must-pass** items ✅ and zero open S1.
 - [ ] Responsive on desktop/tablet/mobile.
 - [ ] RBAC + row-level verified (A cannot see B's data).
 
-## D. Handover artifacts present (§2.3)
+## D. RFQ smoke checks — must-pass
+- [ ] Successful RFQ submit returns 200 and creates a `rfq_requests` record with status `new`.
+- [ ] Invalid email is rejected with 422.
+- [ ] Invalid phone is rejected with 422.
+- [ ] Zero quantity or empty items are rejected with 422.
+- [ ] Unknown SKU is rejected with 422.
+- [ ] Bad Turnstile token is rejected with 403.
+- [ ] Duplicate submit inside the dedupe window is rejected with 409.
+- [ ] Too many submits from one IP are rejected with 429.
+
+## E. Handover artifacts present (§2.3)
 - [ ] Design System · Source code · API docs · Deployment Guide · UAT results ·
   SEO setup · User Guide · Training delivered.
 

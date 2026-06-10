@@ -67,7 +67,8 @@ GET /api/sku/CR-GLV-001
 
 ### 2.2 `POST /api/rfq` - RFQ submission
 Purpose: persist an RFQ and route to Sales.
-- **Anti-spam:** honeypot field `website`; Turnstile token (TODO); IP rate-limit (TODO).
+- **Validation:** `company`, `email`, and a non-empty `items[]` array are required. `email` must be valid, `phone` must be normalized if present, each line item must have a known published SKU and `qty > 0`.
+- **Anti-spam:** Cloudflare Turnstile, Redis IP rate-limit, and Redis fingerprint dedupe are enforced before persistence.
 - **Body:**
 ```json
 {
@@ -83,15 +84,20 @@ Purpose: persist an RFQ and route to Sales.
 ```
 - **200** -> normalized success envelope with created RFQ id in `data.id`.
 - **400** -> normalized error envelope with code `BAD_REQUEST` for invalid JSON.
-- **422** -> normalized error envelope with code `UNPROCESSABLE_ENTITY` and `error.details.missingFields`.
-- **502** -> normalized error envelope with code `BAD_GATEWAY` when persistence fails.
+- **403** -> normalized error envelope with code `FORBIDDEN` when Turnstile fails.
+- **409** -> normalized error envelope with code `CONFLICT` for duplicate submissions inside the dedupe window.
+- **422** -> normalized error envelope with code `UNPROCESSABLE_ENTITY` for invalid email/phone/qty/SKU or missing fields.
+- **429** -> normalized error envelope with code `TOO_MANY_REQUESTS` when the IP rate limit is exceeded.
+- **500** -> normalized error envelope with code `INTERNAL_SERVER_ERROR` when server-side RFQ writes are misconfigured.
+- **502** -> normalized error envelope with code `BAD_GATEWAY` when persistence fails for another reason.
 - The handler writes to Directus with `DIRECTUS_TOKEN`; visitor and customer roles do not create `rfq_requests` directly.
 
 ## 3. Error model
 App-owned APIs return `{ "success": false, "error": { ... } }` with appropriate HTTP status.
 No stack traces in responses.
 Codes in use: `BAD_REQUEST` (400), `UNPROCESSABLE_ENTITY` (422), `NOT_FOUND` (404),
-`INTERNAL_SERVER_ERROR` (500), `BAD_GATEWAY` (502). `TOO_MANY_REQUESTS` (429) is reserved for future rate limiting.
+`FORBIDDEN` (403), `CONFLICT` (409), `TOO_MANY_REQUESTS` (429),
+`INTERNAL_SERVER_ERROR` (500), `BAD_GATEWAY` (502).
 
 ## 4. Rate limiting and security
 - Public mutations (`/api/rfq`, contact) rate-limited per IP via Redis (sliding window).
