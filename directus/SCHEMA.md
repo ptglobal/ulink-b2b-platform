@@ -10,8 +10,9 @@ Conventions:
 - Primary key is integer `id` on custom collections; Directus native UUIDs stay on
   `directus_users` and `directus_files`.
 - `orders`, `invoices`, and `deliveries` carry nullable unique `erp_ref`.
-- Text-bearing collections are intended to use Directus Translations for `vi`, `en`,
-  and `ja`, but bootstrap does not provision those translation configs automatically.
+- Text-bearing collections use Directus Translations for `vi`, `en`, and `ja`.
+  Bootstrap provisions the `languages` collection plus hidden `<collection>_translations`
+  collections for the content model. `vi` is the fallback locale and is always first.
 
 > Native Directus features, not custom collections:
 > `directus_users`, `directus_roles`, `directus_files`, `directus_translations`,
@@ -132,6 +133,6 @@ future idempotent ERP import and sync contracts.
 ## i18n
 
 Target model uses Directus Translations for text-bearing content in `vi`, `en`, and
-`ja`. Frontend consumes localized content via `next-intl`. Bootstrap currently does
-not create translation configs automatically, so enabling them in Directus remains a
-manual setup step.
+`ja`. Directus bootstrap now creates the `languages` collection, seeds `vi` first,
+and provisions translation-enabled collections for the content model. Frontend
+consumes localized content via `next-intl`. Missing translations fall back to `vi`.

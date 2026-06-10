@@ -1,4 +1,5 @@
 import { VISITOR_POLICY_ID, EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../constants.mjs';
+import { TRANSLATION_COLLECTION_NAMES } from '../lib/i18n.mjs';
 
 export const CONTENT_COLLECTIONS = [
   'hero_banners',
@@ -15,6 +16,15 @@ export const CONTENT_COLLECTIONS = [
   'pages'
 ];
 
+export const PUBLIC_ALWAYS_READ_COLLECTIONS = ['site_settings', 'homepage', 'languages', ...TRANSLATION_COLLECTION_NAMES];
+
+export const EDITOR_WRITE_COLLECTIONS = [
+  ...CONTENT_COLLECTIONS,
+  'site_settings',
+  'homepage',
+  ...TRANSLATION_COLLECTION_NAMES
+];
+
 export function buildPermissionDefs() {
   const permissions = [];
 
@@ -29,7 +39,7 @@ export function buildPermissionDefs() {
     });
   }
 
-  for (const col of ['site_settings', 'homepage']) {
+  for (const col of PUBLIC_ALWAYS_READ_COLLECTIONS) {
     permissions.push({
       policy: VISITOR_POLICY_ID,
       collection: col,
@@ -57,7 +67,7 @@ export function buildPermissionDefs() {
     });
   }
 
-  for (const col of ['site_settings', 'homepage']) {
+  for (const col of PUBLIC_ALWAYS_READ_COLLECTIONS) {
     permissions.push({
       policy: CUSTOMER_POLICY_ID,
       collection: col,
@@ -119,7 +129,7 @@ export function buildPermissionDefs() {
     }
   );
 
-  for (const col of [...CONTENT_COLLECTIONS, 'site_settings', 'homepage']) {
+  for (const col of PUBLIC_ALWAYS_READ_COLLECTIONS) {
     permissions.push({
       policy: SALES_POLICY_ID,
       collection: col,
@@ -141,7 +151,7 @@ export function buildPermissionDefs() {
     }
   }
 
-  for (const col of [...CONTENT_COLLECTIONS, 'site_settings', 'homepage']) {
+  for (const col of EDITOR_WRITE_COLLECTIONS) {
     for (const action of ['create', 'read', 'update', 'delete']) {
       permissions.push({
         policy: EDITOR_POLICY_ID,
@@ -152,6 +162,14 @@ export function buildPermissionDefs() {
       });
     }
   }
+
+  permissions.push({
+    policy: EDITOR_POLICY_ID,
+    collection: 'languages',
+    action: 'read',
+    permissions: {},
+    fields: ['*']
+  });
 
   return permissions;
 }

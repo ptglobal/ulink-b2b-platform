@@ -1,3 +1,5 @@
+import { TRANSLATION_RELATION_DEFS } from '../lib/i18n.mjs';
+
 export const RELATION_DEFS = [
   { collection: 'product_categories', field: 'parent', related_collection: 'product_categories' },
   { collection: 'products', field: 'category', related_collection: 'product_categories' },
@@ -21,5 +23,6 @@ export const RELATION_DEFS = [
   { collection: 'products_industries', field: 'products_id', related_collection: 'products', meta: { one_field: 'industries' } },
   { collection: 'products_industries', field: 'industries_id', related_collection: 'industries' },
   { collection: 'products_files', field: 'products_id', related_collection: 'products', meta: { one_field: 'gallery' } },
-  { collection: 'products_files', field: 'directus_files_id', related_collection: 'directus_files' }
+  { collection: 'products_files', field: 'directus_files_id', related_collection: 'directus_files' },
+  ...TRANSLATION_RELATION_DEFS
 ];

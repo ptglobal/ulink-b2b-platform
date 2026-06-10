@@ -1,4 +1,5 @@
 import { ID_FIELD, STATUS_FIELD } from '../constants.mjs';
+import { LANGUAGE_COLLECTION_DEF, TRANSLATION_COLLECTION_DEFS, createTranslationAliasField } from '../lib/i18n.mjs';
 
 export const COLLECTION_DEFS = [
   {
@@ -8,6 +9,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'sort', type: 'integer', meta: { interface: 'input', hidden: true } },
       { field: 'name', type: 'string', meta: { interface: 'input', width: 'full', required: true } },
       { field: 'logo', type: 'uuid', meta: { interface: 'file-image', special: ['file'] } },
@@ -21,6 +23,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
       { field: 'description', type: 'text', meta: { interface: 'textarea' } },
@@ -34,6 +37,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'sort', type: 'integer', meta: { interface: 'input', hidden: true } },
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
@@ -51,6 +55,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
       { field: 'category', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
@@ -112,6 +117,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
       { field: 'delivery_sla', type: 'text', meta: { interface: 'textarea' } },
@@ -129,6 +135,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'title', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
       { field: 'body', type: 'text', meta: { interface: 'wysiwyg' } },
@@ -146,6 +153,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'title', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
       { field: 'summary', type: 'text', meta: { interface: 'textarea' } },
@@ -161,6 +169,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'number', type: 'string', meta: { interface: 'input' } },
       { field: 'issuer', type: 'string', meta: { interface: 'input' } },
@@ -175,6 +184,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'sort', type: 'integer', meta: { interface: 'input', hidden: true } },
       { field: 'title', type: 'string', meta: { interface: 'input' } },
       { field: 'subtitle', type: 'text', meta: { interface: 'textarea' } },
@@ -190,6 +200,7 @@ export const COLLECTION_DEFS = [
     fields: [
       ID_FIELD,
       STATUS_FIELD,
+      createTranslationAliasField(),
       { field: 'title', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
       { field: 'body', type: 'text', meta: { interface: 'wysiwyg' } },
@@ -203,6 +214,7 @@ export const COLLECTION_DEFS = [
     schema: {},
     fields: [
       ID_FIELD,
+      createTranslationAliasField(),
       { field: 'logo', type: 'uuid', meta: { interface: 'file-image', special: ['file'] } },
       { field: 'contact_email', type: 'string', meta: { interface: 'input' } },
       { field: 'contact_phone', type: 'string', meta: { interface: 'input' } },
@@ -218,10 +230,15 @@ export const COLLECTION_DEFS = [
     schema: {},
     fields: [
       ID_FIELD,
+      createTranslationAliasField(),
       { field: 'title', type: 'string', meta: { interface: 'input' } },
       { field: 'hero_section', type: 'json', meta: { interface: 'json' } }
     ]
   },
+  {
+    ...LANGUAGE_COLLECTION_DEF
+  },
+  ...TRANSLATION_COLLECTION_DEFS,
   {
     collection: 'customers',
     meta: { icon: 'people', note: 'Customers' },

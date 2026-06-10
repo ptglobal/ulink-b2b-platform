@@ -6,8 +6,10 @@
  *
  *   cd directus && npm install && npm run bootstrap
  */
+import { createItem, readItems, updateItem } from '@directus/sdk';
 import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
 import { createEnsureHelpers } from './lib/ensure-helpers.mjs';
+import { DEFAULT_LOCALE, LOCALES } from './lib/i18n.mjs';
 import { COLLECTION_DEFS } from './schema/collections.mjs';
 import { RELATION_DEFS } from './schema/relations.mjs';
 import { ensureRoles } from './rbac/roles.mjs';
@@ -19,6 +21,35 @@ import { seedDemoCommerce } from './seed/demo_commerce.mjs';
 
 const client = createDirectusClient();
 const helpers = createEnsureHelpers(client);
+
+async function ensureLanguages() {
+  for (const locale of LOCALES) {
+    const existing = await client.request(
+      readItems('languages', {
+        filter: {
+          code: { _eq: locale.code }
+        },
+        limit: 1
+      })
+    );
+
+    const payload = {
+      code: locale.code,
+      name: locale.name,
+      direction: locale.direction,
+      sort: locale.sort
+    };
+
+    if (existing.length > 0) {
+      await client.request(updateItem('languages', locale.code, payload));
+      console.log(`=  Language: ${locale.code} (updated)`);
+    } else {
+      await client.request(createItem('languages', payload));
+      console.log(`+  Language: ${locale.code} (created)`);
+    }
+  }
+  console.log(`Fallback locale locked to ${DEFAULT_LOCALE}`);
+}
 
 async function main() {
   await loginAdmin(client);
@@ -37,6 +68,7 @@ async function main() {
   await ensureAccessLinks(helpers);
   const publicPolicyId = await helpers.getPublicPolicyId();
   await ensurePermissions(helpers, publicPolicyId);
+  await ensureLanguages();
 
   const ids = await seedInitialContent(helpers);
   await seedDemoCommerce(helpers, ids);

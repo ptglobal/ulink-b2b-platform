@@ -14,6 +14,7 @@ import {
   readSingleton,
   updateSingleton
 } from '@directus/sdk';
+import { translationCollectionName, translationSourceField } from './i18n.mjs';
 
 export function createEnsureHelpers(client) {
   async function ensureCollection(def) {
@@ -141,6 +142,30 @@ export function createEnsureHelpers(client) {
     return created.id;
   }
 
+  async function ensureTranslation(collection, sourceId, languageCode, data) {
+    const translationCollection = translationCollectionName(collection);
+    const sourceField = translationSourceField(collection);
+    const filter = {
+      [sourceField]: { _eq: sourceId },
+      languages_code: { _eq: languageCode }
+    };
+    const existing = await client.request(readItems(translationCollection, { filter }));
+    const payload = {
+      [sourceField]: sourceId,
+      languages_code: languageCode,
+      ...data
+    };
+
+    if (existing.length > 0) {
+      console.log(`=  Translation in ${translationCollection} [${sourceId}:${languageCode}] (exists, skipped)`);
+      return existing[0].id;
+    }
+
+    const created = await client.request(createItem(translationCollection, payload));
+    console.log(`+  Translation in ${translationCollection} [${sourceId}:${languageCode}] (created)`);
+    return created.id;
+  }
+
   async function ensureSingleton(collection, data) {
     try {
       const existing = await client.request(readSingleton(collection));
@@ -177,6 +202,7 @@ export function createEnsureHelpers(client) {
     deletePermissionIds,
     ensureUser,
     ensureItem,
+    ensureTranslation,
     ensureSingleton,
     getPublicPolicyId
   };

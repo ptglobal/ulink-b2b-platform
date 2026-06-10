@@ -42,6 +42,10 @@ orders/invoices/deliveries; customers read/update own record only.
 ## Auditing & least privilege
 - Each role gets the minimum permissions to do its job. Review permissions before
   go-live. Directus activity log retained.
+- `languages` is publicly readable so the locale switcher can list `vi`, `en`, and
+  `ja`; only bootstrap/admin writes locale rows.
+- Translation collections are readable for public/customer/sales roles and editable
+  by Editor so CMS authors can manage localized content without direct system access.
 
 ## Verification
 Role walkthrough (each role sees only what it should); customer A cannot read

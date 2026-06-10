@@ -10,6 +10,7 @@ import {
   readUsers
 } from '@directus/sdk';
 import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
+import { DEFAULT_LOCALE, LOCALES, TRANSLATION_COLLECTION_NAMES, TRANSLATION_RELATION_DEFS } from './lib/i18n.mjs';
 import {
   EDITOR_ROLE_ID,
   SALES_ROLE_ID,
@@ -43,6 +44,7 @@ async function verify() {
   const collectionNames = collections.map((c) => c.collection);
 
   const expectedCollections = [
+    'languages',
     'hero_banners',
     'partners',
     'product_categories',
@@ -64,7 +66,8 @@ async function verify() {
     'deliveries',
     'rfq_requests',
     'products_industries',
-    'products_files'
+    'products_files',
+    ...TRANSLATION_COLLECTION_NAMES
   ];
 
   for (const name of expectedCollections) {
@@ -98,7 +101,8 @@ async function verify() {
     'products_industries.products_id',
     'products_industries.industries_id',
     'products_files.products_id',
-    'products_files.directus_files_id'
+    'products_files.directus_files_id',
+    ...TRANSLATION_RELATION_DEFS.map((relation) => `${relation.collection}.${relation.field}`)
   ];
 
   for (const rel of expectedRelations) {
@@ -182,6 +186,15 @@ async function verify() {
   assert(customerPerms.length > 0, `Customer Portal Access Policy has ${customerPerms.length} permissions defined.`);
 
   logStep('6/7 Check singletons');
+  const locales = (await client.request(readItems('languages'))).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
+  assert(locales.length >= 3, `languages has ${locales.length} locale rows.`);
+  assert.deepEqual(
+    locales.slice(0, LOCALES.length).map((locale) => locale.code),
+    LOCALES.map((locale) => locale.code),
+    `languages order matches ${LOCALES.map((locale) => locale.code).join(', ')}.`
+  );
+  assert(locales[0]?.code === DEFAULT_LOCALE, `Fallback locale is ${DEFAULT_LOCALE}.`);
+
   const siteSettings = await client.request(readSingleton('site_settings', { fields: ['*'] }));
   if (!siteSettings || siteSettings.contact_email !== 'contact@ulink.com') {
     logInfo(`site_settings debug: ${JSON.stringify(siteSettings, null, 2)}`);
@@ -193,6 +206,31 @@ async function verify() {
     logInfo(`homepage debug: ${JSON.stringify(homepage, null, 2)}`);
   }
   assert(homepage && typeof homepage.title === 'string' && homepage.title.includes('ULink'), 'homepage contains expected title text.');
+  assert(homepage && typeof homepage.title === 'string' && homepage.title.length > 0, 'Homepage fallback locale content is readable.');
+
+  const homepageTranslations = await client.request(
+    readItems('homepage_translations', {
+      filter: { languages_code: { _eq: DEFAULT_LOCALE } },
+      limit: 1
+    })
+  );
+  assert(homepageTranslations.length > 0, `homepage_translations has a ${DEFAULT_LOCALE} row.`);
+  assert(
+    typeof homepageTranslations[0]?.title === 'string' && homepageTranslations[0].title.length > 0,
+    'Homepage fallback translation row is readable.'
+  );
+
+  const siteSettingsTranslations = await client.request(
+    readItems('site_settings_translations', {
+      filter: { languages_code: { _eq: DEFAULT_LOCALE } },
+      limit: 1
+    })
+  );
+  assert(siteSettingsTranslations.length > 0, `site_settings_translations has a ${DEFAULT_LOCALE} row.`);
+  assert(
+    typeof siteSettingsTranslations[0]?.meta_title === 'string' && siteSettingsTranslations[0].meta_title.length > 0,
+    'Site settings fallback translation row is readable.'
+  );
 
   logStep('7/7 Check seeded records');
   const industries = await client.request(readItems('industries'));
