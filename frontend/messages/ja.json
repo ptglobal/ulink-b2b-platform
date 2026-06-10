@@ -144,6 +144,41 @@
       "dedicatedTitle": "専任サポートチーム",
       "dedicatedDesc": "迅速で丁寧なサポート体制",
       "cta": "今すぐお問い合わせ"
+    },
+    "about": {
+      "title": "ULink Industriesについて",
+      "desc": "ULink Industriesは、クリーンルーム向け手袋・消耗品の開発・製造を行うグローバルメーカーです。高い品質管理体制と継続的なイノベーションにより、お客様の課題解決と信頼に応える製品を提供します。",
+      "cta": "私たちの想いを見る"
+    },
+    "industries": {
+      "title": "業界別に最適なソリューションを提供",
+      "viewAll": "すべての業界を見る",
+      "semiconductor": "半導体・電子部品",
+      "semiconductorDesc": "高精度環境での製造をサポート",
+      "medical": "医療・バイオ",
+      "medicalDesc": "安全性と衛生管理を徹底サポート",
+      "automotive": "自動車",
+      "automotiveDesc": "高品質な生産環境を支援",
+      "food": "食品・飲料",
+      "foodDesc": "衛生的な製造環境をサポート",
+      "precision": "精密機器",
+      "precisionDesc": "高精度な組立工程をサポート",
+      "research": "研究・教育",
+      "researchDesc": "実験・研究環境をサポート"
+    },
+    "differentiators": {
+      "title": "差別化サービス – 運営を最適化",
+      "scheduled": "定期配送",
+      "scheduledDesc": "時間通り・計画通り",
+      "reorder": "再注文管理",
+      "reorderDesc": "簡単・迅速",
+      "buffer": "在庫バッファ（7日間）",
+      "bufferDesc": "中断なしを保証",
+      "consolidation": "サプライヤー統合",
+      "consolidationDesc": "時間とコストを節約",
+      "emergency": "緊急交換",
+      "emergencyDesc": "24時間迅速サポート",
+      "cta": "お問い合わせ"
     }
   },
   "footer": {
@@ -190,8 +225,8 @@
       "faq": "よくある質問"
     },
     "newsletterTitle": "メルマガ登録",
-    "newsletterDesc": "新製品情報、キャンペーン、御社に最適なソリューションをお届けします。",
-    "newsletterPlaceholder": "メールアドレスを入力",
+    "newsletterDesc": "新製品情報やキャンペーンをお届けします。",
+    "newsletterPlaceholder": "メールアドレス",
     "newsletterSubmit": "送信",
     "rights": "無断転載を禁じます。",
     "privacy": "プライバシーポリシー",

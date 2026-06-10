@@ -1,47 +1,62 @@
-import { NextResponse } from 'next/server';
 import { createItem } from '@directus/sdk';
 import { directus } from '@/lib/directus';
+import { handleRoute, jsonOk } from '@/lib/route-helpers';
+import { rfqSchema, type RfqInput } from '@/lib/validators';
 
 // RFQ submission endpoint. Anti-spam is layered:
 //   1. Honeypot field ("website") — bots fill it, humans don't.
 //   2. Cloudflare Turnstile token verification (TODO — wire TURNSTILE_SECRET_KEY).
 //   3. IP rate-limiting via Redis (TODO).
 export async function POST(req: Request) {
-  let body: Record<string, unknown>;
+  // Honeypot check — peek at raw body trước khi validate schema
+  let raw: Record<string, unknown>;
   try {
-    body = await req.json();
+    raw = await req.json();
   } catch {
-    return NextResponse.json({ error: 'invalid_json' }, { status: 400 });
+    const { jsonErrorRaw } = await import('@/lib/route-helpers');
+    return jsonErrorRaw(400, 'invalid_json', 'Request body must be valid JSON');
   }
 
-  // Honeypot — silently accept to avoid signalling bots.
-  if (body.website) {
-    return NextResponse.json({ ok: true });
+  // Silently accept to avoid signalling bots
+  if (raw.website) {
+    return jsonOk({ ok: true });
   }
 
-  // TODO: verify Turnstile token (body.token) against TURNSTILE_SECRET_KEY.
+  // TODO: verify Turnstile token (raw.token) against TURNSTILE_SECRET_KEY.
   // TODO: rate-limit by client IP using Redis.
 
-  if (!body.company || !body.email) {
-    return NextResponse.json({ error: 'missing_fields' }, { status: 422 });
+  // Validate with schema
+  const result = rfqSchema.safeParse(raw);
+  if (!result.success) {
+    const details: Record<string, string[]> = {};
+    for (const issue of result.error.issues) {
+      const path = issue.path.join('.') || '_root';
+      if (!details[path]) details[path] = [];
+      details[path].push(issue.message);
+    }
+    const { jsonErrorRaw } = await import('@/lib/route-helpers');
+    return jsonErrorRaw(422, 'validation_error', 'Input validation failed', details);
   }
+
+  const data: RfqInput = result.data;
 
   try {
     const created = await directus.request(
       createItem('rfq_requests', {
-        company: String(body.company),
-        contact: body.contact ? String(body.contact) : '',
-        email: String(body.email),
-        phone: body.phone ? String(body.phone) : undefined,
-        industry: body.industry ? String(body.industry) : undefined,
-        message: body.message ? String(body.message) : undefined,
-        line_items: Array.isArray(body.items) ? body.items : [],
+        company: data.company,
+        contact: data.contact,
+        email: data.email,
+        phone: data.phone ?? undefined,
+        industry: data.industry ?? undefined,
+        message: data.message ?? undefined,
+        line_items: data.items,
         status: 'new'
       })
     );
-    return NextResponse.json({ ok: true, id: created?.id });
+    return jsonOk({ ok: true, id: created?.id });
   } catch (err) {
     console.error('RFQ submit failed', err);
-    return NextResponse.json({ error: 'submit_failed' }, { status: 502 });
+    const { ApiError } = await import('@/lib/api-error');
+    throw new ApiError(502, 'submit_failed', 'Could not submit RFQ');
   }
 }

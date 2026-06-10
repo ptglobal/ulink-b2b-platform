@@ -144,6 +144,41 @@
       "dedicatedTitle": "Dedicated support team",
       "dedicatedDesc": "Fast and attentive support",
       "cta": "Contact us now"
+    },
+    "about": {
+      "title": "About ULink Industries",
+      "desc": "ULink Industries is a global manufacturer specializing in the development and production of cleanroom gloves and consumables. With high-quality management systems and continuous innovation, we deliver reliable solutions to our customers.",
+      "cta": "Learn more about us"
+    },
+    "industries": {
+      "title": "Optimal solutions for every industry",
+      "viewAll": "View all industries",
+      "semiconductor": "Semiconductor · Electronics",
+      "semiconductorDesc": "High-precision manufacturing support",
+      "medical": "Medical · Biotech",
+      "medicalDesc": "Safety and hygiene, cleanroom support",
+      "automotive": "Automotive",
+      "automotiveDesc": "High-quality production environment",
+      "food": "Food · Beverage",
+      "foodDesc": "Hygienic manufacturing environment",
+      "precision": "Precision Equipment",
+      "precisionDesc": "High-precision assembly support",
+      "research": "Research · Education",
+      "researchDesc": "Laboratory environment support"
+    },
+    "differentiators": {
+      "title": "DIFFERENTIATED SERVICES – OPTIMIZED OPERATIONS FOR YOU",
+      "scheduled": "Scheduled delivery",
+      "scheduledDesc": "On time – On plan",
+      "reorder": "Reorder management",
+      "reorderDesc": "Easy – Fast",
+      "buffer": "Stock buffer (7 days)",
+      "bufferDesc": "No interruptions guaranteed",
+      "consolidation": "Supplier consolidation",
+      "consolidationDesc": "Save time & cost",
+      "emergency": "Emergency replacement",
+      "emergencyDesc": "Fast support 24/7",
+      "cta": "Contact us"
     }
   },
   "footer": {
@@ -190,7 +225,7 @@
       "faq": "FAQ"
     },
     "newsletterTitle": "NEWSLETTER",
-    "newsletterDesc": "Get updates on new products, promotions and solutions tailored to your business.",
+    "newsletterDesc": "Get updates on new products and promotions.",
     "newsletterPlaceholder": "Enter your email",
     "newsletterSubmit": "Submit",
     "rights": "All rights reserved.",

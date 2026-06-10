@@ -1,12 +1,12 @@
-import { getTranslations, getLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { MapPin, Phone, Mail, Clock, Facebook, Linkedin, Youtube, Send } from 'lucide-react';
 import { ASSETS } from '@/lib/assets';
+import { FooterLocaleSwitcher } from './footer-locale-switcher';
 
 export async function SiteFooter() {
   const t = await getTranslations('footer');
-  const locale = await getLocale();
   const year = new Date().getFullYear();
 
   const aboutLinks = [
@@ -44,10 +44,10 @@ export async function SiteFooter() {
   ];
 
   return (
-    <footer className="bg-[#011853] text-white">
+    <footer className="bg-primary text-white">
       {/* Main footer content */}
-      <div className="px-5 py-8 sm:px-8 lg:px-12">
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-7">
+      <div className="mx-auto w-full max-w-[1440px] px-4 py-4 sm:px-8 lg:px-16">
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-7">
           {/* Logo & description */}
           <div>
             <Image
@@ -79,7 +79,7 @@ export async function SiteFooter() {
             <h3 className="text-[12px] font-semibold uppercase tracking-wide text-white/90">
               {t('contactTitle')}
             </h3>
-            <ul className="mt-3 space-y-2">
+            <ul className="mt-2 space-y-0.5">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-3.5 w-3.5 shrink-0 text-white/50" />
                 <span className="text-[11px] leading-normal text-white/60">{t('contact.address')}</span>
@@ -104,10 +104,10 @@ export async function SiteFooter() {
             <h3 className="text-[12px] font-semibold uppercase tracking-wide text-white/90">
               {t('aboutTitle')}
             </h3>
-            <ul className="mt-3 space-y-1.5">
+            <ul className="mt-2 space-y-0">
               {aboutLinks.map(({ label, href }) => (
                 <li key={label}>
-                  <Link href={href} className="text-[11px] text-white/60 transition-colors hover:text-white">
+                  <Link href={href} className="text-[11px] leading-relaxed text-white/60 transition-colors hover:text-white">
                     {label}
                   </Link>
                 </li>
@@ -120,10 +120,10 @@ export async function SiteFooter() {
             <h3 className="text-[12px] font-semibold uppercase tracking-wide text-white/90">
               {t('productsTitle')}
             </h3>
-            <ul className="mt-3 space-y-1.5">
+            <ul className="mt-2 space-y-0">
               {productLinks.map(({ label, href }) => (
                 <li key={label}>
-                  <Link href={href} className="text-[11px] text-white/60 transition-colors hover:text-white">
+                  <Link href={href} className="text-[11px] leading-relaxed text-white/60 transition-colors hover:text-white">
                     {label}
                   </Link>
                 </li>
@@ -136,10 +136,10 @@ export async function SiteFooter() {
             <h3 className="text-[12px] font-semibold uppercase tracking-wide text-white/90">
               {t('servicesTitle')}
             </h3>
-            <ul className="mt-3 space-y-1.5">
+            <ul className="mt-2 space-y-0">
               {serviceLinks.map(({ label, href }) => (
                 <li key={label}>
-                  <Link href={href} className="text-[11px] text-white/60 transition-colors hover:text-white">
+                  <Link href={href} className="text-[11px] leading-relaxed text-white/60 transition-colors hover:text-white">
                     {label}
                   </Link>
                 </li>
@@ -152,10 +152,10 @@ export async function SiteFooter() {
             <h3 className="text-[12px] font-semibold uppercase tracking-wide text-white/90">
               {t('supportTitle')}
             </h3>
-            <ul className="mt-3 space-y-1.5">
+            <ul className="mt-2 space-y-0">
               {supportLinks.map(({ label, href }) => (
                 <li key={label}>
-                  <Link href={href} className="text-[11px] text-white/60 transition-colors hover:text-white">
+                  <Link href={href} className="text-[11px] leading-relaxed text-white/60 transition-colors hover:text-white">
                     {label}
                   </Link>
                 </li>
@@ -165,24 +165,24 @@ export async function SiteFooter() {
 
           {/* Newsletter */}
           <div className="lg:border-l lg:border-white/10 lg:pl-6">
-            <h3 className="text-[12px] font-semibold uppercase tracking-wide text-white/90">
+            <h3 className="text-[11px] font-semibold uppercase tracking-wide text-white/90">
               {t('newsletterTitle')}
             </h3>
-            <p className="mt-3 text-[11px] leading-normal text-white/60">
+            <p className="mt-2 text-[11px] leading-normal text-white/60 line-clamp-2">
               {t('newsletterDesc')}
             </p>
-            <form className="mt-3 flex items-center gap-0">
+            <form className="mt-2 flex items-stretch overflow-hidden rounded-lg bg-white">
               <input
                 type="email"
                 placeholder={t('newsletterPlaceholder')}
-                className="h-9 flex-1 rounded-l border border-white/20 bg-white/10 px-3 text-[11px] text-white placeholder:text-white/40 focus:border-white/40 focus:outline-none"
+                className="h-9 min-w-0 flex-1 bg-transparent px-2.5 text-[11px] text-foreground placeholder:text-muted-foreground focus:outline-none"
               />
               <button
                 type="submit"
-                className="flex h-9 w-9 items-center justify-center rounded-r bg-red-600 transition-colors hover:bg-red-700"
+                className="flex h-9 w-9 shrink-0 items-center justify-center bg-transparent text-brand transition-colors hover:text-brand-strong"
                 aria-label={t('newsletterSubmit')}
               >
-                <Send className="h-3.5 w-3.5 text-white" />
+                <Send className="h-3.5 w-3.5" />
               </button>
             </form>
           </div>
@@ -190,7 +190,7 @@ export async function SiteFooter() {
       </div>
 
       {/* Bottom bar */}
-      <div className="border-t border-white/10 px-5 py-4 sm:px-8 lg:px-12">
+      <div className="mx-auto w-full max-w-[1440px] border-t border-white/10 px-4 py-4 sm:px-8 lg:px-16">
         <div className="flex flex-col items-center justify-between gap-3 lg:flex-row">
           <p className="text-[11px] text-white/50">
             © {year} ULink Industries. {t('rights')}
@@ -208,11 +208,7 @@ export async function SiteFooter() {
               {t('refund')}
             </Link>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] text-white/50">
-              {locale === 'vi' ? '🇻🇳 Tiếng Việt' : locale === 'ja' ? '🇯🇵 日本語' : '🇺🇸 English'}
-            </span>
-          </div>
+          <FooterLocaleSwitcher />
         </div>
       </div>
     </footer>

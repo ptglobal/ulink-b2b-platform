@@ -144,6 +144,41 @@
       "dedicatedTitle": "Đội ngũ hỗ trợ chuyên nghiệp",
       "dedicatedDesc": "Hỗ trợ nhanh chóng và tận tâm",
       "cta": "Liên hệ ngay"
+    },
+    "about": {
+      "title": "Giới thiệu ULink Industries",
+      "desc": "ULink Industries là nhà sản xuất toàn cầu chuyên phát triển và sản xuất găng tay, vật tư tiêu hao cho phòng sạch. Với hệ thống quản lý chất lượng cao và sáng tạo không ngừng, chúng tôi mang đến giải pháp đáng tin cậy cho khách hàng.",
+      "cta": "Xem thêm về chúng tôi"
+    },
+    "industries": {
+      "title": "Giải pháp tối ưu cho mọi ngành nghề",
+      "viewAll": "Xem tất cả ngành nghề",
+      "semiconductor": "Điện tử · Bán dẫn",
+      "semiconductorDesc": "Hỗ trợ sản xuất trong môi trường độ chính xác cao",
+      "medical": "Y tế · Dược phẩm",
+      "medicalDesc": "An toàn và vệ sinh, hỗ trợ phòng sạch",
+      "automotive": "Ô tô · Cơ khí",
+      "automotiveDesc": "Môi trường sản xuất chất lượng cao",
+      "food": "Thực phẩm · Đồ uống",
+      "foodDesc": "Vệ sinh an toàn thực phẩm",
+      "precision": "Thiết bị chính xác",
+      "precisionDesc": "Hỗ trợ quy trình lắp ráp tinh vi",
+      "research": "Nghiên cứu · Giáo dục",
+      "researchDesc": "Hỗ trợ môi trường nghiên cứu"
+    },
+    "differentiators": {
+      "title": "DỊCH VỤ KHÁC BIỆT – TỐI ƯU VẬN HÀNH CHO BẠN",
+      "scheduled": "Giao hàng theo lịch",
+      "scheduledDesc": "Đúng hẹn – Đúng kế hoạch",
+      "reorder": "Quản lý đặt hàng lại",
+      "reorderDesc": "Dễ dàng – Nhanh chóng",
+      "buffer": "Dự trữ hàng (7 ngày)",
+      "bufferDesc": "Đảm bảo không gián đoạn",
+      "consolidation": "Hợp nhất nhà cung cấp",
+      "consolidationDesc": "Tiết kiệm thời gian & chi phí",
+      "emergency": "Thay thế khẩn cấp",
+      "emergencyDesc": "Hỗ trợ nhanh 24/7",
+      "cta": "Liên hệ ngay"
     }
   },
   "footer": {
@@ -190,8 +225,8 @@
       "faq": "Câu hỏi thường gặp"
     },
     "newsletterTitle": "ĐĂNG KÝ NHẬN TIN",
-    "newsletterDesc": "Nhận thông tin sản phẩm mới, khuyến mãi và giải pháp phù hợp với doanh nghiệp của bạn.",
-    "newsletterPlaceholder": "Nhập email của bạn",
+    "newsletterDesc": "Nhận tin sản phẩm mới và khuyến mãi.",
+    "newsletterPlaceholder": "Email của bạn",
     "newsletterSubmit": "Gửi",
     "rights": "Tất cả quyền được bảo lưu.",
     "privacy": "Chính sách bảo mật",
