@@ -130,6 +130,9 @@ Customer row-level filters in bootstrap:
 `orders.erp_ref`, `invoices.erp_ref`, and `deliveries.erp_ref` are reserved for
 future idempotent ERP import and sync contracts.
 
+Indexes for portal query paths are maintained as SQL migrations under `directus/sql/migrations/`.
+They are automatically applied at the end of the Directus bootstrap script (`bootstrap.mjs`).
+
 ## i18n
 
 Target model uses Directus Translations for text-bearing content in `vi`, `en`, and

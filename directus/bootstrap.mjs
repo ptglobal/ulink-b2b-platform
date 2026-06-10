@@ -18,6 +18,7 @@ import { ensureAccessLinks } from './rbac/access.mjs';
 import { ensurePermissions } from './rbac/permissions.mjs';
 import { seedInitialContent } from './seed/initial_content.mjs';
 import { seedDemoCommerce } from './seed/demo_commerce.mjs';
+import { applyDbIndexes } from './lib/db-indexes.mjs';
 
 const client = createDirectusClient();
 const helpers = createEnsureHelpers(client);
@@ -72,6 +73,9 @@ async function main() {
 
   const ids = await seedInitialContent(helpers);
   await seedDemoCommerce(helpers, ids);
+
+  // Apply PostgreSQL indexes for B2B queries
+  await applyDbIndexes();
 
   console.log('\nBootstrap & seed data setup completed successfully!');
   process.exit(0);

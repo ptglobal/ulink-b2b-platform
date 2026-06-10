@@ -8,9 +8,9 @@
 
 <!-- 4. **Chốt access model public/anonymous.** Quyết định rõ public có được đọc published content trực tiếp từ Directus không. Quyết định rõ anonymous RFQ có đi qua Directus permission hay luôn đi qua server token. (Đã chốt đi qua BFF Route dùng server token). -->
 
-5. **Bật i18n trong Directus.** Enable Translations cho text-bearing collections, tạo `vi/en/ja`, chốt fallback `vi`. Bootstrap chưa làm phần này.
+<!-- 5. **Bật i18n trong Directus.** Enable Translations cho text-bearing collections, tạo `vi/en/ja`, chốt fallback `vi`. Bootstrap chưa làm phần này. -->
 
-6. **Bổ sung DB indexes.** Thêm index cho FK fields, `status`, `order_date`, `due_date`, `scheduled_date`. Unique đã có phần lớn, query index còn thiếu.
+<!-- 6. **Bổ sung DB indexes.** Done: migration-tracked indexes added under `directus/sql/migrations/2026-06-10-add-query-indexes.sql` and verified on local Postgres. -->
 
 7. **Chốt media/storage policy.** Quy định loại file, max size, folder convention, naming convention, xóa file, object storage hay local uploads. Không chốt sớm thì sau bẩn kho file.
 

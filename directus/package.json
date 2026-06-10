@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@directus/sdk": "^17.0.1",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "pg": "^8.11.5"
   }
 }
