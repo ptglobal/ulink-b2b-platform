@@ -18,6 +18,11 @@
     --accent: 8 72% 52%; /* vermilion / shu-iro — use sparingly */
     --accent-foreground: 40 30% 98%;
 
+    /* Brand blue (from logo) — links, highlights, focus, auth CTA */
+    --brand: 221 83% 45%;
+    --brand-strong: 224 56% 30%; /* deep brand blue — hover/nhấn */
+    --brand-foreground: 0 0% 100%;
+
     --muted: 40 16% 94%;
     --muted-foreground: 220 10% 40%;
 
