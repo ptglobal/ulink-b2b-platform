@@ -26,7 +26,8 @@ Editor/Sales ─▶ Directus Admin ─ publish ─▶ webhook ─▶ Next.js rev
 ## Rendering policy
 - **SSG/ISR** for marketing & content pages (revalidate on publish).
 - **Client/SSR** for portal, RFQ cart, filters, language switch, forms.
-- **Route handlers** for `/api/sku` (Redis) and `/api/rfq` (anti-spam → Directus).
+- **Route handlers** for `/api/sku` (Redis), `/api/rfq` (anti-spam → Directus), and `/api/revalidate` (Directus Flow webhook).
+- Content publish loop: Directus publish/unpublish/delete -> webhook -> Next.js `revalidateTag('col:'+collection)` + `revalidateTag('entity:'+collection+':'+id)` + `revalidatePath`.
 
 ## Deployment units
 1. **frontend** → Vercel (independent deploy).

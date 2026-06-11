@@ -92,6 +92,28 @@ Purpose: persist an RFQ and route to Sales.
 - **502** -> normalized error envelope with code `BAD_GATEWAY` when persistence fails for another reason.
 - The handler writes to Directus with `DIRECTUS_TOKEN`; visitor and customer roles do not create `rfq_requests` directly.
 
+### 2.3 `POST /api/revalidate` - publish webhook
+Purpose: invalidate content caches after Directus publish, unpublish, or delete events.
+- **Auth:** `Authorization: Bearer ${REVALIDATE_SECRET}`
+- **Body:** JSON with `event`, `collection`, `id` or `keys`, `slug`, `status`, `locale`.
+- **200** -> normalized success envelope with `data.revalidated.tags` and `data.revalidated.paths`.
+- **400** -> malformed JSON or unsupported payload.
+- **403** -> missing or invalid webhook secret.
+
+Example:
+```json
+{
+  "event": "items.update",
+  "collection": "blog_posts",
+  "id": 123,
+  "slug": "huong-dan-onboarding-ulink",
+  "status": "published",
+  "locale": "vi"
+}
+```
+
+The Next.js handler maps the collection to `revalidateTag('col:'+collection)` and the affected entity to `revalidateTag('entity:'+collection+':'+id)` so all locale variants share one entity cache key. It also calls `revalidatePath(path)` for the affected localized list/detail routes. `products`, `pages`, `blog_posts`, `case_studies`, `regional_hubs`, `documents`, `product_categories`, `partners`, and `hero_banners` all share this single webhook contract.
+
 ## 3. Error model
 App-owned APIs return `{ "success": false, "error": { ... } }` with appropriate HTTP status.
 No stack traces in responses.
@@ -102,6 +124,7 @@ Codes in use: `BAD_REQUEST` (400), `UNPROCESSABLE_ENTITY` (422), `NOT_FOUND` (40
 ## 4. Rate limiting and security
 - Public mutations (`/api/rfq`, contact) rate-limited per IP via Redis (sliding window).
 - Server-side writes use `DIRECTUS_TOKEN`; never expose admin token to the browser. RFQ submissions from visitors and customers must go through Next.js.
+- Content publish webhook calls use `REVALIDATE_SECRET`; Directus Flow posts to `POST /api/revalidate` and the route rejects missing or mismatched bearer secrets. The webhook invalidates `col:{collection}` plus `entity:{collection}:{id}` so translated variants stay in sync.
 - CORS restricted to the site origin in production.
 
 ## 5. ERP-ready interface *(future Integration phase)*

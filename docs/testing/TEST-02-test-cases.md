@@ -49,8 +49,10 @@ marked ⛔ and must pass before release. Expand as features land.
 ## CMS / i18n / SEO
 | ID | Steps | Expected |
 |---|---|---|
-| TC-CMS-01 | Editor publishes a blog post | Appears on site after revalidate |
-| TC-CMS-02 | Unpublish a product | Removed from site |
+| TC-CMS-01 | Editor publishes a blog post | Appears on site after revalidate; VI/EN/JA variants stay in sync via entity tag |
+| TC-CMS-02 | Editor unpublishes a product | Removed from site and cache invalidated across locales |
+| TC-CMS-03 | Editor deletes a resource document | Resource list is invalidated and the item disappears |
+| TC-CMS-04 | Directus sends webhook with bad secret | `POST /api/revalidate` returns 403; no cache invalidation happens |
 | TC-I18N-01 | Switch vi→en→ja on a page | Same page, translated; hreflang present |
 | TC-SEO-01 | View source of product page | Title/desc/canonical + Product JSON-LD |
 | TC-SEO-02 | Fetch /sitemap.xml, /robots.txt | Valid; locales included |

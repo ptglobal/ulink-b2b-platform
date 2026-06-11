@@ -20,7 +20,7 @@ npm run bootstrap               # creates roles + collections (extend per SCHEMA
 ## 3. Frontend
 ```bash
 cd frontend
-cp .env.local.example .env.local   # DIRECTUS_URL, REDIS_URL, NEXT_PUBLIC_SITE_URL, (TURNSTILE_*)
+cp .env.local.example .env.local   # DIRECTUS_URL, DIRECTUS_TOKEN, REVALIDATE_SECRET, REDIS_URL, NEXT_PUBLIC_SITE_URL, (TURNSTILE_*)
 npm install
 npm run dev                         # http://localhost:3000 → /vi
 ```
@@ -28,6 +28,7 @@ npm run dev                         # http://localhost:3000 → /vi
 ## 4. Verify the stack
 - `http://localhost:3000/vi` renders; language switch to `/en`, `/ja` works.
 - `GET http://localhost:3000/api/sku/<code>` returns JSON (after a SKU exists).
+- `POST http://localhost:3000/api/revalidate` returns 403 without the shared secret and 200 with a valid Directus Flow bearer token.
 - Directus admin reachable; a published change shows on the site after revalidate.
 
 ## 5. Common commands
