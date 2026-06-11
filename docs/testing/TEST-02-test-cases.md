@@ -55,6 +55,18 @@ marked ⛔ and must pass before release. Expand as features land.
 | TC-SEO-01 | View source of product page | Title/desc/canonical + Product JSON-LD |
 | TC-SEO-02 | Fetch /sitemap.xml, /robots.txt | Valid; locales included |
 
+## Media / storage
+| ID | Steps | Expected |
+|---|---|---|
+| TC-MED-01 | Upload allowed PNG into module folder | Upload succeeds; file stored in correct module folder |
+| TC-MED-02 | Upload allowed PDF into module folder | Upload succeeds; file stored in correct module folder |
+| TC-MED-03 | Upload oversize file | Rejected by upload guardrail |
+| TC-MED-04 | Upload untrusted SVG | Rejected unless trusted brand role + folder |
+| TC-MED-05 | Soft delete file via media endpoint | File moved to trash; retention row created |
+| TC-MED-06 | Hard delete file via admin confirm flow | File removed; retention row marked purged |
+| TC-MED-07 | Run cleanup on expired soft-delete row | Purges file after 7-day retention |
+| TC-MED-08 | Inspect audit rows for upload/delete | Actor, file id, filename, size, mime, module, source, IP, and user agent recorded |
+
 ## Non-functional (see TEST-04)
 | ID | Steps | Expected |
 |---|---|---|

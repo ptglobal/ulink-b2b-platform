@@ -7,6 +7,8 @@
   "scripts": {
     "bootstrap": "node bootstrap.mjs",
     "verify": "node verify_bootstrap.mjs",
+    "media:verify": "node verify_media_policy.mjs",
+    "media:cleanup": "node media-cleanup.mjs",
     "rbac:seed": "node rbac_seed.mjs",
     "rbac:verify": "node rbac_verify.mjs"
   },

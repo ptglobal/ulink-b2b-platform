@@ -37,7 +37,19 @@ orders/invoices/deliveries; customers read/update own record only.
 - Rotate `DIRECTUS_KEY/SECRET`, DB and admin passwords, tokens on handover and on any leak.
 
 ## Files & uploads
-- TDS/MSDS and images via Directus Files; validate type/size; serve from media origin.
+- Storage is local only via the mounted Directus volume at `directus/uploads`.
+- Allowed upload types:
+  - Images: `jpg`, `jpeg`, `png`, `webp`
+  - SVG: internal team / brand asset only
+  - Documents: `pdf`, `docx`, `xlsx`
+- Global size cap: `10MB`.
+- SVG cap: `2MB`.
+- Folder convention: module-based folders under `media/`.
+- Naming convention: `collection-id-uuid.ext`.
+- Deletion flow: soft delete first, hard delete after `7 days`.
+- Cleanup job: daily at `12:00`.
+- Orphan files: keep a `24h` grace period before purge.
+- Audit log: record actor, timestamp, action, file metadata, module, source, IP, and user agent.
 
 ## Auditing & least privilege
 - Each role gets the minimum permissions to do its job. Review permissions before

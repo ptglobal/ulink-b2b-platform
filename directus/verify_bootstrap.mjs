@@ -10,7 +10,9 @@ import {
   readUsers
 } from '@directus/sdk';
 import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
+import { listFolders, withDbClient } from './lib/folder-db.mjs';
 import { DEFAULT_LOCALE, LOCALES, TRANSLATION_COLLECTION_NAMES, TRANSLATION_RELATION_DEFS } from './lib/i18n.mjs';
+import { MEDIA_POLICY } from './lib/media-policy.mjs';
 import {
   EDITOR_ROLE_ID,
   SALES_ROLE_ID,
@@ -58,8 +60,10 @@ async function verify() {
     'iso_certifications',
     'pages',
     'site_settings',
-    'homepage',
-    'customers',
+      'homepage',
+      'media_retention',
+      'media_audit_events',
+      'customers',
     'orders',
     'order_items',
     'invoices',
@@ -98,12 +102,16 @@ async function verify() {
     'rfq_requests.hub',
     'rfq_requests.assigned_sales',
     'rfq_requests.user',
-    'products_industries.products_id',
-    'products_industries.industries_id',
-    'products_files.products_id',
-    'products_files.directus_files_id',
-    ...TRANSLATION_RELATION_DEFS.map((relation) => `${relation.collection}.${relation.field}`)
-  ];
+      'products_industries.products_id',
+      'products_industries.industries_id',
+      'products_files.products_id',
+      'products_files.directus_files_id',
+      'media_retention.file',
+      'media_retention.deleted_by',
+      'media_retention.hard_deleted_by',
+      'media_audit_events.actor',
+      ...TRANSLATION_RELATION_DEFS.map((relation) => `${relation.collection}.${relation.field}`)
+    ];
 
   for (const rel of expectedRelations) {
     assert(relationKeys.includes(rel), `Relation "${rel}" exists.`);
@@ -185,6 +193,22 @@ async function verify() {
   assert(salesPerms.length > 0, `Sales Access Policy has ${salesPerms.length} permissions defined.`);
   assert(customerPerms.length > 0, `Customer Portal Access Policy has ${customerPerms.length} permissions defined.`);
 
+  const mediaPerms = permissions.filter((p) => p.collection === 'directus_files');
+  const editorFilePerms = mediaPerms.filter((p) => p.policy === EDITOR_POLICY_ID);
+  const salesFilePerms = mediaPerms.filter((p) => p.policy === SALES_POLICY_ID);
+  assert(
+    ['create', 'read', 'update'].every((action) => editorFilePerms.some((perm) => perm.action === action)),
+    'Editor policy has create/read/update permissions on directus_files.'
+  );
+  assert(
+    ['create', 'read', 'update'].every((action) => salesFilePerms.some((perm) => perm.action === action)),
+    'Sales policy has create/read/update permissions on directus_files.'
+  );
+  assert(
+    !mediaPerms.some((perm) => perm.action === 'delete' && [EDITOR_POLICY_ID, SALES_POLICY_ID].includes(perm.policy)),
+    'Editor and Sales do not have native delete permission on directus_files.'
+  );
+
   logStep('6/7 Check singletons');
   const locales = (await client.request(readItems('languages'))).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
   assert(locales.length >= 3, `languages has ${locales.length} locale rows.`);
@@ -231,6 +255,21 @@ async function verify() {
     typeof siteSettingsTranslations[0]?.meta_title === 'string' && siteSettingsTranslations[0].meta_title.length > 0,
     'Site settings fallback translation row is readable.'
   );
+
+  const folderRows = await withDbClient((dbClient) => listFolders(dbClient));
+  const rootMediaFolder = folderRows.find((folder) => folder.name === 'media' && !folder.parent);
+  assert(Boolean(rootMediaFolder), 'Root media folder exists.');
+  for (const folderPath of Object.values(MEDIA_POLICY.moduleFolders)) {
+    const [, leaf] = folderPath.split('/');
+    assert(
+      folderRows.some(
+        (folder) =>
+          folder.name === leaf &&
+          (typeof folder.parent === 'object' ? folder.parent?.id : folder.parent) === rootMediaFolder?.id
+      ),
+      `Media subfolder "${leaf}" exists under root media folder.`
+    );
+  }
 
   logStep('7/7 Check seeded records');
   const industries = await client.request(readItems('industries'));

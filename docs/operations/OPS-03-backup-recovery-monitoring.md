@@ -6,7 +6,7 @@
 | Asset | Method | Frequency | Retention |
 |---|---|---|---|
 | PostgreSQL | `pg_dump` (cron in a sidecar/host) to off-VPS storage (S3/R2) | daily + pre-deploy | 30 days + monthly |
-| Media (uploads) | sync `directus/uploads` (or R2 versioning) | daily | 30 days |
+| Media (uploads) | sync `directus/uploads` to off-box storage daily | daily | same retention as DB |
 | Config/.env | stored in the team secret manager (not git) | on change | current |
 
 Example daily dump:
@@ -17,7 +17,7 @@ docker compose exec -T postgres pg_dump -U "$POSTGRES_USER" "$POSTGRES_DB" \
 
 ## Recovery (drill at least once before go-live)
 1. Provision/clean Postgres. 2. `gunzip < backup.sql.gz | psql …` restore.
-3. Restore media. 4. `docker compose up -d`. 5. Smoke test (PROC-05).
+3. Restore media from off-box copy. 4. `docker compose up -d`. 5. Smoke test (PROC-05).
 Record RTO/RPO; target RPO ≤ 24h, RTO ≤ a few hours.
 
 ## Monitoring & alerting

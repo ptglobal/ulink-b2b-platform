@@ -236,6 +236,61 @@ export const COLLECTION_DEFS = [
     ]
   },
   {
+    collection: 'media_retention',
+    meta: { icon: 'delete', note: 'Media Retention Queue' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'file', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'module', type: 'string', meta: { interface: 'input', required: true } },
+      {
+        field: 'state',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          options: {
+            choices: [
+              { text: 'Active', value: 'active' },
+              { text: 'Soft Deleted', value: 'soft_deleted' },
+              { text: 'Purged', value: 'purged' }
+            ]
+          }
+        },
+        schema: { default_value: 'active' }
+      },
+      { field: 'soft_deleted_at', type: 'timestamp', meta: { interface: 'datetime' } },
+      { field: 'purge_after', type: 'timestamp', meta: { interface: 'datetime' } },
+      { field: 'delete_reason', type: 'text', meta: { interface: 'textarea' } },
+      { field: 'deleted_by', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'hard_deleted_at', type: 'timestamp', meta: { interface: 'datetime' } },
+      { field: 'hard_deleted_by', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'source', type: 'string', meta: { interface: 'input' } },
+      { field: 'original_filename', type: 'string', meta: { interface: 'input' } },
+      { field: 'mime_type', type: 'string', meta: { interface: 'input' } },
+      { field: 'size_bytes', type: 'integer', meta: { interface: 'input' } }
+    ]
+  },
+  {
+    collection: 'media_audit_events',
+    meta: { icon: 'fact_check', note: 'Media Audit Log' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'file', type: 'uuid', meta: { interface: 'input' } },
+      { field: 'actor', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'event_type', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'action', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'module', type: 'string', meta: { interface: 'input' } },
+      { field: 'reason', type: 'text', meta: { interface: 'textarea' } },
+      { field: 'source', type: 'string', meta: { interface: 'input' } },
+      { field: 'ip_address', type: 'string', meta: { interface: 'input' } },
+      { field: 'user_agent', type: 'string', meta: { interface: 'input' } },
+      { field: 'original_filename', type: 'string', meta: { interface: 'input' } },
+      { field: 'mime_type', type: 'string', meta: { interface: 'input' } },
+      { field: 'size_bytes', type: 'integer', meta: { interface: 'input' } }
+    ]
+  },
+  {
     ...LANGUAGE_COLLECTION_DEF
   },
   ...TRANSLATION_COLLECTION_DEFS,

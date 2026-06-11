@@ -67,9 +67,17 @@ services:
       WEBSOCKETS_ENABLED: 'true'
       CORS_ENABLED: 'true'
       CORS_ORIGIN: 'true'
+
+      STORAGE_LOCATIONS: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+
+      FILES_MAX_UPLOAD_SIZE: 10mb
+      FILES_MIME_TYPE_ALLOW_LIST: image/jpeg,image/png,image/webp,image/svg+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
     volumes:
       - ./directus/uploads:/directus/uploads
       - ./directus/extensions:/directus/extensions
+      - ./directus/lib:/directus/lib
+      - ./directus/constants.mjs:/directus/constants.mjs
     ports:
       - '8055:8055'
 

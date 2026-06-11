@@ -171,6 +171,42 @@ export function buildPermissionDefs() {
     fields: ['*']
   });
 
+  for (const action of ['create', 'read', 'update']) {
+    permissions.push({
+      policy: EDITOR_POLICY_ID,
+      collection: 'directus_files',
+      action,
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
+  for (const action of ['create', 'read', 'update']) {
+    permissions.push({
+      policy: SALES_POLICY_ID,
+      collection: 'directus_files',
+      action,
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
+  permissions.push({
+    policy: EDITOR_POLICY_ID,
+    collection: 'directus_folders',
+    action: 'read',
+    permissions: {},
+    fields: ['*']
+  });
+
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'directus_folders',
+    action: 'read',
+    permissions: {},
+    fields: ['*']
+  });
+
   return permissions;
 }
 

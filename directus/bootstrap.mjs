@@ -9,7 +9,9 @@
 import { createItem, readItems, updateItem } from '@directus/sdk';
 import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
 import { createEnsureHelpers } from './lib/ensure-helpers.mjs';
+import { ensureFolderTree } from './lib/folder-db.mjs';
 import { DEFAULT_LOCALE, LOCALES } from './lib/i18n.mjs';
+import { MEDIA_POLICY } from './lib/media-policy.mjs';
 import { COLLECTION_DEFS } from './schema/collections.mjs';
 import { RELATION_DEFS } from './schema/relations.mjs';
 import { ensureRoles } from './rbac/roles.mjs';
@@ -52,6 +54,11 @@ async function ensureLanguages() {
   console.log(`Fallback locale locked to ${DEFAULT_LOCALE}`);
 }
 
+async function ensureFolders() {
+  const { root } = await ensureFolderTree(MEDIA_POLICY.moduleFolders, 'media');
+  return root?.id ?? null;
+}
+
 async function main() {
   await loginAdmin(client);
   console.log(`Authenticated as ${DIRECTUS_ADMIN_EMAIL} @ ${DIRECTUS_URL}`);
@@ -70,6 +77,7 @@ async function main() {
   const publicPolicyId = await helpers.getPublicPolicyId();
   await ensurePermissions(helpers, publicPolicyId);
   await ensureLanguages();
+  await ensureFolders();
 
   const ids = await seedInitialContent(helpers);
   await seedDemoCommerce(helpers, ids);

@@ -139,3 +139,29 @@ Target model uses Directus Translations for text-bearing content in `vi`, `en`, 
 `ja`. Directus bootstrap now creates the `languages` collection, seeds `vi` first,
 and provisions translation-enabled collections for the content model. Frontend
 consumes localized content via `next-intl`. Missing translations fall back to `vi`.
+
+## Media and storage
+
+Media uploads are stored locally under `directus/uploads`.
+
+Upload policy:
+- Allowed extensions: `jpg`, `jpeg`, `png`, `webp`, `svg`, `pdf`, `docx`, `xlsx`
+- Global max upload size: `10MB`
+- SVG max size: `2MB`
+- SVG uploads are restricted to trusted internal folders and trusted roles
+
+Folder convention:
+- Root folder: `media`
+- Module folders: `products`, `documents`, `pages`, `partners`, `regional-hubs`, `site-settings`, `trash`
+- Naming convention for stored files: `collection-id-uuid.ext`
+
+Retention collections:
+- `media_retention`
+- `media_audit_events`
+
+Retention workflow:
+- Soft delete first
+- Hard delete after `7` days
+- Daily cleanup job runs at `12:00`
+- Orphan files use a `24h` grace period before cleanup
+- Audit log stores actor, timestamp, action, file id, filename, size, mime type, module, reason, source, IP, and user agent

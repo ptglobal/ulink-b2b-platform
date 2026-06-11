@@ -16,8 +16,15 @@ Open the CMS URL → log in. Your role (Editor / Sales / Admin) determines what 
 | Regional hubs | `regional_hubs` |
 | Blog, case studies, ISO certs, downloads | respective collections |
 | Pages (About, etc.) | `pages` |
-| Media (images/files) | **File Library** |
+| Media (images/files) | File Library + media retention workflow |
 | SEO | `meta_*` fields on each item |
+
+Rules:
+- Upload only approved file types.
+- Store media in module folder under `media/`.
+- Do not upload user-supplied SVG unless sanitized or explicitly approved as a brand asset.
+- Use soft delete for removal requests; hard delete happens later via cleanup or admin confirm flow.
+- Do not delete media still referenced by content.
 
 **Publish/Unpublish:** set **Status** = `published` to show, `draft`/`archived` to hide.
 Publishing updates the website automatically (revalidation).

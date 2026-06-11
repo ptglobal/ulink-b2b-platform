@@ -23,6 +23,7 @@ verifiable check. Release requires all **must-pass** items and zero open S1.
 - [ ] **B2B Portal**: login, dashboard, order history, scheduled delivery, **debt**, **re-order** - each customer sees only their own data.
 - [ ] **CMS**: all 17 modules CRUD; publish/unpublish; roles Admin/Editor/Sales/Customer.
 - [ ] **i18n**: VI/EN/JP per content policy; switch works; hreflang present.
+- [ ] **Media/storage**: allowed uploads pass, oversize files reject, untrusted SVG rejects, soft delete moves file to trash, hard delete requires admin confirm, cleanup job removes expired files, audit logs contain full metadata.
 - [ ] About pages + Contact (anti-spam).
 
 ## C. Non-functional - must-pass

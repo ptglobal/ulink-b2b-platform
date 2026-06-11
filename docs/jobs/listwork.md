@@ -14,6 +14,9 @@
 
 7. **Chốt media/storage policy.** Quy định loại file, max size, folder convention, naming convention, xóa file, object storage hay local uploads. Không chốt sớm thì sau bẩn kho file.
 
+Status update:
+- Media/storage policy has been implemented and documented.
+
 8. **Setup email/auth vận hành.** Cấu hình mail cho Directus, reset password, invite user, onboarding customer user, link `directus_users` với `customers`.
 
 9. **Làm Directus Flows.** Ít nhất cần:

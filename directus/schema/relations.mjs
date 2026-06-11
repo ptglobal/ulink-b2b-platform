@@ -24,5 +24,9 @@ export const RELATION_DEFS = [
   { collection: 'products_industries', field: 'industries_id', related_collection: 'industries' },
   { collection: 'products_files', field: 'products_id', related_collection: 'products', meta: { one_field: 'gallery' } },
   { collection: 'products_files', field: 'directus_files_id', related_collection: 'directus_files' },
+  { collection: 'media_retention', field: 'file', related_collection: 'directus_files' },
+  { collection: 'media_retention', field: 'deleted_by', related_collection: 'directus_users' },
+  { collection: 'media_retention', field: 'hard_deleted_by', related_collection: 'directus_users' },
+  { collection: 'media_audit_events', field: 'actor', related_collection: 'directus_users' },
   ...TRANSLATION_RELATION_DEFS
 ];

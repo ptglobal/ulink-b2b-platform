@@ -44,6 +44,7 @@ Admin/Editor/Sales/Customer per SPEC-09. List the named people per role at hando
 ## 7. Known limitations / future
 - Live ERP sync is the future Integration phase (ADR-0003); ERP-ready interface present.
 - Single-VPS backend (OPS-03 mitigations); managed Postgres is the scale path.
+- Media is local in `directus/uploads`; module folders are `media/products`, `media/documents`, `media/pages`, `media/partners`, `media/regional-hubs`, `media/site-settings`, `media/trash`.
 
 ## 8. Handover sign-off
 | Role | Name | Date |
