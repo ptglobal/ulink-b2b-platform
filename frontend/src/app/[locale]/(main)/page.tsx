@@ -16,10 +16,6 @@ import {
   UtensilsCrossed,
   Microscope,
   GraduationCap,
-  Hand,
-  Droplets,
-  Disc,
-  Box,
   CalendarCheck,
   RotateCcw,
   Archive,
@@ -38,13 +34,6 @@ export default async function HomePage({ params: { locale } }: { params: { local
     { icon: PackageCheck, title: t('trust.sampleTitle'), lines: [t('trust.sampleDesc1')] },
     { icon: Timer, title: t('trust.deliveryTitle'), lines: [t('trust.deliveryDesc1')] },
     { icon: BadgeCheck, title: t('trust.isoTitle'), lines: [t('trust.isoDesc1'), t('trust.isoDesc2')] }
-  ];
-
-  const products = [
-    { img: ASSETS.home.productGlovesBox, icon: Hand, title: t('products.gloves'), tags: t('products.glovesDesc') },
-    { img: ASSETS.home.productWiper2, icon: Droplets, title: t('products.wipes'), tags: t('products.wipesDesc') },
-    { img: ASSETS.home.productTapeRolls, icon: Disc, title: t('products.tape'), tags: t('products.tapeDesc') },
-    { img: ASSETS.home.productPackaging, icon: Box, title: t('products.packaging'), tags: t('products.packagingDesc') }
   ];
 
   const partners = [
@@ -76,7 +65,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
   };
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-[#F5F5F5]">
       {/* ── HERO (Figma 2071:1056) ───────────────────────── */}
       <section className="relative overflow-hidden bg-gradient-to-r from-background via-muted to-muted md:min-h-[320px] lg:min-h-[380px]">
         {/* Ảnh găng tay tràn mép phải, fade mép trái để hoà vào nền (desktop) */}
@@ -118,7 +107,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
             <div className="mt-4 flex flex-wrap gap-2 sm:mt-5 sm:gap-3">
               <Link
                 href="/quick-order"
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-brand bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-strong hover:border-brand-strong sm:h-10 sm:px-5"
+                className="inline-flex h-9 items-center gap-2 rounded-lg border border-brand bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 hover:border-brand sm:h-10 sm:px-5"
               >
                 {t('hero.ctaOrder')}
                 <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
@@ -161,65 +150,123 @@ export default async function HomePage({ params: { locale } }: { params: { local
         </div>
       </section>
 
-      {/* ── SOLUTIONS / PRODUCTS (Figma 2071:1009…1055) ──── */}
+      {/* ── SOLUTIONS (Giải pháp nổi bật) ──── */}
       <section className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-8 sm:py-8 lg:px-16">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:gap-6">
-          {/* Cột tiêu đề — bám trái, ngang hàng với hàng thẻ (Figma 2071:1052–1055) */}
-          <div className="lg:w-[20%] lg:shrink-0 lg:pt-2">
-            <h2 className="text-xl font-semibold tracking-tight text-primary sm:text-2xl">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[200px_1fr_1fr]">
+          {/* Cột tiêu đề bên trái — align top */}
+          <div className="flex flex-col">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
               {t('products.sectionTitle')}
             </h2>
-            {/* Line nằm DƯỚI tiêu đề (Figma 2071:1051, y=105) */}
-            <div className="mt-3 h-0.5 w-5 bg-brand" />
-            <p className="mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:mt-4">
+            <div className="mt-2.5 h-0.5 w-5 bg-brand" />
+            <p className="mt-3 whitespace-pre-line text-xs leading-relaxed text-muted-foreground">
               {t('products.sectionDesc')}
             </p>
             <Link
-              href="/products"
-              className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-brand transition-colors hover:text-brand-strong sm:mt-6"
+              href="/solutions"
+              className="mt-4 inline-flex w-fit items-center gap-2 rounded border border-border bg-card px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-brand hover:text-brand"
             >
               {t('products.viewAll')}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
             </Link>
           </div>
 
-          {/* 4 thẻ sản phẩm — ảnh trên, dải nhãn dưới + mũi tên (Figma 2071:1043…1018) */}
-          <div className="grid flex-1 grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            {products.map(({ img, icon, title, tags }) => (
-              <Link
-                key={title}
-                href="/products"
-                className="group flex flex-col overflow-hidden rounded-lg border border-border bg-card transition-shadow hover:shadow-md"
-              >
-                <div className="relative aspect-[255/85] overflow-hidden bg-muted">
-                  <Image
-                    src={img}
-                    alt={title}
-                    fill
-                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-contain p-2.5 transition-transform duration-300 group-hover:scale-105"
-                  />
-                  {/* Icon đè lên ảnh – góc trái dưới */}
-                  {(() => { const Icon = icon; return (
-                    <Icon
-                      className="absolute bottom-2 left-3 z-10 h-5 w-5 text-primary/70 sm:h-7 sm:w-7"
-                      strokeWidth={1.5}
-                      aria-hidden="true"
-                    />
-                  ); })()}
-                </div>
-                <div className="flex items-center gap-2 border-t border-border px-3 py-2.5 sm:gap-2.5 sm:px-4 sm:py-3">
-                  <div className="min-w-0 flex-1">
-                    <h3 className="truncate text-xs font-medium text-foreground sm:text-sm">{title}</h3>
-                    <p className="mt-0.5 truncate text-[10px] text-silver sm:mt-1 sm:text-[11px]">{tags}</p>
-                  </div>
-                  <ArrowRight
-                    className="h-3.5 w-3.5 shrink-0 text-silver transition-colors group-hover:text-brand sm:h-4 sm:w-4"
-                    aria-hidden="true"
-                  />
-                </div>
-              </Link>
-            ))}
+          {/* Card 1: Phòng sạch */}
+          <div className="grid grid-cols-[1fr_42%] overflow-hidden rounded border border-border bg-card">
+            {/* Bên trái: text */}
+            <div className="flex flex-col p-4">
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-foreground">
+                {t('products.item1Label')}
+              </p>
+              <h3 className="mt-1 text-lg font-bold uppercase tracking-tight text-primary sm:text-xl">
+                {t('products.item1Title')}
+              </h3>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                {t('products.item1Desc')}
+              </p>
+              <ul className="mt-2.5 space-y-1.5">
+                <li className="flex items-start gap-1.5 text-xs text-foreground">
+                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M13.5 4.5L6.5 11.5L2.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  {t('products.item1Bullet1')}
+                </li>
+                <li className="flex items-start gap-1.5 text-xs text-foreground">
+                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M13.5 4.5L6.5 11.5L2.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  {t('products.item1Bullet2')}
+                </li>
+              </ul>
+              <div className="mt-auto pt-4">
+                <Link
+                  href="/solutions"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/90"
+                  aria-label={t('products.item1Title')}
+                >
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+            {/* Bên phải: ảnh */}
+            <div className="relative min-h-[180px]">
+              <Image
+                src={ASSETS.home.solutionCleanroom}
+                alt={t('products.item1Title')}
+                fill
+                sizes="(max-width: 1024px) 45vw, 220px"
+                className="object-cover"
+              />
+            </div>
+          </div>
+
+          {/* Card 2: Đóng gói */}
+          <div className="grid grid-cols-[1fr_42%] overflow-hidden rounded border border-border bg-card">
+            {/* Bên trái: text */}
+            <div className="flex flex-col p-4">
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-foreground">
+                {t('products.item2Label')}
+              </p>
+              <h3 className="mt-1 text-lg font-bold uppercase tracking-tight text-primary sm:text-xl">
+                {t('products.item2Title')}
+              </h3>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                {t('products.item2Desc')}
+              </p>
+              <ul className="mt-2.5 space-y-1.5">
+                <li className="flex items-start gap-1.5 text-xs text-foreground">
+                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M13.5 4.5L6.5 11.5L2.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  {t('products.item2Bullet1')}
+                </li>
+                <li className="flex items-start gap-1.5 text-xs text-foreground">
+                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                    <path d="M13.5 4.5L6.5 11.5L2.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  {t('products.item2Bullet2')}
+                </li>
+              </ul>
+              <div className="mt-auto pt-4">
+                <Link
+                  href="/solutions"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/90"
+                  aria-label={t('products.item2Title')}
+                >
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+            {/* Bên phải: ảnh */}
+            <div className="relative min-h-[180px]">
+              <Image
+                src={ASSETS.home.solutionPackaging}
+                alt={t('products.item2Title')}
+                fill
+                sizes="(max-width: 1024px) 45vw, 220px"
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -229,6 +276,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
         {/* Đối tác tiêu biểu — 1 hàng logo (Figma 2071:991) */}
         <div className="flex flex-col rounded-lg border border-border bg-card px-4 py-4 sm:px-6 lg:col-span-4">
           <h2 className="text-sm font-semibold text-primary sm:text-base">{t('partners.title')}</h2>
+          <div className="mt-2.5 h-0.5 w-5 bg-brand" />
           <div className="grid flex-1 grid-cols-3 items-center gap-3 py-4">
             {partners.map((p) => (
               <div key={p.name} className="flex flex-col items-center text-center">
@@ -385,7 +433,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
 
       {/* ── DỊCH VỤ KHÁC BIỆT (Differentiators) ──────────── */}
       <section className="mx-auto w-full max-w-[1440px] px-4 pb-6 sm:px-8 sm:pb-8 lg:px-16">
-        <div className="rounded-lg border border-border bg-card px-4 py-5 sm:px-6 sm:py-6">
+        <div className="rounded-lg border border-border bg-card px-4 pt-3 pb-4 sm:px-6 sm:pt-4 sm:pb-5">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">
             {t('differentiators.title')}
           </h2>
@@ -404,6 +452,16 @@ export default async function HomePage({ params: { locale } }: { params: { local
               </div>
             ))}
           </div>
+        </div>
+        {/* Closing CTA */}
+        <div className="mt-4 flex justify-end">
+          <Link
+            href="/contact"
+            className="inline-flex h-9 items-center gap-2 rounded-lg border border-brand bg-brand pl-[25px] pr-5 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 hover:border-brand"
+          >
+            {t('differentiators.cta')}
+            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+          </Link>
         </div>
       </section>
 

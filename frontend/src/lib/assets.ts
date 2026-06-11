@@ -20,9 +20,17 @@ export const ASSETS = {
     productTapeRolls: '/images/home/product-tape-rolls.png',
     productWiper2: '/images/home/product-wiper-2.png',
     productPackaging: '/images/home/product-packaging.png',
+    /** Ảnh sản phẩm chất lượng cao */
+    productGloves: '/images/home/product-gloves.jpg',
+    productWipes: '/images/home/product-wipes.jpg',
+    productTape: '/images/home/product-tape.jpg',
+    productPkg: '/images/home/product-packaging.jpg',
     news1: '/images/home/news-1.png',
     news2: '/images/home/news-2.png',
     news3: '/images/home/news-3.png',
+    /** Ảnh giải pháp */
+    solutionCleanroom: '/images/home/solution-cleanroom.jpg',
+    solutionPackaging: '/images/home/solution-packaging.jpg',
     /** Ảnh nhà máy dưới khối About — placeholder, thay bằng ảnh thật sau. */
     factory: '/images/banners/login-hero.png'
   },
@@ -34,6 +42,22 @@ export const ASSETS = {
     mider: '/images/partners/mider.svg',
     fujifilm: '/images/partners/fujifilm.svg',
     mkor: '/images/partners/mkor.svg'
+  },
+  /** Illustrations */
+  illustrations: {
+    vietnamMap: '/images/illustrations/vietnam-map.svg'
+  },
+  /** Ảnh trang Về chúng tôi — Trung tâm phân phối Hà Nam */
+  about: {
+    heroWarehouse: '/images/about/hero-warehouse.png',
+    locationAerial: '/images/about/location-aerial.png',
+    opWarehouse: '/images/about/op-warehouse.png',
+    opWms: '/images/about/op-wms.png',
+    opTruck: '/images/about/op-truck.png',
+    opTeam: '/images/about/op-team.png',
+    iso9001: '/images/about/iso-9001.png',
+    iso14001: '/images/about/iso-14001.png',
+    iso45001: '/images/about/iso-45001.png'
   },
   og: {
     default: '/og/og-default.png'

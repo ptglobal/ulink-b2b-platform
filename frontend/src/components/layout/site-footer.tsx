@@ -65,7 +65,7 @@ export async function SiteFooter() {
               <a href="#" aria-label="Facebook" className="text-white/60 transition-colors hover:text-white">
                 <Facebook className="h-4 w-4" />
               </a>
-              <a href="#" aria-label="LinkedIn" className="text-white/60 transition-colors hover:text-white">
+              <a href="https://linkedin.com/company/ulink-industries" aria-label="LinkedIn" className="text-white/60 transition-colors hover:text-white">
                 <Linkedin className="h-4 w-4" />
               </a>
               <a href="#" aria-label="YouTube" className="text-white/60 transition-colors hover:text-white">

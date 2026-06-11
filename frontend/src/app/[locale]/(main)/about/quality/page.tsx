@@ -1,0 +1,8 @@
+import { setRequestLocale, getTranslations } from 'next-intl/server';
+
+export default async function AboutQualityPage({ params: { locale } }: { params: { locale: string } }) {
+  setRequestLocale(locale);
+  const t = await getTranslations('aboutSidebar');
+
+  return <h1 className="mt-2 text-[24px] font-bold text-primary">{t('quality')}</h1>;
+}

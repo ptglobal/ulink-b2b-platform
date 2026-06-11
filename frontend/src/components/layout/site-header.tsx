@@ -80,7 +80,7 @@ export async function SiteHeader() {
 
           <Link
             href="/login"
-            className="hidden h-[38px] items-center gap-1.5 rounded-lg bg-brand px-4 text-[13px] font-medium text-brand-foreground transition-colors hover:bg-brand-strong sm:inline-flex"
+            className="hidden h-[38px] items-center gap-1.5 rounded-lg border border-brand bg-brand px-4 text-[13px] font-medium text-brand-foreground transition-colors hover:bg-brand/90 hover:border-brand sm:inline-flex"
           >
             <UserRound className="h-4 w-4" aria-hidden="true" />
             {t('login')}

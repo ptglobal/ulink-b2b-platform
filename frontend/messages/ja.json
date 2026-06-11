@@ -62,7 +62,8 @@
     "backToLogin": "ログインに戻る"
   },
   "nav": {
-    "hubs": "地域クラスタ",
+    "home": "ホーム",
+    "hubs": "工業団地クラスター",
     "solutions": "ソリューション/製品",
     "industries": "業界",
     "resources": "リソース",
@@ -94,17 +95,29 @@
       "isoDesc2": "満たしています"
     },
     "products": {
-      "sectionTitle": "ソリューション／製品",
-      "sectionDesc": "クリーンルームのニーズに合わせた最適な製品をご提供します。",
-      "viewAll": "すべての製品を見る",
-      "gloves": "クリーンルーム用手袋",
-      "glovesDesc": "ニトリル、PU、ラテックス、ビニール",
-      "wipes": "クリーンルーム用ワイパー",
-      "wipesDesc": "リントフリー、コットン、ペーパー",
-      "tape": "クリーンルーム用テープ",
-      "tapeDesc": "OPP、カラー、両面テープ",
-      "packaging": "クリーンルーム用包装材",
-      "packagingDesc": "PE袋、OPP袋、梱包パック"
+      "sectionTitle": "主要ソリューション",
+      "sectionDesc": "4つのコアソリューションに注力 — 製品保護、生産効率の向上。",
+      "viewAll": "すべてのソリューションを見る",
+      "item1Label": "ソリューション 01",
+      "item1Title": "クリーンルーム",
+      "item1Desc": "最大の汚染源である人間から日常の作業環境まで、汚染を制御します。",
+      "item1Bullet1": "衣類と個人保護具",
+      "item1Bullet2": "日常汚染管理用品",
+      "item2Label": "ソリューション 02",
+      "item2Title": "包装",
+      "item2Desc": "輸送中の完成品を保護 — 品質と美観をエンドユーザーに届けます。",
+      "item2Bullet1": "LDPE / LLDPE シュリンクフィルム",
+      "item2Bullet2": "技術図面に基づくカスタマイズ",
+      "item3Label": "ソリューション 03",
+      "item3Title": "ワイパー",
+      "item3Desc": "クリーンルーム用不織布 — 高吸収性、リントフリー、パーティクル制御。",
+      "item3Bullet1": "ポリエステル＆マイクロファイバーワイパー",
+      "item3Bullet2": "要件に応じた多様なサイズ",
+      "item4Label": "ソリューション 04",
+      "item4Title": "テープ",
+      "item4Desc": "耐熱・耐薬品性 — あらゆる製造要件に対応。",
+      "item4Bullet1": "耐熱＆ESDテープ",
+      "item4Bullet2": "多様な仕様と素材"
     },
     "partners": {
       "title": "主要企業とのパートナーシップ",
@@ -232,5 +245,145 @@
     "privacy": "プライバシーポリシー",
     "terms": "利用規約",
     "refund": "返品ポリシー"
+  },
+  "regionalHubs": {
+    "eyebrow": "工業団地クラスター",
+    "title": "ベトナムの主要工業団地をつなぐ",
+    "description": "ULINK INDUSTRIESは全国の工業団地にソリューションとサービスを提供し、サプライチェーンを最適化し、企業の生産効率を向上させます",
+    "stats": {
+      "distanceLabel": "平均サービス距離",
+      "distanceValue": "15",
+      "distanceUnit": "km",
+      "distanceNote": "工業団地中心部から",
+      "timeLabel": "平均配送時間",
+      "timeValue": "2.5",
+      "timeUnit": "時間",
+      "timeNote": "クラスター内",
+      "partnersLabel": "パートナー数",
+      "partnersValue": "120+",
+      "partnersNote": "共に成長"
+    },
+    "clusters": {
+      "bacNinh": "Bắc Ninh",
+      "bacNinhDesc": "工業団地: VSIP Bắc Ninh、Quế Võ、Tiên Sơn",
+      "hungYen": "Hưng Yên",
+      "hungYenDesc": "工業団地: Thăng Long II、Phố Nối A、Yên Mỹ II",
+      "haiPhong": "Hải Phòng",
+      "haiPhongDesc": "工業団地: Đình Vũ、VSIP Hải Phòng、Nam Cầu Kiền",
+      "dongNai": "Đồng Nai",
+      "dongNaiDesc": "工業団地: Gián Khẩu、Khánh Phủ、Tam Điệp I"
+    },
+    "dashboard": {
+      "headerTitle": "リアルタイム更新",
+      "headerTime": "更新 10:30 AM",
+      "ordersLabel": "本日の注文",
+      "ordersValue": "1,286",
+      "ordersUnit": "件",
+      "ordersChange": "+12.5%",
+      "ordersNote": "前日比",
+      "deliveryLabel": "定時配送率",
+      "deliveryValue": "98.7%",
+      "deliveryChange": "+2.1%",
+      "deliveryNote": "前日比",
+      "vehiclesLabel": "稼働中の車両",
+      "vehiclesValue": "352",
+      "vehiclesUnit": "台",
+      "vehiclesNote": "リアルタイム追跡",
+      "warehouseLabel": "倉庫総面積",
+      "warehouseValue": "220,000",
+      "warehouseUnit": "m²",
+      "warehouseNote": "全国"
+    }
+  },
+  "whyChoose": {
+    "title": "なぜULINKを選ぶのか？",
+    "items": {
+      "network": {
+        "title": "広範なネットワーク",
+        "desc": "4つの主要経済圏をカバーし、あらゆるニーズに迅速に対応。"
+      },
+      "supplyChain": {
+        "title": "柔軟なサプライチェーン",
+        "desc": "柔軟な倉庫・物流システムで配送ルートを最適化。"
+      },
+      "quality": {
+        "title": "高品質な製品",
+        "desc": "国際基準を満たす多様な製品で、耐久性と安全性を確保。"
+      },
+      "cost": {
+        "title": "コスト最適化",
+        "desc": "企業のコスト削減と効率向上を支援する効果的なソリューション。"
+      },
+      "support": {
+        "title": "専門サポート",
+        "desc": "技術・営業チームが企業と共に歩みます。"
+      }
+    }
+  },
+  "ctaBanner": {
+    "title": "貴社に最適なソリューションを見つけましょう",
+    "desc": "貴社の企業クラスターに最適なソリューションについて、今すぐULINKにご相談ください。",
+    "button": "今すぐ問い合わせ"
+  },
+  "aboutSidebar": {
+    "heading": "私たちについて",
+    "hub": "Hà Nam 物流センター",
+    "quality": "品質と基準",
+    "sustainability": "持続可能な開発",
+    "capabilities": "当社の能力",
+    "news": "ニュース",
+    "careers": "採用情報"
+  },
+  "aboutHub": {
+    "hero": {
+      "eyebrow": "HÀ NAM 物流センター",
+      "titleLine1": "最適な効率。",
+      "titleLine2": "揺るぎない信頼。",
+      "intro": "ULink Industries の Hà Nam 物流センターは、先進技術を活用し最新の国際基準で運営する、現代的な物流拠点を目指して構築されています。",
+      "commitment": "私たちは、お客様とパートナーのあらゆるニーズに柔軟に応える高品質なサービスの提供をお約束します。"
+    },
+    "stats": {
+      "areaValue": "20,000+m2",
+      "areaLabel": "最新鋭の総倉庫面積",
+      "skuValue": "10,000+",
+      "skuLabel": "多様なSKUで常に在庫を確保",
+      "timeValue": "24-48h",
+      "timeLabel": "全国平均配送時間",
+      "isoValue": "100%",
+      "isoLabel": "最新のISO基準に準拠した運営"
+    },
+    "location": {
+      "title": "戦略的な立地",
+      "desc": "北部ベトナムの主要交通網の中心に位置し、迅速な配送と輸送コストの最適化を実現します。",
+      "hanoi": "Hà Nội 中心部から: ~60km",
+      "haiphong": "Hải Phòng 港から: ~70km",
+      "kcn": "主要工業団地に直結",
+      "traffic": "便利なアクセス: 高速道路、国道"
+    },
+    "operations": {
+      "title": "現代的でスマートな運営",
+      "warehouse": "最新鋭の倉庫システム",
+      "warehouseDesc": "機能性を最適化した設計で、貨物の安全・セキュリティ・保管を確保します。",
+      "wms": "WMSによるスマート管理",
+      "wmsDesc": "WMSを活用し、リアルタイムで正確かつ透明な在庫管理を実現します。",
+      "network": "柔軟な輸送ネットワーク",
+      "networkDesc": "信頼できる輸送パートナーと連携し、ルートと配送時間を最適化します。",
+      "team": "プロフェッショナルなチーム",
+      "teamDesc": "経験豊富で献身的なチームが、お客様を迅速にサポートします。"
+    },
+    "iso": {
+      "title": "国際基準に準拠した運営",
+      "desc": "Hà Nam 物流センターは、先進的な管理システムに基づいて構築・運営され、サービス品質とお客様の安全を確保します。",
+      "quality": "品質マネジメントシステム",
+      "environment": "環境マネジメントシステム",
+      "safety": "労働安全衛生マネジメントシステム"
+    },
+    "sustainability": {
+      "title": "持続可能な未来へ",
+      "desc": "ULink Industries は、環境への影響を最小限に抑え、運営効率を最適化し、地域社会の持続可能な発展に貢献するため、絶え間なく改善を続けています。",
+      "energy": "効率的なエネルギー利用",
+      "emission": "排出削減とリサイクル",
+      "supplyChain": "持続可能なサプライチェーンの構築"
+    }
   }
 }
