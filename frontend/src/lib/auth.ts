@@ -61,6 +61,7 @@ export interface RegisterInput {
   email: string;
   phone: string;
   password: string;
+  confirm: string;
 }
 
 /**
@@ -78,7 +79,8 @@ export async function register(input: RegisterInput): Promise<void> {
         contact_name: input.contact,
         email: input.email,
         phone: input.phone,
-        password: input.password
+        password: input.password,
+        confirm_password: input.confirm
       })
     });
   } catch {

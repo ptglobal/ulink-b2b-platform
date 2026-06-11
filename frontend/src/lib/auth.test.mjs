@@ -23,7 +23,8 @@ test('register sends onboarding payload to directus endpoint', async () => {
       contact: 'Nguyen Van A',
       email: 'buyer@acme.vn',
       phone: '0901234567',
-      password: 'customer-password-123'
+      password: 'customer-password-123',
+      confirm: 'customer-password-123'
     });
   } finally {
     globalThis.fetch = originalFetch;
@@ -38,6 +39,7 @@ test('register sends onboarding payload to directus endpoint', async () => {
     contact_name: 'Nguyen Van A',
     email: 'buyer@acme.vn',
     phone: '0901234567',
-    password: 'customer-password-123'
+    password: 'customer-password-123',
+    confirm_password: 'customer-password-123'
   });
 });

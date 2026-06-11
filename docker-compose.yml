@@ -89,6 +89,15 @@ services:
       MAIL_USER: ''
       MAIL_PASSWORD: ''
       MAIL_FROM: 'ULINK <no-reply@ulink.com>'
+      PASSWORD_RESET_URL_ALLOW_LIST: ${PASSWORD_RESET_URL_ALLOW_LIST:-http://localhost:3000/reset-password}
+
+      EMAIL_TRANSPORT: smtp
+      EMAIL_FROM: no-reply@ulink.com
+      EMAIL_SMTP_HOST: ${MAIL_HOST:-mailpit}
+      EMAIL_SMTP_PORT: ${MAIL_PORT:-1025}
+      EMAIL_SMTP_SECURE: ${MAIL_SECURE:-false}
+      EMAIL_SMTP_USER: ${MAIL_USER:-}
+      EMAIL_SMTP_PASSWORD: ${MAIL_PASSWORD:-}
     volumes:
       - ./directus/uploads:/directus/uploads
       - ./directus/extensions:/directus/extensions

@@ -175,7 +175,8 @@ async function runSelfRegisterFlow() {
     contact_name: 'Nguyen Van A',
     email,
     phone: '0901234567',
-    password
+    password,
+    confirm_password: password
   };
 
   const response = await fetch(`${DIRECTUS_URL}/customer-onboarding/register`, {

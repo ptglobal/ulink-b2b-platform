@@ -52,6 +52,13 @@ export async function createCustomerAccount(context, input) {
   const email = requireField(input.email, 'email').toLowerCase();
   const phone = requireField(input.phone, 'phone');
   const password = requireField(input.password, 'password');
+  const confirmPassword = requireField(input.confirm_password, 'confirm_password');
+
+  if (password !== confirmPassword) {
+    const error = new Error('Passwords do not match.');
+    error.status = 422;
+    throw error;
+  }
 
   const { usersService, customersService } = await getServiceClasses(context);
 

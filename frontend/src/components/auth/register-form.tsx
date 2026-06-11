@@ -60,7 +60,8 @@ export function RegisterForm() {
         contact: values.contact,
         email: values.email,
         phone: values.phone,
-        password: values.password
+        password: values.password,
+        confirm: values.confirm
       });
       setDone(true);
     } catch (err) {
