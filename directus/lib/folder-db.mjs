@@ -1,4 +1,5 @@
 import pg from 'pg';
+import { randomUUID } from 'node:crypto';
 
 function createDbConfig() {
   return {
@@ -39,9 +40,10 @@ export async function ensureFolder(client, name, parentId = null) {
     return existing.rows[0];
   }
 
+  const id = randomUUID();
   const created = await client.query(
-    'INSERT INTO directus_folders (name, parent) VALUES ($1, $2) RETURNING id, name, parent',
-    [name, parentId]
+    'INSERT INTO directus_folders (id, name, parent) VALUES ($1, $2, $3) RETURNING id, name, parent',
+    [id, name, parentId]
   );
 
   return created.rows[0];

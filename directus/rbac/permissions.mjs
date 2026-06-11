@@ -90,7 +90,7 @@ export function buildPermissionDefs() {
       collection: 'customers',
       action: 'update',
       permissions: { user: { _eq: '$CURRENT_USER' } },
-      fields: ['*']
+      fields: ['contact_name', 'phone', 'address']
     },
     {
       policy: CUSTOMER_POLICY_ID,

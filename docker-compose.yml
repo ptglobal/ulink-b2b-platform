@@ -38,6 +38,13 @@ services:
     ports:
       - '6379:6379'
 
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
   directus:
     image: directus/directus:11
     restart: unless-stopped
@@ -46,6 +53,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     environment:
       KEY: ${DIRECTUS_KEY}
       SECRET: ${DIRECTUS_SECRET}
@@ -73,6 +82,13 @@ services:
 
       FILES_MAX_UPLOAD_SIZE: 10mb
       FILES_MIME_TYPE_ALLOW_LIST: image/jpeg,image/png,image/webp,image/svg+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_SECURE: 'false'
+      MAIL_USER: ''
+      MAIL_PASSWORD: ''
+      MAIL_FROM: 'ULINK <no-reply@ulink.com>'
     volumes:
       - ./directus/uploads:/directus/uploads
       - ./directus/extensions:/directus/extensions

@@ -20,6 +20,7 @@ verifiable check. Release requires all **must-pass** items and zero open S1.
 - [ ] Industry filters (Electronics/Pharma/Cosmetics/Food).
 - [ ] Resource Center: docs, ISO certs, case studies, blog, downloads.
 - [ ] **Quick Order**: SKU input, bulk upload, RFQ cart, submit -> Sales.
+- [ ] **Customer onboarding**: self-register creates active user + inactive linked customer row; sales-linked customer becomes active after user create; welcome mail arrives in Mailpit.
 - [ ] **B2B Portal**: login, dashboard, order history, scheduled delivery, **debt**, **re-order** - each customer sees only their own data.
 - [ ] **CMS**: all 17 modules CRUD; publish/unpublish; roles Admin/Editor/Sales/Customer.
 - [ ] **i18n**: VI/EN/JP per content policy; switch works; hreflang present.
@@ -33,6 +34,7 @@ verifiable check. Release requires all **must-pass** items and zero open S1.
 - [ ] RBAC + row-level verified (A cannot see B's data).
 - [ ] Directus locales exist in order `vi`, `en`, `ja`; `vi` is the fallback locale.
 - [ ] Content collections expose translation support in Directus Studio.
+- [ ] Customer role can edit `contact_name`, `phone`, and `address` only; `company_name`, `tax_code`, and `sales_owner` stay Sales/Admin-only after approval.
 
 ## D. RFQ smoke checks - must-pass
 - [ ] Successful RFQ submit returns 200 and creates a `rfq_requests` record with status `new`.

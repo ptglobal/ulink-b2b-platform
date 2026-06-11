@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2, Building2 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { register, AuthError } from '@/lib/auth';
 import { SocialAuth } from '@/components/auth/social-auth';
@@ -10,12 +10,13 @@ import { cn } from '@/lib/utils';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-type Fields = 'contact' | 'email' | 'phone' | 'password' | 'confirm';
+type Fields = 'company' | 'contact' | 'email' | 'phone' | 'password' | 'confirm';
 
 export function RegisterForm() {
   const t = useTranslations('auth');
 
   const [values, setValues] = useState({
+    company: '',
     contact: '',
     email: '',
     phone: '',
@@ -35,6 +36,7 @@ export function RegisterForm() {
 
   function validate() {
     const e: Partial<Record<Fields | 'agree', string>> = {};
+    if (!values.company) e.company = t('companyRequired');
     if (!values.contact) e.contact = t('contactRequired');
     if (!values.email) e.email = t('emailRequired');
     else if (!EMAIL_RE.test(values.email)) e.email = t('emailInvalid');
@@ -54,6 +56,7 @@ export function RegisterForm() {
     setLoading(true);
     try {
       await register({
+        company: values.company,
         contact: values.contact,
         email: values.email,
         phone: values.phone,
@@ -137,6 +140,7 @@ export function RegisterForm() {
           </p>
         )}
 
+        {field('company', { label: t('companyLabel'), placeholder: t('companyPlaceholder'), icon: Building2, autoComplete: 'organization' })}
         {field('contact', { label: t('contactLabel'), placeholder: t('contactPlaceholder'), icon: User, autoComplete: 'name' })}
         {field('email', { label: t('emailLabel'), placeholder: t('emailPlaceholder'), icon: Mail, type: 'email', autoComplete: 'email' })}
         {field('phone', { label: t('phoneLabel'), placeholder: t('phonePlaceholder'), icon: Phone, type: 'tel', autoComplete: 'tel' })}

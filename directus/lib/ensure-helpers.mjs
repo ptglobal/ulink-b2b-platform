@@ -3,6 +3,7 @@ import {
   createRelation,
   createRoles,
   createPermissions,
+  updatePermission,
   createUser,
   readUsers,
   createItem,
@@ -97,11 +98,35 @@ export function createEnsureHelpers(client) {
   }
 
   async function ensurePermission(def) {
-    try {
+    const permissions = await listPermissions();
+    const matches = permissions.filter(
+      (p) => p.policy === def.policy && p.collection === def.collection && p.action === def.action
+    );
+
+    if (matches.length > 0) {
+      const [primary, ...duplicates] = matches;
+
+      if (duplicates.length > 0) {
+        const duplicateIds = duplicates.map((d) => d.id).filter(Boolean);
+        await deletePermissionIds(duplicateIds);
+        console.log(`-  Deleted ${duplicates.length} duplicate permission(s) for ${def.collection}:${def.action} under policy ${def.policy}`);
+      }
+
+      const isFieldsMatch = JSON.stringify(primary.fields) === JSON.stringify(def.fields ?? ['*']);
+      const isPermsMatch = JSON.stringify(primary.permissions ?? {}) === JSON.stringify(def.permissions ?? {});
+      const isValidationMatch = JSON.stringify(primary.validation ?? null) === JSON.stringify(def.validation ?? null);
+      const isPresetsMatch = JSON.stringify(primary.presets ?? null) === JSON.stringify(def.presets ?? null);
+
+      if (isFieldsMatch && isPermsMatch && isValidationMatch && isPresetsMatch) {
+        console.log(`=  Permission: ${def.collection}:${def.action} for policy ID ${def.policy} (already up-to-date)`);
+        return;
+      }
+
+      await client.request(updatePermission(primary.id, def));
+      console.log(`~  Permission: ${def.collection}:${def.action} for policy ID ${def.policy} (updated fields/rules)`);
+    } else {
       await client.request(createPermissions([def]));
-      console.log(`+  Permission: ${def.collection}:${def.action} for policy ID ${def.policy}`);
-    } catch {
-      console.log(`=  Permission: ${def.collection}:${def.action} for policy ID ${def.policy} (already exists / skipped)`);
+      console.log(`+  Permission: ${def.collection}:${def.action} for policy ID ${def.policy} (created)`);
     }
   }
 

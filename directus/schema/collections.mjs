@@ -256,7 +256,7 @@ export const COLLECTION_DEFS = [
             ]
           }
         },
-        schema: { default_value: 'active' }
+        schema: { default_value: 'inactive' }
       },
       { field: 'soft_deleted_at', type: 'timestamp', meta: { interface: 'datetime' } },
       { field: 'purge_after', type: 'timestamp', meta: { interface: 'datetime' } },

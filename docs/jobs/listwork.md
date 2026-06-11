@@ -12,10 +12,8 @@
 
 <!-- 6. **Bổ sung DB indexes.** Done: migration-tracked indexes added under `directus/sql/migrations/2026-06-10-add-query-indexes.sql` and verified on local Postgres. -->
 
-7. **Chốt media/storage policy.** Quy định loại file, max size, folder convention, naming convention, xóa file, object storage hay local uploads. Không chốt sớm thì sau bẩn kho file.
+<!-- 7. **Chốt media/storage policy.** Quy định loại file, max size, folder convention, naming convention, xóa file, object storage hay local uploads. Không chốt sớm thì sau bẩn kho file. -->
 
-Status update:
-- Media/storage policy has been implemented and documented.
 
 8. **Setup email/auth vận hành.** Cấu hình mail cho Directus, reset password, invite user, onboarding customer user, link `directus_users` với `customers`.
 

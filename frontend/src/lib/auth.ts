@@ -56,6 +56,7 @@ export async function logout(): Promise<void> {
 }
 
 export interface RegisterInput {
+  company: string;
   contact: string;
   email: string;
   phone: string;
@@ -64,21 +65,20 @@ export interface RegisterInput {
 
 /**
  * Đăng ký tài khoản người mua (cá nhân) trên Cổng B2B.
- * Gọi Directus /users/register tạo người dùng (cần bật trong cấu hình Directus).
- * Bản ghi `customers` (gắn directus_users) được tạo/liên kết qua Directus Flow
- * hoặc bởi Sales sau khi duyệt.
+ * Gọi Directus onboarding endpoint tạo user + customer record đồng thời.
  */
 export async function register(input: RegisterInput): Promise<void> {
   let res: Response;
   try {
-    res = await fetch(`${DIRECTUS_URL}/users/register`, {
+    res = await fetch(`${DIRECTUS_URL}/customer-onboarding/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
+        company_name: input.company,
+        contact_name: input.contact,
         email: input.email,
-        password: input.password,
-        first_name: input.contact,
-        phone: input.phone
+        phone: input.phone,
+        password: input.password
       })
     });
   } catch {

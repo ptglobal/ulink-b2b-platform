@@ -212,10 +212,12 @@ async function verify() {
   logStep('6/7 Check singletons');
   const locales = (await client.request(readItems('languages'))).sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0));
   assert(locales.length >= 3, `languages has ${locales.length} locale rows.`);
-  assert.deepEqual(
-    locales.slice(0, LOCALES.length).map((locale) => locale.code),
-    LOCALES.map((locale) => locale.code),
-    `languages order matches ${LOCALES.map((locale) => locale.code).join(', ')}.`
+  const actualCodes = locales.slice(0, LOCALES.length).map((locale) => locale.code);
+  const expectedCodes = LOCALES.map((locale) => locale.code);
+  const isMatch = actualCodes.length === expectedCodes.length && actualCodes.every((val, index) => val === expectedCodes[index]);
+  assert(
+    isMatch,
+    `languages order matches ${expectedCodes.join(', ')}.`
   );
   assert(locales[0]?.code === DEFAULT_LOCALE, `Fallback locale is ${DEFAULT_LOCALE}.`);
 

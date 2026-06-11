@@ -3,7 +3,9 @@
 **Status:** Baseline · **Owner:** Dev B · **Authoritative field list:** [`directus/SCHEMA.md`](../../directus/SCHEMA.md)
 
 This doc adds relationships, the ERD, and the access model on top of the collection
-field list in `SCHEMA.md`. Implemented in Directus (PostgreSQL).
+field list in [`SCHEMA.md`](../../directus/SCHEMA.md). Implemented in Directus (PostgreSQL).
+
+Xem chi tiết sơ đồ quan hệ thực thể trực quan bằng Mermaid tại [`erd.md`](erd.md).
 
 ## Entity-relationship overview
 ```

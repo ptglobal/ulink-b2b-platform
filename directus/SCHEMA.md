@@ -106,6 +106,12 @@ RFQ cart or order flow.
 
 Visitor/public users may read published content directly from Directus. RFQ submission for visitors and customers goes through `POST /api/rfq`; Directus visitor/customer roles do not create `rfq_requests` directly.
 
+Customer onboarding contract:
+- Self-register creates `directus_users` active and `customers` inactive.
+- Sales invite links an existing or pre-created customer row and activates it.
+- Customers can edit `contact_name`, `phone`, and `address` only.
+- `company_name`, `tax_code`, and `sales_owner` are Sales/Admin-managed after approval.
+
 Customer row-level filters in bootstrap:
 - `customers`: `{ user: { _eq: "$CURRENT_USER" } }`
 - `orders`: `{ customer: { user: { _eq: "$CURRENT_USER" } } }`
