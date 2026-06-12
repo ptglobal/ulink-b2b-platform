@@ -114,6 +114,37 @@ Example:
 
 The Next.js handler maps the collection to `revalidateTag('col:'+collection)` and the affected entity to `revalidateTag('entity:'+collection+':'+id)` so all locale variants share one entity cache key. It also calls `revalidatePath(path)` for the affected localized list/detail routes. `products`, `pages`, `blog_posts`, `case_studies`, `regional_hubs`, `documents`, `product_categories`, `partners`, and `hero_banners` all share this single webhook contract.
 
+### 2.4 `POST /api/internal/sku-cache` - Directus SKU cache sync
+Purpose: prime or invalidate Redis after Directus `product_skus` changes.
+- **Auth:** `Authorization: Bearer ${INTERNAL_API_TOKEN}`
+- **Body:** JSON with `event`, `collection`, and `items[]`. Each item may include `id`, `sku_code`, `previous_sku_code`, `product`, `unit`, `pack_size`, `attributes`, and `status`.
+- **200** -> normalized success envelope with `data.primed`, `data.invalidated`, and `data.deletedOldKeys`.
+- **400** -> malformed JSON or unsupported payload.
+- **403** -> missing or invalid internal API token.
+- **500** -> missing server configuration or Redis failure.
+
+Example:
+```json
+{
+  "event": "items.update",
+  "collection": "product_skus",
+  "items": [
+    {
+      "id": 42,
+      "sku_code": "sku-gloves-nitrile-s",
+      "previous_sku_code": "sku-gloves-nitrile-xs",
+      "product": 7,
+      "unit": "box",
+      "pack_size": "100 pcs/box",
+      "attributes": { "size": "S" },
+      "status": "published"
+    }
+  ]
+}
+```
+
+The route canonicalizes every `sku_code` with `.trim().toLowerCase()`, writes or deletes Redis keys with one pipeline, and uses `sku:{code-lowercased}` as the only key format. Directus Flow `flow-sku-cache-sync` calls this endpoint and never talks to Redis directly.
+
 ## 3. Error model
 App-owned APIs return `{ "success": false, "error": { ... } }` with appropriate HTTP status.
 No stack traces in responses.
@@ -125,6 +156,7 @@ Codes in use: `BAD_REQUEST` (400), `UNPROCESSABLE_ENTITY` (422), `NOT_FOUND` (40
 - Public mutations (`/api/rfq`, contact) rate-limited per IP via Redis (sliding window).
 - Server-side writes use `DIRECTUS_TOKEN`; never expose admin token to the browser. RFQ submissions from visitors and customers must go through Next.js.
 - Content publish webhook calls use `REVALIDATE_SECRET`; Directus Flow posts to `POST /api/revalidate` and the route rejects missing or mismatched bearer secrets. The webhook invalidates `col:{collection}` plus `entity:{collection}:{id}` so translated variants stay in sync.
+- Directus SKU cache sync uses `INTERNAL_API_TOKEN`; Directus Flow posts to `POST /api/internal/sku-cache` and the route rejects missing or mismatched bearer secrets before touching Redis.
 - CORS restricted to the site origin in production.
 
 ## 5. ERP-ready interface *(future Integration phase)*

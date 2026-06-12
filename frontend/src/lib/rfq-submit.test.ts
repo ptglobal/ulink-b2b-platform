@@ -52,7 +52,7 @@ test('submits only after validation, sku check, and anti-spam pass', async () =>
     email: 'a@acme.vn',
     phone: '+84901234567',
     message: 'Need quote',
-    line_items: [{ sku: 'CR-GLV-001', qty: 1 }],
+    line_items: [{ sku: 'cr-glv-001', qty: 1 }],
     status: 'new',
     source: 'web'
   });

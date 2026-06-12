@@ -35,3 +35,16 @@ test('normalizes phone and source and trims strings', () => {
   assert.equal(result.value.phone, '+84901234567');
   assert.equal(result.value.source, 'portal');
 });
+
+test('lowercases sku codes in RFQ items', () => {
+  const result = validateRfqPayload({
+    company: 'ACME',
+    contact: 'Mr A',
+    email: 'a@acme.vn',
+    items: [{ sku: '  CR-GLV-001  ', qty: 1 }]
+  });
+
+  assert.equal(result.ok, true);
+  if (!result.ok) throw new Error('Unexpected validation failure');
+  assert.deepEqual(result.value.items, [{ sku: 'cr-glv-001', qty: 1 }]);
+});

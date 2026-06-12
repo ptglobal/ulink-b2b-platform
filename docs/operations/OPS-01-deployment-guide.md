@@ -27,7 +27,7 @@ per SCHEMA.md). Configure roles/permissions + i18n.
 ## 2. Frontend — Vercel
 - Import the repo; root = `frontend/`. Framework: Next.js (auto).
 - **Env vars (Production):** `DIRECTUS_URL=https://cms.ulink…`, `DIRECTUS_TOKEN`,
-  `REVALIDATE_SECRET`, `REDIS_URL` (managed Redis or VPS-exposed over TLS),
+  `REVALIDATE_SECRET`, `INTERNAL_API_TOKEN`, `REDIS_URL` (managed Redis or VPS-exposed over TLS),
   `NEXT_PUBLIC_SITE_URL=https://www.ulink…`, `TURNSTILE_*`.
 - Bind the production domain; Vercel handles TLS + CDN + ISR.
 
@@ -50,8 +50,11 @@ Run the PROC-05 smoke tests. Confirm HTTPS, CORS (`CORS_ORIGIN` = site origin),
 backups (OPS-03), and monitoring.
 Also confirm the Directus Flow `flow-revalidate-content` posts to
 `https://www.ulink…/api/revalidate` with `Authorization: Bearer <REVALIDATE_SECRET>`.
+Also confirm the Directus Flow `flow-sku-cache-sync` posts to
+`https://www.ulink…/api/internal/sku-cache` with `Authorization: Bearer <INTERNAL_API_TOKEN>`.
 
 ## Environment variables (reference)
 Backend: `POSTGRES_*`, `DIRECTUS_KEY/SECRET`, `DIRECTUS_ADMIN_*`, `DIRECTUS_PUBLIC_URL`,
 `CACHE_*`, `REDIS`. Frontend: `DIRECTUS_URL`, `DIRECTUS_TOKEN`, `REVALIDATE_SECRET`,
+`INTERNAL_API_TOKEN`,
 `REDIS_URL`, `NEXT_PUBLIC_SITE_URL`, `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.

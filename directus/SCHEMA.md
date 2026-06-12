@@ -26,7 +26,7 @@ Conventions:
 | `partners` | `name`, `logo`, `url`, `sort`, `status` | Strategic partners, module 2 |
 | `product_categories` | `name`, `slug`, `parent`, `description`, `hero_image`, `sort`, `status`, `meta_title`, `meta_description` | Category tree, self-reference on `parent` |
 | `products` | `name`, `slug`, `category`, `short_description`, `specifications`, `hero`, `gallery`, `industries`, `status`, `meta_title`, `meta_description` | Product detail, module 5 |
-| `product_skus` | `sku_code`, `product`, `unit`, `pack_size`, `attributes`, `status` | SKU layer, Redis-backed lookup for `/api/sku` |
+| `product_skus` | `sku_code`, `product`, `unit`, `pack_size`, `attributes`, `status` | SKU layer, Redis-backed lookup for `/api/sku`; `sku_code` is canonical lowercased text and the DB enforces case-insensitive uniqueness on `lower(btrim(sku_code))` |
 | `documents` | `title`, `doc_type`, `product`, `file`, `language`, `status` | TDS, MSDS, certificate, brochure |
 | `regional_hubs` | `name`, `slug`, `delivery_sla`, `warehouse_capacity`, `technical_team`, `cluster_overview`, `location`, `coordinates`, `status` | Hub landing pages |
 | `industries` | `name`, `slug`, `description`, `icon`, `status` | Industry taxonomy |
@@ -138,6 +138,10 @@ future idempotent ERP import and sync contracts.
 
 Indexes for portal query paths are maintained as SQL migrations under `directus/sql/migrations/`.
 They are automatically applied at the end of the Directus bootstrap script (`bootstrap.mjs`).
+
+SKU contract:
+- `product_skus.sku_code` is stored and queried in lowercase after `.trim().toLowerCase()`.
+- The database enforces uniqueness on `lower(btrim(sku_code))` so cache keys and Directus rows cannot diverge by case.
 
 ## i18n
 

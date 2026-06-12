@@ -36,7 +36,7 @@ blog_posts   case_studies   iso_certifications   pages   hero_banners   partners
 |---|---|---|---|
 | product_categories | self m2o | product_categories | hierarchy (Cleanroom→Gloves…) |
 | products | m2o | product_categories | |
-| product_skus | m2o | products | SKU belongs to product |
+| product_skus | m2o | products | SKU belongs to product; `sku_code` is canonical lowercased text and remains case-insensitively unique |
 | products | m2m | industries | industry tagging |
 | products | m2o (file) / m2m (files) | directus_files | hero + gallery |
 | documents | m2o | products | TDS/MSDS per product |
@@ -68,6 +68,7 @@ Visitor and customer RFQ submission is application-mediated: `POST /api/rfq` wri
 - **i18n:** Directus Translations on text-bearing fields (vi/en/ja).
 - **Timestamps:** `date_created`, `date_updated` (Directus system fields) enabled.
 - **Money:** store as integer minor units or `decimal(15,2)`; never float.
+- **SKU codes:** `product_skus.sku_code` is normalized with `.trim().toLowerCase()` before cache keys or lookups, and PostgreSQL enforces `lower(btrim(sku_code))` uniqueness.
 
 ## ERP-ready interface (future Integration)
 `orders`, `invoices`, `deliveries` expose a stable import contract (REST + CSV
