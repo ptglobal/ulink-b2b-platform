@@ -72,6 +72,18 @@ async function main() {
   const hubId = hubs[0].id;
   const skuA = skus[0].id;
   const skuB = skus[1].id;
+  const electronics = await client.request(
+    readItems('industries', {
+      filter: { slug: { _eq: 'electronics' } },
+      limit: 1
+    })
+  );
+
+  if (electronics.length < 1) {
+    throw new Error('Need seeded electronics industry before RBAC seed.');
+  }
+
+  const electronicsId = electronics[0].id;
 
   await upsertUserByEmail('editor-rbac@example.com', {
     password: 'editor-password-123',
@@ -103,6 +115,24 @@ async function main() {
     first_name: 'Customer',
     last_name: 'B',
     status: 'active'
+  });
+
+  await upsertItemByField('rfq_assignment_rules', 'id', {
+    id: 1,
+    hub: hubId,
+    industry: electronicsId,
+    assigned_sales: salesUserId,
+    priority: 10,
+    is_default: false
+  });
+
+  await upsertItemByField('rfq_assignment_rules', 'id', {
+    id: 2,
+    hub: null,
+    industry: null,
+    assigned_sales: null,
+    priority: 0,
+    is_default: true
   });
 
   const customerA = await upsertItemByField('customers', 'email', {

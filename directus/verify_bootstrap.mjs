@@ -1,6 +1,7 @@
 import {
   customEndpoint,
   readCollections,
+  readFields,
   readRelations,
   readRoles,
   readPolicies,
@@ -68,7 +69,9 @@ async function verify() {
     'order_items',
     'invoices',
     'deliveries',
+    'integration_events',
     'rfq_requests',
+    'rfq_assignment_rules',
     'products_industries',
     'products_files',
     ...TRANSLATION_COLLECTION_NAMES
@@ -76,6 +79,29 @@ async function verify() {
 
   for (const name of expectedCollections) {
     assert(collectionNames.includes(name), `Collection "${name}" exists.`);
+  }
+
+  const integrationEventFields = await client.request(readFields('integration_events'));
+  const integrationEventFieldNames = integrationEventFields.map((field) => field.field);
+  const expectedIntegrationEventFields = [
+    'id',
+    'entity',
+    'op',
+    'record_id',
+    'erp_ref',
+    'revision',
+    'idempotency_key',
+    'payload',
+    'status',
+    'attempts',
+    'next_attempt_at',
+    'last_attempt_at',
+    'last_status_code',
+    'last_error',
+    'destination_url'
+  ];
+  for (const fieldName of expectedIntegrationEventFields) {
+    assert(integrationEventFieldNames.includes(fieldName), `integration_events field "${fieldName}" exists.`);
   }
 
   logStep('2/7 Check key relations');
@@ -102,6 +128,9 @@ async function verify() {
     'rfq_requests.hub',
     'rfq_requests.assigned_sales',
     'rfq_requests.user',
+    'rfq_assignment_rules.hub',
+    'rfq_assignment_rules.industry',
+    'rfq_assignment_rules.assigned_sales',
       'products_industries.products_id',
       'products_industries.industries_id',
       'products_files.products_id',

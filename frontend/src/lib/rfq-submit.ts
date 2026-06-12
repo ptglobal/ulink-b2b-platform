@@ -1,7 +1,6 @@
-import { createHash } from 'node:crypto';
-
 import { assertRfqSkusExist } from './rfq-sku';
 import { enforceRfqAntiSpam } from './rfq-anti-spam';
+import { buildRfqIdempotencyKey, waitForExistingRfqId } from './rfq-idempotency';
 import { validateRfqPayload } from './rfq-validation';
 
 type CreateRfqInput = {
@@ -9,6 +8,7 @@ type CreateRfqInput = {
   contact_name: string;
   email: string;
   phone?: string;
+  hub?: number;
   industry?: string;
   message?: string;
   line_items: Array<{ sku: string; qty: number }>;
@@ -20,8 +20,10 @@ export interface SubmitRfqDeps {
   ip: string;
   verifyTurnstile: (token: string, ip: string) => Promise<boolean>;
   rateLimit: (ip: string) => Promise<{ ok: true } | { ok: false; retryAfterSeconds: number }>;
-  reserveFingerprint: (fingerprint: string) => Promise<{ ok: true } | { ok: false }>;
   fetchSkus: (skus: string[]) => Promise<Array<{ sku_code: string }>>;
+  getExistingRfqId: (key: string) => Promise<number | string | null>;
+  reserveIdempotencyKey: (key: string) => Promise<{ ok: true } | { ok: false }>;
+  saveIdempotencyKey: (key: string, rfqId: number | string) => Promise<void>;
   createRfq: (input: CreateRfqInput) => Promise<{ id: number | string }>;
 }
 
@@ -39,30 +41,6 @@ function normalizeToken(value: unknown): string {
   }
 
   return value.trim();
-}
-
-function createFingerprint(input: {
-  company: string;
-  email: string;
-  phone?: string;
-  industry?: string;
-  message?: string;
-  source: 'web' | 'portal';
-  items: Array<{ sku: string; qty: number }>;
-}) {
-  const payload = {
-    company: input.company,
-    email: input.email,
-    phone: input.phone ?? '',
-    industry: input.industry ?? '',
-    message: input.message ?? '',
-    source: input.source,
-    items: [...input.items]
-      .map((item) => ({ sku: item.sku, qty: item.qty }))
-      .sort((a, b) => a.sku.localeCompare(b.sku) || a.qty - b.qty)
-  };
-
-  return createHash('sha256').update(JSON.stringify(payload)).digest('hex');
 }
 
 function mapValidationError(error: {
@@ -96,18 +74,26 @@ export async function submitRfq(body: unknown, deps: SubmitRfqDeps): Promise<Sub
   }
 
   const token = normalizeToken(body.token);
-  const fingerprint = createFingerprint(validation.value);
+  const idempotencyKey = buildRfqIdempotencyKey(validation.value);
+
+  const existingId = await deps.getExistingRfqId(idempotencyKey);
+  if (existingId !== null) {
+    return {
+      ok: true,
+      data: {
+        id: existingId
+      }
+    };
+  }
 
   const antiSpam = await enforceRfqAntiSpam(
     {
       token,
-      ip: deps.ip,
-      fingerprint
+      ip: deps.ip
     },
     {
       verifyTurnstile: deps.verifyTurnstile,
-      rateLimit: deps.rateLimit,
-      reserveFingerprint: deps.reserveFingerprint
+      rateLimit: deps.rateLimit
     }
   );
 
@@ -130,17 +116,45 @@ export async function submitRfq(body: unknown, deps: SubmitRfqDeps): Promise<Sub
   }
 
   try {
+    const reserved = await deps.reserveIdempotencyKey(idempotencyKey);
+    if (!reserved.ok) {
+      const retryId = await waitForExistingRfqId(deps, idempotencyKey);
+      if (retryId !== null) {
+        return {
+          ok: true,
+          data: {
+            id: retryId
+          }
+        };
+      }
+
+      return {
+        ok: false,
+        error: {
+          code: 'CONFLICT',
+          message: 'Duplicate RFQ submission detected.'
+        }
+      };
+    }
+
     const created = await deps.createRfq({
       company: validation.value.company,
       contact_name: validation.value.contact_name,
       email: validation.value.email,
       ...(validation.value.phone ? { phone: validation.value.phone } : {}),
+      ...(validation.value.hub ? { hub: validation.value.hub } : {}),
       ...(validation.value.industry ? { industry: validation.value.industry } : {}),
       ...(validation.value.message ? { message: validation.value.message } : {}),
       line_items: skuCheck.value,
       status: 'new',
       source: validation.value.source === 'portal' ? 'portal' : 'web'
     });
+
+    try {
+      await deps.saveIdempotencyKey(idempotencyKey, created.id);
+    } catch (err) {
+      console.error('RFQ idempotency save failed', err);
+    }
 
     return {
       ok: true,

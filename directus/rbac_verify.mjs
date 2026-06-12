@@ -80,14 +80,16 @@ function getOneBy(rows, key, value) {
 }
 
 async function getFixtures(adminToken) {
-  const [customersRes, ordersRes, orderItemsRes, invoicesRes, deliveriesRes, rfqsRes] =
+  const [customersRes, ordersRes, orderItemsRes, invoicesRes, deliveriesRes, rfqsRes, industriesRes, usersRes] =
     await Promise.all([
       request(adminToken, 'GET', '/items/customers?limit=100'),
       request(adminToken, 'GET', '/items/orders?limit=100'),
       request(adminToken, 'GET', '/items/order_items?limit=100'),
       request(adminToken, 'GET', '/items/invoices?limit=100'),
       request(adminToken, 'GET', '/items/deliveries?limit=100'),
-      request(adminToken, 'GET', '/items/rfq_requests?limit=100')
+      request(adminToken, 'GET', '/items/rfq_requests?limit=100'),
+      request(adminToken, 'GET', '/items/industries?limit=100'),
+      request(adminToken, 'GET', '/users?filter[email][_eq]=sales-rbac@example.com&limit=1')
     ]);
 
   assert(customersRes.ok, 'Admin can read customers fixtures.');
@@ -96,6 +98,8 @@ async function getFixtures(adminToken) {
   assert(invoicesRes.ok, 'Admin can read invoice fixtures.');
   assert(deliveriesRes.ok, 'Admin can read delivery fixtures.');
   assert(rfqsRes.ok, 'Admin can read RFQ fixtures.');
+  assert(industriesRes.ok, 'Admin can read industry fixtures.');
+  assert(usersRes.ok, 'Admin can read sales user fixture.');
 
   const customers = getRows(customersRes);
   const orders = getRows(ordersRes);
@@ -103,6 +107,8 @@ async function getFixtures(adminToken) {
   const invoices = getRows(invoicesRes);
   const deliveries = getRows(deliveriesRes);
   const rfqs = getRows(rfqsRes);
+  const industries = getRows(industriesRes);
+  const users = getRows(usersRes);
 
   return {
     customerA: getOneBy(customers, 'email', 'customer-a-rbac@example.com'),
@@ -116,7 +122,9 @@ async function getFixtures(adminToken) {
     deliveryA: getOneBy(deliveries, 'erp_ref', 'RBAC-ERP-DLV-A-001'),
     deliveryB: getOneBy(deliveries, 'erp_ref', 'RBAC-ERP-DLV-B-001'),
     rfqA: getOneBy(rfqs, 'message', 'RBAC-RFQ-A-001'),
-    rfqB: getOneBy(rfqs, 'message', 'RBAC-RFQ-B-001')
+    rfqB: getOneBy(rfqs, 'message', 'RBAC-RFQ-B-001'),
+    electronicsIndustry: getOneBy(industries, 'slug', 'electronics'),
+    salesUser: getOneBy(users, 'email', 'sales-rbac@example.com')
   };
 }
 
@@ -137,6 +145,9 @@ async function verifyVisitor(fixtures) {
 
   const orders = await request(null, 'GET', '/items/orders');
   assert(!orders.ok, 'Visitor cannot read orders.');
+
+  const rules = await request(null, 'GET', '/items/rfq_assignment_rules');
+  assert(!rules.ok, 'Visitor cannot read RFQ assignment rules.');
 
   const createRfq = await request(null, 'POST', '/items/rfq_requests', {
     company: 'Visitor Company',
@@ -226,6 +237,31 @@ async function verifySales(salesToken, fixtures) {
   const createdRfqId = createRfq.json?.data?.id;
   assert(Boolean(createdRfqId), 'Sales RFQ create returns item id.');
 
+  const createRule = await request(salesToken, 'POST', '/items/rfq_assignment_rules', {
+    hub: fixtures.orderA.hub,
+    industry: fixtures.electronicsIndustry.id,
+    assigned_sales: fixtures.salesUser.id,
+    priority: 5,
+    is_default: false
+  });
+  const createRuleOk = assert(createRule.ok, 'Sales can create RFQ assignment rules.');
+
+  const createdRuleId = createRule.json?.data?.id;
+  assert(Boolean(createdRuleId), 'Sales RFQ assignment rule create returns item id.');
+
+  const patchRule = await request(salesToken, 'PATCH', `/items/rfq_assignment_rules/${createdRuleId}`, {
+    priority: 6
+  });
+  assert(patchRule.ok, 'Sales can update RFQ assignment rules.');
+
+  const readRules = await request(salesToken, 'GET', '/items/rfq_assignment_rules?limit=100');
+  assert(readRules.ok, 'Sales can read RFQ assignment rules.');
+
+  if (createRuleOk && createdRuleId) {
+    const deleteRule = await request(salesToken, 'DELETE', `/items/rfq_assignment_rules/${createdRuleId}`);
+    assert(deleteRule.ok, 'Sales can delete RFQ assignment rules.');
+  }
+
   if (createRfqOk && createdRfqId) {
     const deleteRfq = await request(salesToken, 'DELETE', `/items/rfq_requests/${createdRfqId}`);
     assert(deleteRfq.ok, 'Sales can delete RFQ records.');
@@ -265,6 +301,9 @@ async function verifyCustomer(customerToken, own, foreign) {
   const orderCodes = getRows(orders).map((row) => row.code);
   assert(orderCodes.includes(own.orderCode), `Customer ${own.email} sees own order.`);
   assert(!orderCodes.includes(foreign.orderCode), `Customer ${own.email} does not see foreign order.`);
+
+  const rules = await request(customerToken, 'GET', '/items/rfq_assignment_rules');
+  assert(!rules.ok, `Customer ${own.email} cannot read RFQ assignment rules.`);
 
   const ownOrderRead = await request(customerToken, 'GET', `/items/orders/${own.orderId}`);
   assert(ownOrderRead.ok, `Customer ${own.email} can read own order directly.`);

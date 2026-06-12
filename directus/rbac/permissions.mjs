@@ -151,6 +151,16 @@ export function buildPermissionDefs() {
     }
   }
 
+  for (const action of ['create', 'read', 'update', 'delete']) {
+    permissions.push({
+      policy: SALES_POLICY_ID,
+      collection: 'rfq_assignment_rules',
+      action,
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
   for (const col of EDITOR_WRITE_COLLECTIONS) {
     for (const action of ['create', 'read', 'update', 'delete']) {
       permissions.push({

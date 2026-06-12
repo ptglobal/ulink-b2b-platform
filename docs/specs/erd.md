@@ -243,6 +243,24 @@ erDiagram
         string status
     }
 
+    integration_events {
+        int id PK
+        string entity
+        string op
+        string record_id
+        string erp_ref
+        string revision
+        string idempotency_key
+        json payload
+        string status
+        int attempts
+        datetime next_attempt_at
+        datetime last_attempt_at
+        int last_status_code
+        string last_error
+        string destination_url
+    }
+
     %% ==========================================
     %% JUNCTION TABLES (MANY-TO-MANY)
     %% ==========================================

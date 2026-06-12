@@ -63,6 +63,7 @@ SEO defaults live in singleton `site_settings`. Current bootstrap only adds
 | `invoices` | `code`, `customer`, `order`, `issue_date`, `due_date`, `amount`, `paid_amount`, `balance`, `paid_status`, `erp_ref` | Accounts receivable / debt |
 | `deliveries` | `order`, `hub`, `scheduled_date`, `delivered_date`, `status`, `tracking_ref`, `erp_ref` | Scheduled and delivered shipments |
 | `rfq_requests` | `company`, `contact_name`, `email`, `phone`, `industry`, `hub`, `line_items`, `message`, `status`, `assigned_sales`, `source`, `user` | RFQ intake and triage |
+| `rfq_assignment_rules` | `hub`, `industry`, `assigned_sales`, `priority`, `is_default` | Editable RFQ routing rules used by the internal notifier |
 
 Re-order remains an application action that clones prior `order_items` into a new
 RFQ cart or order flow.
@@ -90,6 +91,9 @@ RFQ cart or order flow.
 | `rfq_requests.hub` | m2o | `regional_hubs` | Preferred hub |
 | `rfq_requests.assigned_sales` | m2o | `directus_users` | Assigned salesperson |
 | `rfq_requests.user` | m2o | `directus_users` | Portal-origin RFQ user |
+| `rfq_assignment_rules.hub` | m2o | `regional_hubs` | Routing hub rule |
+| `rfq_assignment_rules.industry` | m2o | `industries` | Routing industry rule |
+| `rfq_assignment_rules.assigned_sales` | m2o | `directus_users` | Sales assignee / inbox owner |
 | `products_industries.products_id` | m2o | `products` | Product side of m2m |
 | `products_industries.industries_id` | m2o | `industries` | Industry side of m2m |
 | `products_files.products_id` | m2o | `products` | Product side of gallery m2m |
@@ -101,10 +105,10 @@ RFQ cart or order flow.
 |---|---|
 | **Admin** | Full Directus admin access |
 | **Editor** | CRUD on all content collections and singletons `site_settings`, `homepage` |
-| **Sales** | Read all content and singletons; full CRUD on `customers`, `orders`, `order_items`, `invoices`, `deliveries`, `rfq_requests` |
+| **Sales** | Read all content and singletons; full CRUD on `customers`, `orders`, `order_items`, `invoices`, `deliveries`, `rfq_requests`, `rfq_assignment_rules` |
 | **Customer** | Read published content; read singletons; read/update own `customers`; read own `orders`, `order_items`, `invoices`, `deliveries`; read own `rfq_requests` |
 
-Visitor/public users may read published content directly from Directus. RFQ submission for visitors and customers goes through `POST /api/rfq`; Directus visitor/customer roles do not create `rfq_requests` directly.
+Visitor/public users may read published content directly from Directus. RFQ submission for visitors and customers goes through `POST /api/rfq`; Directus visitor/customer roles do not create `rfq_requests` directly. Exact duplicate RFQ payloads reuse the first `rfq_requests` id instead of inserting a second row.
 
 Customer onboarding contract:
 - Self-register creates `directus_users` active and `customers` inactive.
@@ -119,6 +123,7 @@ Customer row-level filters in bootstrap:
 - `invoices`: `{ customer: { user: { _eq: "$CURRENT_USER" } } }`
 - `deliveries`: `{ order: { customer: { user: { _eq: "$CURRENT_USER" } } } }`
 - `rfq_requests`: read own via `{ user: { _eq: "$CURRENT_USER" } }`
+- `rfq_assignment_rules`: Sales/Admin manage routing rules; visitor/customer cannot read or write them
 
 ## Enums and status values
 
@@ -129,12 +134,37 @@ Customer row-level filters in bootstrap:
 - `deliveries.status`: `scheduled`, `in_transit`, `delivered`, `late`, `cancelled`
 - `rfq_requests.status`: `new`, `quoted`, `won`, `lost`
 - `rfq_requests.source`: `web`, `portal`
+- `rfq_assignment_rules.is_default`: boolean fallback rule marker
 - `documents.doc_type`: `tds`, `msds`, `certificate`, `brochure`
 
 ## ERP-ready fields
 
 `orders.erp_ref`, `invoices.erp_ref`, and `deliveries.erp_ref` are reserved for
 future idempotent ERP import and sync contracts.
+
+## ERP outbox
+
+`integration_events` stores meaningful order, invoice, and delivery changes as a
+durable outbox row before the scheduled worker attempts delivery to ERP.
+
+Fields:
+- `entity`: `orders`, `invoices`, `deliveries`
+- `op`: `create`, `update`
+- `record_id`: source record id as string
+- `erp_ref`: nullable ERP reference
+- `revision`: source revision marker used for idempotency fallback
+- `idempotency_key`: unique key used by the worker and ERP envelope
+- `payload`: full JSON snapshot plus change metadata
+- `status`: `pending`, `sent`, `failed`
+- `attempts`: retry count
+- `next_attempt_at`: next scheduled retry time
+- `last_attempt_at`: last worker attempt time
+- `last_status_code`: last HTTP status returned by ERP
+- `last_error`: last error message
+- `destination_url`: ERP target URL used for the attempt
+
+`failed_erp_webhooks` is a reporting view over `integration_events` where
+`status = 'failed'`.
 
 Indexes for portal query paths are maintained as SQL migrations under `directus/sql/migrations/`.
 They are automatically applied at the end of the Directus bootstrap script (`bootstrap.mjs`).

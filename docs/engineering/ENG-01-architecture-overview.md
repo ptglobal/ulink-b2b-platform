@@ -26,8 +26,10 @@ Editor/Sales ─▶ Directus Admin ─ publish ─▶ webhook ─▶ Next.js rev
 ## Rendering policy
 - **SSG/ISR** for marketing & content pages (revalidate on publish).
 - **Client/SSR** for portal, RFQ cart, filters, language switch, forms.
-- **Route handlers** for `/api/sku` (Redis), `/api/rfq` (anti-spam → Directus), and `/api/revalidate` (Directus Flow webhook).
+- **Route handlers** for `/api/sku` (Redis), `/api/rfq` (anti-spam -> Directus), `/api/internal/rfq-notify` (Directus Flow webhook -> sales assignment/email/notification), `/api/internal/erp-outbox` (outbox drain worker), and `/api/revalidate` (Directus Flow webhook).
 - Content publish loop: Directus publish/unpublish/delete -> webhook -> Next.js `revalidateTag('col:'+collection)` + `revalidateTag('entity:'+collection+':'+id)` + `revalidatePath`.
+- RFQ create loop: public submit -> `POST /api/rfq` -> Directus `rfq_requests` row -> `flow-rfq-notify` -> `POST /api/internal/rfq-notify` -> email + Directus notification.
+- ERP outbound loop: meaningful order/invoice/delivery change -> Directus `integration_events` outbox row -> `flow-erp-outbox` -> `POST /api/internal/erp-outbox` -> ERP webhook -> status update / retry / DLQ.
 
 ## Deployment units
 1. **frontend** → Vercel (independent deploy).

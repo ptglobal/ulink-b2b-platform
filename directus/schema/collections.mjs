@@ -438,6 +438,69 @@ export const COLLECTION_DEFS = [
     ]
   },
   {
+    collection: 'integration_events',
+    meta: { icon: 'sync', note: 'ERP Outbox Events', hidden: true },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      {
+        field: 'entity',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          required: true,
+          options: {
+            choices: [
+              { text: 'Orders', value: 'orders' },
+              { text: 'Invoices', value: 'invoices' },
+              { text: 'Deliveries', value: 'deliveries' }
+            ]
+          }
+        }
+      },
+      {
+        field: 'op',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          required: true,
+          options: {
+            choices: [
+              { text: 'Create', value: 'create' },
+              { text: 'Update', value: 'update' }
+            ]
+          }
+        }
+      },
+      { field: 'record_id', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'erp_ref', type: 'string', meta: { interface: 'input' } },
+      { field: 'revision', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'idempotency_key', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
+      { field: 'payload', type: 'json', meta: { interface: 'json', required: true } },
+      {
+        field: 'status',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          options: {
+            choices: [
+              { text: 'Pending', value: 'pending' },
+              { text: 'Sent', value: 'sent' },
+              { text: 'Failed', value: 'failed' }
+            ]
+          }
+        },
+        schema: { default_value: 'pending' }
+      },
+      { field: 'attempts', type: 'integer', meta: { interface: 'input' }, schema: { default_value: 0 } },
+      { field: 'next_attempt_at', type: 'timestamp', meta: { interface: 'datetime' } },
+      { field: 'last_attempt_at', type: 'timestamp', meta: { interface: 'datetime' } },
+      { field: 'last_status_code', type: 'integer', meta: { interface: 'input' } },
+      { field: 'last_error', type: 'text', meta: { interface: 'textarea' } },
+      { field: 'destination_url', type: 'string', meta: { interface: 'input' } }
+    ]
+  },
+  {
     collection: 'rfq_requests',
     meta: { icon: 'request_quote', note: 'RFQ Requests' },
     schema: {},
@@ -483,6 +546,19 @@ export const COLLECTION_DEFS = [
         schema: { default_value: 'web' }
       },
       { field: 'user', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
+    ]
+  },
+  {
+    collection: 'rfq_assignment_rules',
+    meta: { icon: 'rule', note: 'RFQ Assignment Rules' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'hub', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'industry', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'assigned_sales', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'priority', type: 'integer', meta: { interface: 'input' }, schema: { default_value: 0 } },
+      { field: 'is_default', type: 'boolean', meta: { interface: 'boolean' }, schema: { default_value: false } }
     ]
   },
   {

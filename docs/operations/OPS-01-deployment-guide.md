@@ -1,13 +1,11 @@
-# OPS-01 — Deployment Guide
+# OPS-01 - Deployment Guide
 
 **Status:** Baseline · **Owner:** Dev B · **Related:** ADR-0006, PROC-05
 
-How to provision and deploy ULink: **frontend on Vercel**, **backend on a VPS** via
-Docker Compose.
+How to provision and deploy ULink: **frontend on Vercel**, **backend on a VPS** via Docker Compose.
 
-## 1. Backend — VPS (Directus + Postgres + Redis)
-**Prereqs:** a small VPS (2 vCPU / 4 GB+), Docker + Compose, a domain/subdomain
-(e.g. `cms.ulink…`) pointed at the VPS.
+## 1. Backend - VPS (Directus + Postgres + Redis)
+**Prereqs:** a small VPS (2 vCPU / 4 GB+), Docker + Compose, a domain/subdomain (for example `cms.ulink...`) pointed at the VPS.
 
 ```bash
 git clone <repo> && cd ulink
@@ -18,22 +16,18 @@ docker compose up -d
 docker compose ps               # healthy
 ```
 
-**HTTPS / reverse proxy:** put Caddy or Nginx in front of Directus (`:8055`) with
-Let's Encrypt. Example reverse proxy: `cms.ulink…` → `localhost:8055`. Enable HSTS.
+**HTTPS / reverse proxy:** put Caddy or Nginx in front of Directus (`:8055`) with Let's Encrypt. Example reverse proxy: `cms.ulink...` -> `localhost:8055`. Enable HSTS.
 
-**Seed:** `cd directus && npm install && npm run bootstrap` (then complete collections
-per SCHEMA.md). Configure roles/permissions + i18n.
+**Seed:** `cd directus && npm install && npm run bootstrap` (then complete collections per SCHEMA.md). Configure roles/permissions + i18n.
 
-## 2. Frontend — Vercel
+## 2. Frontend - Vercel
 - Import the repo; root = `frontend/`. Framework: Next.js (auto).
-- **Env vars (Production):** `DIRECTUS_URL=https://cms.ulink…`, `DIRECTUS_TOKEN`,
-  `REVALIDATE_SECRET`, `INTERNAL_API_TOKEN`, `REDIS_URL` (managed Redis or VPS-exposed over TLS),
-  `NEXT_PUBLIC_SITE_URL=https://www.ulink…`, `TURNSTILE_*`.
+- **Env vars (Production):** `DIRECTUS_URL=https://cms.ulink...`, `DIRECTUS_TOKEN`, `REVALIDATE_SECRET`, `INTERNAL_API_TOKEN`, `REDIS_URL` (managed Redis or VPS-exposed over TLS), `NEXT_PUBLIC_SITE_URL=https://www.ulink...`, `TURNSTILE_*`, `SMTP_*`.
+- **Env vars (Production):** `DIRECTUS_URL=https://cms.ulink...`, `DIRECTUS_TOKEN`, `REVALIDATE_SECRET`, `INTERNAL_API_TOKEN`, `REDIS_URL` (managed Redis or VPS-exposed over TLS), `NEXT_PUBLIC_SITE_URL=https://www.ulink...`, `TURNSTILE_*`, `SMTP_*`, `ERP_SYNC_ENABLED`, `ERP_WEBHOOK_URL`, `ERP_WEBHOOK_TOKEN`, `ERP_OUTBOX_BATCH_SIZE`, `ERP_OUTBOX_MAX_ATTEMPTS`.
 - Bind the production domain; Vercel handles TLS + CDN + ISR.
 
 ## 3. Redis access from Vercel
-Frontend `/api/sku` needs Redis. Use a managed Redis (Upstash) **or** expose VPS Redis
-over TLS with auth (do not expose plaintext to the internet). Update `REDIS_URL`.
+Frontend `/api/sku` needs Redis. Use a managed Redis (Upstash) or expose VPS Redis over TLS with auth (do not expose plaintext to the internet). Update `REDIS_URL`.
 
 ## 4. DNS
 | Record | Points to |
@@ -46,15 +40,12 @@ over TLS with auth (do not expose plaintext to the internet). Update `REDIS_URL`
 - Backend: redeploy via `docker compose pull && up -d --force-recreate` (script/Action).
 
 ## 6. Post-deploy
-Run the PROC-05 smoke tests. Confirm HTTPS, CORS (`CORS_ORIGIN` = site origin),
-backups (OPS-03), and monitoring.
-Also confirm the Directus Flow `flow-revalidate-content` posts to
-`https://www.ulink…/api/revalidate` with `Authorization: Bearer <REVALIDATE_SECRET>`.
-Also confirm the Directus Flow `flow-sku-cache-sync` posts to
-`https://www.ulink…/api/internal/sku-cache` with `Authorization: Bearer <INTERNAL_API_TOKEN>`.
+Run the PROC-05 smoke tests. Confirm HTTPS, CORS (`CORS_ORIGIN` = site origin), backups (OPS-03), and monitoring.
+Also confirm the Directus Flow `flow-revalidate-content` posts to `https://www.ulink.../api/revalidate` with `Authorization: Bearer <REVALIDATE_SECRET>`.
+Also confirm the Directus Flow `flow-sku-cache-sync` posts to `https://www.ulink.../api/internal/sku-cache` with `Authorization: Bearer <INTERNAL_API_TOKEN>`.
+Also confirm the Directus Flow `flow-rfq-notify` posts to `https://www.ulink.../api/internal/rfq-notify` with `Authorization: Bearer <INTERNAL_API_TOKEN>`.
+Also confirm the Directus Flow `flow-erp-outbox` writes `integration_events` rows and the Next.js drain worker posts to `ERP_WEBHOOK_URL` with `Authorization: Bearer <ERP_WEBHOOK_TOKEN>`.
 
 ## Environment variables (reference)
-Backend: `POSTGRES_*`, `DIRECTUS_KEY/SECRET`, `DIRECTUS_ADMIN_*`, `DIRECTUS_PUBLIC_URL`,
-`CACHE_*`, `REDIS`. Frontend: `DIRECTUS_URL`, `DIRECTUS_TOKEN`, `REVALIDATE_SECRET`,
-`INTERNAL_API_TOKEN`,
-`REDIS_URL`, `NEXT_PUBLIC_SITE_URL`, `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
+Backend: `POSTGRES_*`, `DIRECTUS_KEY/SECRET`, `DIRECTUS_ADMIN_*`, `DIRECTUS_PUBLIC_URL`, `CACHE_*`, `REDIS`.
+Frontend: `DIRECTUS_URL`, `DIRECTUS_TOKEN`, `REVALIDATE_SECRET`, `INTERNAL_API_TOKEN`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`, `REDIS_URL`, `NEXT_PUBLIC_SITE_URL`, `TURNSTILE_SECRET_KEY`, `NEXT_PUBLIC_TURNSTILE_SITE_KEY`, `ERP_SYNC_ENABLED`, `ERP_WEBHOOK_URL`, `ERP_WEBHOOK_TOKEN`, `ERP_OUTBOX_BATCH_SIZE`, `ERP_OUTBOX_MAX_ATTEMPTS`.

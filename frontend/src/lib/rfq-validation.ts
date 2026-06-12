@@ -10,6 +10,7 @@ export interface NormalizedRfqPayload {
   contact_name: string;
   email: string;
   phone?: string;
+  hub?: number;
   industry?: string;
   message?: string;
   website?: string;
@@ -66,6 +67,25 @@ function cleanString(value: unknown): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
+function normalizeSlug(value: unknown, state: ValidationState, field: 'industry'): string | undefined {
+  const raw = cleanString(value);
+  if (!raw) {
+    return undefined;
+  }
+
+  const normalized = raw
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+
+  if (!normalized) {
+    addInvalid(state, field, 'INVALID_SLUG');
+    return undefined;
+  }
+
+  return normalized;
+}
+
 function normalizeEmail(value: unknown, state: ValidationState): string | undefined {
   const email = cleanString(value);
   if (!email) {
@@ -109,6 +129,26 @@ function normalizePhone(value: unknown, state: ValidationState): string | undefi
   }
 
   return trimmed.includes('+') ? `+${digits}` : digits;
+}
+
+function normalizeHub(value: unknown, state: ValidationState): number | undefined {
+  if (value === undefined || value === null || value === '') {
+    return undefined;
+  }
+
+  if (typeof value === 'number' && Number.isInteger(value) && value > 0) {
+    return value;
+  }
+
+  if (typeof value === 'string') {
+    const parsed = Number.parseInt(value.trim(), 10);
+    if (Number.isInteger(parsed) && parsed > 0) {
+      return parsed;
+    }
+  }
+
+  addInvalid(state, 'hub', 'INVALID_HUB');
+  return undefined;
 }
 
 function normalizeSource(value: unknown): 'web' | 'portal' {
@@ -188,9 +228,10 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
 
   const email = normalizeEmail(record.email, state);
   const phone = normalizePhone(record.phone, state);
+  const hub = normalizeHub(record.hub, state);
   const items = normalizeItems(record.items, state);
   const contactName = cleanString(record.contact) ?? '';
-  const industry = cleanString(record.industry);
+  const industry = normalizeSlug(record.industry, state, 'industry');
   const message = cleanString(record.message);
   const website = cleanString(record.website);
   const source = normalizeSource(record.source);
@@ -218,6 +259,7 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
       contact_name: contactName,
       email: email as string,
       ...(phone ? { phone } : {}),
+      ...(hub ? { hub } : {}),
       ...(industry ? { industry } : {}),
       ...(message ? { message } : {}),
       ...(website ? { website } : {}),

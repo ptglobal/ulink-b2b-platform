@@ -1,12 +1,9 @@
 import { createItem, readItems } from '@directus/sdk';
 
 import { errorJson, successJson } from '@/lib/api-response-next';
-import {
-  createRfqFingerprintReserver,
-  createRfqRateLimiter,
-  createTurnstileVerifier
-} from '@/lib/rfq-anti-spam';
+import { createRfqRateLimiter, createTurnstileVerifier } from '@/lib/rfq-anti-spam';
 import { publicDirectus, createWriteDirectusClient } from '@/lib/directus';
+import { createRfqIdempotencyStore } from '@/lib/rfq-idempotency';
 import { submitRfq } from '@/lib/rfq-submit';
 import { getRedis } from '@/lib/redis';
 
@@ -56,6 +53,7 @@ export async function POST(req: Request) {
 
   const ip = getClientIp(req);
   const redis = getRedis();
+  const idempotencyStore = createRfqIdempotencyStore(redis);
 
   try {
     const writeDirectus = createWriteDirectusClient();
@@ -63,7 +61,6 @@ export async function POST(req: Request) {
       ip,
       verifyTurnstile: createTurnstileVerifier(),
       rateLimit: createRfqRateLimiter(redis),
-      reserveFingerprint: createRfqFingerprintReserver(redis),
       fetchSkus: async (skus: string[]) => {
         if (skus.length === 0) {
           return [];
@@ -80,6 +77,10 @@ export async function POST(req: Request) {
           })
         );
       },
+      getExistingRfqId: (key: string) => idempotencyStore.getExistingRfqId(key),
+      reserveIdempotencyKey: (key: string) => idempotencyStore.reserveIdempotencyKey(key),
+      saveIdempotencyKey: (key: string, rfqId: number | string) =>
+        idempotencyStore.saveIdempotencyKey(key, rfqId),
       createRfq: async (input) => {
         const created = await writeDirectus.request(createItem('rfq_requests', input));
         return { id: (created as { id: number | string }).id };
