@@ -385,5 +385,109 @@
       "emission": "Emission reduction and recycling",
       "supplyChain": "Building a sustainable supply chain"
     }
+  },
+  "aboutQuality": {
+    "hero": {
+      "eyebrow": "QUALITY & STANDARDS",
+      "titleLine1": "Quality is our commitment.",
+      "titleLine2": "Standards are our foundation.",
+      "desc1": "ULink Industries builds a comprehensive quality management system, complying with international standards to ensure products and services achieve the highest reliability.",
+      "desc2": "We continuously improve to bring sustainable value to our customers and partners.",
+      "downloadBtn": "Download quality policy",
+      "pillars": {
+        "safety": {
+          "title": "Safety",
+          "desc": "Ensuring safety for people, products and the environment."
+        },
+        "reliability": {
+          "title": "Reliability",
+          "desc": "Delivering products and services that meet committed quality."
+        },
+        "improvement": {
+          "title": "Continuous improvement",
+          "desc": "Applying technology, optimizing processes and systems."
+        },
+        "compliance": {
+          "title": "Compliance",
+          "desc": "Adhering to regulations and international standards."
+        }
+      }
+    },
+    "standards": {
+      "title": "INTERNATIONAL STANDARDS SYSTEM",
+      "subtitle": "ULink Industries applies and maintains international standards in management and operations.",
+      "viewAll": "View all certificates",
+      "downloadCert": "Download certificate",
+      "certs": {
+        "iso9001": {
+          "title": "ISO 9001:2015",
+          "subtitle": "Quality management system",
+          "desc": "Ensuring product and service quality meets customer requirements."
+        },
+        "iso14001": {
+          "title": "14001:2015",
+          "subtitle": "Environmental management system",
+          "desc": "Controlling environmental impact, moving towards sustainable development."
+        },
+        "iso45001": {
+          "title": "45001:2018",
+          "subtitle": "Occupational health and safety management system",
+          "desc": "Protecting worker health, building a safe working environment."
+        },
+        "esd": {
+          "title": "ANSI/ESD S20.20",
+          "subtitle": "Electrostatic discharge control (ESD)",
+          "desc": "Controlling electrostatic risks during storage, transportation and product handling."
+        },
+        "iso13485": {
+          "title": "13485:2016",
+          "subtitle": "Medical device quality management system",
+          "desc": "Applied to activities related to medical devices and medical components."
+        }
+      }
+    },
+    "process": {
+      "title": "QUALITY MANAGEMENT PROCESS",
+      "subtitle": "Strict quality control throughout the entire supply chain.",
+      "steps": {
+        "step1": {
+          "number": "01",
+          "title": "Supplier selection",
+          "desc": "Evaluate and select suppliers based on stringent quality criteria."
+        },
+        "step2": {
+          "number": "02",
+          "title": "Incoming inspection",
+          "desc": "Inspect, verify and assess raw material quality."
+        },
+        "step3": {
+          "number": "03",
+          "title": "In-process management",
+          "desc": "Closely monitor warehousing, packaging and shipping processes."
+        },
+        "step4": {
+          "number": "04",
+          "title": "Pre-delivery inspection",
+          "desc": "Final inspection ensuring products meet committed standards."
+        },
+        "step5": {
+          "number": "05",
+          "title": "Feedback & improvement",
+          "desc": "Collect feedback, analyze and continuously improve."
+        }
+      }
+    },
+    "metrics": {
+      "title": "MEASURED QUALITY",
+      "onTime": "On-time delivery rate",
+      "onTimeValue": "98.7%",
+      "qualityRate": "Order quality pass rate",
+      "qualityRateValue": "99.5%",
+      "complaintRate": "Complaint rate",
+      "complaintRateValue": "< 0.3%",
+      "satisfaction": "Customer satisfaction score",
+      "satisfactionValue": "4.8/5",
+      "note": "Data from 2023"
+    }
   }
 }

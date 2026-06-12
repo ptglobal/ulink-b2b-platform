@@ -1,10 +1,7 @@
-import Image from 'next/image';
 import { setRequestLocale } from 'next-intl/server';
-import { Link } from '@/i18n/navigation';
 import { AuthHero } from '@/components/auth/auth-hero';
 import { AuthTabs } from '@/components/auth/auth-tabs';
 import { LocaleSwitcher } from '@/components/layout/locale-switcher';
-import { ASSETS } from '@/lib/assets';
 
 /**
  * Layout dùng chung cho các trang auth (login, register, forgot-password).
@@ -28,10 +25,7 @@ export default function AuthLayout({
       {/* Block 2 — Khung đăng nhập */}
       <div className="flex h-screen w-full flex-col bg-card lg:w-1/2">
         {/* Top bar */}
-        <div className="flex shrink-0 items-center justify-between px-6 pt-5 sm:px-10 lg:px-12">
-          <Link href="/" className="inline-flex" aria-label="ULink Industries">
-            <Image src={ASSETS.logo.full} alt="ULink Industries" width={140} height={39} priority />
-          </Link>
+        <div className="flex shrink-0 items-center justify-end px-6 pt-5 sm:px-10 lg:px-12">
           <LocaleSwitcher />
         </div>
 

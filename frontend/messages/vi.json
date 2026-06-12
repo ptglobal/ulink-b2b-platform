@@ -385,5 +385,109 @@
       "emission": "Giảm thiểu phát thải và tái chế",
       "supplyChain": "Xây dựng chuỗi cung ứng bền vững"
     }
+  },
+  "aboutQuality": {
+    "hero": {
+      "eyebrow": "CHẤT LƯỢNG & TIÊU CHUẨN",
+      "titleLine1": "Chất lượng là cam kết.",
+      "titleLine2": "Tiêu chuẩn là nền tảng.",
+      "desc1": "ULink Industries xây dựng hệ thống quản lý chất lượng toàn diện, tuân thủ các tiêu chuẩn quốc tế nhằm đảm bảo sản phẩm và dịch vụ đạt độ tin cậy cao nhất.",
+      "desc2": "Chúng tôi không ngừng cải tiến để mang đến giá trị bền vững cho khách hàng và đối tác.",
+      "downloadBtn": "Tải chính sách chất lượng",
+      "pillars": {
+        "safety": {
+          "title": "An toàn",
+          "desc": "Đảm bảo an toàn cho con người, sản phẩm và môi trường."
+        },
+        "reliability": {
+          "title": "Tin cậy",
+          "desc": "Cung cấp sản phẩm, dịch vụ đúng chất lượng cam kết."
+        },
+        "improvement": {
+          "title": "Liên tục cải tiến",
+          "desc": "Ứng dụng công nghệ, tối ưu quy trình và hệ thống."
+        },
+        "compliance": {
+          "title": "Tuân thủ",
+          "desc": "Tuân thủ luật định và các tiêu chuẩn quốc tế."
+        }
+      }
+    },
+    "standards": {
+      "title": "HỆ THỐNG TIÊU CHUẨN QUỐC TẾ",
+      "subtitle": "ULink Industries áp dụng và duy trì các tiêu chuẩn quốc tế trong quản lý và vận hành.",
+      "viewAll": "Xem tất cả chứng chỉ",
+      "downloadCert": "Tải chứng chỉ",
+      "certs": {
+        "iso9001": {
+          "title": "ISO 9001:2015",
+          "subtitle": "Hệ thống quản lý chất lượng",
+          "desc": "Đảm bảo chất lượng sản phẩm và dịch vụ đáp ứng yêu cầu của khách hàng."
+        },
+        "iso14001": {
+          "title": "14001:2015",
+          "subtitle": "Hệ thống quản lý môi trường",
+          "desc": "Kiểm soát tác động môi trường, hướng tới phát triển bền vững."
+        },
+        "iso45001": {
+          "title": "45001:2018",
+          "subtitle": "Hệ thống quản lý an toàn và sức khỏe nghề nghiệp",
+          "desc": "Bảo vệ sức khỏe người lao động, xây dựng môi trường làm việc an toàn."
+        },
+        "esd": {
+          "title": "ANSI/ESD S20.20",
+          "subtitle": "Kiểm soát tĩnh điện (ESD)",
+          "desc": "Kiểm soát rủi ro tĩnh điện trong quá trình lưu trữ, vận chuyển và thao tác sản phẩm."
+        },
+        "iso13485": {
+          "title": "13485:2016",
+          "subtitle": "Hệ thống quản lý chất lượng thiết bị y tế",
+          "desc": "Áp dụng cho hoạt động liên quan đến thiết bị y tế và linh kiện y tế."
+        }
+      }
+    },
+    "process": {
+      "title": "QUY TRÌNH QUẢN LÝ CHẤT LƯỢNG",
+      "subtitle": "Kiểm soát chất lượng chặt chẽ trong toàn bộ chuỗi cung ứng.",
+      "steps": {
+        "step1": {
+          "number": "01",
+          "title": "Lựa chọn nhà cung cấp",
+          "desc": "Đánh giá và lựa chọn nhà cung cấp theo tiêu chí chất lượng nghiêm ngặt."
+        },
+        "step2": {
+          "number": "02",
+          "title": "Kiểm tra đầu vào",
+          "desc": "Kiểm tra, đối chiếu và đánh giá chất lượng nguyên vật liệu."
+        },
+        "step3": {
+          "number": "03",
+          "title": "Quản lý trong quá trình",
+          "desc": "Giám sát chặt chẽ quá trình lưu kho, đóng gói và xuất hàng."
+        },
+        "step4": {
+          "number": "04",
+          "title": "Kiểm tra trước khi giao",
+          "desc": "Kiểm tra cuối cùng đảm bảo sản phẩm đúng tiêu chuẩn cam kết."
+        },
+        "step5": {
+          "number": "05",
+          "title": "Phản hồi & cải tiến",
+          "desc": "Ghi nhận phản hồi, phân tích và cải tiến liên tục."
+        }
+      }
+    },
+    "metrics": {
+      "title": "CHẤT LƯỢNG ĐƯỢC ĐO LƯỜNG",
+      "onTime": "Tỷ lệ giao hàng đúng hạn",
+      "onTimeValue": "98.7%",
+      "qualityRate": "Tỷ lệ đơn hàng chất lượng đạt",
+      "qualityRateValue": "99.5%",
+      "complaintRate": "Tỷ khiếu nại",
+      "complaintRateValue": "< 0.3%",
+      "satisfaction": "Đánh giá hài lòng của khách hàng",
+      "satisfactionValue": "4.8/5",
+      "note": "Số liệu năm 2023"
+    }
   }
 }

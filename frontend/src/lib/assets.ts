@@ -57,7 +57,11 @@ export const ASSETS = {
     opTeam: '/images/about/op-team.png',
     iso9001: '/images/about/iso-9001.png',
     iso14001: '/images/about/iso-14001.png',
-    iso45001: '/images/about/iso-45001.png'
+    iso45001: '/images/about/iso-45001.png',
+    isoEsd: '/images/about/iso-esd.png',
+    iso13485: '/images/about/iso-13485.png',
+    qualityHeroBg: '/images/about/quality-hero-bg.png',
+    qualityLab: '/images/about/quality-lab.png'
   },
   og: {
     default: '/og/og-default.png'
