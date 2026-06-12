@@ -15,9 +15,9 @@ Tài liệu này định nghĩa chi tiết các phương án thiết kế và c�
 * **Hạn chế:** Nhân viên Sales thông thường và Customer tuyệt đối không được phép import để tránh rủi ro ghi đè làm sai lệch dữ liệu công nợ, hóa đơn của doanh nghiệp.
 
 ### 3. Import qua Directus UI hay endpoint riêng?
-* **Lựa chọn:** **Tận dụng Directus UI mặc định** ở Phase 1. 
-* **Lý do:** Directus đã có sẵn tính năng import dữ liệu cực mạnh từ file CSV cho từng collection, hỗ trợ ánh xạ cột (column mapping), giúp giảm thiểu thời gian code.
-* **Mở rộng tương lai:** Nếu cần các nghiệp vụ xác thực nghiệp vụ siêu phức tạp (ví dụ: tự động trừ kho, tính toán chiết khấu tự động khi import), hệ thống sẽ xây dựng endpoint custom chuyên dụng (`POST /api/import`).
+* **⚠ CORRECTION (Custom Importer Engine):** 
+  * Đối với các bảng dữ liệu thương mại phức tạp như `orders` (kèm `order_items`), `invoices`, `deliveries`: **Bắt buộc sử dụng API endpoint tự phát triển (`POST /api/import`)** thay vì tính năng import mặc định của Directus UI. Lý do là công cụ mặc định của Directus không hỗ trợ cơ chế upsert theo trường `erp_ref` lồng nhau và không thể đảm bảo tính nhất quán (rollback) khi gặp lỗi.
+  * Đối với bảng `customers` (Khách hàng đơn giản): Cho phép sử dụng công cụ import mặc định của Directus UI.
 
 ### 4. Validation rule tối thiểu là gì cho từng file?
 * **`customers` (Khách hàng):**
@@ -48,11 +48,17 @@ Tài liệu này định nghĩa chi tiết các phương án thiết kế và c�
 * **Lý do:** Khi dữ liệu bên ERP thay đổi (ví dụ: hóa đơn được thanh toán một phần từ `unpaid` sang `partial`, hoặc đơn hàng đổi từ `processing` sang `shipped`), việc import file mới sẽ ghi đè dữ liệu mới nhất vào bản ghi cũ để đồng bộ trạng thái, tránh tạo ra bản ghi trùng lặp.
 
 ### 8. Nếu file có lỗi 1 dòng, rollback toàn bộ hay partial success?
-* **Lựa chọn:** **Rollback toàn bộ (All-or-Nothing)**.
-* **Lý do:** Dữ liệu thương mại và tài chính B2B yêu cầu tính nhất quán tuyệt đối. Nếu cho phép partial success (thành công một nửa), hệ thống rất dễ bị lệch dữ liệu (ví dụ: import đơn hàng thành công nhưng các dòng sản phẩm chi tiết đi kèm bị lỗi $\rightarrow$ đơn hàng bị trống ruột). Do đó, nếu có bất kỳ dòng nào lỗi, hệ thống phải hủy bỏ (reject) toàn bộ file và yêu cầu sửa lại.
+* **⚠ CORRECTION (Pre-commit Validation & Atomic Aggregate):**
+  * **Cơ chế mặc định:** Toàn bộ file sẽ bị từ chối nếu phát hiện lỗi ở bất kỳ dòng nào (Block-on-any-error). Hệ thống thực hiện việc này thông qua bước **Pre-commit Dry-run Validation** (chạy thử kiểm tra toàn bộ file và báo cáo lỗi theo từng dòng trước khi lưu).
+  * **Mức độ giao dịch (Transaction Level):** Giao dịch cam kết dữ liệu được thực thi **Atomic per aggregate** (nghĩa là một đơn hàng và toàn bộ `order_items` đi kèm sẽ thành công hoặc thất bại cùng nhau), tránh tạo ra các bản ghi mồ côi bị lệch dữ liệu.
+  * **Tùy chọn nâng cao:** Cung cấp thêm tùy chọn cho Admin "Cho phép import một phần" (Allow partial success) đối với các file vận hành quy mô lớn, khi đó hệ thống sẽ ghi nhận các cụm giao dịch hợp lệ và bỏ qua/lập báo cáo tải xuống cho các dòng bị lỗi.
 
 ### 9. Có preview trước import không?
-* **Có**. Giao diện Directus UI mặc định sẽ hiển thị màn hình đối chiếu các cột trong file CSV với các trường trong database, hiển thị trước dữ liệu mẫu để người dùng kiểm tra trước khi bấm nút xác nhận import.
+* **Có (Bắt buộc)**. Phía giao diện quản trị (Next.js custom import page hoặc custom panel trong Directus) phải cung cấp bước xem trước (Preview):
+  * Hiển thị ánh xạ cột (column mapping) và mẫu dữ liệu (sample data).
+  * Chạy thử dry-run và hiển thị thống kê dự kiến: số dòng sẽ được Tạo mới (Created), Cập nhật (Updated), Bỏ qua (Skipped) hoặc Lỗi (Failed) trước khi Admin bấm nút xác nhận ghi vào database.
 
 ### 10. Có log số dòng created / updated / skipped / failed không?
-* **Có**. Directus UI mặc định sẽ thông báo popup kết quả chi tiết sau khi import xong: tổng số bản ghi được tạo mới, số bản ghi được cập nhật và danh sách các dòng bị lỗi (nếu có).
+* **Có**. Hệ thống sẽ xuất ra báo cáo kết quả chi tiết sau khi quá trình import thực tế (hoặc chạy thử) hoàn tất:
+  * Thống kê số lượng bản ghi: Created, Updated, Skipped, Failed.
+  * Cung cấp liên kết tải xuống danh sách các dòng dữ liệu bị lỗi (downloadable error rows) kèm mô tả chi tiết lỗi tương ứng để người dùng dễ dàng chỉnh sửa lại file gốc.

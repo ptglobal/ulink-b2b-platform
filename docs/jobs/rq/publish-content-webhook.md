@@ -17,12 +17,14 @@ Dưới đây là các câu trả lời và phương án thiết kế chi tiết
 ### 3. Áp dụng cho những collection nào?
 * Áp dụng cho toàn bộ các **Content Collections** hiển thị ra ngoài Frontend:
   * `products`
+  * `product_categories`
   * `pages`
   * `blog_posts`
   * `case_studies`
   * `regional_hubs`
+  * `industries`
+  * `iso_certifications`
   * `documents`
-  * `product_categories`
   * `partners`
   * `hero_banners`
 
@@ -39,7 +41,8 @@ Gửi payload dạng JSON tối giản nhưng đủ thông tin:
   "id": 123, // hoặc mảng keys: [123, 124]
   "slug": "huong-dan-onboarding-ulink",
   "status": "published",
-  "locale": "vi" // nếu sử dụng đa ngôn ngữ i18n
+  "locale": "vi", // nếu sử dụng đa ngôn ngữ i18n
+  "updated_at": "2026-06-12T02:45:25Z"
 }
 ```
 
@@ -49,19 +52,19 @@ Gửi payload dạng JSON tối giản nhưng đủ thông tin:
 * **Xử lý phía Next.js:** Route handler sẽ đọc trường `collection` để tự điều phối logic xử lý cache tương ứng.
 
 ### 7. Side effect chốt là gì?
-Thực hiện **cả hai** cơ chế revalidate trên Next.js:
-* `revalidateTag(collection)`: Để xóa cache các trang danh sách/danh mục chứa nội dung đó (ví dụ trang list tin tức).
-* `revalidatePath(path)`: Để xóa cache chính xác trang chi tiết của nội dung đó (ví dụ trang chi tiết tin tức `/blog/huong-dan-onboarding-ulink`).
+Thực hiện các cơ chế revalidate trên Next.js:
+* `revalidateTag('col:' + collection)`: Để xóa cache các trang danh sách/danh mục chứa nội dung đó (ví dụ trang list tin tức).
+* `revalidateTag('entity:' + collection + ':' + id)`: **⚠ CORRECTION (i18n):** Để xóa cache thực thể bao trùm tất cả các phiên bản ngôn ngữ khác nhau (vi/en/ja) của bản ghi đó.
+* `revalidatePath(path)`: Để xóa cache chính xác đường dẫn tĩnh đã được dịch và thay đổi (localized path). Một ngôn ngữ đơn lẻ trong payload không được phép để các ngôn ngữ khác bị cũ (stale).
 
 ### 8. Có cần retry nếu webhook fail không?
-* **Không cần cơ chế hàng đợi retry phức tạp** (exponential backoff) vì Directus Flow không hỗ trợ sẵn hàng đợi tự động.
+* **Không cần cơ chế hàng đợi retry bền bỉ (durable)**: Vì luồng này có cơ chế tự phục hồi (self-healing) qua thời gian sống của cache (Cache TTL).
 * **Giải pháp thay thế:**
   1. Ghi nhận lỗi chi tiết tại Directus Flow run logs để Admin/Dev có thể theo dõi.
-  2. Phía Next.js cấu hình bộ nhớ đệm có thời hạn (Cache TTL fallback) ví dụ 1 tiếng (`revalidate = 3600` giây). Nếu Webhook thất bại, bộ nhớ đệm vẫn tự động được cập nhật sau tối đa 1 giờ khi có người dùng truy cập.
+  2. Phía Next.js cấu hình bộ nhớ đệm có thời hạn (Cache TTL fallback) ví dụ 1 tiếng (`revalidate = 3600` giây) để tự động nạp lại nếu webhook thất bại.
 
 ### 9. Nếu retry, retry bao nhiêu lần, backoff thế nào?
-* **Cơ chế mặc định:** Gửi webhook 1 lần duy nhất, thất bại thì log lỗi và dựa vào cache TTL của Next.js làm dự phòng.
-* **Nếu dùng script custom:** Thử lại **tối đa 3 lần, giãn cách cố định 5 giây** giữa các lần gửi (flat delay) trước khi ghi nhận lỗi hẳn.
+* **Cơ chế mặc định:** Luồng phân phối là **Best-effort** (không có retry bền bỉ). Gửi webhook 1 lần duy nhất, nếu thất bại thì ghi log và dựa vào cache TTL (3600 giây) làm dự phòng tự phục hồi.
 
 ### 10. Có cần log/audit từng lần bắn webhook không?
 * **Có**. Bật tính năng **Log Activity** trong Directus Flows.

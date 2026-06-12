@@ -45,8 +45,11 @@ Tài liệu này định nghĩa chi tiết các phương án thiết kế và c�
 * **Có**. Directus có tính năng tự động lưu lịch sử chỉnh sửa bản ghi (Revisions & Activity Log). Mọi hành động gán người, đổi người phụ trách, thời gian đổi, và ai thực hiện đều được lưu lại tự động dưới dạng Revision History.
 
 ### 11. Dedupe RFQ trùng email/phone/company có chặn không?
-* **Có chặn**. Enforce một bộ lọc trùng (dedupe window) trong vòng **2 phút** tại tầng Next.js BFF API. Nếu phát hiện một yêu cầu gửi liên tiếp có cùng Email/Phone/Company trong 2 phút $\rightarrow$ trả về lỗi `CONFLICT (409)` để chặn spam.
+* **Có xử lý bằng Idempotency Key**.
+* **⚠ CORRECTION (dedupe):** Thay vì chặn bằng mã lỗi `409` thô trên tổ hợp `email + company` trong vòng 2 phút, hệ thống sử dụng **Idempotency Key = hash(`email` + normalized `company` + `items`)**.
+  * Nếu gửi yêu cầu trùng lặp chính xác (cùng thông tin và danh sách mặt hàng) trong khoảng thời gian này, hệ thống sẽ trả về **ID của bản ghi đã tạo** (idempotent response) mà không tạo mới và không báo lỗi.
+  * Nếu gửi yêu cầu khác nhau (ví dụ: đổi danh sách mặt hàng), yêu cầu sẽ **không bị chặn** và vẫn tạo bản ghi bình thường. Điều này tránh chặn nhầm trường hợp khách hàng gửi liên tiếp các yêu cầu báo giá khác nhau trong thời gian ngắn.
 
 ### 12. Nếu notify fail nhưng record đã tạo, xử lý thế nào?
-* **Nguyên tắc:** Dữ liệu khách hàng là quan trọng nhất. Nếu việc gửi Email/Notify thất bại $\rightarrow$ bản ghi RFQ **vẫn phải được tạo và lưu thành công** trong DB.
-* Hệ thống sẽ ghi nhận lỗi gửi mail vào log để kỹ thuật kiểm tra SMTP, Sales vẫn có thể tìm thấy RFQ đó bằng cách kiểm tra thủ công danh sách đơn RFQ mới trên Directus Admin.
+* **Nguyên tắc:** Dữ liệu khách hàng là quan trọng nhất. Bản ghi RFQ **bắt buộc phải luôn được khởi tạo thành công** trong database ngay cả khi việc gửi email hay thông báo thất bại.
+* **Cơ chế gửi tin cậy (Durable):** Quy trình gửi thông báo phải đảm bảo tin cậy. Vì Directus Flows chỉ đóng vai trò trigger và không hỗ trợ lập lịch retry bền vững, logic retry (thử lại gửi mail khi gặp lỗi mạng/SMTP) sẽ được xử lý ở tầng **App layer (Next.js route handler / worker)**. Nếu gặp lỗi, hệ thống sẽ thực hiện thử lại (retry) và ghi log cụ thể, tránh việc đánh mất các thông báo gửi tới Sales.

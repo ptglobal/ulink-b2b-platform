@@ -29,6 +29,7 @@ Tài liệu này định nghĩa chi tiết các phương án thiết kế và c�
 * **Có**. Tất cả mã SKU trước khi lưu vào Redis hoặc khi khách hàng gửi lên để tra cứu đều phải đi qua bước chuẩn hóa:
   * Loại bỏ khoảng trắng ở hai đầu: `.trim()`
   * Chuyển toàn bộ thành chữ thường: `.toLowerCase()` (để khớp với Redis key).
+* **⚠ CORRECTION (collision):** Bắt buộc ràng buộc duy nhất không phân biệt chữ hoa chữ thường (case-insensitive uniqueness) trên trường `sku_code` trong cơ sở dữ liệu. Nếu không, các mã như `AB-1` và `ab-1` sẽ bị trùng key khi chuẩn hóa thành chữ thường dẫn tới ghi đè/xung đột dữ liệu cache.
 
 ### 7. Nếu đổi `sku_code`, old key có xóa không?
 * **Có**. Directus Flow (hoặc hook) khi phát hiện sự kiện đổi tên `sku_code` sẽ thực hiện:
@@ -55,3 +56,10 @@ Tài liệu này định nghĩa chi tiết các phương án thiết kế và c�
 ### 11. Bulk update nhiều SKU xử lý thế nào?
 * **Cơ chế:** Khi import file CSV hoặc cập nhật hàng loạt trên giao diện Directus, sự kiện sẽ trả về danh sách mảng các `keys` bị thay đổi.
 * **Xử lý:** Thay vì gọi ghi/xóa Redis đơn lẻ cho từng SKU (gây nghẽn kết nối), hệ thống sẽ gộp lại và thực hiện dưới dạng **Batch** sử dụng cơ chế **Redis Pipeline / Multi** để thực hiện ghi/xóa hàng loạt SKU trong một chu kỳ kết nối duy nhất.
+
+### 12. Logic lưu trữ cache nằm ở đâu?
+* **Next.js internal endpoint:** Toàn bộ logic tương tác với Redis (prime, invalidate, check old key) được đóng gói tập trung tại một API endpoint nội bộ phía Next.js BFF: `POST /api/internal/sku-cache` (được bảo mật bằng token).
+* Directus Flow chỉ đóng vai trò kích hoạt (trigger) và gọi (POST) tới endpoint này kèm payload, không thực hiện các cuộc gọi Redis trực tiếp từ Directus.
+
+### 13. Cơ chế đảm bảo tin cậy và retry?
+* **Best-effort + log:** Luồng này tự phục hồi (self-healing) qua cơ chế cache-miss (đọc trực tiếp Directus DB và nạp lại vào Redis). Do đó không cần cơ chế retry bền bỉ phức tạp, chỉ cần ghi log lỗi trong lịch sử chạy Flow của Directus nếu gọi API Next.js thất bại.

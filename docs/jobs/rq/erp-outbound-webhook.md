@@ -5,9 +5,10 @@ Tài liệu này định nghĩa chi tiết các phương án thiết kế và c�
 ---
 
 ### 1. Push outbound ngay hay event log để ERP pull sau?
-* **Phương án:** **Cung cấp cả hai (Hybrid)**.
-  * **Realtime Push:** Directus Flow sẽ tự động bắn webhook (HTTP POST) ngay lập tức khi chứng từ được tạo mới hoặc thay đổi trạng thái quan trọng để ERP xử lý tức thời.
-  * **Event Pull:** Hệ thống vẫn duy trì các API REST (`GET /items/orders`, `/items/invoices`, `/items/deliveries`) có bộ lọc theo thời gian (`updated_at` hoặc trạng thái đồng bộ) để ERP chủ động kéo dữ liệu (pull) về trong trường hợp ERP bị downtime dài ngày và cần đối soát lại.
+* **⚠ CORRECTION (Transactional Outbox Pattern):** Thay vì gọi đẩy trực tiếp thời gian thực từ Directus Flow với cơ chế retry tự động trong Flow (do Directus Flow không hỗ trợ lập lịch và retry bền vững), hệ thống áp dụng mô hình **Transactional Outbox Pattern**:
+  1. Khi có thay đổi quan trọng trên Order/Invoice/Delivery, Directus Flow ghi nhận một dòng tin nhắn sự kiện vào bảng lưu trữ trung gian **`integration_events`** (chứa `{ entity, op, record_id, erp_ref, idempotency_key, payload(full), status: 'pending', attempts: 0 }`).
+  2. Một **Scheduled Worker** chạy ngầm (cron job phía Next.js hoặc service nhỏ) sẽ quét bảng này để đẩy sang ERP khi biến cấu hình `ERP_SYNC_ENABLED=true` (gửi tới endpoint `ERP_WEBHOOK_URL`), đồng thời tự quản lý việc retry/backoff/đưa vào hàng đợi lỗi (DLQ).
+  3. **Event Pull (Đối soát):** Hệ thống vẫn cung cấp các API REST (`GET /items/{orders|invoices|deliveries}?filter[updated_at][_gte]=...`) để phía ERP có thể chủ động đối soát và kéo bù dữ liệu sau khi xảy ra downtime kéo dài.
 
 ### 2. Một webhook chung hay nhiều webhook riêng?
 * **Lựa chọn:** **1 Webhook chung** (ví dụ: `POST /erp/webhook`).
@@ -33,27 +34,28 @@ Tài liệu này định nghĩa chi tiết các phương án thiết kế và c�
 
 ### 6. Idempotency key chốt là gì?
 * **Quy tắc:**
-  * Nếu đã có `erp_ref` (đã đồng bộ): Sử dụng **`erp_ref`** làm khóa đối khớp duy nhất để ERP tránh tạo trùng lặp.
-  * Nếu chưa có `erp_ref` (đơn hàng Portal mới tạo): Sử dụng kết hợp **`collection:id`** (tên bảng và ID tự tăng của Directus) làm khóa định danh tạm thời.
+  * Nếu đã có `erp_ref` (đã đồng bộ): Sử dụng **`erp_ref`** làm khóa đối khớp.
+  * Nếu chưa có `erp_ref` (đơn hàng Portal mới tạo): Sử dụng cấu trúc **`entity:id:revision`** làm khóa định danh tạm thời chống trùng lặp.
 
 ### 7. Nếu `erp_ref` null thì xử lý sao?
 * Webhook vẫn bắn bình thường. ERP sẽ dựa trên thông tin định danh tạm thời của Directus (`id`) để xử lý đơn hàng, tạo bản ghi tương ứng trên ERP, sau đó ERP gửi phản hồi cập nhật ngược lại mã `erp_ref` cho Directus.
 
 ### 8. Retry policy và Queue xử lý lỗi thế nào nếu ERP down?
-* **Retry Policy:** Tự động thử lại **3 lần** với khoảng cách giãn cách tăng dần (Exponential backoff):
+* **Retry Policy (Thực hiện bởi Worker, không thực hiện trong Flow):** Khi gửi thất bại (mã lỗi 5xx hoặc timeout), worker tự động thử lại tối đa **3 lần** theo cơ chế exponential backoff:
   * Lần 1: Sau 1 phút.
   * Lần 2: Sau 5 phút.
   * Lần 3: Sau 15 phút.
-* **Dead-letter / Failed Queue:** 
-  * Nếu sau 3 lần vẫn thất bại, yêu cầu Webhook lỗi sẽ được lưu vào một bảng log chuyên dụng trong Directus mang tên `failed_erp_webhooks`.
-  * Giao diện Directus Admin sẽ cung cấp màn hình cho kỹ thuật viên theo dõi log lỗi (URL, Payload, Response Error) và có nút **Bắn lại thủ công (Re-send)** sau khi hệ thống ERP khôi phục hoạt động.
+* **Dead-letter / Failed Queue (DLQ):**
+  * Nếu sau 3 lần thử lại vẫn thất bại, worker cập nhật dòng sự kiện trong bảng `integration_events` thành `status: 'failed'`.
+  * Bản ghi lỗi này sẽ hiển thị lên view `failed_erp_webhooks` trên giao diện Directus Admin để quản trị viên giám sát (gồm URL, Payload, Response Error) và cung cấp tính năng **Re-send (Gửi lại)** thủ công kết hợp phát cảnh báo.
 
 ### 9. ERP trả mã lỗi 4xx vs 5xx thì xử lý khác nhau thế nào?
-* **Mã lỗi 4xx (Lỗi dữ liệu/Quyền hạn - Client Error):** Hệ thống ghi nhận thẳng vào `failed_erp_webhooks`, không chạy chu kỳ retry tự động (vì thử lại dữ liệu lỗi cũng sẽ tiếp tục thất bại). Đồng thời gửi thông báo cảnh báo cho Admin/Dev.
-* **Mã lỗi 5xx (Lỗi hệ thống/Downtime - Server Error hoặc Timeout):** Kích hoạt chu kỳ tự động retry 3 lần như trên.
+* **Mã lỗi 4xx (Client Error - Lỗi dữ liệu/quyền hạn):** Chuyển thẳng dòng sự kiện trong outbox sang `status: 'failed'` (đi vào DLQ/view `failed_erp_webhooks`) ngay lập tức mà không chạy chu kỳ retry tự động (vì dữ liệu sai/lỗi phân quyền có thử lại vẫn sẽ lỗi). Đồng thời gửi cảnh báo khẩn tới Admin/Dev.
+* **Mã lỗi 5xx hoặc Timeout (Server Error/Downtime):** Kích hoạt chu kỳ retry 3 lần tự động của worker như quy định ở trên.
 
 ### 10. Khi ERP chưa tồn tại thực tế, endpoint đích là gì?
-* **Phương án:** Cấu hình trỏ webhook đến một **Mock Server / Stub Endpoint** (ví dụ: Hookdeck, Webhook.site hoặc một API route mock của Next.js) để phục vụ kiểm thử tích hợp (UAT) và đóng gói nghiệm thu.
+* **Cơ chế hoạt động:** Cấu hình biến môi trường `ERP_SYNC_ENABLED=false`. Khi đó các sự kiện trong bảng outbox (`integration_events`) sẽ tích lũy dưới dạng log chờ.
+* **UAT & Testing:** Khi cần thử nghiệm, có thể trỏ worker tới một **Staging Stub/Mock Endpoint** (ví dụ: Hookdeck, Webhook.site hoặc mock route `/api/mock/erp` của Next.js) để kiểm tra dòng dữ liệu tích hợp trước khi ERP chính thức vận hành.
 
 ### 11. Có cần staging/prod endpoint tách riêng không?
 * **Có**. Cấu hình URL endpoint đích của ERP tách biệt hoàn toàn qua các biến môi trường (`ERP_WEBHOOK_URL`) trong file `.env.staging` và `.env.production`.
