@@ -104,6 +104,42 @@ async function verify() {
     assert(integrationEventFieldNames.includes(fieldName), `integration_events field "${fieldName}" exists.`);
   }
 
+  const customerFields = await client.request(readFields('customers'));
+  const customerFieldNames = customerFields.map((field) => field.field);
+  const expectedCustomerFields = [
+    'id',
+    'status',
+    'user',
+    'erp_ref',
+    'company_name',
+    'tax_code',
+    'contact_name',
+    'email',
+    'phone',
+    'address',
+    'sales_owner'
+  ];
+  for (const fieldName of expectedCustomerFields) {
+    assert(customerFieldNames.includes(fieldName), `customers field "${fieldName}" exists.`);
+  }
+
+  await withDbClient(async (db) => {
+    const result = await db.query(
+      `
+        select indexname
+        from pg_indexes
+        where schemaname = current_schema()
+          and tablename = 'customers'
+          and indexname = any($1::text[])
+      `,
+      [['customers_erp_ref_key', 'customers_tax_code_key', 'customers_email_key']]
+    );
+    const indexNames = result.rows.map((row) => row.indexname);
+    for (const expectedIndex of ['customers_erp_ref_key', 'customers_tax_code_key', 'customers_email_key']) {
+      assert(indexNames.includes(expectedIndex), `Index "${expectedIndex}" exists on customers.`);
+    }
+  });
+
   logStep('2/7 Check key relations');
   const relations = await client.request(readRelations());
   const relationKeys = relations.map((r) => `${r.collection}.${r.field}`);

@@ -57,7 +57,7 @@ SEO defaults live in singleton `site_settings`. Current bootstrap only adds
 
 | Collection | Current bootstrap fields | Purpose |
 |---|---|---|
-| `customers` | `status`, `user`, `company_name`, `tax_code`, `contact_name`, `email`, `phone`, `address`, `sales_owner` | Auth mapping and account scoping |
+| `customers` | `status`, `user`, `erp_ref`, `company_name`, `tax_code`, `contact_name`, `email`, `phone`, `address`, `sales_owner` | Auth mapping and account scoping |
 | `orders` | `status`, `code`, `customer`, `order_date`, `hub`, `subtotal`, `tax`, `total`, `notes`, `erp_ref` | Order history |
 | `order_items` | `order`, `sku`, `description`, `qty`, `unit_price`, `line_total` | Order lines |
 | `invoices` | `code`, `customer`, `order`, `issue_date`, `due_date`, `amount`, `paid_amount`, `balance`, `paid_status`, `erp_ref` | Accounts receivable / debt |
@@ -114,7 +114,7 @@ Customer onboarding contract:
 - Self-register creates `directus_users` active and `customers` inactive.
 - Sales invite links an existing or pre-created customer row and activates it.
 - Customers can edit `contact_name`, `phone`, and `address` only.
-- `company_name`, `tax_code`, and `sales_owner` are Sales/Admin-managed after approval.
+- `erp_ref`, `company_name`, `tax_code`, and `sales_owner` are Sales/Admin-managed after approval.
 
 Customer row-level filters in bootstrap:
 - `customers`: `{ user: { _eq: "$CURRENT_USER" } }`
@@ -139,8 +139,12 @@ Customer row-level filters in bootstrap:
 
 ## ERP-ready fields
 
-`orders.erp_ref`, `invoices.erp_ref`, and `deliveries.erp_ref` are reserved for
-future idempotent ERP import and sync contracts.
+`customers.erp_ref`, `orders.erp_ref`, `invoices.erp_ref`, and `deliveries.erp_ref`
+are reserved for idempotent ERP import and sync contracts.
+
+Commercial import matching prefers `customers.erp_ref` first, then falls back to
+`tax_code`, then `email`. The bootstrap migration enforces case-insensitive
+uniqueness on normalized `lower(btrim(...))` values for all three customer keys.
 
 ## ERP outbox
 

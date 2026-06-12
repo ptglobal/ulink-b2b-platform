@@ -7,6 +7,7 @@
   "scripts": {
     "bootstrap": "node bootstrap.mjs",
     "verify": "node verify_bootstrap.mjs",
+    "verify:commercial-import": "node verify_commercial_data_import.mjs",
     "verify:onboarding": "node verify_onboarding.mjs",
     "verify:reset-password": "node verify_password_reset.mjs",
     "verify:rfq-notify": "node --import ../frontend/node_modules/tsx/dist/loader.mjs verify_rfq_notification_flow.mjs",

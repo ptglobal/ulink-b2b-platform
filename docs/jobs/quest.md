@@ -37,7 +37,7 @@
 - Dedupe RFQ trùng email/phone/company có chặn không?
 - Nếu notify fail nhưng record đã tạo, xử lý thế nào? -->
 
-**order / invoice / delivery create-update -> outbound webhook future ERP**
+<!-- **order / invoice / delivery create-update -> outbound webhook future ERP**
 - Đây là push outbound ngay hay event log để ERP pull sau?
 - 1 webhook chung hay 3 webhook riêng cho `orders`, `invoices`, `deliveries`?
 - Trigger nào bắn: `create`, `update`, `status change`, `delete`, `soft delete`, hay subset?
@@ -52,8 +52,8 @@
 - Khi ERP chưa tồn tại, endpoint đích là mock, stub, hay reserved contract thôi?
 - Có cần staging/prod endpoint tách riêng không?
 - Delete/cancel có bắn webhook không?
-- Status transitions nào phải bắn: `pending -> confirmed`, `processing -> shipped`, `shipped -> completed`, `unpaid -> paid`, v.v.?
-
+- Status transitions nào phải bắn: `pending -> confirmed`, `processing -> shipped`, `shipped -> completed`, `unpaid -> paid`, v.v.? -->
+<!-- 
 **Import / process dữ liệu thương mại**
 - CSV import áp cho collection nào: `customers`, `orders`, `invoices`, `deliveries`, `order_items`?
 - Ai được import: Admin, Sales, role riêng?
@@ -64,7 +64,7 @@
 - Nếu record trùng thì update hay reject?
 - Nếu file có lỗi 1 dòng, rollback toàn bộ hay partial success?
 - Có preview trước import không?
-- Có log số dòng created / updated / skipped / failed không?
+- Có log số dòng created / updated / skipped / failed không? -->
 
 **Ops / vận hành flow**
 - Flow thuần Directus hay cần hook/endpoint custom cho case nào?

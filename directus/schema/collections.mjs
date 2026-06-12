@@ -315,6 +315,7 @@ export const COLLECTION_DEFS = [
         schema: { default_value: 'active' }
       },
       { field: 'user', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'erp_ref', type: 'string', meta: { interface: 'input' }, schema: { is_unique: true } },
       { field: 'company_name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'tax_code', type: 'string', meta: { interface: 'input' } },
       { field: 'contact_name', type: 'string', meta: { interface: 'input' } },
