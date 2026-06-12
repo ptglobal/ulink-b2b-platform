@@ -5,10 +5,18 @@
   "type": "module",
   "description": "Creates ULink collections + roles in a running Directus instance.",
   "scripts": {
-    "bootstrap": "node bootstrap.mjs"
+    "bootstrap": "node bootstrap.mjs",
+    "verify": "node verify_bootstrap.mjs",
+    "verify:onboarding": "node verify_onboarding.mjs",
+    "verify:reset-password": "node verify_password_reset.mjs",
+    "media:verify": "node verify_media_policy.mjs",
+    "media:cleanup": "node media-cleanup.mjs",
+    "rbac:seed": "node rbac_seed.mjs",
+    "rbac:verify": "node rbac_verify.mjs"
   },
   "dependencies": {
     "@directus/sdk": "^17.0.1",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "pg": "^8.11.5"
   }
 }

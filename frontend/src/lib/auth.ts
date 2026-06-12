@@ -22,11 +22,15 @@ export async function logout(): Promise<void> {
   }
 }
 
-export async function register(input: {
+export interface RegisterInput {
+  company: string;
   contact: string;
   email: string;
   phone: string;
   password: string;
-}): Promise<void> {
+  confirm: string;
+}
+
+export async function register(input: RegisterInput): Promise<void> {
   await api.post('/api/auth/register', input);
 }

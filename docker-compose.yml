@@ -20,8 +20,8 @@ services:
       timeout: 5s
       retries: 5
     # Expose only if you need direct DB access from the host:
-    # ports:
-    #   - '5432:5432'
+    ports:
+      - '5432:5432'
 
   redis:
     image: redis:7-alpine
@@ -38,6 +38,13 @@ services:
     ports:
       - '6379:6379'
 
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: unless-stopped
+    ports:
+      - '1025:1025'
+      - '8025:8025'
+
   directus:
     image: directus/directus:11
     restart: unless-stopped
@@ -46,6 +53,8 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      mailpit:
+        condition: service_started
     environment:
       KEY: ${DIRECTUS_KEY}
       SECRET: ${DIRECTUS_SECRET}
@@ -67,9 +76,33 @@ services:
       WEBSOCKETS_ENABLED: 'true'
       CORS_ENABLED: 'true'
       CORS_ORIGIN: 'true'
+
+      STORAGE_LOCATIONS: local
+      STORAGE_LOCAL_ROOT: /directus/uploads
+
+      FILES_MAX_UPLOAD_SIZE: 10mb
+      FILES_MIME_TYPE_ALLOW_LIST: image/jpeg,image/png,image/webp,image/svg+xml,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+      MAIL_SECURE: 'false'
+      MAIL_USER: ''
+      MAIL_PASSWORD: ''
+      MAIL_FROM: 'ULINK <no-reply@ulink.com>'
+      PASSWORD_RESET_URL_ALLOW_LIST: ${PASSWORD_RESET_URL_ALLOW_LIST:-http://localhost:3000/reset-password}
+
+      EMAIL_TRANSPORT: smtp
+      EMAIL_FROM: no-reply@ulink.com
+      EMAIL_SMTP_HOST: ${MAIL_HOST:-mailpit}
+      EMAIL_SMTP_PORT: ${MAIL_PORT:-1025}
+      EMAIL_SMTP_SECURE: ${MAIL_SECURE:-false}
+      EMAIL_SMTP_USER: ${MAIL_USER:-}
+      EMAIL_SMTP_PASSWORD: ${MAIL_PASSWORD:-}
     volumes:
       - ./directus/uploads:/directus/uploads
       - ./directus/extensions:/directus/extensions
+      - ./directus/lib:/directus/lib
+      - ./directus/constants.mjs:/directus/constants.mjs
     ports:
       - '8055:8055'
 

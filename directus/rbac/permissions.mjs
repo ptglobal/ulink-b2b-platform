@@ -1,0 +1,238 @@
+import { VISITOR_POLICY_ID, EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../constants.mjs';
+import { TRANSLATION_COLLECTION_NAMES } from '../lib/i18n.mjs';
+
+export const CONTENT_COLLECTIONS = [
+  'hero_banners',
+  'partners',
+  'product_categories',
+  'products',
+  'product_skus',
+  'documents',
+  'regional_hubs',
+  'industries',
+  'blog_posts',
+  'case_studies',
+  'iso_certifications',
+  'pages'
+];
+
+export const PUBLIC_ALWAYS_READ_COLLECTIONS = ['site_settings', 'homepage', 'languages', ...TRANSLATION_COLLECTION_NAMES];
+
+export const EDITOR_WRITE_COLLECTIONS = [
+  ...CONTENT_COLLECTIONS,
+  'site_settings',
+  'homepage',
+  ...TRANSLATION_COLLECTION_NAMES
+];
+
+export function buildPermissionDefs() {
+  const permissions = [];
+
+  // Visitor (Public Policy) Permissions
+  for (const col of CONTENT_COLLECTIONS) {
+    permissions.push({
+      policy: VISITOR_POLICY_ID,
+      collection: col,
+      action: 'read',
+      permissions: { status: { _eq: 'published' } },
+      fields: ['*']
+    });
+  }
+
+  for (const col of PUBLIC_ALWAYS_READ_COLLECTIONS) {
+    permissions.push({
+      policy: VISITOR_POLICY_ID,
+      collection: col,
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
+  permissions.push({
+    policy: VISITOR_POLICY_ID,
+    collection: 'directus_files',
+    action: 'read',
+    permissions: {},
+    fields: ['*']
+  });
+
+  for (const col of CONTENT_COLLECTIONS) {
+    permissions.push({
+      policy: CUSTOMER_POLICY_ID,
+      collection: col,
+      action: 'read',
+      permissions: { status: { _eq: 'published' } },
+      fields: ['*']
+    });
+  }
+
+  for (const col of PUBLIC_ALWAYS_READ_COLLECTIONS) {
+    permissions.push({
+      policy: CUSTOMER_POLICY_ID,
+      collection: col,
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
+  permissions.push(
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'customers',
+      action: 'read',
+      permissions: { user: { _eq: '$CURRENT_USER' } },
+      fields: ['*']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'customers',
+      action: 'update',
+      permissions: { user: { _eq: '$CURRENT_USER' } },
+      fields: ['contact_name', 'phone', 'address']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'orders',
+      action: 'read',
+      permissions: { customer: { user: { _eq: '$CURRENT_USER' } } },
+      fields: ['*']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'order_items',
+      action: 'read',
+      permissions: { order: { customer: { user: { _eq: '$CURRENT_USER' } } } },
+      fields: ['*']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'invoices',
+      action: 'read',
+      permissions: { customer: { user: { _eq: '$CURRENT_USER' } } },
+      fields: ['*']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'deliveries',
+      action: 'read',
+      permissions: { order: { customer: { user: { _eq: '$CURRENT_USER' } } } },
+      fields: ['*']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'rfq_requests',
+      action: 'read',
+      permissions: { user: { _eq: '$CURRENT_USER' } },
+      fields: ['*']
+    }
+  );
+
+  for (const col of PUBLIC_ALWAYS_READ_COLLECTIONS) {
+    permissions.push({
+      policy: SALES_POLICY_ID,
+      collection: col,
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
+  for (const col of ['customers', 'orders', 'order_items', 'invoices', 'deliveries', 'rfq_requests']) {
+    for (const action of ['create', 'read', 'update', 'delete']) {
+      permissions.push({
+        policy: SALES_POLICY_ID,
+        collection: col,
+        action,
+        permissions: {},
+        fields: ['*']
+      });
+    }
+  }
+
+  for (const col of EDITOR_WRITE_COLLECTIONS) {
+    for (const action of ['create', 'read', 'update', 'delete']) {
+      permissions.push({
+        policy: EDITOR_POLICY_ID,
+        collection: col,
+        action,
+        permissions: {},
+        fields: ['*']
+      });
+    }
+  }
+
+  permissions.push({
+    policy: EDITOR_POLICY_ID,
+    collection: 'languages',
+    action: 'read',
+    permissions: {},
+    fields: ['*']
+  });
+
+  for (const action of ['create', 'read', 'update']) {
+    permissions.push({
+      policy: EDITOR_POLICY_ID,
+      collection: 'directus_files',
+      action,
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
+  for (const action of ['create', 'read', 'update']) {
+    permissions.push({
+      policy: SALES_POLICY_ID,
+      collection: 'directus_files',
+      action,
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
+  permissions.push({
+    policy: EDITOR_POLICY_ID,
+    collection: 'directus_folders',
+    action: 'read',
+    permissions: {},
+    fields: ['*']
+  });
+
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'directus_folders',
+    action: 'read',
+    permissions: {},
+    fields: ['*']
+  });
+
+  return permissions;
+}
+
+export async function ensurePermissions(helpers) {
+  const desiredPermissions = buildPermissionDefs();
+  const desiredKeys = new Set(
+    desiredPermissions.map((permission) => `${permission.policy}:${permission.collection}:${permission.action}`)
+  );
+  const managedPolicies = new Set([
+    VISITOR_POLICY_ID,
+    EDITOR_POLICY_ID,
+    SALES_POLICY_ID,
+    CUSTOMER_POLICY_ID
+  ]);
+  const currentPermissions = await helpers.listPermissions();
+  const staleIds = currentPermissions
+    .filter((permission) => managedPolicies.has(permission.policy) && !desiredKeys.has(`${permission.policy}:${permission.collection}:${permission.action}`))
+    .map((permission) => permission.id)
+    .filter(Boolean);
+
+  if (staleIds.length > 0) {
+    await helpers.deletePermissionIds(staleIds);
+    console.log(`-  Deleted ${staleIds.length} stale permission(s) from managed policies`);
+  }
+
+  for (const permission of desiredPermissions) {
+    await helpers.ensurePermission(permission);
+  }
+}

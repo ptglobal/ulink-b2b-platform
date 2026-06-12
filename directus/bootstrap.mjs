@@ -1,104 +1,95 @@
 /**
- * ULink — Directus bootstrap.
+ * ULink - Directus bootstrap.
  *
- * Logs in as the admin and creates collections/roles idempotently.
+ * Logs in as the admin and creates collections/roles/policies/permissions/seed-data idempotently.
  * Run AFTER `docker compose up -d` (Directus healthy):
  *
  *   cd directus && npm install && npm run bootstrap
- *
- * This is a SCAFFOLD: it wires auth + one example collection (`partners`) and
- * leaves the rest as TODOs. Fill in every collection per ./SCHEMA.md using the
- * same `ensureCollection(...)` pattern.
  */
-import 'dotenv/config';
-import {
-  createDirectus,
-  rest,
-  authentication,
-  createCollection,
-  readCollections
-} from '@directus/sdk';
+import { createItem, readItems, updateItem } from '@directus/sdk';
+import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
+import { createEnsureHelpers } from './lib/ensure-helpers.mjs';
+import { ensureFolderTree } from './lib/folder-db.mjs';
+import { DEFAULT_LOCALE, LOCALES } from './lib/i18n.mjs';
+import { MEDIA_POLICY } from './lib/media-policy.mjs';
+import { COLLECTION_DEFS } from './schema/collections.mjs';
+import { RELATION_DEFS } from './schema/relations.mjs';
+import { ensureRoles } from './rbac/roles.mjs';
+import { ensurePolicies } from './rbac/policies.mjs';
+import { ensureAccessLinks } from './rbac/access.mjs';
+import { ensurePermissions } from './rbac/permissions.mjs';
+import { seedInitialContent } from './seed/initial_content.mjs';
+import { seedDemoCommerce } from './seed/demo_commerce.mjs';
+import { applyDbIndexes } from './lib/db-indexes.mjs';
 
-const URL = process.env.DIRECTUS_PUBLIC_URL ?? 'http://localhost:8055';
-const EMAIL = process.env.DIRECTUS_ADMIN_EMAIL;
-const PASSWORD = process.env.DIRECTUS_ADMIN_PASSWORD;
+const client = createDirectusClient();
+const helpers = createEnsureHelpers(client);
 
-if (!EMAIL || !PASSWORD) {
-  console.error('Set DIRECTUS_ADMIN_EMAIL and DIRECTUS_ADMIN_PASSWORD (see ../.env).');
-  process.exit(1);
+async function ensureLanguages() {
+  for (const locale of LOCALES) {
+    const existing = await client.request(
+      readItems('languages', {
+        filter: {
+          code: { _eq: locale.code }
+        },
+        limit: 1
+      })
+    );
+
+    const payload = {
+      code: locale.code,
+      name: locale.name,
+      direction: locale.direction,
+      sort: locale.sort
+    };
+
+    if (existing.length > 0) {
+      await client.request(updateItem('languages', locale.code, payload));
+      console.log(`=  Language: ${locale.code} (updated)`);
+    } else {
+      await client.request(createItem('languages', payload));
+      console.log(`+  Language: ${locale.code} (created)`);
+    }
+  }
+  console.log(`Fallback locale locked to ${DEFAULT_LOCALE}`);
 }
 
-const client = createDirectus(URL).with(authentication('json')).with(rest());
-
-const STATUS_FIELD = {
-  field: 'status',
-  type: 'string',
-  meta: {
-    interface: 'select-dropdown',
-    width: 'half',
-    options: {
-      choices: [
-        { text: 'Published', value: 'published' },
-        { text: 'Draft', value: 'draft' },
-        { text: 'Archived', value: 'archived' }
-      ]
-    }
-  },
-  schema: { default_value: 'draft' }
-};
-
-const ID_FIELD = {
-  field: 'id',
-  type: 'integer',
-  meta: { hidden: true, readonly: true, interface: 'input' },
-  schema: { is_primary_key: true, has_auto_increment: true }
-};
-
-async function ensureCollection(def) {
-  const existing = await client.request(readCollections());
-  if (existing.some((c) => c.collection === def.collection)) {
-    console.log(`=  ${def.collection} (exists, skipped)`);
-    return;
-  }
-  await client.request(createCollection(def));
-  console.log(`+  ${def.collection}`);
+async function ensureFolders() {
+  const { root } = await ensureFolderTree(MEDIA_POLICY.moduleFolders, 'media');
+  return root?.id ?? null;
 }
 
 async function main() {
-  await client.login(EMAIL, PASSWORD);
-  console.log(`Authenticated as ${EMAIL} @ ${URL}`);
+  await loginAdmin(client);
+  console.log(`Authenticated as ${DIRECTUS_ADMIN_EMAIL} @ ${DIRECTUS_URL}`);
 
-  // --- Example collection: Strategic Partners (CMS module 2) ---
-  await ensureCollection({
-    collection: 'partners',
-    meta: { icon: 'handshake', note: 'Strategic Partners', sort_field: 'sort' },
-    schema: {},
-    fields: [
-      ID_FIELD,
-      STATUS_FIELD,
-      { field: 'sort', type: 'integer', meta: { interface: 'input', hidden: true } },
-      { field: 'name', type: 'string', meta: { interface: 'input', width: 'full', required: true } },
-      { field: 'logo', type: 'uuid', meta: { interface: 'file-image', special: ['file'] } },
-      { field: 'url', type: 'string', meta: { interface: 'input' } }
-    ]
-  });
+  for (const collection of COLLECTION_DEFS) {
+    await helpers.ensureCollection(collection);
+  }
 
-  // TODO — replicate ensureCollection(...) for every collection in SCHEMA.md:
-  //   Content : hero_banners, product_categories, products, product_skus, documents,
-  //             regional_hubs, industries, blog_posts, case_studies, iso_certifications, pages
-  //   Portal  : customers, orders, order_items, invoices, deliveries, rfq_requests
-  //
-  // TODO — Roles (Admin exists by default): create Editor, Sales, Customer with
-  //   createRole(...) and per-collection permissions. For Customer, add a
-  //   row-level read filter on orders/invoices/deliveries:
-  //       { customer: { user: { _eq: '$CURRENT_USER' } } }
-  //
-  // TODO — Enable translations (i18n) on text-bearing collections for vi/en/ja.
+  for (const relation of RELATION_DEFS) {
+    await helpers.ensureRelation(relation);
+  }
 
-  console.log('\nBootstrap complete. Remaining collections/roles: see ./SCHEMA.md');
+  await ensureRoles(helpers);
+  await ensurePolicies(helpers);
+  await ensureAccessLinks(helpers);
+  const publicPolicyId = await helpers.getPublicPolicyId();
+  await ensurePermissions(helpers, publicPolicyId);
+  await ensureLanguages();
+  await ensureFolders();
+
+  const ids = await seedInitialContent(helpers);
+  await seedDemoCommerce(helpers, ids);
+
+  // Apply PostgreSQL indexes for B2B queries
+  await applyDbIndexes();
+
+  console.log('\nBootstrap & seed data setup completed successfully!');
+  process.exit(0);
 }
 
 main().catch((err) => {
-  console.error(err);
+  console.error('Bootstrap failed with error:', err);
   process.exit(1);
 });

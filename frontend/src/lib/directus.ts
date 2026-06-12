@@ -1,25 +1,30 @@
 import { createDirectus, rest, staticToken } from '@directus/sdk';
+import { getDirectusUrl, requireDirectusToken } from './directus-runtime.mjs';
 
-// Minimal schema typing — extend as collections are added (see directus/SCHEMA.md).
+// Minimal schema typing - extend as collections are added (see directus/SCHEMA.md).
 export interface ProductSku {
   id: number;
   sku_code: string;
   product: number | null;
   unit: string | null;
   pack_size: string | null;
-  status: string;
+  attributes: Record<string, unknown> | null;
+  status: 'published' | 'draft' | 'archived';
 }
 
 export interface RfqRequest {
   id?: number | string;
   company: string;
-  contact: string;
+  contact_name: string;
   email: string;
   phone?: string;
   industry?: string;
   message?: string;
   line_items?: Array<{ sku: string; qty: number }>;
   status?: string;
+  source?: 'web' | 'portal';
+  user?: string | number;
+  hub?: string | number;
 }
 
 export interface Schema {
@@ -27,11 +32,12 @@ export interface Schema {
   rfq_requests: RfqRequest[];
 }
 
-const url = process.env.DIRECTUS_URL ?? 'http://localhost:8055';
-const token = process.env.DIRECTUS_TOKEN;
+const url = getDirectusUrl();
 
-// Server-side client. With a static token it can write to protected collections;
-// without one it falls back to the public role's permissions.
-export const directus = token
-  ? createDirectus<Schema>(url).with(staticToken(token)).with(rest())
-  : createDirectus<Schema>(url).with(rest());
+// Public Directus client for published content reads.
+export const publicDirectus = createDirectus<Schema>(url).with(rest());
+
+// Server-side client for mutations that must not rely on anonymous Directus access.
+export function createWriteDirectusClient(token = requireDirectusToken()) {
+  return createDirectus<Schema>(url).with(staticToken(token)).with(rest());
+}

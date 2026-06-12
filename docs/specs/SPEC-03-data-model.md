@@ -3,7 +3,9 @@
 **Status:** Baseline · **Owner:** Dev B · **Authoritative field list:** [`directus/SCHEMA.md`](../../directus/SCHEMA.md)
 
 This doc adds relationships, the ERD, and the access model on top of the collection
-field list in `SCHEMA.md`. Implemented in Directus (PostgreSQL).
+field list in [`SCHEMA.md`](../../directus/SCHEMA.md). Implemented in Directus (PostgreSQL).
+
+Xem chi tiết sơ đồ quan hệ thực thể trực quan bằng Mermaid tại [`erd.md`](erd.md).
 
 ## Entity-relationship overview
 ```
@@ -34,7 +36,7 @@ blog_posts   case_studies   iso_certifications   pages   hero_banners   partners
 |---|---|---|---|
 | product_categories | self m2o | product_categories | hierarchy (Cleanroom→Gloves…) |
 | products | m2o | product_categories | |
-| product_skus | m2o | products | SKU belongs to product |
+| product_skus | m2o | products | SKU belongs to product; `sku_code` is canonical lowercased text and remains case-insensitively unique |
 | products | m2m | industries | industry tagging |
 | products | m2o (file) / m2m (files) | directus_files | hero + gallery |
 | documents | m2o | products | TDS/MSDS per product |
@@ -52,10 +54,12 @@ blog_posts   case_studies   iso_certifications   pages   hero_banners   partners
 | orders / order_items | read **own** | CRUD | – | CRUD |
 | invoices | read **own** | CRUD | – | CRUD |
 | deliveries | read **own** | CRUD | – | CRUD |
-| rfq_requests | create + read own | CRUD | – | CRUD |
+| rfq_requests | read own; submit through `/api/rfq` | CRUD | – | CRUD |
 | customers | read/update own | CRUD | – | CRUD |
 
 "Own" = Directus permission filter `{ customer: { user: { _eq: "$CURRENT_USER" } } }`.
+
+Visitor and customer RFQ submission is application-mediated: `POST /api/rfq` writes with a server token; Directus visitor/customer roles do not create `rfq_requests` directly.
 
 ## Conventions
 - **PK:** auto-increment integer `id` (UUID for files/users per Directus default).
@@ -64,6 +68,7 @@ blog_posts   case_studies   iso_certifications   pages   hero_banners   partners
 - **i18n:** Directus Translations on text-bearing fields (vi/en/ja).
 - **Timestamps:** `date_created`, `date_updated` (Directus system fields) enabled.
 - **Money:** store as integer minor units or `decimal(15,2)`; never float.
+- **SKU codes:** `product_skus.sku_code` is normalized with `.trim().toLowerCase()` before cache keys or lookups, and PostgreSQL enforces `lower(btrim(sku_code))` uniqueness.
 
 ## ERP-ready interface (future Integration)
 `orders`, `invoices`, `deliveries` expose a stable import contract (REST + CSV
