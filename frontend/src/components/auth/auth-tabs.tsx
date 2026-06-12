@@ -15,7 +15,7 @@ export function AuthTabs() {
   ];
 
   return (
-    <div className="mb-8 flex border-b border-border">
+    <div className="mb-6 flex border-b border-border">
       {tabs.map((tab) => {
         const active = pathname === tab.href || pathname.startsWith(`${tab.href}/`);
         return (

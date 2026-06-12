@@ -76,14 +76,14 @@ export function RegisterForm() {
   if (done) {
     return (
       <div className="text-center">
-        <span className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-brand/10 text-brand">
+        <span className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-lg bg-brand/10 text-brand">
           <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
         </span>
         <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('registerSuccessTitle')}</h2>
         <p className="mx-auto mt-3 max-w-sm text-sm text-muted-foreground">{t('registerSuccessDesc')}</p>
         <Link
           href="/login"
-          className="mt-6 inline-flex items-center justify-center rounded-md border border-brand bg-brand px-5 py-2.5 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-strong hover:border-brand-strong"
+          className="mt-6 inline-flex items-center justify-center rounded-lg border border-brand bg-brand px-5 py-2.5 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-strong hover:border-brand-strong"
         >
           {t('backToLogin')}
         </Link>
@@ -92,7 +92,7 @@ export function RegisterForm() {
   }
 
   const inputBase =
-    'w-full rounded-md border bg-card py-3 pl-11 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-brand focus:ring-1 focus:ring-brand';
+    'w-full rounded-lg border bg-card py-2.5 pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-brand focus:ring-1 focus:ring-brand';
 
   const field = (
     name: Fields,
@@ -102,11 +102,11 @@ export function RegisterForm() {
     const err = errors[name];
     return (
       <div>
-        <label htmlFor={name} className="mb-1.5 block text-sm text-foreground">
+        <label htmlFor={name} className="mb-1 block text-sm text-foreground">
           {opts.label}
         </label>
         <div className="relative">
-          <Icon className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+          <Icon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
           <input
             id={name}
             name={name}
@@ -134,9 +134,9 @@ export function RegisterForm() {
       <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('tabRegister')}</h2>
       <p className="mt-2 text-sm text-muted-foreground">{t('registerSubtitle')}</p>
 
-      <form className="mt-8 space-y-5" onSubmit={onSubmit} noValidate>
+      <form className="mt-6 space-y-3.5" onSubmit={onSubmit} noValidate>
         {formError && (
-          <p role="alert" className="rounded-md border border-accent/30 bg-accent/5 px-3 py-2 text-sm text-accent">
+          <p role="alert" className="rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-sm text-accent">
             {formError}
           </p>
         )}
@@ -148,11 +148,11 @@ export function RegisterForm() {
 
         {/* Password */}
         <div>
-          <label htmlFor="password" className="mb-1.5 block text-sm text-foreground">
+          <label htmlFor="password" className="mb-1 block text-sm text-foreground">
             {t('passwordLabel')}
           </label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
             <input
               id="password"
               name="password"
@@ -207,7 +207,7 @@ export function RegisterForm() {
         <button
           type="submit"
           disabled={loading}
-          className="flex w-full items-center justify-center gap-2 rounded-md border border-brand bg-brand py-3.5 text-sm font-medium text-brand-foreground transition-colors hover:border-brand-strong hover:bg-brand-strong disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-lg border border-brand bg-brand py-3 text-sm font-medium text-brand-foreground transition-colors hover:border-brand-strong hover:bg-brand-strong disabled:opacity-60"
         >
           {loading ? (
             <>
@@ -225,7 +225,7 @@ export function RegisterForm() {
 
       <SocialAuth mode="register" />
 
-      <p className="mt-8 text-center text-sm text-muted-foreground">
+      <p className="mt-6 text-center text-sm text-muted-foreground">
         {t('haveAccount')}{' '}
         <Link href="/login" className="font-medium text-brand hover:underline">
           {t('loginNow')}

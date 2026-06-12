@@ -37,7 +37,9 @@ const config: Config = {
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))'
-        }
+        },
+        silver: 'hsl(var(--silver))',
+        onyx: 'hsl(var(--onyx))'
       },
       borderRadius: {
         lg: 'var(--radius)',

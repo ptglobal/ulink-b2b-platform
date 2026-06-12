@@ -4,36 +4,34 @@
  */
 export const ASSETS = {
   logo: {
-    full: '/images/logo/ulink-logo.svg',
+    full: '/images/logo/ulink_logo.png',
     mark: '/images/logo/ulink-mark.svg',
-    white: '/images/logo/ulink-logo-white.svg',
-    main: '/images/logo/ulink-main-logo.png'
+    white: '/images/logo/ulink_logo.png',
+    main: '/images/logo/ulink_logo.png'
   },
   banners: {
     /** Ảnh nền trang đăng nhập — KHÔNG kèm chữ. */
     loginHero: '/images/banners/login-hero.png'
   },
-  /** Ảnh trang chủ tải từ Figma (UI tĩnh — sau sẽ thay bằng nội dung Directus). */
+  /** Ảnh trang chủ — chỉ giữ lại những ảnh đang được sử dụng. */
   home: {
     hero: '/images/home/hero-gloves.png',
-    heroBg: '/images/home/hero-bg.png',
-    productGloves: '/images/home/product-gloves.png',
     productGlovesBox: '/images/home/product-gloves-box.png',
-    productTape: '/images/home/product-tape.png',
     productTapeRolls: '/images/home/product-tape-rolls.png',
-    productWiper1: '/images/home/product-wiper-1.png',
     productWiper2: '/images/home/product-wiper-2.png',
     productPackaging: '/images/home/product-packaging.png',
-    productPackagingBox: '/images/home/product-packaging-box.png',
+    /** Ảnh sản phẩm chất lượng cao */
+    productGloves: '/images/home/product-gloves.jpg',
+    productWipes: '/images/home/product-wipes.jpg',
+    productTape: '/images/home/product-tape.jpg',
+    productPkg: '/images/home/product-packaging.jpg',
     news1: '/images/home/news-1.png',
     news2: '/images/home/news-2.png',
     news3: '/images/home/news-3.png',
-    /** Trust bar icons */
-    trustGlobe: '/images/home/trust-globe.png',
-    trustSample: '/images/home/trust-sample.png',
-    trustDelivery: '/images/home/trust-delivery.png',
-    trustIso: '/images/home/trust-iso.png',
-    /** Ảnh nhà máy dưới khối "Đối tác tiêu biểu" — placeholder, thay bằng ảnh thật sau. */
+    /** Ảnh giải pháp */
+    solutionCleanroom: '/images/home/solution-cleanroom.jpg',
+    solutionPackaging: '/images/home/solution-packaging.jpg',
+    /** Ảnh nhà máy dưới khối About — placeholder, thay bằng ảnh thật sau. */
     factory: '/images/banners/login-hero.png'
   },
   /** Logo đối tác (SVG) */
@@ -44,6 +42,22 @@ export const ASSETS = {
     mider: '/images/partners/mider.svg',
     fujifilm: '/images/partners/fujifilm.svg',
     mkor: '/images/partners/mkor.svg'
+  },
+  /** Illustrations */
+  illustrations: {
+    vietnamMap: '/images/illustrations/vietnam-map.svg'
+  },
+  /** Ảnh trang Về chúng tôi — Trung tâm phân phối Hà Nam */
+  about: {
+    heroWarehouse: '/images/about/hero-warehouse.png',
+    locationAerial: '/images/about/location-aerial.png',
+    opWarehouse: '/images/about/op-warehouse.png',
+    opWms: '/images/about/op-wms.png',
+    opTruck: '/images/about/op-truck.png',
+    opTeam: '/images/about/op-team.png',
+    iso9001: '/images/about/iso-9001.png',
+    iso14001: '/images/about/iso-14001.png',
+    iso45001: '/images/about/iso-45001.png'
   },
   og: {
     default: '/og/og-default.png'

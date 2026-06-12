@@ -62,7 +62,8 @@
     "backToLogin": "Back to sign in"
   },
   "nav": {
-    "hubs": "Regional Hubs",
+    "home": "Home",
+    "hubs": "Industrial Clusters",
     "solutions": "Solutions / Products",
     "industries": "Industries",
     "resources": "Resources",
@@ -94,17 +95,29 @@
       "isoDesc2": "Quality assured"
     },
     "products": {
-      "sectionTitle": "Solutions / Products",
-      "sectionDesc": "Optimal solutions tailored to your cleanroom needs.",
-      "viewAll": "View all products",
-      "gloves": "Cleanroom gloves",
-      "glovesDesc": "Nitrile, PU, Latex, Vinyl",
-      "wipes": "Cleanroom wipers",
-      "wipesDesc": "Lint-free, Cotton, Paper",
-      "tape": "Cleanroom tape",
-      "tapeDesc": "OPP, Colored, Double-sided",
-      "packaging": "Cleanroom packaging",
-      "packagingDesc": "PE bags, OPP bags, Cartons"
+      "sectionTitle": "KEY SOLUTIONS",
+      "sectionDesc": "Focused on 4 core solutions — protect products, boost production efficiency.",
+      "viewAll": "View all solutions",
+      "item1Label": "SOLUTION 01",
+      "item1Title": "CLEANROOM",
+      "item1Desc": "Control contamination from the largest emission source — people — to daily operating environments.",
+      "item1Bullet1": "Garments & Personal Protection",
+      "item1Bullet2": "Daily contamination control supplies",
+      "item2Label": "SOLUTION 02",
+      "item2Title": "PACKAGING",
+      "item2Desc": "Protect finished goods in transit — ensuring quality and aesthetics reach the end user.",
+      "item2Bullet1": "LDPE / LLDPE shrink film",
+      "item2Bullet2": "Customized per technical drawings",
+      "item3Label": "SOLUTION 03",
+      "item3Title": "WIPES",
+      "item3Desc": "Non-woven specialty fabric for cleanrooms — high absorbency, lint-free, particle control.",
+      "item3Bullet1": "Polyester & Microfiber wipes",
+      "item3Bullet2": "Various sizes per requirement",
+      "item4Label": "SOLUTION 04",
+      "item4Title": "TAPE",
+      "item4Desc": "Heat-resistant, chemical-resistant — meeting every industrial manufacturing requirement.",
+      "item4Bullet1": "Heat-resistant & ESD tape",
+      "item4Bullet2": "Various specs and materials"
     },
     "partners": {
       "title": "Featured partners",
@@ -144,6 +157,41 @@
       "dedicatedTitle": "Dedicated support team",
       "dedicatedDesc": "Fast and attentive support",
       "cta": "Contact us now"
+    },
+    "about": {
+      "title": "About ULink Industries",
+      "desc": "ULink Industries is a global manufacturer specializing in the development and production of cleanroom gloves and consumables. With high-quality management systems and continuous innovation, we deliver reliable solutions to our customers.",
+      "cta": "Learn more about us"
+    },
+    "industries": {
+      "title": "Optimal solutions for every industry",
+      "viewAll": "View all industries",
+      "semiconductor": "Semiconductor · Electronics",
+      "semiconductorDesc": "High-precision manufacturing support",
+      "medical": "Medical · Biotech",
+      "medicalDesc": "Safety and hygiene, cleanroom support",
+      "automotive": "Automotive",
+      "automotiveDesc": "High-quality production environment",
+      "food": "Food · Beverage",
+      "foodDesc": "Hygienic manufacturing environment",
+      "precision": "Precision Equipment",
+      "precisionDesc": "High-precision assembly support",
+      "research": "Research · Education",
+      "researchDesc": "Laboratory environment support"
+    },
+    "differentiators": {
+      "title": "DIFFERENTIATED SERVICES – OPTIMIZED OPERATIONS FOR YOU",
+      "scheduled": "Scheduled delivery",
+      "scheduledDesc": "On time – On plan",
+      "reorder": "Reorder management",
+      "reorderDesc": "Easy – Fast",
+      "buffer": "Stock buffer (7 days)",
+      "bufferDesc": "No interruptions guaranteed",
+      "consolidation": "Supplier consolidation",
+      "consolidationDesc": "Save time & cost",
+      "emergency": "Emergency replacement",
+      "emergencyDesc": "Fast support 24/7",
+      "cta": "Contact us"
     }
   },
   "footer": {
@@ -190,12 +238,152 @@
       "faq": "FAQ"
     },
     "newsletterTitle": "NEWSLETTER",
-    "newsletterDesc": "Get updates on new products, promotions and solutions tailored to your business.",
+    "newsletterDesc": "Get updates on new products and promotions.",
     "newsletterPlaceholder": "Enter your email",
     "newsletterSubmit": "Submit",
     "rights": "All rights reserved.",
     "privacy": "Privacy Policy",
     "terms": "Terms of Use",
     "refund": "Refund Policy"
+  },
+  "regionalHubs": {
+    "eyebrow": "Industrial Clusters",
+    "title": "Connecting key industrial clusters in Vietnam",
+    "description": "ULINK INDUSTRIES provides solutions and services for industrial clusters nationwide, optimizing supply chains and enhancing production efficiency for businesses",
+    "stats": {
+      "distanceLabel": "Average service distance",
+      "distanceValue": "15",
+      "distanceUnit": "km",
+      "distanceNote": "From industrial cluster center",
+      "timeLabel": "Average delivery time",
+      "timeValue": "2.5",
+      "timeUnit": "hrs",
+      "timeNote": "Within cluster range",
+      "partnersLabel": "Number of partners",
+      "partnersValue": "120+",
+      "partnersNote": "Growing together"
+    },
+    "clusters": {
+      "bacNinh": "Bắc Ninh",
+      "bacNinhDesc": "Clusters: VSIP Bắc Ninh, Quế Võ, Tiên Sơn",
+      "hungYen": "Hưng Yên",
+      "hungYenDesc": "Clusters: Thăng Long II, Phố Nối A, Yên Mỹ II",
+      "haiPhong": "Hải Phòng",
+      "haiPhongDesc": "Clusters: Đình Vũ, VSIP Hải Phòng, Nam Cầu Kiền",
+      "dongNai": "Đồng Nai",
+      "dongNaiDesc": "Clusters: Gián Khẩu, Khánh Phủ, Tam Điệp I"
+    },
+    "dashboard": {
+      "headerTitle": "Real-time updates",
+      "headerTime": "Updated 10:30 AM",
+      "ordersLabel": "Orders today",
+      "ordersValue": "1,286",
+      "ordersUnit": "orders",
+      "ordersChange": "+12.5%",
+      "ordersNote": "vs yesterday",
+      "deliveryLabel": "On-time delivery rate",
+      "deliveryValue": "98.7%",
+      "deliveryChange": "+2.1%",
+      "deliveryNote": "vs yesterday",
+      "vehiclesLabel": "Active vehicles",
+      "vehiclesValue": "352",
+      "vehiclesUnit": "vehicles",
+      "vehiclesNote": "Real-time tracking",
+      "warehouseLabel": "Total warehouse area",
+      "warehouseValue": "220,000",
+      "warehouseUnit": "m²",
+      "warehouseNote": "Nationwide"
+    }
+  },
+  "whyChoose": {
+    "title": "Why choose ULINK?",
+    "items": {
+      "network": {
+        "title": "Nationwide coverage",
+        "desc": "Covering 4 key economic zones, meeting all needs quickly."
+      },
+      "supplyChain": {
+        "title": "Flexible supply chain",
+        "desc": "Flexible warehousing and logistics system, optimizing delivery routes."
+      },
+      "quality": {
+        "title": "Quality products",
+        "desc": "Diverse products meeting international standards, ensuring durability and safety."
+      },
+      "cost": {
+        "title": "Cost optimization",
+        "desc": "Effective solutions helping businesses save costs and improve efficiency."
+      },
+      "support": {
+        "title": "Expert support",
+        "desc": "Technical and sales team accompanying businesses."
+      }
+    }
+  },
+  "ctaBanner": {
+    "title": "Find the right solution for your business",
+    "desc": "Contact ULINK now for advice on the optimal solution for your business cluster.",
+    "button": "Contact now"
+  },
+  "aboutSidebar": {
+    "heading": "ABOUT US",
+    "hub": "Hà Nam Distribution Center",
+    "quality": "Quality & Standards",
+    "sustainability": "Sustainable Development",
+    "capabilities": "Our Capabilities",
+    "news": "News",
+    "careers": "Careers"
+  },
+  "aboutHub": {
+    "hero": {
+      "eyebrow": "HÀ NAM DISTRIBUTION CENTER",
+      "titleLine1": "Optimal efficiency.",
+      "titleLine2": "Lasting trust.",
+      "intro": "ULink Industries' Hà Nam Distribution Center is built to become a modern logistics hub, applying advanced technology and operating to the latest international standards.",
+      "commitment": "We are committed to delivering high-quality services that flexibly meet every need of our customers and partners."
+    },
+    "stats": {
+      "areaValue": "20,000+m2",
+      "areaLabel": "Total modern warehouse area",
+      "skuValue": "10,000+",
+      "skuLabel": "Products always in stock with diverse SKUs",
+      "timeValue": "24-48h",
+      "timeLabel": "Average nationwide delivery time",
+      "isoValue": "100%",
+      "isoLabel": "Operations following the latest ISO standards"
+    },
+    "location": {
+      "title": "STRATEGIC LOCATION",
+      "desc": "Located at the heart of Northern Vietnam's key transport routes, enabling fast distribution and optimized shipping costs.",
+      "hanoi": "From central Hà Nội: ~60km",
+      "haiphong": "From Hải Phòng port: ~70km",
+      "kcn": "Direct connection to major industrial parks",
+      "traffic": "Convenient access: expressways, national highways"
+    },
+    "operations": {
+      "title": "MODERN & SMART OPERATIONS",
+      "warehouse": "Modern warehouse system",
+      "warehouseDesc": "Function-optimized design ensuring the safety, security and preservation of goods.",
+      "wms": "Smart management with WMS",
+      "wmsDesc": "Applying a WMS for real-time, accurate and transparent inventory management.",
+      "network": "Flexible transport network",
+      "networkDesc": "Partnering with trusted carriers to optimize routes and delivery times.",
+      "team": "Professional team",
+      "teamDesc": "An experienced, dedicated team ready to support customers quickly."
+    },
+    "iso": {
+      "title": "OPERATING TO INTERNATIONAL STANDARDS",
+      "desc": "The Hà Nam Distribution Center is built and operated under advanced management systems, ensuring service quality and customer safety.",
+      "quality": "Quality management system",
+      "environment": "Environmental management system",
+      "safety": "Occupational health and safety management system"
+    },
+    "sustainability": {
+      "title": "Toward a sustainable future",
+      "desc": "ULink Industries continuously improves to minimize environmental impact, optimize operational efficiency and contribute to the community's sustainable development.",
+      "energy": "Efficient energy use",
+      "emission": "Emission reduction and recycling",
+      "supplyChain": "Building a sustainable supply chain"
+    }
   }
 }

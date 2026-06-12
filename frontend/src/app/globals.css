@@ -4,33 +4,34 @@
 
 @layer base {
   :root {
-    /* ULink — "Japanese Industrial Minimalism":
-       warm paper ground, ink text, restrained steel-indigo, vermilion accent. */
-    --background: 40 30% 98%;
-    --foreground: 220 18% 12%;
+    /* ULink Brand Color System */
+    --background: 0 0% 96%;              /* Off-White #F5F5F5 */
+    --foreground: 0 0% 8%;              /* Deep Onyx #141414 — body text */
 
-    --card: 0 0% 100%;
-    --card-foreground: 220 18% 12%;
+    --card: 0 0% 96%;                   /* Off-White #F5F5F5 */
+    --card-foreground: 0 0% 8%;         /* Deep Onyx */
 
-    --primary: 222 38% 22%; /* deep steel indigo */
-    --primary-foreground: 40 30% 98%;
+    --primary: 210 49% 19%;             /* Dark Navy #1A2D49 — headings, nav */
+    --primary-foreground: 0 0% 100%;
 
-    --accent: 8 72% 52%; /* vermilion / shu-iro — use sparingly */
-    --accent-foreground: 40 30% 98%;
+    --accent: 214 78% 49%;             /* ULink Blue #1769E2 — key accent */
+    --accent-foreground: 0 0% 100%;
 
-    /* Brand blue (from logo) — links, highlights, focus, auth CTA */
-    --brand: 221 83% 45%;
-    --brand-strong: 224 56% 30%; /* deep brand blue — hover/nhấn */
+    --brand: 214 78% 49%;              /* ULink Blue #1769E2 — CTA, links */
+    --brand-strong: 214 78% 42%;       /* Darker blue — hover/press */
     --brand-foreground: 0 0% 100%;
 
-    --muted: 40 16% 94%;
-    --muted-foreground: 220 10% 40%;
+    --muted: 0 0% 96%;                 /* Off-White #F5F5F5 */
+    --muted-foreground: 210 10% 40%;   /* Secondary text */
 
-    --border: 220 14% 88%;
-    --input: 220 14% 88%;
-    --ring: 222 38% 22%;
+    --border: 216 16% 76%;             /* Industrial Silver #B8C0CC */
+    --input: 216 16% 76%;
+    --ring: 214 78% 49%;               /* ULink Blue */
 
-    --radius: 0.25rem; /* crisp, industrial — minimal rounding */
+    --silver: 216 16% 76%;             /* Industrial Silver #B8C0CC */
+    --onyx: 0 0% 8%;                   /* Deep Onyx #141414 */
+
+    --radius: 0.25rem;
 
     --font-sans: 'Inter', system-ui, sans-serif;
     --font-mono: 'IBM Plex Mono', ui-monospace, monospace;

@@ -13,16 +13,16 @@ export function SocialAuth({ mode }: { mode: 'login' | 'register' }) {
 
   return (
     <>
-      <div className="my-6 flex items-center gap-3">
+      <div className="my-4 flex items-center gap-3">
         <div className="h-px flex-1 bg-border" />
         <span className="text-xs text-muted-foreground">{t(dividerKey)}</span>
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-2.5">
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 rounded-md border border-border py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+          className="flex w-full items-center justify-center gap-3 rounded-lg border border-border py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
         >
           <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
             <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -34,7 +34,7 @@ export function SocialAuth({ mode }: { mode: 'login' | 'register' }) {
         </button>
         <button
           type="button"
-          className="flex w-full items-center justify-center gap-3 rounded-md border border-border py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+          className="flex w-full items-center justify-center gap-3 rounded-lg border border-border py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted"
         >
           <Image src={ASSETS.logo.mark} alt="" width={20} height={20} aria-hidden="true" />
           {t(ssoKey)}

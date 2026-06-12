@@ -62,7 +62,8 @@
     "backToLogin": "Quay lại đăng nhập"
   },
   "nav": {
-    "hubs": "Cụm khu vực",
+    "home": "Trang chủ",
+    "hubs": "Cụm khu công nghiệp",
     "solutions": "Giải pháp / Sản phẩm",
     "industries": "Ngành nghề",
     "resources": "Tài nguyên",
@@ -94,17 +95,29 @@
       "isoDesc2": "Đảm bảo chất lượng"
     },
     "products": {
-      "sectionTitle": "Giải pháp / Sản phẩm",
-      "sectionDesc": "Cung cấp các giải pháp tối ưu phù hợp với nhu cầu phòng sạch.",
-      "viewAll": "Xem tất cả sản phẩm",
-      "gloves": "Găng tay phòng sạch",
-      "glovesDesc": "Nitrile, PU, Latex, Vinyl",
-      "wipes": "Khăn lau phòng sạch",
-      "wipesDesc": "Không xơ, Cotton, Giấy",
-      "tape": "Băng keo phòng sạch",
-      "tapeDesc": "OPP, Màu sắc, Hai mặt",
-      "packaging": "Vật liệu đóng gói phòng sạch",
-      "packagingDesc": "Túi PE, Túi OPP, Thùng carton"
+      "sectionTitle": "GIẢI PHÁP NỔI BẬT",
+      "sectionDesc": "Tập trung vào 2 giải pháp cốt lõi:\nPhòng sạch & Đóng gói – bảo vệ sản phẩm,\nnâng cao hiệu suất sản xuất.",
+      "viewAll": "Xem tất cả giải pháp",
+      "item1Label": "GIẢI PHÁP 01",
+      "item1Title": "PHÒNG SẠCH",
+      "item1Desc": "Kiểm soát ô nhiễm từ nguồn phát tán lớn nhất — con người — đến môi trường vận hành hàng ngày.",
+      "item1Bullet1": "Trang phục & Bảo hộ cá nhân",
+      "item1Bullet2": "Vật tư kiểm soát ô nhiễm hàng ngày",
+      "item2Label": "GIẢI PHÁP 02",
+      "item2Title": "ĐÓNG GÓI",
+      "item2Desc": "Bảo vệ thành phẩm trong vận chuyển — đảm bảo chất lượng và thẩm mỹ đến tay người dùng cuối.",
+      "item2Bullet1": "Màng co LDPE / LLDPE",
+      "item2Bullet2": "Tuỳ chỉnh theo bản vẽ kỹ thuật",
+      "item3Label": "GIẢI PHÁP 03",
+      "item3Title": "KHĂN LAU",
+      "item3Desc": "Vải không dệt chuyên dụng cho phòng sạch — thấm hút tốt, không xơ vải, kiểm soát hạt bụi.",
+      "item3Bullet1": "Khăn lau Polyester & Microfiber",
+      "item3Bullet2": "Đa dạng kích thước theo yêu cầu",
+      "item4Label": "GIẢI PHÁP 04",
+      "item4Title": "BĂNG KEO",
+      "item4Desc": "Chịu nhiệt, chống hóa chất — đáp ứng mọi yêu cầu sản xuất công nghiệp.",
+      "item4Bullet1": "Băng keo chịu nhiệt & ESD",
+      "item4Bullet2": "Đa dạng quy cách và chất liệu"
     },
     "partners": {
       "title": "Đối tác tiêu biểu",
@@ -143,6 +156,41 @@
       "bufferDesc": "Đảm bảo nguồn hàng luôn sẵn sàng",
       "dedicatedTitle": "Đội ngũ hỗ trợ chuyên nghiệp",
       "dedicatedDesc": "Hỗ trợ nhanh chóng và tận tâm",
+      "cta": "Liên hệ ngay"
+    },
+    "about": {
+      "title": "Giới thiệu ULink Industries",
+      "desc": "ULink Industries là nhà sản xuất toàn cầu chuyên phát triển và sản xuất găng tay, vật tư tiêu hao cho phòng sạch. Với hệ thống quản lý chất lượng cao và sáng tạo không ngừng, chúng tôi mang đến giải pháp đáng tin cậy cho khách hàng.",
+      "cta": "Xem thêm về chúng tôi"
+    },
+    "industries": {
+      "title": "Giải pháp tối ưu cho mọi ngành nghề",
+      "viewAll": "Xem tất cả ngành nghề",
+      "semiconductor": "Điện tử · Bán dẫn",
+      "semiconductorDesc": "Hỗ trợ sản xuất trong môi trường độ chính xác cao",
+      "medical": "Y tế · Dược phẩm",
+      "medicalDesc": "An toàn và vệ sinh, hỗ trợ phòng sạch",
+      "automotive": "Ô tô · Cơ khí",
+      "automotiveDesc": "Môi trường sản xuất chất lượng cao",
+      "food": "Thực phẩm · Đồ uống",
+      "foodDesc": "Vệ sinh an toàn thực phẩm",
+      "precision": "Thiết bị chính xác",
+      "precisionDesc": "Hỗ trợ quy trình lắp ráp tinh vi",
+      "research": "Nghiên cứu · Giáo dục",
+      "researchDesc": "Hỗ trợ môi trường nghiên cứu"
+    },
+    "differentiators": {
+      "title": "DỊCH VỤ KHÁC BIỆT – TỐI ƯU VẬN HÀNH CHO BẠN",
+      "scheduled": "Giao hàng theo lịch",
+      "scheduledDesc": "Đúng hẹn – Đúng kế hoạch",
+      "reorder": "Quản lý đặt hàng lại",
+      "reorderDesc": "Dễ dàng – Nhanh chóng",
+      "buffer": "Dự trữ hàng (7 ngày)",
+      "bufferDesc": "Đảm bảo không gián đoạn",
+      "consolidation": "Hợp nhất nhà cung cấp",
+      "consolidationDesc": "Tiết kiệm thời gian & chi phí",
+      "emergency": "Thay thế khẩn cấp",
+      "emergencyDesc": "Hỗ trợ nhanh 24/7",
       "cta": "Liên hệ ngay"
     }
   },
@@ -190,12 +238,152 @@
       "faq": "Câu hỏi thường gặp"
     },
     "newsletterTitle": "ĐĂNG KÝ NHẬN TIN",
-    "newsletterDesc": "Nhận thông tin sản phẩm mới, khuyến mãi và giải pháp phù hợp với doanh nghiệp của bạn.",
-    "newsletterPlaceholder": "Nhập email của bạn",
+    "newsletterDesc": "Nhận tin sản phẩm mới và khuyến mãi.",
+    "newsletterPlaceholder": "Email của bạn",
     "newsletterSubmit": "Gửi",
     "rights": "Tất cả quyền được bảo lưu.",
     "privacy": "Chính sách bảo mật",
     "terms": "Điều khoản sử dụng",
     "refund": "Chính sách đổi trả"
+  },
+  "regionalHubs": {
+    "eyebrow": "Cụm khu công nghiệp",
+    "title": "Kết nối các cụm công nghiệp trọng điểm tại Việt Nam",
+    "description": "ULINK INDUSTRIES cung cấp giải pháp và dịch vụ cho các cụm công nghiệp trên toàn quốc, tối ưu chuỗi cung ứng và nâng cao hiệu quả sản xuất cho doanh nghiệp",
+    "stats": {
+      "distanceLabel": "Khoảng cách phục vụ trung bình",
+      "distanceValue": "15",
+      "distanceUnit": "km",
+      "distanceNote": "Tính từ trung tâm cụm công nghiệp",
+      "timeLabel": "Thời gian giao hàng trung bình",
+      "timeValue": "2.5",
+      "timeUnit": "giờ",
+      "timeNote": "Trong phạm vi cụm",
+      "partnersLabel": "Số lượng đối tác",
+      "partnersValue": "120+",
+      "partnersNote": "Đồng hành và phát triển"
+    },
+    "clusters": {
+      "bacNinh": "Bắc Ninh",
+      "bacNinhDesc": "Các cụm CN: VSIP Bắc Ninh, Quế Võ, Tiên Sơn",
+      "hungYen": "Hưng Yên",
+      "hungYenDesc": "Các cụm CN: Thăng Long II, Phố Nối A, Yên Mỹ II",
+      "haiPhong": "Hải Phòng",
+      "haiPhongDesc": "Các cụm CN: Đình Vũ, VSIP Hải Phòng, Nam Cầu Kiền",
+      "dongNai": "Đồng Nai",
+      "dongNaiDesc": "Các cụm CN: Gián Khẩu, Khánh Phủ, Tam Điệp I"
+    },
+    "dashboard": {
+      "headerTitle": "Thông tin cập nhật theo thời gian thực",
+      "headerTime": "Cập nhật 10:30 AM",
+      "ordersLabel": "Đơn hàng hôm nay",
+      "ordersValue": "1,286",
+      "ordersUnit": "đơn",
+      "ordersChange": "+12.5%",
+      "ordersNote": "so với hôm qua",
+      "deliveryLabel": "Tỷ lệ giao hàng đúng hạn",
+      "deliveryValue": "98.7%",
+      "deliveryChange": "+2.1%",
+      "deliveryNote": "so với hôm qua",
+      "vehiclesLabel": "Phương tiện đang hoạt động",
+      "vehiclesValue": "352",
+      "vehiclesUnit": "xe",
+      "vehiclesNote": "Theo dõi hành trình thực tế",
+      "warehouseLabel": "Tổng diện tích kho",
+      "warehouseValue": "220,000",
+      "warehouseUnit": "m²",
+      "warehouseNote": "Trên toàn quốc"
+    }
+  },
+  "whyChoose": {
+    "title": "Vì sao nên chọn ULINK?",
+    "items": {
+      "network": {
+        "title": "Mạng lưới rộng khắp",
+        "desc": "Phủ sóng 4 vùng kinh tế trọng điểm, đáp ứng nhanh mọi nhu cầu."
+      },
+      "supplyChain": {
+        "title": "Chuỗi cung ứng linh hoạt",
+        "desc": "Hệ thống kho bãi và vận chuyển linh hoạt, tối ưu tuyến giao hàng."
+      },
+      "quality": {
+        "title": "Sản phẩm chất lượng",
+        "desc": "Đa dạng sản phẩm đạt tiêu chuẩn quốc tế, đảm bảo độ bền và an toàn."
+      },
+      "cost": {
+        "title": "Tối ưu chi phí",
+        "desc": "Giải pháp hiệu quả giúp doanh nghiệp tiết kiệm chi phí và nâng cao hiệu suất."
+      },
+      "support": {
+        "title": "Hỗ trợ chuyên sâu",
+        "desc": "Đội ngũ kỹ thuật và bán hàng đồng hành cùng doanh nghiệp."
+      }
+    }
+  },
+  "ctaBanner": {
+    "title": "Tìm giải pháp phù hợp cho doanh nghiệp của bạn",
+    "desc": "Liên hệ ngay với ULINK để được tư vấn giải pháp tối ưu cho cụm doanh nghiệp của bạn.",
+    "button": "Liên hệ ngay"
+  },
+  "aboutSidebar": {
+    "heading": "VỀ CHÚNG TÔI",
+    "hub": "Trung tâm phân phối Hà Nam",
+    "quality": "Chất lượng & Tiêu chuẩn",
+    "sustainability": "Phát triển bền vững",
+    "capabilities": "Năng lực của chúng tôi",
+    "news": "Tin tức",
+    "careers": "Cơ hội nghề nghiệp"
+  },
+  "aboutHub": {
+    "hero": {
+      "eyebrow": "TRUNG TÂM PHÂN PHỐI HÀ NAM",
+      "titleLine1": "Hiệu quả tối ưu.",
+      "titleLine2": "Niềm tin bền vững.",
+      "intro": "Trung tâm phân phối Hà Nam của ULink Industries được xây dựng với định hướng trở thành trung tâm logistics hiện đại, ứng dụng công nghệ tiên tiến và vận hành theo tiêu chuẩn quốc tế mới nhất.",
+      "commitment": "Chúng tôi cam kết mang đến dịch vụ chất lượng cao, đáp ứng linh hoạt mọi nhu cầu của khách hàng và đối tác."
+    },
+    "stats": {
+      "areaValue": "20.000+m2",
+      "areaLabel": "Tổng diện tích kho bãi hiện đại",
+      "skuValue": "10.000+",
+      "skuLabel": "Sản phẩm luôn sẵn sàng với đa dạng SKU",
+      "timeValue": "24-48h",
+      "timeLabel": "Thời gian giao hàng trung bình toàn quốc",
+      "isoValue": "100%",
+      "isoLabel": "Quy trình vận hành theo tiêu chuẩn ISO mới nhất"
+    },
+    "location": {
+      "title": "VỊ TRÍ CHIẾN LƯỢC",
+      "desc": "Nằm tại trung tâm kết nối các tuyến giao thông trọng điểm miền Bắc, thuận tiện cho việc phân phối nhanh và tối ưu chi phí vận chuyển.",
+      "hanoi": "Cách trung tâm Hà Nội: ~60km",
+      "haiphong": "Cách cảng Hải Phòng: ~70km",
+      "kcn": "Kết nối trực tiếp các KCN lớn",
+      "traffic": "Giao thông thuận tiện: cao tốc, quốc lộ"
+    },
+    "operations": {
+      "title": "VẬN HÀNH HIỆN ĐẠI – THÔNG MINH",
+      "warehouse": "Hệ thống kho hiện đại",
+      "warehouseDesc": "Thiết kế tối ưu công năng, đảm bảo an toàn, bảo mật và bảo quản hàng hóa.",
+      "wms": "Quản lý thông minh với WMS",
+      "wmsDesc": "Ứng dụng hệ thống WMS giúp quản lý tồn kho theo thời gian thực, chính xác và minh bạch.",
+      "network": "Mạng lưới vận chuyển linh hoạt",
+      "networkDesc": "Kết nối với các đối tác vận tải uy tín, tối ưu tuyến đường và thời gian giao hàng.",
+      "team": "Đội ngũ chuyên nghiệp",
+      "teamDesc": "Đội ngũ giàu kinh nghiệm, tận tâm, sẵn sàng hỗ trợ khách hàng nhanh chóng."
+    },
+    "iso": {
+      "title": "VẬN HÀNH THEO TIÊU CHUẨN QUỐC TẾ",
+      "desc": "Trung tâm phân phối Hà Nam được xây dựng và vận hành theo hệ thống quản lý tiên tiến, đảm bảo chất lượng dịch vụ và sự an toàn cho khách hàng.",
+      "quality": "Hệ thống quản lý chất lượng",
+      "environment": "Hệ thống quản lý môi trường",
+      "safety": "Hệ thống quản lý an toàn và sức khỏe nghề nghiệp"
+    },
+    "sustainability": {
+      "title": "Hướng đến tương lai bền vững",
+      "desc": "ULink Industries không ngừng cải tiến để giảm thiểu tác động đến môi trường, tối ưu hiệu quả vận hành và đóng góp vào sự phát triển bền vững của cộng đồng.",
+      "energy": "Sử dụng năng lượng hiệu quả",
+      "emission": "Giảm thiểu phát thải và tái chế",
+      "supplyChain": "Xây dựng chuỗi cung ứng bền vững"
+    }
   }
 }

@@ -41,7 +41,7 @@ export function LocaleSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-1.5 rounded-md border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="flex items-center gap-1.5 border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <Globe className="h-4 w-4" aria-hidden="true" />
         <span>{LABELS[locale]}</span>
@@ -51,7 +51,7 @@ export function LocaleSwitcher() {
       {open && (
         <ul
           role="listbox"
-          className="absolute right-0 z-50 mt-1 w-40 overflow-hidden rounded-md border border-border bg-card py-1 shadow-lg"
+          className="absolute right-0 z-50 mt-1 w-40 overflow-hidden border border-border bg-card py-1 shadow-lg"
         >
           {routing.locales.map((l) => (
             <li key={l} role="option" aria-selected={l === locale}>

@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 600" fill="none">
+  <!-- Vietnam outline - simplified shape -->
+  <path
+    d="M180 20 C185 25, 195 30, 200 35 C210 40, 220 38, 228 42 C235 46, 240 52, 245 58 C250 62, 252 68, 248 75 C244 82, 238 88, 235 95 C232 102, 235 108, 240 112 C245 116, 250 120, 252 128 C254 136, 250 142, 245 148 C240 154, 236 160, 238 168 C240 176, 245 182, 248 188 C251 194, 248 200, 244 205 C240 210, 235 215, 232 222 C229 229, 230 236, 234 242 C238 248, 242 254, 244 262 C246 270, 244 278, 240 285 C236 292, 230 298, 226 305 C222 312, 220 320, 222 328 C224 336, 228 342, 230 350 C232 358, 230 366, 226 372 C222 378, 218 384, 216 392 C214 400, 216 408, 220 414 C224 420, 228 426, 230 434 C232 442, 228 450, 222 456 C216 462, 210 466, 206 472 C202 478, 200 484, 202 490 C204 496, 208 500, 212 504 C216 508, 220 512, 222 518 C224 524, 220 530, 214 534 C208 538, 200 540, 194 538 C188 536, 184 530, 180 524 C176 518, 172 512, 168 508 C164 504, 158 502, 152 504 C146 506, 142 510, 140 516 C138 522, 140 528, 144 532 C148 536, 152 540, 154 546 C156 552, 152 556, 146 558 C140 560, 134 558, 130 554 C126 550, 124 544, 120 540 C116 536, 110 534, 104 536 C98 538, 94 542, 92 548 C90 554, 92 560, 96 564 C100 568, 106 570, 110 574 C114 578, 112 582, 106 584 C100 586, 94 584, 90 580 Z"
+    fill="url(#mapGradient)"
+    stroke="#B8C0CC"
+    stroke-width="1.5"
+    opacity="0.85"
+  />
+
+  <!-- Northern region detail (more detailed) -->
+  <path
+    d="M180 20 C175 22, 170 28, 168 35 C166 42, 170 48, 175 52 C180 56, 185 54, 188 50 C191 46, 190 40, 186 36 C182 32, 178 28, 180 20 Z"
+    fill="url(#mapGradient)"
+    stroke="#B8C0CC"
+    stroke-width="1"
+    opacity="0.6"
+  />
+
+  <!-- Cluster markers -->
+  <!-- 01 - Bac Ninh -->
+  <circle cx="210" cy="85" r="6" fill="#1769E2" opacity="0.9"/>
+  <circle cx="210" cy="85" r="10" fill="#1769E2" opacity="0.15"/>
+
+  <!-- 02 - Hung Yen -->
+  <circle cx="205" cy="115" r="6" fill="#1769E2" opacity="0.9"/>
+  <circle cx="205" cy="115" r="10" fill="#1769E2" opacity="0.15"/>
+
+  <!-- 03 - Hai Phong -->
+  <circle cx="240" cy="95" r="6" fill="#1769E2" opacity="0.9"/>
+  <circle cx="240" cy="95" r="10" fill="#1769E2" opacity="0.15"/>
+
+  <!-- 04 - Dong Nai (southern) -->
+  <circle cx="210" cy="440" r="6" fill="#1769E2" opacity="0.9"/>
+  <circle cx="210" cy="440" r="10" fill="#1769E2" opacity="0.15"/>
+
+  <!-- Connecting vertical line for northern clusters -->
+  <line x1="185" y1="80" x2="185" y2="120" stroke="#1769E2" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.4"/>
+
+  <!-- Map gradient -->
+  <defs>
+    <linearGradient id="mapGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8EDF5"/>
+      <stop offset="50%" stop-color="#D4DCE8"/>
+      <stop offset="100%" stop-color="#C8D4E4"/>
+    </linearGradient>
+  </defs>
+</svg>
