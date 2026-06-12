@@ -8,7 +8,8 @@ export interface ProductSku {
   product: number | null;
   unit: string | null;
   pack_size: string | null;
-  status: string;
+  attributes: Record<string, unknown> | null;
+  status: 'published' | 'draft' | 'archived';
 }
 
 export interface RfqRequest {

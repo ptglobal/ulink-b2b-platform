@@ -7,7 +7,9 @@ export type ContentCollection =
   | 'documents'
   | 'product_categories'
   | 'partners'
-  | 'hero_banners';
+  | 'hero_banners'
+  | 'industries'
+  | 'iso_certifications';
 
 export type PublishWebhookEvent = 'items.create' | 'items.update' | 'items.delete';
 
@@ -89,7 +91,9 @@ export function parsePublishWebhookPayload(
     collection !== 'documents' &&
     collection !== 'product_categories' &&
     collection !== 'partners' &&
-    collection !== 'hero_banners'
+    collection !== 'hero_banners' &&
+    collection !== 'industries' &&
+    collection !== 'iso_certifications'
   ) {
     return { ok: false, error: new Error('Unsupported content collection.') };
   }
@@ -124,15 +128,22 @@ export function resolveRevalidationTargets(
     tags.add(`entity:${payload.collection}:${id}`);
   }
 
+  // Supported locales for global listing/landing page revalidation
+  const locales = ['vi', 'en', 'ja'];
+
   if (payload.collection === 'hero_banners' || payload.collection === 'partners') {
-    paths.add(`/${locale}`);
+    for (const loc of locales) {
+      paths.add(`/${loc}`);
+    }
   }
 
   if (
     payload.collection === 'product_categories' ||
     payload.collection === 'products'
   ) {
-    paths.add(`/${locale}/solutions`);
+    for (const loc of locales) {
+      paths.add(`/${loc}/solutions`);
+    }
   }
 
   if (payload.collection === 'products' && payload.slug) {
@@ -140,15 +151,26 @@ export function resolveRevalidationTargets(
   }
 
   if (payload.collection === 'regional_hubs') {
-    paths.add(`/${locale}/regional-hubs`);
+    for (const loc of locales) {
+      paths.add(`/${loc}/regional-hubs`);
+    }
   }
 
   if (
     payload.collection === 'documents' ||
     payload.collection === 'blog_posts' ||
-    payload.collection === 'case_studies'
+    payload.collection === 'case_studies' ||
+    payload.collection === 'iso_certifications'
   ) {
-    paths.add(`/${locale}/resources`);
+    for (const loc of locales) {
+      paths.add(`/${loc}/resources`);
+    }
+  }
+
+  if (payload.collection === 'industries') {
+    for (const loc of locales) {
+      paths.add(`/${loc}/industries`);
+    }
   }
 
   if (payload.collection === 'pages' && payload.slug) {

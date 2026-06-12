@@ -1,3 +1,5 @@
+import { normalizeSkuCode } from './sku-cache';
+
 export interface NormalizedRfqItem {
   sku: string;
   qty: number;
@@ -146,7 +148,7 @@ function normalizeItems(value: unknown, state: ValidationState): NormalizedRfqIt
     }
 
     items.push({
-      sku: rawSku,
+      sku: normalizeSkuCode(rawSku),
       qty: rawQty
     });
   }
