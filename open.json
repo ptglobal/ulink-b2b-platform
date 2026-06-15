@@ -15,6 +15,14 @@
       "description": "Your current Directus instance (Localhost)."
     }
   ],
+  "security": [
+    {
+      "Auth": []
+    },
+    {
+      "KeyAuth": []
+    }
+  ],
   "paths": {
     "/users/register": {
       "post": {
@@ -174,28 +182,14 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "example": "admin@example.com",
+                    "example": "admin@ulink.com",
                     "description": "Email address of the user you're retrieving the access token for."
                   },
                   "password": {
                     "type": "string",
                     "description": "Password of the user.",
                     "format": "password",
-                    "example": "password"
-                  },
-                  "mode": {
-                    "type": "string",
-                    "enum": [
-                      "json",
-                      "cookie",
-                      "session"
-                    ],
-                    "default": "json",
-                    "description": "Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie."
-                  },
-                  "otp": {
-                    "type": "string",
-                    "description": "The user's one-time-password (if MFA is enabled)."
+                    "example": "5f8859f07a20530ee9be42c4"
                   }
                 }
               }
@@ -3379,7 +3373,7 @@
           }
         },
         "tags": [
-          "Users"
+          "Authentication"
         ]
       },
       "patch": {
@@ -3410,7 +3404,7 @@
           }
         },
         "tags": [
-          "Users"
+          "Authentication"
         ]
       }
     },
@@ -26835,9 +26829,9 @@
         "name": "access_token"
       },
       "Auth": {
-        "type": "apiKey",
-        "in": "header",
-        "name": "Authorization"
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
