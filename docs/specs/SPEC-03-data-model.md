@@ -46,6 +46,7 @@ blog_posts   case_studies   iso_certifications   pages   hero_banners   partners
 | invoices | m2o | customers, orders | AR / công nợ |
 | deliveries | m2o | orders, regional_hubs | scheduled delivery |
 | rfq_requests | m2o | regional_hubs, directus_users (assigned_sales) | line_items JSON |
+| rfq_assignment_rules | m2o | regional_hubs, industries, directus_users (assigned_sales) | editable routing matrix |
 
 ## Access model (row-level)
 | Collection | Customer | Sales | Editor | Admin |
@@ -55,11 +56,12 @@ blog_posts   case_studies   iso_certifications   pages   hero_banners   partners
 | invoices | read **own** | CRUD | – | CRUD |
 | deliveries | read **own** | CRUD | – | CRUD |
 | rfq_requests | read own; submit through `/api/rfq` | CRUD | – | CRUD |
+| rfq_assignment_rules | – | CRUD | – | CRUD |
 | customers | read/update own | CRUD | – | CRUD |
 
 "Own" = Directus permission filter `{ customer: { user: { _eq: "$CURRENT_USER" } } }`.
 
-Visitor and customer RFQ submission is application-mediated: `POST /api/rfq` writes with a server token; Directus visitor/customer roles do not create `rfq_requests` directly.
+Visitor and customer RFQ submission is application-mediated: `POST /api/rfq` writes with a server token; Directus visitor/customer roles do not create `rfq_requests` directly. Exact duplicate submissions reuse the first RFQ id via the application idempotency key.
 
 ## Conventions
 - **PK:** auto-increment integer `id` (UUID for files/users per Directus default).
@@ -69,6 +71,13 @@ Visitor and customer RFQ submission is application-mediated: `POST /api/rfq` wri
 - **Timestamps:** `date_created`, `date_updated` (Directus system fields) enabled.
 - **Money:** store as integer minor units or `decimal(15,2)`; never float.
 - **SKU codes:** `product_skus.sku_code` is normalized with `.trim().toLowerCase()` before cache keys or lookups, and PostgreSQL enforces `lower(btrim(sku_code))` uniqueness.
+
+## ERP outbox
+
+- `integration_events` stores meaningful `orders`, `invoices`, and `deliveries` changes as a durable outbox log.
+- `integration_events.idempotency_key` is unique; use `erp_ref` when present, otherwise `entity:id:revision`.
+- `integration_events.status` values are `pending`, `sent`, and `failed`.
+- The worker reads `pending` rows, POSTs the JSON `payload` to the ERP endpoint, and moves terminal failures into the `failed_erp_webhooks` reporting view.
 
 ## ERP-ready interface (future Integration)
 `orders`, `invoices`, `deliveries` expose a stable import contract (REST + CSV

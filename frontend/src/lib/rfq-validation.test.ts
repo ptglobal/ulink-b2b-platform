@@ -25,6 +25,8 @@ test('normalizes phone and source and trims strings', () => {
     contact: '  Mr A  ',
     email: 'a@acme.vn',
     phone: ' (+84) 901-234-567 ',
+    hub: ' 3 ',
+    industry: '  Chemical  ',
     source: 'portal',
     items: [{ sku: 'CR-GLV-001', qty: 1 }]
   });
@@ -33,6 +35,8 @@ test('normalizes phone and source and trims strings', () => {
   assert.equal(result.value.company, 'ACME');
   assert.equal(result.value.contact_name, 'Mr A');
   assert.equal(result.value.phone, '+84901234567');
+  assert.equal(result.value.hub, 3);
+  assert.equal(result.value.industry, 'chemical');
   assert.equal(result.value.source, 'portal');
 });
 

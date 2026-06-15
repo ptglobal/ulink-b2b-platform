@@ -5,7 +5,7 @@ export type RfqAntiSpamResult =
   | {
       ok: false;
       error: {
-        code: 'FORBIDDEN' | 'TOO_MANY_REQUESTS' | 'CONFLICT';
+        code: 'FORBIDDEN' | 'TOO_MANY_REQUESTS';
         message: string;
         details?: Record<string, unknown>;
       };
@@ -14,11 +14,10 @@ export type RfqAntiSpamResult =
 interface RfqAntiSpamDeps {
   verifyTurnstile: (token: string, ip: string) => Promise<boolean>;
   rateLimit: (ip: string) => Promise<{ ok: true } | { ok: false; retryAfterSeconds: number }>;
-  reserveFingerprint: (fingerprint: string) => Promise<{ ok: true } | { ok: false }>;
 }
 
 export async function enforceRfqAntiSpam(
-  input: { token: string; ip: string; fingerprint: string },
+  input: { token: string; ip: string },
   deps: RfqAntiSpamDeps
 ): Promise<RfqAntiSpamResult> {
   const verified = await deps.verifyTurnstile(input.token, input.ip);
@@ -42,17 +41,6 @@ export async function enforceRfqAntiSpam(
         details: {
           retryAfterSeconds: rateLimit.retryAfterSeconds
         }
-      }
-    };
-  }
-
-  const reserved = await deps.reserveFingerprint(input.fingerprint);
-  if (!reserved.ok) {
-    return {
-      ok: false,
-      error: {
-        code: 'CONFLICT',
-        message: 'Duplicate RFQ submission detected.'
       }
     };
   }

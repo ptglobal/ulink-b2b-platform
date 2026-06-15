@@ -31,7 +31,7 @@ smoke checks, but pass/fail evidence comes from role-specific API requests.
 - `Admin`: full access to system, content, portal data, roles, policies, users
 - `Editor`: CRUD content collections and singletons only; no access to portal data
 - `Sales`: read content and singletons; full CRUD on `customers`, `orders`,
-  `order_items`, `invoices`, `deliveries`, `rfq_requests`
+  `order_items`, `invoices`, `deliveries`, `rfq_requests`, `rfq_assignment_rules`
 - `Customer`: read published content, read/update own `customers`, read own
   `orders`, `order_items`, `invoices`, `deliveries`, read own `rfq_requests`;
   RFQ submission goes through `/api/rfq`
@@ -44,6 +44,7 @@ smoke checks, but pass/fail evidence comes from role-specific API requests.
 - `invoices`
 - `deliveries`
 - `rfq_requests`
+- `rfq_assignment_rules`
 
 ## RBAC matrix
 
@@ -60,7 +61,8 @@ smoke checks, but pass/fail evidence comes from role-specific API requests.
 | RBAC-SAL-02 | Sales | `orders` | create | new | ALLOW |
 | RBAC-SAL-03 | Sales | `invoices` | update | A + B | ALLOW |
 | RBAC-SAL-04 | Sales | `rfq_requests` | delete | A + B | ALLOW |
-| RBAC-SAL-05 | Sales | `hero_banners` | update | any | DENY |
+| RBAC-SAL-05 | Sales | `rfq_assignment_rules` | create/update/delete | routing row | ALLOW |
+| RBAC-SAL-06 | Sales | `hero_banners` | update | any | DENY |
 | RBAC-CUS-01 | Customer A | `customers` | read list | own | ALLOW |
 | RBAC-CUS-02 | Customer A | `customers` | update | own | ALLOW |
 | RBAC-CUS-03 | Customer A | `customers` | read | B | DENY |
@@ -80,6 +82,8 @@ smoke checks, but pass/fail evidence comes from role-specific API requests.
 | RBAC-CUS-16 | Customer A | `invoices` | update | own | DENY |
 | RBAC-CUS-17 | Customer A | `deliveries` | delete | own | DENY |
 | RBAC-CUS-18 | Customer B | same as Customer A | mirrored | own vs A | same expectations |
+| RBAC-VIS-02 | Visitor | `rfq_assignment_rules` | read | any | DENY |
+| RBAC-CUS-19 | Customer A | `rfq_assignment_rules` | read | any | DENY |
 
 ## API endpoints to use
 
@@ -90,11 +94,15 @@ smoke checks, but pass/fail evidence comes from role-specific API requests.
 - `GET /items/invoices`
 - `GET /items/deliveries`
 - `GET /items/rfq_requests`
+- `GET /items/rfq_assignment_rules`
 - `POST /items/rfq_requests`
+- `POST /items/rfq_assignment_rules`
 - `PATCH /items/customers/{id}`
 - `PATCH /items/invoices/{id}`
+- `PATCH /items/rfq_assignment_rules/{id}`
 - `POST /items/orders`
 - `DELETE /items/deliveries/{id}`
+- `DELETE /items/rfq_assignment_rules/{id}`
 - Application RFQ writes are verified separately through `POST /api/rfq`.
 
 ## Evidence rules

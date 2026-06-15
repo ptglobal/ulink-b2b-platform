@@ -69,6 +69,7 @@ GET /api/sku/CR-GLV-001
 Purpose: persist an RFQ and route to Sales.
 - **Validation:** `company`, `email`, and a non-empty `items[]` array are required. `email` must be valid, `phone` must be normalized if present, each line item must have a known published SKU and `qty > 0`.
 - **Anti-spam:** Cloudflare Turnstile, Redis IP rate-limit, and Redis fingerprint dedupe are enforced before persistence.
+- **Idempotency:** exact duplicate submissions reuse the first RFQ id when the normalized `email + company + items` hash already exists.
 - **Body:**
 ```json
 {
@@ -83,14 +84,26 @@ Purpose: persist an RFQ and route to Sales.
 }
 ```
 - **200** -> normalized success envelope with created RFQ id in `data.id`.
+- Exact duplicates return the original id instead of creating a second record.
 - **400** -> normalized error envelope with code `BAD_REQUEST` for invalid JSON.
 - **403** -> normalized error envelope with code `FORBIDDEN` when Turnstile fails.
-- **409** -> normalized error envelope with code `CONFLICT` for duplicate submissions inside the dedupe window.
 - **422** -> normalized error envelope with code `UNPROCESSABLE_ENTITY` for invalid email/phone/qty/SKU or missing fields.
 - **429** -> normalized error envelope with code `TOO_MANY_REQUESTS` when the IP rate limit is exceeded.
 - **500** -> normalized error envelope with code `INTERNAL_SERVER_ERROR` when server-side RFQ writes are misconfigured.
 - **502** -> normalized error envelope with code `BAD_GATEWAY` when persistence fails for another reason.
 - The handler writes to Directus with `DIRECTUS_TOKEN`; visitor and customer roles do not create `rfq_requests` directly.
+
+### 2.5 `POST /api/internal/rfq-notify` - Directus RFQ notify webhook
+Purpose: assign a new RFQ and send the sales notification after Directus creates the record.
+- **Auth:** `Authorization: Bearer ${INTERNAL_API_TOKEN}`
+- **Body:** JSON with `event`, `collection`, and `key` or `id` for the RFQ row.
+- **200** -> normalized success envelope with `data.rfq_id`, `data.assigned_sales`, `data.notified_to`, `data.mail_status`, and `data.notification_status`.
+- **400** -> malformed JSON, unsupported collection, or missing RFQ id.
+- **403** -> missing or invalid internal API token.
+- **500** -> missing server configuration.
+- **502** -> Directus read/write failure while processing the notification.
+
+Directus Flow `flow-rfq-notify` posts to this endpoint after each successful `rfq_requests` create. The notifier resolves the assignee from `rfq_assignment_rules`, falls back to `site_settings.contact_email` when no salesperson matches, sends the summary email, and writes a Directus notification when an assignee exists. The RFQ status stays `new`.
 
 ### 2.3 `POST /api/revalidate` - publish webhook
 Purpose: invalidate content caches after Directus publish, unpublish, or delete events.
@@ -145,6 +158,20 @@ Example:
 
 The route canonicalizes every `sku_code` with `.trim().toLowerCase()`, writes or deletes Redis keys with one pipeline, and uses `sku:{code-lowercased}` as the only key format. Directus Flow `flow-sku-cache-sync` calls this endpoint and never talks to Redis directly.
 
+### 2.6 `POST /api/internal/erp-outbox` - ERP drain worker
+Purpose: drain pending `integration_events` rows and deliver them to ERP when ERP sync is enabled.
+- **Auth:** `Authorization: Bearer ${INTERNAL_API_TOKEN}`
+- **Body:** optional JSON with `batch_size` for smoke / manual runs.
+- **200** -> normalized success envelope with `data.skipped`, `data.sent`, `data.retried`, and `data.failed`.
+- **400** -> malformed JSON.
+- **403** -> missing or invalid internal API token.
+- **500** -> missing server configuration.
+- **502** -> Directus read/write failure while processing the outbox batch.
+
+The worker reads `pending` rows from `integration_events`, sends each payload to `destination_url` when present or `ERP_WEBHOOK_URL` otherwise, and updates `status`, `attempts`, `last_status_code`, `last_error`, and `next_attempt_at` based on the ERP response. `4xx` responses become dead-letter immediately; `5xx` and network failures are rescheduled with exponential backoff up to the configured attempt limit.
+
+For smoke and UAT, `/api/mock/erp` is a local mock target that can return controlled `2xx`, `4xx`, or `5xx` responses via a `status` query parameter.
+
 ## 3. Error model
 App-owned APIs return `{ "success": false, "error": { ... } }` with appropriate HTTP status.
 No stack traces in responses.
@@ -157,6 +184,7 @@ Codes in use: `BAD_REQUEST` (400), `UNPROCESSABLE_ENTITY` (422), `NOT_FOUND` (40
 - Server-side writes use `DIRECTUS_TOKEN`; never expose admin token to the browser. RFQ submissions from visitors and customers must go through Next.js.
 - Content publish webhook calls use `REVALIDATE_SECRET`; Directus Flow posts to `POST /api/revalidate` and the route rejects missing or mismatched bearer secrets. The webhook invalidates `col:{collection}` plus `entity:{collection}:{id}` so translated variants stay in sync.
 - Directus SKU cache sync uses `INTERNAL_API_TOKEN`; Directus Flow posts to `POST /api/internal/sku-cache` and the route rejects missing or mismatched bearer secrets before touching Redis.
+- Directus RFQ notification uses `INTERNAL_API_TOKEN`; Directus Flow posts to `POST /api/internal/rfq-notify` and the route rejects missing or mismatched bearer secrets before touching Directus or SMTP.
 - CORS restricted to the site origin in production.
 
 ## 5. ERP-ready interface *(future Integration phase)*

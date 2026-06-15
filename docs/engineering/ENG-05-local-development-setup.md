@@ -20,7 +20,7 @@ npm run bootstrap               # creates roles + collections (extend per SCHEMA
 ## 3. Frontend
 ```bash
 cd frontend
-cp .env.local.example .env.local   # DIRECTUS_URL, DIRECTUS_TOKEN, REVALIDATE_SECRET, INTERNAL_API_TOKEN, REDIS_URL, NEXT_PUBLIC_SITE_URL, (TURNSTILE_*)
+cp .env.local.example .env.local   # DIRECTUS_URL, DIRECTUS_TOKEN, REVALIDATE_SECRET, INTERNAL_API_TOKEN, REDIS_URL, NEXT_PUBLIC_SITE_URL, SMTP_*, (TURNSTILE_*)
 npm install
 npm run dev                         # http://localhost:3000 → /vi
 ```
@@ -29,7 +29,9 @@ npm run dev                         # http://localhost:3000 → /vi
 - `http://localhost:3000/vi` renders; language switch to `/en`, `/ja` works.
 - `GET http://localhost:3000/api/sku/<code>` returns JSON (after a SKU exists).
 - `POST http://localhost:3000/api/revalidate` returns 403 without the shared secret and 200 with a valid Directus Flow bearer token.
+- `POST http://localhost:3000/api/internal/rfq-notify` returns 403 without `INTERNAL_API_TOKEN` and 200 when Directus Flow sends the shared bearer token.
 - Directus admin reachable; a published change shows on the site after revalidate.
+- Run `cd directus && npm run verify:rfq-notify` to smoke the RFQ assignment/email path after the stack is up.
 
 ## 5. Common commands
 | Command | What |
@@ -45,6 +47,7 @@ npm run dev                         # http://localhost:3000 → /vi
 - **Frontend can't reach Redis:** ensure compose exposes `6379` (it does) and
   `REDIS_URL=redis://localhost:6379`.
 - **Internal SKU cache calls fail:** set `INTERNAL_API_TOKEN` in `.env.local` and make sure the Directus Flow sends the same bearer token to `POST /api/internal/sku-cache`.
+- **RFQ notify calls fail:** set `INTERNAL_API_TOKEN` and SMTP variables in `.env.local`, then confirm Mailpit or your SMTP host is reachable before running `POST /api/internal/rfq-notify`.
 - **Directus 500 on boot:** Postgres not healthy yet — wait for healthcheck.
 - **CORS errors:** set Directus `CORS_ORIGIN` to the frontend origin.
 - **Secrets:** never commit `.env`/`.env.local` (git-ignored).

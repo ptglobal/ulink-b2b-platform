@@ -1,4 +1,4 @@
-**Publish content -> webhook**
+<!-- **Publish content -> webhook**
 - Trigger chính xác là gì: `create`, `update`, `status -> published`, hay cả 3?
 - Có bắn khi `unpublish/archive` không?
 - Áp cho collection nào: `products`, `pages`, `blog_posts`, `case_studies`, `regional_hubs`, `documents`, hay all content?
@@ -8,8 +8,8 @@
 - Side effect chốt là gì: `revalidateTag`, `revalidatePath`, cache prime, hay cả hai?
 - Có cần retry nếu webhook fail không?
 - Nếu retry, retry bao nhiêu lần, backoff thế nào?
-- Có cần log/audit từng lần bắn webhook không?
-
+- Có cần log/audit từng lần bắn webhook không? -->
+<!-- 
 **SKU create/update/publish -> cache hook**
 - Trigger chạy khi nào: `create`, `update`, `publish`, `unpublish`, `archive`?
 - Cache action là `prime`, `invalidate`, hay `prime + invalidate`?
@@ -21,9 +21,9 @@
 - Field change nào làm invalidate: `sku_code`, `product`, `pack_size`, `unit`, `attributes`, `status`?
 - Cache miss path có phép đọc Directus rồi fill lại không?
 - TTL cố định `1h` hay khác theo SKU?
-- Bulk update nhiều SKU thì xử lý từng item hay batch job?
+- Bulk update nhiều SKU thì xử lý từng item hay batch job? -->
 
-**RFQ created -> notify Sales / assign owner**
+<!-- **RFQ created -> notify Sales / assign owner**
 - Owner assign tự động hay manual triage?
 - Rule assign theo `hub`, `industry`, round-robin, load-based, hay fixed owner?
 - Nếu `assigned_sales` null thì ai nhận notify?
@@ -35,9 +35,9 @@
 - Sales cần thấy full payload hay chỉ summary?
 - Có cần audit trail: ai assign, lúc nào, vì sao?
 - Dedupe RFQ trùng email/phone/company có chặn không?
-- Nếu notify fail nhưng record đã tạo, xử lý thế nào?
+- Nếu notify fail nhưng record đã tạo, xử lý thế nào? -->
 
-**order / invoice / delivery create-update -> outbound webhook future ERP**
+<!-- **order / invoice / delivery create-update -> outbound webhook future ERP**
 - Đây là push outbound ngay hay event log để ERP pull sau?
 - 1 webhook chung hay 3 webhook riêng cho `orders`, `invoices`, `deliveries`?
 - Trigger nào bắn: `create`, `update`, `status change`, `delete`, `soft delete`, hay subset?
@@ -52,8 +52,8 @@
 - Khi ERP chưa tồn tại, endpoint đích là mock, stub, hay reserved contract thôi?
 - Có cần staging/prod endpoint tách riêng không?
 - Delete/cancel có bắn webhook không?
-- Status transitions nào phải bắn: `pending -> confirmed`, `processing -> shipped`, `shipped -> completed`, `unpaid -> paid`, v.v.?
-
+- Status transitions nào phải bắn: `pending -> confirmed`, `processing -> shipped`, `shipped -> completed`, `unpaid -> paid`, v.v.? -->
+<!-- 
 **Import / process dữ liệu thương mại**
 - CSV import áp cho collection nào: `customers`, `orders`, `invoices`, `deliveries`, `order_items`?
 - Ai được import: Admin, Sales, role riêng?
@@ -64,7 +64,7 @@
 - Nếu record trùng thì update hay reject?
 - Nếu file có lỗi 1 dòng, rollback toàn bộ hay partial success?
 - Có preview trước import không?
-- Có log số dòng created / updated / skipped / failed không?
+- Có log số dòng created / updated / skipped / failed không? -->
 
 **Ops / vận hành flow**
 - Flow thuần Directus hay cần hook/endpoint custom cho case nào?

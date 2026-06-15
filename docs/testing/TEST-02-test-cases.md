@@ -19,7 +19,20 @@ marked ⛔ and must pass before release. Expand as features land.
 | TC-RFQ-09 | Submit with unknown SKU | 422; validation message |
 | TC-RFQ-10 | Submit with bad Turnstile token | 403; blocked before persistence |
 | TC-RFQ-11 | Rapid repeat submits from one IP | 429; rate-limited after threshold |
-| TC-RFQ-12 | Repeat the same normalized payload inside dedupe window | 409; duplicate blocked |
+| TC-RFQ-12 | Repeat the same normalized payload inside dedupe window | 200; returns original RFQ id |
+| TC-RFQ-13 | Submit RFQ with hub + industry that matches a routing rule | Sales owner assigned; email goes to assignee; Directus notification created |
+| TC-RFQ-14 | Submit RFQ that does not match any salesperson | Email goes to fallback inbox from `site_settings.contact_email`; no Directus notification is created |
+| TC-RFQ-15 | SMTP host is unreachable after RFQ create | RFQ record still persists; notifier logs failure and the API returns `mail_status: failed` |
+
+## ERP outbound / outbox
+| ID | Steps | Expected |
+|---|---|---|
+| TC-ERP-01 | Create a meaningful `orders` update with ERP sync enabled | `integration_events` row is created with `status=pending` and the drain worker sends it to ERP |
+| TC-ERP-02 | Update `orders` only in a cosmetic field | No new outbox row is created |
+| TC-ERP-03 | ERP returns 409 for an outbox row | Row moves directly to `status=failed`; appears in `failed_erp_webhooks` |
+| TC-ERP-04 | ERP returns 503 for an outbox row | Row stays `pending`, `attempts` increments, and `next_attempt_at` is set |
+| TC-ERP-05 | `ERP_SYNC_ENABLED=false` | Drain worker skips sending and leaves pending rows untouched |
+| TC-ERP-06 | Smoke the drain worker with `/api/mock/erp` | Success row becomes `sent`; forced failure row becomes `failed` |
 
 ## SKU lookup / cache
 | ID | Steps | Expected |

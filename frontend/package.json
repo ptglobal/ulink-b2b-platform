@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --import tsx --test src/lib/directus.test.mjs src/lib/auth.test.mjs src/lib/api-response.test.ts src/lib/rfq-validation.test.ts src/lib/rfq-sku.test.ts src/lib/rfq-anti-spam.test.ts src/lib/rfq-submit.test.ts src/lib/content-revalidation.test.ts src/lib/sku-cache.test.ts",
+    "test": "node --import tsx --test src/lib/directus.test.mjs src/lib/commercial-import.test.ts src/lib/auth.test.mjs src/lib/api-response.test.ts src/lib/rfq-validation.test.ts src/lib/rfq-sku.test.ts src/lib/rfq-anti-spam.test.ts src/lib/rfq-idempotency.test.ts src/lib/internal-auth.test.ts src/lib/rfq-notification.test.ts src/lib/rfq-submit.test.ts src/lib/content-revalidation.test.ts src/lib/sku-cache.test.ts src/lib/erp-outbound.test.ts src/lib/erp-outbox-worker.test.ts",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

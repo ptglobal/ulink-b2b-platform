@@ -36,6 +36,7 @@ language. VI is required; EN/JP per the content policy.
 | Task | Where |
 |---|---|
 | View/triage incoming RFQs | `rfq_requests` (status `new` → `quoted`/`won`/`lost`; assign to a salesperson) |
+| Manage routing rules | `rfq_assignment_rules` (hub + industry mapping, priority, fallback inbox) |
 | Manage customers | `customers` |
 | Create/update orders | `orders` + `order_items` |
 | Record invoices / debt (công nợ) | `invoices` (amount, due date, paid status) |
@@ -46,6 +47,7 @@ Customers see only their own orders/invoices/deliveries in the portal.
 ## Users & roles (Admin)
 Create users, assign roles (Admin/Editor/Sales/Customer) under **Settings → Roles &
 Permissions**. Keep least privilege; rotate passwords.
+Sales can edit `rfq_assignment_rules` to change owner assignment without code changes.
 
 ## Tips
 - Always set Status; unpublished = hidden.

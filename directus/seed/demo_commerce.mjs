@@ -6,18 +6,19 @@ export async function seedDemoCommerce(helpers, ids) {
     password: 'customer-password-123',
     role: CUSTOMER_ROLE_ID,
     first_name: 'Minh',
-    last_name: 'Nguyá»…n B2B',
+    last_name: 'NguyÃ¡Â»â€¦n B2B',
     status: 'active'
   });
 
   const customerId = await helpers.ensureItem('customers', 'email', {
     user: customerUserId,
-    company_name: 'CÃ´ng ty Samsung Electronics Viá»‡t Nam',
+    erp_ref: 'ERP-CUST-2026-0001',
+    company_name: 'CÃƒÂ´ng ty Samsung Electronics ViÃ¡Â»â€¡t Nam',
     tax_code: '0102030405-001',
-    contact_name: 'Nguyá»…n VÄƒn A',
+    contact_name: 'NguyÃ¡Â»â€¦n VÃ„Æ’n A',
     email: 'customer@ulink.com',
     phone: '0987654321',
-    address: 'LÃ´ CN1-1, KCN YÃªn Phong, YÃªn Trung, YÃªn Phong, Báº¯c Ninh',
+    address: 'LÃƒÂ´ CN1-1, KCN YÃƒÂªn Phong, YÃƒÂªn Trung, YÃƒÂªn Phong, BÃ¡ÂºÂ¯c Ninh',
     status: 'active'
   });
 
@@ -30,14 +31,14 @@ export async function seedDemoCommerce(helpers, ids) {
     subtotal: 15000000.0,
     tax: 1500000.0,
     total: 16500000.0,
-    notes: 'Giao trá»±c tiáº¿p kho kiá»ƒm pháº©m bá»™ pháº­n QC.',
+    notes: 'Giao trÃ¡Â»Â±c tiÃ¡ÂºÂ¿p kho kiÃ¡Â»Æ’m phÃ¡ÂºÂ©m bÃ¡Â»â„¢ phÃ¡ÂºÂ­n QC.',
     erp_ref: 'ERP-ORD-2026-99901'
   });
 
   await helpers.ensureItem('order_items', 'description', {
     order: orderId,
     sku: ids.sku1Id,
-    description: 'GÄƒng tay phÃ²ng sáº¡ch Nitrile size S (100 pcs/box)',
+    description: 'GÃ„Æ’ng tay phÃƒÂ²ng sÃ¡ÂºÂ¡ch Nitrile size S (100 pcs/box)',
     qty: 50,
     unit_price: 200000.0,
     line_total: 10000000.0
@@ -46,7 +47,7 @@ export async function seedDemoCommerce(helpers, ids) {
   await helpers.ensureItem('order_items', 'description', {
     order: orderId,
     sku: ids.sku2Id,
-    description: 'GÄƒng tay phÃ²ng sáº¡ch Nitrile size M (100 pcs/box)',
+    description: 'GÃ„Æ’ng tay phÃƒÂ²ng sÃ¡ÂºÂ¡ch Nitrile size M (100 pcs/box)',
     qty: 25,
     unit_price: 200000.0,
     line_total: 5000000.0

@@ -7,13 +7,14 @@
 - Admin/Editor/Sales authenticate to the Directus admin app.
 - Server-side writes use a scoped `DIRECTUS_TOKEN`; **never** shipped to the browser.
 - Public RFQ writes are allowed only through the Next.js BFF route. Visitor/customer RFQ submission does not write directly to Directus.
+- RFQ notification webhook calls are app-internal only and use `INTERNAL_API_TOKEN`.
 
 ## Authorization (RBAC)
 | Role | Summary |
 |---|---|
 | Admin | Full system |
 | Editor | CRUD content + publish; no users/roles |
-| Sales | CRUD rfq_requests, orders, invoices, deliveries, customers; read content |
+| Sales | CRUD rfq_requests, rfq_assignment_rules, orders, invoices, deliveries, customers; read content |
 | Customer | App access; **row-level** read of own orders/invoices/deliveries |
 
 Row-level filter: `{ customer: { user: { _eq: "$CURRENT_USER" } } }` on
@@ -30,6 +31,7 @@ orders/invoices/deliveries; customers read/update own record only.
 - Public mutations (RFQ, contact): Cloudflare Turnstile + Redis IP rate-limit + dedupe.
 - The RFQ anti-spam controls live in the BFF; Directus only receives already validated writes.
 - `POST /api/rfq` writes with `DIRECTUS_TOKEN`; visitor/customer roles do not create `rfq_requests` directly in Directus.
+- `POST /api/internal/rfq-notify` reads/writes with `INTERNAL_API_TOKEN`; Directus Flow calls it after RFQ create.
 - Parameterized/SDK queries only (no raw string SQL); Directus handles escaping.
 
 ## Secrets
@@ -58,6 +60,7 @@ orders/invoices/deliveries; customers read/update own record only.
   `ja`; only bootstrap/admin writes locale rows.
 - Translation collections are readable for public/customer/sales roles and editable
   by Editor so CMS authors can manage localized content without direct system access.
+- `rfq_assignment_rules` is Sales-managed; customers and visitors cannot read or write the routing table.
 
 ## Verification
 Role walkthrough (each role sees only what it should); customer A cannot read
