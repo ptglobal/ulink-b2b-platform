@@ -14,7 +14,8 @@
     "media:verify": "node verify_media_policy.mjs",
     "media:cleanup": "node media-cleanup.mjs",
     "rbac:seed": "node rbac_seed.mjs",
-    "rbac:verify": "node rbac_verify.mjs"
+    "rbac:verify": "node rbac_verify.mjs",
+    "openapi:export": "node export-openapi.mjs"
   },
   "dependencies": {
     "@directus/sdk": "^17.0.1",
