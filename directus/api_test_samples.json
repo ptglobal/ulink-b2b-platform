@@ -141,7 +141,7 @@
       "method": "POST",
       "url": "/customer-onboarding/register",
       "auth": false,
-      "body": { "email": "newcustomer@example.com", "password": "SecurePass123!", "company_name": "Cong ty ABC", "phone": "+84909123456" }
+      "body": { "company_name": "ACME Corp", "contact_name": "Nguyen Van A", "email": "a@acme.vn", "phone": "0987654321", "password": "SecurePass123!", "confirm_password": "SecurePass123!" }
     },
     "commercial_import_preview": {
       "method": "POST",

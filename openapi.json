@@ -3,7 +3,7 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "79ddde4ce20162d3baec69f8eb502da2e164688d"
+    "version": "816055b6c6fd49223c761f0e8ccf7a613c6feb2d"
   },
   "servers": [
     {
@@ -22296,36 +22296,40 @@
               "schema": {
                 "type": "object",
                 "required": [
-                  "email",
-                  "password",
                   "company_name",
-                  "phone"
+                  "contact_name",
+                  "email",
+                  "phone",
+                  "password",
+                  "confirm_password"
                 ],
                 "properties": {
+                  "company_name": {
+                    "type": "string",
+                    "example": "ACME Corp"
+                  },
+                  "contact_name": {
+                    "type": "string",
+                    "example": "Nguyen Van A"
+                  },
                   "email": {
                     "type": "string",
                     "format": "email",
-                    "example": "newcustomer@example.com"
-                  },
-                  "password": {
-                    "type": "string",
-                    "example": "SecurePass123!"
-                  },
-                  "first_name": {
-                    "type": "string",
-                    "example": "Nguyen"
-                  },
-                  "last_name": {
-                    "type": "string",
-                    "example": "Van B"
-                  },
-                  "company_name": {
-                    "type": "string",
-                    "example": "Cong ty ABC"
+                    "example": "a@acme.vn"
                   },
                   "phone": {
                     "type": "string",
-                    "example": "+84909123456"
+                    "example": "0987654321"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "SecurePass123!"
+                  },
+                  "confirm_password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "SecurePass123!"
                   }
                 }
               }
@@ -22334,7 +22338,7 @@
         },
         "responses": {
           "201": {
-            "description": "Account created",
+            "description": "Account created (user active, customer inactive — pending Sales approval)",
             "content": {
               "application/json": {
                 "schema": {
@@ -22343,11 +22347,16 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "userId": {
-                          "type": "string"
+                        "user_id": {
+                          "type": "string",
+                          "format": "uuid"
                         },
-                        "companyId": {
-                          "type": "string"
+                        "customer_id": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "inactive"
                         }
                       }
                     }
@@ -22355,6 +22364,12 @@
                 }
               }
             }
+          },
+          "409": {
+            "description": "User or customer with this email already exists"
+          },
+          "422": {
+            "description": "Validation error (missing fields, password mismatch)"
           }
         }
       }

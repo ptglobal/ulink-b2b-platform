@@ -13,14 +13,14 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["email", "password", "company_name", "phone"],
+                "required": ["company_name", "contact_name", "email", "phone", "password", "confirm_password"],
                 "properties": {
-                  "email": { "type": "string", "format": "email", "example": "newcustomer@example.com" },
-                  "password": { "type": "string", "example": "SecurePass123!" },
-                  "first_name": { "type": "string", "example": "Nguyen" },
-                  "last_name": { "type": "string", "example": "Van B" },
-                  "company_name": { "type": "string", "example": "Cong ty ABC" },
-                  "phone": { "type": "string", "example": "+84909123456" }
+                  "company_name": { "type": "string", "example": "ACME Corp" },
+                  "contact_name": { "type": "string", "example": "Nguyen Van A" },
+                  "email": { "type": "string", "format": "email", "example": "a@acme.vn" },
+                  "phone": { "type": "string", "example": "0987654321" },
+                  "password": { "type": "string", "format": "password", "example": "SecurePass123!" },
+                  "confirm_password": { "type": "string", "format": "password", "example": "SecurePass123!" }
                 }
               }
             }
@@ -28,7 +28,7 @@
         },
         "responses": {
           "201": {
-            "description": "Account created",
+            "description": "Account created (user active, customer inactive — pending Sales approval)",
             "content": {
               "application/json": {
                 "schema": {
@@ -37,15 +37,18 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "userId": { "type": "string" },
-                        "companyId": { "type": "string" }
+                        "user_id": { "type": "string", "format": "uuid" },
+                        "customer_id": { "type": "integer" },
+                        "status": { "type": "string", "example": "inactive" }
                       }
                     }
                   }
                 }
               }
             }
-          }
+          },
+          "409": { "description": "User or customer with this email already exists" },
+          "422": { "description": "Validation error (missing fields, password mismatch)" }
         }
       }
     },
