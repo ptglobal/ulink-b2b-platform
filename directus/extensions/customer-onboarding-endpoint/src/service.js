@@ -57,8 +57,7 @@ function buildWelcomeMail({ contactName, email }) {
     to: email,
     subject: '[ULINK] Tài khoản đã được tạo',
     text:
-      `Chào ${contactName}, tài khoản ULINK của bạn đã được tạo. ` +
-      `Sales sẽ kiểm tra thông tin công ty và kích hoạt tài khoản sau khi duyệt.\n\n` +
+      `Chào ${contactName}, tài khoản ULINK của bạn đã được tạo và kích hoạt thành công.\n\n` +
       `Đăng nhập: ${portalUrl}/login`
   };
 }
@@ -131,7 +130,7 @@ export async function createCustomerAccount(context, input) {
 
   try {
     const createdCustomer = await customersService.createOne({
-      status: 'inactive',
+      status: 'active',
       user: userId,
       company_name: companyName,
       contact_name: contactName,
@@ -146,7 +145,7 @@ export async function createCustomerAccount(context, input) {
     return {
       user_id: userId,
       customer_id: customerId,
-      status: 'inactive'
+      status: 'active'
     };
   } catch (error) {
     if (customerId) {

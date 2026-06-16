@@ -28,7 +28,7 @@
         },
         "responses": {
           "201": {
-            "description": "Account created (user active, customer inactive — pending Sales approval)",
+            "description": "Account created (user active, customer active)",
             "content": {
               "application/json": {
                 "schema": {
@@ -39,7 +39,7 @@
                       "properties": {
                         "user_id": { "type": "string", "format": "uuid" },
                         "customer_id": { "type": "integer" },
-                        "status": { "type": "string", "example": "inactive" }
+                        "status": { "type": "string", "example": "active" }
                       }
                     }
                   }
@@ -205,56 +205,6 @@
         },
         "responses": {
           "200": { "description": "File soft-deleted" }
-        }
-      }
-    },
-    "/users": {
-      "post": {
-        "tags": ["Sales Onboarding"],
-        "summary": "Create user account (Sales-created customer flow)",
-        "description": "Sales creates a user with a temporary password and the Customer role. The customer-onboarding-hook automatically detects the email match, links the user to the existing customer row, and sets customer status to active. After this call, use POST /auth/password/request to send the customer a password-reset email.",
-        "operationId": "salesCreateUser",
-        "security": [{ "BearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["email", "password", "role"],
-                "properties": {
-                  "first_name": { "type": "string", "example": "Nguyen Van" },
-                  "last_name": { "type": "string", "example": "B" },
-                  "email": { "type": "string", "format": "email", "example": "b@acme.vn" },
-                  "password": { "type": "string", "format": "password", "example": "TempPass456!" },
-                  "role": { "type": "string", "format": "uuid", "example": "e11b0e50-3030-410c-9999-000000000003", "description": "Customer role UUID" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "User created — hook auto-links to customer row if email matches",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": { "type": "string", "format": "uuid" },
-                        "email": { "type": "string" },
-                        "role": { "type": "string", "format": "uuid" }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": { "description": "Validation error or email already exists" }
         }
       }
     },
