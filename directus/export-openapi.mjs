@@ -76,11 +76,11 @@ async function main() {
     );
   }
 
-  const outPath = path.resolve(__dirname, 'openapi.json');
+  const outPath = path.resolve(__dirname, '../open.json');
   fs.writeFileSync(outPath, JSON.stringify(spec, null, 2), 'utf8');
 
   console.log(`\n✅ Exported merged OpenAPI to: ${outPath}`);
-  console.log(`   Open it in Swagger Editor, Postman, or run: npx swagger-ui serve ${outPath}`);
+  console.log(`   It has overwritten the root open.json and is applied to Swagger UI.`);
   console.log(`\nLive interactive version (when Directus is running):`);
   console.log(`   ${DIRECTUS_URL}/docs`);
 }

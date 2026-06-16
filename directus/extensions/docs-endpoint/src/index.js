@@ -91,7 +91,7 @@ const CUSTOM_OPENAPI = {
           'Admin or Sales only. Parses CSV and returns what would be created/updated without writing. ' +
           'Supports customers, orders, invoices, deliveries.',
         operationId: 'commercialImportPreview',
-        security: [{ bearerAuth: [] }],
+        security: [{ Auth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -141,7 +141,7 @@ const CUSTOM_OPENAPI = {
         summary: 'Commit CSV import (write data)',
         description: 'Admin or Sales only. Same payload as preview. Performs the actual inserts/updates.',
         operationId: 'commercialImportCommit',
-        security: [{ bearerAuth: [] }],
+        security: [{ Auth: [] }],
         requestBody: {
           $ref: '#/components/requestBodies/CommercialImportBody'
         },
@@ -182,7 +182,7 @@ const CUSTOM_OPENAPI = {
           'Admin, Editor or Sales. Moves the file into the retention queue. ' +
           'Actual hard deletion happens later via the media-cleanup job (default: after 7 days).',
         operationId: 'mediaPolicySoftDelete',
-        security: [{ bearerAuth: [] }],
+        security: [{ Auth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -215,7 +215,7 @@ const CUSTOM_OPENAPI = {
           'Admin only. Requires explicit confirmation to prevent accidents. ' +
           'Deletes the file record and the physical file on disk.',
         operationId: 'mediaPolicyHardDelete',
-        security: [{ bearerAuth: [] }],
+        security: [{ Auth: [] }],
         requestBody: {
           required: true,
           content: {
@@ -309,9 +309,42 @@ function mergeSpecs(coreSpec, customSpec) {
   return merged;
 }
 
+let adminToken = null;
+
+async function getAdminToken() {
+  if (adminToken) return adminToken;
+  try {
+    const publicUrl = process.env.DIRECTUS_PUBLIC_URL || process.env.PUBLIC_URL || 'http://localhost:8055';
+    const email = process.env.ADMIN_EMAIL;
+    const password = process.env.ADMIN_PASSWORD;
+    if (!email || !password) return null;
+
+    const res = await fetch(`${publicUrl.replace(/\/$/, '')}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      adminToken = data.data?.access_token ?? null;
+    }
+  } catch (err) {
+    console.error('[docs-endpoint] Failed to login admin for OAS spec:', err.message);
+  }
+  return adminToken;
+}
+
 async function fetchCoreOas(context, req) {
   const publicUrl = process.env.DIRECTUS_PUBLIC_URL || process.env.PUBLIC_URL || 'http://localhost:8055';
-  const authHeader = req.headers.authorization || req.headers.Authorization;
+  let authHeader = req.headers.authorization || req.headers.Authorization;
+
+  // Fallback to internal admin login if no client authentication header is provided
+  if (!authHeader) {
+    const token = await getAdminToken();
+    if (token) {
+      authHeader = `Bearer ${token}`;
+    }
+  }
 
   try {
     const target = `${publicUrl.replace(/\/$/, '')}/server/specs/oas`;
@@ -347,6 +380,28 @@ function ensureCustomPaths(merged) {
       merged.components[k] = { ...(merged.components[k] || {}), ...v };
     }
   }
+
+  // Force single HTTP Bearer Auth scheme
+  if (merged.components && merged.components.securitySchemes) {
+    // Override Auth to use standard HTTP Bearer
+    merged.components.securitySchemes.Auth = {
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      description: 'Enter your access token (JWT or static token)'
+    };
+    // Clean up other duplicate/unused options
+    delete merged.components.securitySchemes.KeyAuth;
+    delete merged.components.securitySchemes.bearerAuth;
+  }
+
+  // Enforce root-level security array to use only Auth
+  merged.security = [
+    {
+      Auth: []
+    }
+  ];
+
   return merged;
 }
 

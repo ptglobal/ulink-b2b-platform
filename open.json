@@ -3,105 +3,15 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "22c8b48349db80a1921a1987c18776444310b95a"
+    "version": "5ed0743e8f0ac90d72149cb75555d6994a0e4311"
   },
   "servers": [
     {
-      "url": "http://192.168.1.25:8055",
-      "description": "Your current Directus instance (LAN)."
-    },
-    {
       "url": "http://localhost:8055",
-      "description": "Your current Directus instance (Localhost)."
-    }
-  ],
-  "security": [
-    {
-      "Auth": []
-    },
-    {
-      "KeyAuth": []
+      "description": "Your current Directus instance."
     }
   ],
   "paths": {
-    "/users/register": {
-      "post": {
-        "summary": "Register a User",
-        "description": "Register a new user dynamically in Directus.",
-        "tags": [
-          "Authentication"
-        ],
-        "operationId": "registerUser",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "example": "user@example.com",
-                    "description": "Email address of the user you are registering."
-                  },
-                  "password": {
-                    "type": "string",
-                    "description": "Password of the user.",
-                    "format": "password",
-                    "example": "password123"
-                  },
-                  "first_name": {
-                    "type": "string",
-                    "description": "First name of the user.",
-                    "example": "John"
-                  },
-                  "last_name": {
-                    "type": "string",
-                    "description": "Last name of the user.",
-                    "example": "Doe"
-                  },
-                  "phone": {
-                    "type": "string",
-                    "description": "Phone number of the user.",
-                    "example": "0912345678"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful registration",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "id": {
-                          "type": "string",
-                          "example": "d7b973bd-..."
-                        },
-                        "email": {
-                          "type": "string",
-                          "example": "user@example.com"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/assets/{id}": {
       "get": {
         "tags": [
@@ -182,14 +92,28 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "example": "admin@ulink.com",
+                    "example": "admin@example.com",
                     "description": "Email address of the user you're retrieving the access token for."
                   },
                   "password": {
                     "type": "string",
                     "description": "Password of the user.",
                     "format": "password",
-                    "example": "5f8859f07a20530ee9be42c4"
+                    "example": "password"
+                  },
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "json",
+                      "cookie",
+                      "session"
+                    ],
+                    "default": "json",
+                    "description": "Whether to retrieve the refresh token in the JSON response, or in a httpOnly cookie."
+                  },
+                  "otp": {
+                    "type": "string",
+                    "description": "The user's one-time-password (if MFA is enabled)."
                   }
                 }
               }
@@ -476,7 +400,7 @@
             "name": "redirect",
             "in": "query",
             "required": false,
-            "description": "Where to redirect on successful login.\u003Cbr/\u003EIf set the authentication details are set inside cookies otherwise a JSON is returned.",
+            "description": "Where to redirect on successful login.<br/>If set the authentication details are set inside cookies otherwise a JSON is returned.",
             "schema": {
               "type": "string"
             }
@@ -1012,7 +936,7 @@
                   "properties": {
                     "data": {
                       "type": "string",
-                      "example": "1\u003EM3+4oh.S"
+                      "example": "1>M3+4oh.S"
                     }
                   },
                   "type": "object"
@@ -3373,7 +3297,7 @@
           }
         },
         "tags": [
-          "Authentication"
+          "Users"
         ]
       },
       "patch": {
@@ -3404,7 +3328,7 @@
           }
         },
         "tags": [
-          "Authentication"
+          "Users"
         ]
       }
     },
@@ -4685,7 +4609,8 @@
                           "half-right",
                           "full",
                           "fill",
-                          null]
+                          null
+                        ]
                       },
                       "group": {
                         "description": "What field group this field is part of.",
@@ -4694,7 +4619,7 @@
                         "nullable": true
                       },
                       "translation": {
-                        "description": "Key value pair of `\u003Clanguage\u003E: \u003Ctranslation\u003E` that allows the user to change the displayed name of the field in the admin app.",
+                        "description": "Key value pair of `<language>: <translation>` that allows the user to change the displayed name of the field in the admin app.",
                         "example": null,
                         "type": "object",
                         "nullable": true
@@ -4985,7 +4910,8 @@
                           "half-right",
                           "full",
                           "fill",
-                          null]
+                          null
+                        ]
                       },
                       "group": {
                         "description": "What field group this field is part of.",
@@ -4994,7 +4920,7 @@
                         "nullable": true
                       },
                       "translation": {
-                        "description": "Key value pair of `\u003Clanguage\u003E: \u003Ctranslation\u003E` that allows the user to change the displayed name of the field in the admin app.",
+                        "description": "Key value pair of `<language>: <translation>` that allows the user to change the displayed name of the field in the admin app.",
                         "example": null,
                         "type": "object",
                         "nullable": true
@@ -6456,9 +6382,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {
-
-                  }
+                  "properties": {}
                 }
               }
             }
@@ -6549,9 +6473,7 @@
               "application/json": {
                 "schema": {
                   "type": "object",
-                  "properties": {
-
-                  }
+                  "properties": {}
                 }
               }
             }
@@ -22357,6 +22279,360 @@
           }
         ]
       }
+    },
+    "/customer-onboarding/register": {
+      "post": {
+        "tags": [
+          "customer-onboarding"
+        ],
+        "summary": "Self-register a new Customer (creates user + inactive customer row)",
+        "description": "Public registration endpoint. Creates an active directus_users record (Customer role) and an inactive customers row. Sales later approves and activates via invite link or direct edit. The customer-onboarding-hook automatically links on creation when a pre-created customer row exists by email.",
+        "operationId": "customerOnboardingRegister",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "company_name",
+                  "contact_name",
+                  "email",
+                  "phone",
+                  "password",
+                  "confirm_password"
+                ],
+                "properties": {
+                  "company_name": {
+                    "type": "string",
+                    "example": "ACME Corp"
+                  },
+                  "contact_name": {
+                    "type": "string",
+                    "example": "Nguyen Van A"
+                  },
+                  "email": {
+                    "type": "string",
+                    "format": "email",
+                    "example": "a@acme.vn"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "example": "0987654321"
+                  },
+                  "password": {
+                    "type": "string",
+                    "format": "password",
+                    "minLength": 8
+                  },
+                  "confirm_password": {
+                    "type": "string",
+                    "format": "password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created (user active, customer inactive)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user_id": {
+                          "type": "string",
+                          "format": "uuid"
+                        },
+                        "customer_id": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "inactive"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "User or customer with this email already exists"
+          },
+          "422": {
+            "description": "Validation error (missing fields, password mismatch, etc.)"
+          },
+          "500": {
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/commercial-import/preview": {
+      "post": {
+        "tags": [
+          "commercial-import"
+        ],
+        "summary": "Preview CSV import (dry run)",
+        "description": "Admin or Sales only. Parses CSV and returns what would be created/updated without writing. Supports customers, orders, invoices, deliveries.",
+        "operationId": "commercialImportPreview",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "collection",
+                  "csvText"
+                ],
+                "properties": {
+                  "collection": {
+                    "type": "string",
+                    "enum": [
+                      "customers",
+                      "orders",
+                      "invoices",
+                      "deliveries"
+                    ]
+                  },
+                  "csvText": {
+                    "type": "string",
+                    "description": "Raw CSV content"
+                  },
+                  "allowPartial": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preview result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "parsed": {
+                          "type": "integer"
+                        },
+                        "valid": {
+                          "type": "integer"
+                        },
+                        "errors": {
+                          "type": "array"
+                        },
+                        "previewRows": {
+                          "type": "array"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad CSV or validation error"
+          },
+          "403": {
+            "description": "Not allowed (Admin or Sales role required)"
+          }
+        }
+      }
+    },
+    "/commercial-import/commit": {
+      "post": {
+        "tags": [
+          "commercial-import"
+        ],
+        "summary": "Commit CSV import (write data)",
+        "description": "Admin or Sales only. Same payload as preview. Performs the actual inserts/updates.",
+        "operationId": "commercialImportCommit",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/CommercialImportBody"
+        },
+        "responses": {
+          "200": {
+            "description": "Commit result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "created": {
+                          "type": "integer"
+                        },
+                        "updated": {
+                          "type": "integer"
+                        },
+                        "skipped": {
+                          "type": "integer"
+                        },
+                        "errors": {
+                          "type": "array"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request or partial failure (when allowPartial=false)"
+          },
+          "403": {
+            "description": "Not allowed"
+          }
+        }
+      }
+    },
+    "/media-policy/soft-delete": {
+      "post": {
+        "tags": [
+          "media-policy"
+        ],
+        "summary": "Soft-delete a file (queues for purge after retention period)",
+        "description": "Admin, Editor or Sales. Moves the file into the retention queue. Actual hard deletion happens later via the media-cleanup job (default: after 7 days).",
+        "operationId": "mediaPolicySoftDelete",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "fileId"
+                ],
+                "properties": {
+                  "fileId": {
+                    "type": "string",
+                    "description": "Directus file UUID"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string",
+                    "default": "api-docs"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Soft delete recorded"
+          },
+          "400": {
+            "description": "fileId is required"
+          },
+          "403": {
+            "description": "Not allowed"
+          },
+          "500": {
+            "description": "Error during soft delete"
+          }
+        }
+      }
+    },
+    "/media-policy/hard-delete": {
+      "post": {
+        "tags": [
+          "media-policy"
+        ],
+        "summary": "Hard-delete a file immediately (Admin only)",
+        "description": "Admin only. Requires explicit confirmation to prevent accidents. Deletes the file record and the physical file on disk.",
+        "operationId": "mediaPolicyHardDelete",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "fileId",
+                  "confirmHardDelete",
+                  "confirmFileId"
+                ],
+                "properties": {
+                  "fileId": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "source": {
+                    "type": "string",
+                    "default": "api-docs"
+                  },
+                  "confirmHardDelete": {
+                    "type": "boolean",
+                    "description": "Must be true"
+                  },
+                  "confirmFileId": {
+                    "type": "string",
+                    "description": "Must exactly match fileId"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "File permanently deleted"
+          },
+          "400": {
+            "description": "Confirmation missing or mismatched"
+          },
+          "403": {
+            "description": "Only admin can hard delete"
+          },
+          "500": {
+            "description": "Error during hard delete"
+          }
+        }
+      }
     }
   },
   "tags": [
@@ -22669,6 +22945,18 @@
       "name": "ItemsIntegrationEvents",
       "x-collection": "integration_events",
       "description": "ERP Outbox Events"
+    },
+    {
+      "name": "customer-onboarding",
+      "description": "Self-registration and account linking"
+    },
+    {
+      "name": "commercial-import",
+      "description": "CSV bulk import for commerce data (Admin/Sales only)"
+    },
+    {
+      "name": "media-policy",
+      "description": "Media retention & governance actions (Admin/Editor/Sales)"
     }
   ],
   "components": {
@@ -23226,8 +23514,8 @@
           "filter": {
             "type": "object",
             "example": {
-              "\u003Cfield\u003E": {
-                "\u003Coperator\u003E": "\u003Cvalue\u003E"
+              "<field>": {
+                "<operator>": "<value>"
               }
             }
           },
@@ -26725,8 +27013,8 @@
             "schema": {
               "type": "object",
               "example": {
-                "\u003Cfield\u003E": {
-                  "\u003Coperator\u003E": "\u003Cvalue\u003E"
+                "<field>": {
+                  "<operator>": "<value>"
                 }
               }
             }
@@ -26823,16 +27111,51 @@
       }
     },
     "securitySchemes": {
-      "KeyAuth": {
-        "type": "apiKey",
-        "in": "query",
-        "name": "access_token"
-      },
       "Auth": {
         "type": "http",
         "scheme": "bearer",
-        "bearerFormat": "JWT"
+        "bearerFormat": "JWT",
+        "description": "Enter your access token (JWT or static token)"
+      }
+    },
+    "requestBodies": {
+      "CommercialImportBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "collection",
+                "csvText"
+              ],
+              "properties": {
+                "collection": {
+                  "type": "string",
+                  "enum": [
+                    "customers",
+                    "orders",
+                    "invoices",
+                    "deliveries"
+                  ]
+                },
+                "csvText": {
+                  "type": "string"
+                },
+                "allowPartial": {
+                  "type": "boolean",
+                  "default": false
+                }
+              }
+            }
+          }
+        }
       }
     }
-  }
+  },
+  "security": [
+    {
+      "Auth": []
+    }
+  ]
 }
