@@ -106,6 +106,19 @@ services:
     ports:
       - '8055:8055'
 
+  swagger-ui:
+    image: swaggerapi/swagger-ui:latest
+    restart: unless-stopped
+    depends_on:
+      directus:
+        condition: service_started
+    environment:
+      SWAGGER_JSON: /app/open.json
+    volumes:
+      - ./open.json:/app/open.json:ro
+    ports:
+      - '8056:8080'
+
 volumes:
   pgdata:
   redisdata:

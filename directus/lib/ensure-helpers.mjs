@@ -148,9 +148,22 @@ export function createEnsureHelpers(client) {
       console.log(`=  User: ${data.email} (exists, skipped)`);
       return existing[0].id;
     }
-    const created = await client.request(createUser(data));
-    console.log(`+  User: ${data.email} (created)`);
-    return created.id;
+    try {
+      const created = await client.request(createUser(data));
+      console.log(`+  User: ${data.email} (created)`);
+      return created.id;
+    } catch (err) {
+      const msg = err?.errors?.[0]?.message ?? err?.message ?? '';
+      if (msg.includes('unique') || msg.includes('already')) {
+        const all = await client.request(readUsers({ limit: -1 }));
+        const match = all.find(u => u.email === data.email);
+        if (match) {
+          console.log(`=  User: ${data.email} (exists, skipped)`);
+          return match.id;
+        }
+      }
+      throw err;
+    }
   }
 
   async function ensureItem(collection, uniqueField, data) {
@@ -162,9 +175,22 @@ export function createEnsureHelpers(client) {
       console.log(`=  Seed Item in ${collection} [${data[uniqueField]}] (exists, skipped)`);
       return existing[0].id;
     }
-    const created = await client.request(createItem(collection, data));
-    console.log(`+  Seed Item in ${collection} [${data[uniqueField]}] (created)`);
-    return created.id;
+    try {
+      const created = await client.request(createItem(collection, data));
+      console.log(`+  Seed Item in ${collection} [${data[uniqueField]}] (created)`);
+      return created.id;
+    } catch (err) {
+      const msg = err?.errors?.[0]?.message ?? err?.message ?? '';
+      if (msg.includes('unique')) {
+        const all = await client.request(readItems(collection, { limit: -1 }));
+        const match = all.find(item => item[uniqueField] === data[uniqueField]);
+        if (match) {
+          console.log(`=  Seed Item in ${collection} [${data[uniqueField]}] (exists, skipped)`);
+          return match.id;
+        }
+      }
+      throw err;
+    }
   }
 
   async function ensureTranslation(collection, sourceId, languageCode, data) {

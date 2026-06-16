@@ -6,19 +6,19 @@ export async function seedDemoCommerce(helpers, ids) {
     password: 'customer-password-123',
     role: CUSTOMER_ROLE_ID,
     first_name: 'Minh',
-    last_name: 'NguyÃ¡Â»â€¦n B2B',
+    last_name: 'Nguyễn B2B',
     status: 'active'
   });
 
   const customerId = await helpers.ensureItem('customers', 'email', {
     user: customerUserId,
     erp_ref: 'ERP-CUST-2026-0001',
-    company_name: 'CÃƒÂ´ng ty Samsung Electronics ViÃ¡Â»â€¡t Nam',
+    company_name: 'Công ty Samsung Electronics Việt Nam',
     tax_code: '0102030405-001',
-    contact_name: 'NguyÃ¡Â»â€¦n VÃ„Æ’n A',
+    contact_name: 'Nguyễn Văn A',
     email: 'customer@ulink.com',
     phone: '0987654321',
-    address: 'LÃƒÂ´ CN1-1, KCN YÃƒÂªn Phong, YÃƒÂªn Trung, YÃƒÂªn Phong, BÃ¡ÂºÂ¯c Ninh',
+    address: 'Lô CN1-1, KCN Yên Phong, Yên Trung, Yên Phong, Bắc Ninh',
     status: 'active'
   });
 
@@ -31,14 +31,14 @@ export async function seedDemoCommerce(helpers, ids) {
     subtotal: 15000000.0,
     tax: 1500000.0,
     total: 16500000.0,
-    notes: 'Giao trÃ¡Â»Â±c tiÃ¡ÂºÂ¿p kho kiÃ¡Â»Æ’m phÃ¡ÂºÂ©m bÃ¡Â»â„¢ phÃ¡ÂºÂ­n QC.',
+    notes: 'Giao trực tiếp kho kiểm phẩm bộ phận QC.',
     erp_ref: 'ERP-ORD-2026-99901'
   });
 
   await helpers.ensureItem('order_items', 'description', {
     order: orderId,
     sku: ids.sku1Id,
-    description: 'GÃ„Æ’ng tay phÃƒÂ²ng sÃ¡ÂºÂ¡ch Nitrile size S (100 pcs/box)',
+    description: 'Găng tay phòng sạch Nitrile size S (100 pcs/box)',
     qty: 50,
     unit_price: 200000.0,
     line_total: 10000000.0
@@ -47,7 +47,7 @@ export async function seedDemoCommerce(helpers, ids) {
   await helpers.ensureItem('order_items', 'description', {
     order: orderId,
     sku: ids.sku2Id,
-    description: 'GÃ„Æ’ng tay phÃƒÂ²ng sÃ¡ÂºÂ¡ch Nitrile size M (100 pcs/box)',
+    description: 'Găng tay phòng sạch Nitrile size M (100 pcs/box)',
     qty: 25,
     unit_price: 200000.0,
     line_total: 5000000.0

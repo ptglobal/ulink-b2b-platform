@@ -1,0 +1,171 @@
+{
+  "_info": "Simple test payloads for all ULink collections. Use with Directus REST API: POST /items/{collection}",
+  "auth": {
+    "login": {
+      "method": "POST",
+      "url": "/auth/login",
+      "body": { "email": "admin@ulink.com", "password": "Admin123!" }
+    },
+    "login_customer": {
+      "method": "POST",
+      "url": "/auth/login",
+      "body": { "email": "customer@ulink.com", "password": "customer-password-123" }
+    },
+    "refresh": {
+      "method": "POST",
+      "url": "/auth/refresh",
+      "body": { "refresh_token": "<refresh_token>" }
+    }
+  },
+  "collections": {
+    "languages": {
+      "body": { "code": "vi-VN", "name": "Tiếng Việt", "direction": "ltr" }
+    },
+    "industries": {
+      "body": { "status": "published", "name": "Thép xây dựng", "slug": "thep-xay-dung", "description": "Ngành thép xây dựng" }
+    },
+    "industries_translations": {
+      "body": { "industries_id": 1, "languages_code": "vi-VN", "name": "Thép xây dựng", "description": "Ngành thép" }
+    },
+    "product_categories": {
+      "body": { "status": "published", "name": "Thép cuộn", "slug": "thep-cuon" }
+    },
+    "product_categories_translations": {
+      "body": { "product_categories_id": 1, "languages_code": "vi-VN", "name": "Thép cuộn", "description": "Danh mục thép cuộn" }
+    },
+    "products": {
+      "body": { "status": "published", "name": "Thép cuộn CB300", "slug": "thep-cuon-cb300", "category": 1, "short_description": "Thép cuộn cán nóng CB300" }
+    },
+    "products_translations": {
+      "body": { "products_id": 1, "languages_code": "vi-VN", "name": "Thép cuộn CB300", "short_description": "Thép cuộn cán nóng" }
+    },
+    "products_files": {
+      "body": { "products_id": 1, "directus_files_id": "<file-uuid>" }
+    },
+    "products_industries": {
+      "body": { "products_id": 1, "industries_id": 1 }
+    },
+    "product_skus": {
+      "body": { "status": "published", "sku_code": "CB300-D10-CU", "product": 1, "unit": "kg", "pack_size": "2000" }
+    },
+    "customers": {
+      "body": { "status": "active", "company_name": "Cong ty TNHH ABC", "tax_code": "0123456789", "contact_name": "Nguyen Van A", "email": "abc@example.com", "phone": "+84909000111" }
+    },
+    "orders": {
+      "body": { "status": "draft", "code": "ORD-2026-0001", "customer": 1, "order_date": "2026-06-16", "subtotal": 50000000, "tax": 5000000, "total": 55000000 }
+    },
+    "order_items": {
+      "body": { "order": 1, "sku": 1, "description": "Thép CB300 D10", "qty": 1000, "unit_price": 50000, "line_total": 50000000 }
+    },
+    "invoices": {
+      "body": { "code": "INV-2026-0001", "customer": 1, "order": 1, "issue_date": "2026-06-16", "due_date": "2026-07-16", "amount": 55000000, "paid_amount": 0, "balance": 55000000, "paid_status": "unpaid" }
+    },
+    "deliveries": {
+      "body": { "order": 1, "hub": 1, "scheduled_date": "2026-06-20", "status": "pending" }
+    },
+    "regional_hubs": {
+      "body": { "status": "published", "name": "Kho Bình Dương", "slug": "kho-binh-duong", "delivery_sla": "2-3 ngày" }
+    },
+    "regional_hubs_translations": {
+      "body": { "regional_hubs_id": 1, "languages_code": "vi-VN", "name": "Kho Bình Dương", "delivery_sla": "2-3 ngày" }
+    },
+    "rfq_requests": {
+      "body": { "company": "Cong ty XYZ", "contact_name": "Tran Van B", "email": "xyz@example.com", "phone": "+84909222333", "message": "Cần báo giá thép cuộn", "status": "new" }
+    },
+    "rfq_assignment_rules": {
+      "body": { "hub": 1, "industry": 1, "priority": 1, "is_default": false }
+    },
+    "partners": {
+      "body": { "status": "published", "name": "Hoa Phat Group", "url": "https://hoaphat.com.vn" }
+    },
+    "partners_translations": {
+      "body": { "partners_id": 1, "languages_code": "vi-VN", "name": "Tập đoàn Hòa Phát" }
+    },
+    "blog_posts": {
+      "body": { "status": "published", "title": "Xu hướng thép 2026", "slug": "xu-huong-thep-2026", "body": "<p>Nội dung bài viết</p>", "published_at": "2026-06-16T00:00:00Z" }
+    },
+    "blog_posts_translations": {
+      "body": { "blog_posts_id": 1, "languages_code": "vi-VN", "title": "Xu hướng thép 2026", "body": "<p>Nội dung</p>" }
+    },
+    "case_studies": {
+      "body": { "status": "published", "title": "Dự án cầu Thủ Thiêm", "slug": "du-an-cau-thu-thiem", "summary": "Cung cấp thép cho dự án", "body": "<p>Chi tiết</p>" }
+    },
+    "case_studies_translations": {
+      "body": { "case_studies_id": 1, "languages_code": "vi-VN", "title": "Dự án cầu Thủ Thiêm", "summary": "Cung cấp thép" }
+    },
+    "pages": {
+      "body": { "status": "published", "title": "Về chúng tôi", "slug": "ve-chung-toi", "body": "<p>Giới thiệu ULink</p>" }
+    },
+    "pages_translations": {
+      "body": { "pages_id": 1, "languages_code": "vi-VN", "title": "Về chúng tôi", "body": "<p>Giới thiệu</p>" }
+    },
+    "hero_banners": {
+      "body": { "status": "published", "title": "Giải pháp thép B2B", "subtitle": "Đặt hàng nhanh, giao hàng đúng hẹn", "cta_label": "Liên hệ", "cta_url": "/lien-he" }
+    },
+    "hero_banners_translations": {
+      "body": { "hero_banners_id": 1, "languages_code": "vi-VN", "title": "Giải pháp thép B2B", "subtitle": "Đặt hàng nhanh" }
+    },
+    "documents": {
+      "body": { "status": "published", "title": "Catalog thép 2026", "doc_type": "catalog", "product": 1 }
+    },
+    "iso_certifications": {
+      "body": { "status": "published", "name": "ISO 9001:2015", "number": "QMS-2026-001", "issuer": "Bureau Veritas", "valid_until": "2028-12-31" }
+    },
+    "iso_certifications_translations": {
+      "body": { "iso_certifications_id": 1, "languages_code": "vi-VN", "name": "ISO 9001:2015" }
+    },
+    "integration_events": {
+      "body": { "entity": "orders", "op": "create", "record_id": "1", "payload": { "code": "ORD-2026-0001" }, "status": "pending", "attempts": 0, "destination_url": "https://erp.example.com/api/orders" }
+    },
+    "media_audit_events": {
+      "body": { "file": "<file-uuid>", "event_type": "upload", "action": "create", "module": "products", "original_filename": "spec-sheet.pdf", "mime_type": "application/pdf", "size_bytes": 102400 }
+    },
+    "media_retention": {
+      "body": { "file": "<file-uuid>", "module": "products", "state": "active", "source": "upload", "original_filename": "spec-sheet.pdf", "mime_type": "application/pdf", "size_bytes": 102400 }
+    },
+    "homepage": {
+      "body": { "title": "ULink - Nền tảng thép B2B" }
+    },
+    "homepage_translations": {
+      "body": { "homepage_id": 1, "languages_code": "vi-VN", "title": "ULink - Nền tảng thép B2B" }
+    },
+    "site_settings": {
+      "body": { "contact_email": "info@ulink.com", "contact_phone": "+84283000111", "address": "123 Nguyen Hue, Q1, HCM", "meta_title": "ULink B2B Steel Platform" }
+    },
+    "site_settings_translations": {
+      "body": { "site_settings_id": 1, "languages_code": "vi-VN", "meta_title": "ULink - Nền tảng thép B2B" }
+    }
+  },
+  "custom_endpoints": {
+    "customer_onboarding_register": {
+      "method": "POST",
+      "url": "/customer-onboarding/register",
+      "auth": false,
+      "body": { "email": "newcustomer@example.com", "password": "SecurePass123!", "company_name": "Cong ty ABC", "phone": "+84909123456" }
+    },
+    "commercial_import_preview": {
+      "method": "POST",
+      "url": "/commercial-import/preview",
+      "auth": true,
+      "body": { "collection": "products", "csvText": "name,slug\nTest Product,test-product" }
+    },
+    "commercial_import_commit": {
+      "method": "POST",
+      "url": "/commercial-import/commit",
+      "auth": true,
+      "body": { "collection": "products", "csvText": "name,slug\nTest Product,test-product" }
+    },
+    "media_policy_soft_delete": {
+      "method": "POST",
+      "url": "/media-policy/soft-delete",
+      "auth": true,
+      "body": { "fileId": "<file-uuid>", "reason": "No longer needed" }
+    },
+    "media_policy_hard_delete": {
+      "method": "POST",
+      "url": "/media-policy/hard-delete",
+      "auth": true,
+      "body": { "fileId": "<file-uuid>", "confirmHardDelete": true, "confirmFileId": "<file-uuid>" }
+    }
+  }
+}

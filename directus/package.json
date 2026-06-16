@@ -14,7 +14,9 @@
     "media:verify": "node verify_media_policy.mjs",
     "media:cleanup": "node media-cleanup.mjs",
     "rbac:seed": "node rbac_seed.mjs",
-    "rbac:verify": "node rbac_verify.mjs"
+    "rbac:verify": "node rbac_verify.mjs",
+    "openapi:export": "node openapi_export.mjs",
+    "ext:build": "bash -c \"for d in extensions/*/src; do cp -r \\\"$d/.\\\" \\\"$(dirname $d)/dist/\\\"; done\""
   },
   "dependencies": {
     "@directus/sdk": "^17.0.1",

@@ -1,0 +1,204 @@
+{
+  "paths": {
+    "/customer-onboarding/register": {
+      "post": {
+        "tags": ["Customer Onboarding"],
+        "summary": "Register a new customer account",
+        "description": "Public endpoint — no auth required.",
+        "operationId": "customerOnboardingRegister",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password", "company_name", "phone"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "newcustomer@example.com" },
+                  "password": { "type": "string", "example": "SecurePass123!" },
+                  "first_name": { "type": "string", "example": "Nguyen" },
+                  "last_name": { "type": "string", "example": "Van B" },
+                  "company_name": { "type": "string", "example": "Cong ty ABC" },
+                  "phone": { "type": "string", "example": "+84909123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Account created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "userId": { "type": "string" },
+                        "companyId": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/commercial-import/preview": {
+      "post": {
+        "tags": ["Commercial Import"],
+        "summary": "Preview CSV import",
+        "operationId": "commercialImportPreview",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["collection", "csvText"],
+                "properties": {
+                  "collection": { "type": "string", "example": "products" },
+                  "csvText": { "type": "string", "example": "name,slug\nTest,test-slug" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preview result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "valid": { "type": "integer" },
+                        "invalid": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/commercial-import/commit": {
+      "post": {
+        "tags": ["Commercial Import"],
+        "summary": "Commit CSV import",
+        "operationId": "commercialImportCommit",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["collection", "csvText"],
+                "properties": {
+                  "collection": { "type": "string", "example": "products" },
+                  "csvText": { "type": "string", "example": "name,slug\nTest,test-slug" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Import committed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "inserted": { "type": "integer" },
+                        "updated": { "type": "integer" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/media-policy/soft-delete": {
+      "post": {
+        "tags": ["Media Policy"],
+        "summary": "Soft-delete a file",
+        "operationId": "mediaPolicySoftDelete",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["fileId"],
+                "properties": {
+                  "fileId": { "type": "string", "format": "uuid" },
+                  "reason": { "type": "string", "example": "No longer needed" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "File soft-deleted" }
+        }
+      }
+    },
+    "/media-policy/hard-delete": {
+      "post": {
+        "tags": ["Media Policy"],
+        "summary": "Hard-delete a file permanently",
+        "description": "Admin only. confirmFileId must match fileId.",
+        "operationId": "mediaPolicyHardDelete",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["fileId", "confirmHardDelete", "confirmFileId"],
+                "properties": {
+                  "fileId": { "type": "string", "format": "uuid" },
+                  "confirmHardDelete": { "type": "boolean" },
+                  "confirmFileId": { "type": "string", "format": "uuid" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "File permanently deleted" }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Login: POST /auth/login {email, password} -> access_token"
+      }
+    }
+  }
+}

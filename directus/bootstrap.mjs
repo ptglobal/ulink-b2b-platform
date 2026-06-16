@@ -20,7 +20,9 @@ import { ensureAccessLinks } from './rbac/access.mjs';
 import { ensurePermissions } from './rbac/permissions.mjs';
 import { seedInitialContent } from './seed/initial_content.mjs';
 import { seedDemoCommerce } from './seed/demo_commerce.mjs';
+import { seedAdditionalContent } from './seed/additional_content.mjs';
 import { applyDbIndexes } from './lib/db-indexes.mjs';
+import { VISITOR_ROLE_ID } from './constants.mjs';
 
 const client = createDirectusClient();
 const helpers = createEnsureHelpers(client);
@@ -81,6 +83,22 @@ async function main() {
 
   const ids = await seedInitialContent(helpers);
   await seedDemoCommerce(helpers, ids);
+  await seedAdditionalContent(helpers, ids);
+
+  // Provision frontend API token user
+  const frontendToken = process.env.DIRECTUS_FRONTEND_TOKEN;
+  if (frontendToken) {
+    await helpers.ensureUser({
+      email: 'frontend-api@ulink.vn',
+      password: 'unused-frontend-api-user',
+      role: VISITOR_ROLE_ID,
+      first_name: 'Frontend',
+      last_name: 'API',
+      status: 'active',
+      token: frontendToken
+    });
+    console.log(`Frontend API token provisioned for frontend-api@ulink.vn`);
+  }
 
   // Apply PostgreSQL indexes for B2B queries
   await applyDbIndexes();
