@@ -28,7 +28,7 @@
         },
         "responses": {
           "201": {
-            "description": "Account created (user active, customer inactive — pending Sales approval)",
+            "description": "Account created (user active, customer active)",
             "content": {
               "application/json": {
                 "schema": {
@@ -39,7 +39,7 @@
                       "properties": {
                         "user_id": { "type": "string", "format": "uuid" },
                         "customer_id": { "type": "integer" },
-                        "status": { "type": "string", "example": "inactive" }
+                        "status": { "type": "string", "example": "active" }
                       }
                     }
                   }
@@ -163,6 +163,32 @@
         },
         "responses": {
           "200": { "description": "File soft-deleted" }
+        }
+      }
+    },
+    "/auth/password/request": {
+      "post": {
+        "tags": ["Sales Onboarding"],
+        "summary": "Send password reset email (Sales flow step 2)",
+        "description": "After creating the user with a temporary password, Sales calls this to send the customer a password-reset link. The customer clicks the link and sets their own password. Always returns 204 regardless of whether the email exists (security by design).",
+        "operationId": "salesPasswordResetRequest",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "b@acme.vn" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Password reset email sent (always 204, even if email not found)" }
         }
       }
     },
