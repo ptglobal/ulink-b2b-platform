@@ -63,12 +63,29 @@ function buildWelcomeMail({ contactName, email }) {
   };
 }
 
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+
+function validatePassword(value) {
+  const password = String(value ?? '').trim();
+  if (!password) {
+    const error = new Error('password is required.');
+    error.status = 422;
+    throw error;
+  }
+  if (!PASSWORD_REGEX.test(password)) {
+    const error = new Error('Password must be at least 8 characters and contain uppercase, lowercase, number, and special character.');
+    error.status = 422;
+    throw error;
+  }
+  return password;
+}
+
 export async function createCustomerAccount(context, input) {
   const companyName = requireField(input.company_name, 'company_name');
   const contactName = requireField(input.contact_name, 'contact_name');
   const email = validateEmail(input.email);
   const phone = requireField(input.phone, 'phone');
-  const password = requireField(input.password, 'password');
+  const password = validatePassword(input.password);
   const confirmPassword = requireField(input.confirm_password, 'confirm_password');
 
   if (password !== confirmPassword) {

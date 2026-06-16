@@ -61,7 +61,7 @@ services:
       ADMIN_EMAIL: ${DIRECTUS_ADMIN_EMAIL}
       ADMIN_PASSWORD: ${DIRECTUS_ADMIN_PASSWORD}
       PUBLIC_URL: ${DIRECTUS_PUBLIC_URL}
-      ACCESS_TOKEN_TTL: '1d'
+      ACCESS_TOKEN_TTL: '15m'
 
       DB_CLIENT: pg
       DB_HOST: postgres
@@ -91,6 +91,8 @@ services:
       MAIL_PASSWORD: ''
       MAIL_FROM: 'ULINK <no-reply@ulink.com>'
       PASSWORD_RESET_URL_ALLOW_LIST: ${PASSWORD_RESET_URL_ALLOW_LIST:-http://localhost:3000/reset-password}
+      PASSWORD_RESET_TOKEN_TTL: '15m'
+      REFRESH_TOKEN_AUTO_REUSE: 'false'
 
       EMAIL_TRANSPORT: smtp
       EMAIL_FROM: no-reply@ulink.com
@@ -99,6 +101,17 @@ services:
       EMAIL_SMTP_SECURE: ${MAIL_SECURE:-false}
       EMAIL_SMTP_USER: ${MAIL_USER:-}
       EMAIL_SMTP_PASSWORD: ${MAIL_PASSWORD:-}
+
+      # Google OAuth 2.0 (SSO)
+      AUTH_PROVIDERS: ${AUTH_PROVIDERS:-}
+      AUTH_GOOGLE_DRIVER: ${AUTH_GOOGLE_DRIVER:-openid}
+      AUTH_GOOGLE_CLIENT_ID: ${AUTH_GOOGLE_CLIENT_ID:-}
+      AUTH_GOOGLE_CLIENT_SECRET: ${AUTH_GOOGLE_CLIENT_SECRET:-}
+      AUTH_GOOGLE_ISSUER_URL: ${AUTH_GOOGLE_ISSUER_URL:-https://accounts.google.com/.well-known/openid-configuration}
+      AUTH_GOOGLE_IDENTIFIER_KEY: ${AUTH_GOOGLE_IDENTIFIER_KEY:-email}
+      AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION: ${AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION:-false}
+      AUTH_GOOGLE_DEFAULT_ROLE_ID: ${AUTH_GOOGLE_DEFAULT_ROLE_ID:-e11b0e50-3030-410c-9999-000000000003}
+      AUTH_GOOGLE_REDIRECT_ALLOW_LIST: ${AUTH_GOOGLE_REDIRECT_ALLOW_LIST:-http://localhost:3000/auth/callback}
     volumes:
       - ./directus/uploads:/directus/uploads
       - ./directus/extensions:/directus/extensions

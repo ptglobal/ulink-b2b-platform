@@ -52,6 +52,48 @@
         }
       }
     },
+    "/auth/login/google": {
+      "get": {
+        "tags": ["Google OAuth"],
+        "summary": "Initiate Google OAuth 2.0 login",
+        "description": "Redirects to Google consent screen. On success: if email exists in directus_users, logs in and returns token via callback. If email does not exist and ALLOW_PUBLIC_REGISTRATION=false, returns error — frontend should redirect to registration page.",
+        "operationId": "googleOAuthLogin",
+        "security": [],
+        "parameters": [
+          {
+            "name": "redirect",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "uri", "example": "http://localhost:3000/auth/callback" },
+            "description": "Frontend callback URL that receives the access/refresh tokens"
+          }
+        ],
+        "responses": {
+          "302": { "description": "Redirect to Google consent screen" },
+          "403": { "description": "Email not found and public registration disabled — redirect user to signup" }
+        }
+      }
+    },
+    "/auth/login/google/callback": {
+      "get": {
+        "tags": ["Google OAuth"],
+        "summary": "Google OAuth callback (handled by Directus)",
+        "description": "Directus handles this internally. On success, redirects to the frontend redirect URL with access_token and refresh_token as query params.",
+        "operationId": "googleOAuthCallback",
+        "security": [],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Authorization code from Google (handled automatically)"
+          }
+        ],
+        "responses": {
+          "302": { "description": "Redirect to frontend with access_token & refresh_token" }
+        }
+      }
+    },
     "/commercial-import/preview": {
       "post": {
         "tags": ["Commercial Import"],
