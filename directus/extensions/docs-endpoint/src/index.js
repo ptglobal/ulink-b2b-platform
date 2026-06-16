@@ -59,7 +59,6 @@ export default {
         } else if (req.accountability?.admin) {
           // Already admin context
         } else {
-          // Login as admin to get full spec for docs UI
           const adminEmail = context.env?.ADMIN_EMAIL;
           const adminPassword = context.env?.ADMIN_PASSWORD;
           if (adminEmail && adminPassword) {
@@ -89,7 +88,6 @@ export default {
           }
         }
 
-        // Single BearerAuth only
         spec.components ??= {};
         spec.components.securitySchemes = {
           BearerAuth: {

@@ -1,11 +1,13 @@
 {
-  "name": "directus-extension-docs-endpoint",
+  "name": "ulink-docs-endpoint",
   "version": "1.0.0",
+  "private": true,
   "type": "module",
   "directus:extension": {
     "type": "endpoint",
     "path": "dist/index.js",
     "source": "src/index.js",
     "host": "^11.0.0"
-  }
+  },
+  "description": "Serves merged OpenAPI spec (core Directus + custom ULink endpoints) and Swagger UI."
 }

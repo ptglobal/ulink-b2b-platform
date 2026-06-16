@@ -13,6 +13,8 @@ and **custom Next.js route handlers** for the two latency/spam-sensitive paths.
 - **i18n:** request translations via `deep`/`translations` per Directus docs.
 - **Conventions:** read published only on the public site (`filter[status][_eq]=published`). RFQ writes go through `POST /api/rfq`, not direct anonymous Directus creates.
 
+**For testers**: See the dedicated guide `directus/API_TESTING_GUIDE.md` for detailed per-endpoint examples (including the custom extension endpoints), curl commands, and test scenarios. Interactive docs are available at `${DIRECTUS_URL}/docs`.
+
 Example - published products in a category:
 ```
 GET /items/products?filter[status][_eq]=published&filter[category][_eq]=12&fields=id,name,slug,hero
