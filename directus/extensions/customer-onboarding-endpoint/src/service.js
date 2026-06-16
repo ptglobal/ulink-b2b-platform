@@ -1,8 +1,25 @@
 import { CUSTOMER_ROLE_ID } from '../../../constants.mjs';
 import { sendMail } from '../../../lib/smtp.mjs';
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function normalizeEmail(value) {
   return String(value ?? '').trim().toLowerCase();
+}
+
+function validateEmail(value) {
+  const email = normalizeEmail(value);
+  if (!email) {
+    const error = new Error('email is required.');
+    error.status = 422;
+    throw error;
+  }
+  if (!EMAIL_REGEX.test(email)) {
+    const error = new Error('Invalid email format.');
+    error.status = 422;
+    throw error;
+  }
+  return email;
 }
 
 function normalizeString(value) {
@@ -49,7 +66,7 @@ function buildWelcomeMail({ contactName, email }) {
 export async function createCustomerAccount(context, input) {
   const companyName = requireField(input.company_name, 'company_name');
   const contactName = requireField(input.contact_name, 'contact_name');
-  const email = requireField(input.email, 'email').toLowerCase();
+  const email = validateEmail(input.email);
   const phone = requireField(input.phone, 'phone');
   const password = requireField(input.password, 'password');
   const confirmPassword = requireField(input.confirm_password, 'confirm_password');
