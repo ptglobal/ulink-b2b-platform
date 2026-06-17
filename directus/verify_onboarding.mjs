@@ -169,7 +169,7 @@ async function waitForLinkedCustomer(client, email) {
 
 async function runSelfRegisterFlow() {
   const email = uniqueEmail('buyer');
-  const password = 'customer-password-123';
+  const password = 'SecurePass123!';
   const body = {
     company_name: 'ACME Vietnam',
     contact_name: 'Nguyen Van A',
@@ -190,7 +190,7 @@ async function runSelfRegisterFlow() {
   const payload = JSON.parse(responseText);
   assert(payload?.data?.user_id, 'Self-register returns user_id');
   assert(payload?.data?.customer_id, 'Self-register returns customer_id');
-  assert.equal(payload.data.status, 'inactive');
+  assert.equal(payload.data.status, 'active');
 
   const user = await readUserByEmail(adminClient, email);
   assert(user, 'Self-register creates directus_users row');
@@ -200,7 +200,7 @@ async function runSelfRegisterFlow() {
 
   const customer = await readCustomerByEmail(adminClient, email);
   assert(customer, 'Self-register creates customer row');
-  assert.equal(customer.status, 'inactive', 'Self-register leaves customer inactive');
+  assert.equal(customer.status, 'active', 'Self-register activates customer');
   assert.equal(typeof customer.user === 'object' ? customer.user?.id : customer.user, user.id, 'Customer links to new user');
   assert.equal(customer.company_name, body.company_name);
   assert.equal(customer.contact_name, body.contact_name);
@@ -243,7 +243,7 @@ async function runInviteFlow() {
   };
 
   const seededCustomer = await adminClient.request(createItem('customers', customerSeed));
-  const password = 'invite-password-123';
+  const password = 'SecurePass123!';
 
   const invitedUser = await adminClient.request(
     createUser({
@@ -260,6 +260,15 @@ async function runInviteFlow() {
   assert.equal(linkedCustomer.status, 'active', 'Invite flow activates customer row');
   assert.equal(linkedCustomer.company_name, customerSeed.company_name);
   assert.equal(seededCustomer.id, linkedCustomer.id, 'Hook updates pre-created customer row');
+
+  const welcomeMail = await waitForMail({
+    to: email,
+    subject: '[ULINK] Tài khoản đã được tạo'
+  });
+  const messageBlob = `${JSON.stringify(welcomeMail.message)}\n${JSON.stringify(welcomeMail.detail)}`;
+  assert.match(messageBlob, /\/login/, 'Welcome mail points to /login');
+  assert.match(messageBlob, new RegExp(email), 'Welcome mail contains email');
+  assert.match(messageBlob, new RegExp(password), 'Welcome mail contains password');
 }
 
 async function main() {
