@@ -5,7 +5,7 @@
   "type": "module",
   "description": "Creates ULink collections + roles in a running Directus instance.",
   "scripts": {
-    "bootstrap": "node scripts/bootstrap.mjs",
+    "bootstrap": "node bootstrap.mjs",
     "verify": "node testing/verify_bootstrap.mjs",
     "verify:commercial-import": "node testing/verify_commercial_data_import.mjs",
     "verify:onboarding": "node testing/verify_onboarding.mjs",

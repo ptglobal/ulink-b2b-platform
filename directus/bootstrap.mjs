@@ -7,22 +7,22 @@
  *   cd directus && npm install && npm run bootstrap
  */
 import { createItem, readItems, updateItem } from '@directus/sdk';
-import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from '../lib/config.mjs';
-import { createEnsureHelpers } from '../lib/ensure-helpers.mjs';
-import { ensureFolderTree } from '../lib/folder-db.mjs';
-import { DEFAULT_LOCALE, LOCALES } from '../lib/i18n.mjs';
-import { MEDIA_POLICY } from '../lib/media-policy.mjs';
-import { COLLECTION_DEFS } from '../schema/collections.mjs';
-import { RELATION_DEFS } from '../schema/relations.mjs';
-import { ensureRoles } from '../rbac/roles.mjs';
-import { ensurePolicies } from '../rbac/policies.mjs';
-import { ensureAccessLinks } from '../rbac/access.mjs';
-import { ensurePermissions } from '../rbac/permissions.mjs';
-import { seedInitialContent } from '../seed/initial_content.mjs';
-import { seedDemoCommerce } from '../seed/demo_commerce.mjs';
-import { seedAdditionalContent } from '../seed/additional_content.mjs';
-import { applyDbIndexes } from '../lib/db-indexes.mjs';
-import { VISITOR_ROLE_ID } from '../lib/constants.mjs';
+import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './lib/config.mjs';
+import { createEnsureHelpers } from './lib/ensure-helpers.mjs';
+import { ensureFolderTree } from './lib/folder-db.mjs';
+import { DEFAULT_LOCALE, LOCALES } from './lib/i18n.mjs';
+import { MEDIA_POLICY } from './lib/media-policy.mjs';
+import { COLLECTION_DEFS } from './schema/collections.mjs';
+import { RELATION_DEFS } from './schema/relations.mjs';
+import { ensureRoles } from './rbac/roles.mjs';
+import { ensurePolicies } from './rbac/policies.mjs';
+import { ensureAccessLinks } from './rbac/access.mjs';
+import { ensurePermissions } from './rbac/permissions.mjs';
+import { seedInitialContent } from './seed/initial_content.mjs';
+import { seedDemoCommerce } from './seed/demo_commerce.mjs';
+import { seedAdditionalContent } from './seed/additional_content.mjs';
+import { applyDbIndexes } from './lib/db-indexes.mjs';
+import { VISITOR_ROLE_ID } from './lib/constants.mjs';
 
 const client = createDirectusClient();
 const helpers = createEnsureHelpers(client);
