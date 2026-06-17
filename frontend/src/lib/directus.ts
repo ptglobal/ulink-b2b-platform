@@ -102,6 +102,13 @@ export interface IntegrationEvent {
   destination_url?: string | null;
 }
 
+export interface NewsletterSubscriber {
+  id?: number | string;
+  email: string;
+  status: 'active' | 'inactive';
+  created_at?: string;
+}
+
 export interface Schema {
   product_skus: ProductSku[];
   industries: Industry[];
@@ -112,6 +119,7 @@ export interface Schema {
   rfq_assignment_rules: RfqAssignmentRule[];
   directus_notifications: DirectusNotification[];
   integration_events: IntegrationEvent[];
+  newsletter_subscribers: NewsletterSubscriber[];
 }
 
 const url = getDirectusUrl();
