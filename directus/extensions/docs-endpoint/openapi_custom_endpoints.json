@@ -52,6 +52,48 @@
         }
       }
     },
+    "/auth/login/google": {
+      "get": {
+        "tags": ["Google OAuth"],
+        "summary": "Initiate Google OAuth 2.0 login",
+        "description": "Redirects to Google consent screen. On success: if email exists in directus_users, logs in and returns token via callback. If email does not exist and ALLOW_PUBLIC_REGISTRATION=false, returns error — frontend should redirect to registration page.",
+        "operationId": "googleOAuthLogin",
+        "security": [],
+        "parameters": [
+          {
+            "name": "redirect",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string", "format": "uri", "example": "http://localhost:3000/auth/callback" },
+            "description": "Frontend callback URL that receives the access/refresh tokens"
+          }
+        ],
+        "responses": {
+          "302": { "description": "Redirect to Google consent screen" },
+          "403": { "description": "Email not found and public registration disabled — redirect user to signup" }
+        }
+      }
+    },
+    "/auth/login/google/callback": {
+      "get": {
+        "tags": ["Google OAuth"],
+        "summary": "Google OAuth callback (handled by Directus)",
+        "description": "Directus handles this internally. On success, redirects to the frontend redirect URL with access_token and refresh_token as query params.",
+        "operationId": "googleOAuthCallback",
+        "security": [],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "schema": { "type": "string" },
+            "description": "Authorization code from Google (handled automatically)"
+          }
+        ],
+        "responses": {
+          "302": { "description": "Redirect to frontend with access_token & refresh_token" }
+        }
+      }
+    },
     "/commercial-import/preview": {
       "post": {
         "tags": ["Commercial Import"],
@@ -166,7 +208,7 @@
         }
       }
     },
-    "/auth/password/request": {
+     "/auth/password/request": {
       "post": {
         "tags": ["Sales Onboarding"],
         "summary": "Send password reset email (Sales flow step 2)",
@@ -189,6 +231,36 @@
         },
         "responses": {
           "204": { "description": "Password reset email sent (always 204, even if email not found)" }
+        }
+      }
+    },
+    "/password-change/change": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Change User Password",
+        "description": "Change user's password. Requires current password verification and validates the new password format.",
+        "operationId": "changePassword",
+        "security": [{ "BearerAuth": [] }],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["current_password", "new_password", "confirm_password"],
+                "properties": {
+                  "current_password": { "type": "string", "format": "password", "example": "OldSecurePass123!" },
+                  "new_password": { "type": "string", "format": "password", "example": "NewSecurePass123!" },
+                  "confirm_password": { "type": "string", "format": "password", "example": "NewSecurePass123!" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": { "description": "Password successfully updated" },
+          "401": { "description": "Unauthorized or invalid current password" },
+          "422": { "description": "Validation error (missing fields, passwords mismatch, or weak new password)" }
         }
       }
     },

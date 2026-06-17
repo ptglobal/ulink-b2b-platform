@@ -127,9 +127,9 @@ services:
       directus:
         condition: service_started
     environment:
-      SWAGGER_JSON: /app/open.json
+      SWAGGER_JSON: /app/openapi.json
     volumes:
-      - ./open.json:/app/open.json:ro
+      - ./openapi.json:/app/openapi.json:ro
     ports:
       - '8056:8080'
 

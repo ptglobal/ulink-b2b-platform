@@ -1,5 +1,9 @@
 import { readFileSync, writeFileSync } from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { DIRECTUS_URL, DIRECTUS_ADMIN_EMAIL, DIRECTUS_ADMIN_PASSWORD } from './config.mjs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Login directly to get a token
 const loginRes = await fetch(`${DIRECTUS_URL}/auth/login`, {
@@ -27,7 +31,7 @@ if (!response.ok) {
 const spec = await response.json();
 
 // Merge custom extension endpoints
-const customPath = new URL('./openapi_custom_endpoints.json', import.meta.url);
+const customPath = new URL('./extensions/docs-endpoint/openapi_custom_endpoints.json', import.meta.url);
 const custom = JSON.parse(readFileSync(customPath, 'utf-8'));
 
 for (const [path, methods] of Object.entries(custom.paths)) {
@@ -56,8 +60,10 @@ for (const tag of ['Customer Onboarding', 'Commercial Import', 'Media Policy', '
   }
 }
 
-writeFileSync('openapi.json', JSON.stringify(spec, null, 2));
-console.log(`Exported OpenAPI spec to openapi.json`);
+const outPath = path.resolve(__dirname, '../openapi.json');
+writeFileSync(outPath, JSON.stringify(spec, null, 2));
+console.log(`Exported OpenAPI spec to ${outPath}`);
 console.log(`  - Directus built-in endpoints: ${Object.keys(spec.paths).length - Object.keys(custom.paths).length}`);
 console.log(`  - Custom extension endpoints: ${Object.keys(custom.paths).length}`);
 console.log(`  - Total paths: ${Object.keys(spec.paths).length}`);
+

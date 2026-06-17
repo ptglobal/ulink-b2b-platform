@@ -3,7 +3,7 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "816055b6c6fd49223c761f0e8ccf7a613c6feb2d"
+    "version": "35cfa402d61c349d3ceba4fb0e0840feaa3466aa"
   },
   "servers": [
     {
@@ -266,12 +266,14 @@
     "/auth/password/request": {
       "post": {
         "tags": [
-          "Authentication"
+          "Sales Onboarding"
         ],
-        "operationId": "passwordRequest",
-        "summary": "Request a Password Reset",
-        "description": "Request that a password reset email be sent. This does not apply to users authenticated through external providers (OAuth, SAML, LDAP, etc.).",
+        "summary": "Send password reset email (Sales flow step 2)",
+        "description": "After creating the user with a temporary password, Sales calls this to send the customer a password-reset link. The customer clicks the link and sets their own password. Always returns 204 regardless of whether the email exists (security by design).",
+        "operationId": "salesPasswordResetRequest",
+        "security": [],
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
@@ -282,8 +284,8 @@
                 "properties": {
                   "email": {
                     "type": "string",
-                    "example": "admin@example.com",
-                    "description": "Email address of the user you're requesting a reset for."
+                    "format": "email",
+                    "example": "b@acme.vn"
                   }
                 }
               }
@@ -291,8 +293,8 @@
           }
         },
         "responses": {
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
+          "204": {
+            "description": "Password reset email sent (always 204, even if email not found)"
           }
         }
       }
@@ -6022,177 +6024,6 @@
         ]
       }
     },
-    "/extensions": {
-      "get": {
-        "summary": "List Extensions",
-        "description": "List the installed extensions and their configuration in the project.",
-        "operationId": "listExtensions",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Extensions"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "tags": [
-          "Extensions"
-        ]
-      }
-    },
-    "/extensions/{name}": {
-      "patch": {
-        "summary": "Update an Extension",
-        "description": "Update an existing extension.",
-        "operationId": "updateExtensions",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "name",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "meta": {
-                    "type": "object",
-                    "description": "Directus metadata for the extension. Where the configuration for the extension in the current project is stored.",
-                    "properties": {
-                      "enabled": {
-                        "description": "Whether or not the extension is enabled.",
-                        "example": true,
-                        "type": "boolean"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Extensions"
-                    }
-                  }
-                }
-              }
-            },
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "tags": [
-          "Extensions"
-        ]
-      }
-    },
-    "/extensions/{bundle}/{name}": {
-      "patch": {
-        "summary": "Update an Extension",
-        "description": "Update an existing extension.",
-        "operationId": "updateExtensionBundle",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "bundle",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "name",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "meta": {
-                    "type": "object",
-                    "description": "Directus metadata for the extension. Where the configuration for the extension in the current project is stored.",
-                    "properties": {
-                      "enabled": {
-                        "description": "Whether or not the extension is enabled.",
-                        "example": true,
-                        "type": "boolean"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Extensions"
-                    }
-                  }
-                }
-              }
-            },
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "tags": [
-          "Extensions"
-        ]
-      }
-    },
     "/versions": {
       "get": {
         "summary": "List Content Versions",
@@ -6661,6 +6492,264 @@
         ]
       }
     },
+    "/extensions": {
+      "get": {
+        "summary": "List Extensions",
+        "description": "List the installed extensions and their configuration in the project.",
+        "operationId": "listExtensions",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Extensions"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/extensions/{name}": {
+      "patch": {
+        "summary": "Update an Extension",
+        "description": "Update an existing extension.",
+        "operationId": "updateExtensions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "meta": {
+                    "type": "object",
+                    "description": "Directus metadata for the extension. Where the configuration for the extension in the current project is stored.",
+                    "properties": {
+                      "enabled": {
+                        "description": "Whether or not the extension is enabled.",
+                        "example": true,
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Extensions"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/extensions/{bundle}/{name}": {
+      "patch": {
+        "summary": "Update an Extension",
+        "description": "Update an existing extension.",
+        "operationId": "updateExtensionBundle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bundle",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "meta": {
+                    "type": "object",
+                    "description": "Directus metadata for the extension. Where the configuration for the extension in the current project is stored.",
+                    "properties": {
+                      "enabled": {
+                        "description": "Whether or not the extension is enabled.",
+                        "example": true,
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Extensions"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/settings": {
+      "get": {
+        "summary": "Retrieve Settings",
+        "description": "List the settings.",
+        "operationId": "getSettings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Settings"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Settings"
+        ]
+      },
+      "patch": {
+        "summary": "Update Settings",
+        "description": "Update the settings",
+        "operationId": "updateSetting",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Settings"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Settings"
+        ]
+      }
+    },
     "/comments": {
       "get": {
         "tags": [
@@ -7032,93 +7121,6 @@
             "$ref": "#/components/responses/UnauthorizedError"
           }
         }
-      }
-    },
-    "/settings": {
-      "get": {
-        "summary": "Retrieve Settings",
-        "description": "List the settings.",
-        "operationId": "getSettings",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Page"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Settings"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "tags": [
-          "Settings"
-        ]
-      },
-      "patch": {
-        "summary": "Update Settings",
-        "description": "Update the settings",
-        "operationId": "updateSetting",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Settings"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "tags": [
-          "Settings"
-        ]
       }
     },
     "/items/regional_hubs": {
@@ -19557,395 +19559,6 @@
         ]
       }
     },
-    "/items/integration_events": {
-      "post": {
-        "summary": "Create an Item",
-        "description": "Create a new integration_events item.",
-        "tags": [
-          "Items",
-          "ItemsIntegrationEvents"
-        ],
-        "operationId": "createItemsIntegrationEvents",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Meta"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsIntegrationEvents"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsIntegrationEvents"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsIntegrationEvents"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Items",
-        "description": "List the integration_events items.",
-        "tags": [
-          "Items",
-          "ItemsIntegrationEvents"
-        ],
-        "operationId": "readItemsIntegrationEvents",
-        "security": [
-          {
-            "Auth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "$ref": "#/components/schemas/ItemsIntegrationEvents"
-                      }
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/x-metadata"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update Multiple Items",
-        "description": "Update multiple integration_events items at the same time.",
-        "tags": [
-          "Items",
-          "ItemsIntegrationEvents"
-        ],
-        "operationId": "updateItemsIntegrationEvents",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsIntegrationEvents"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsIntegrationEvents"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsIntegrationEvents"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing integration_events items.",
-        "tags": [
-          "Items",
-          "ItemsIntegrationEvents"
-        ],
-        "operationId": "deleteItemsIntegrationEvents",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/items/integration_events/{id}": {
-      "get": {
-        "summary": "Retrieve an Item",
-        "description": "Retrieve a single integration_events item by unique identifier.",
-        "tags": [
-          "Items",
-          "ItemsIntegrationEvents"
-        ],
-        "operationId": "readSingleItemsIntegrationEvents",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Version"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsIntegrationEvents"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update an Item",
-        "description": "Update an existing integration_events item.",
-        "tags": [
-          "Items",
-          "ItemsIntegrationEvents"
-        ],
-        "operationId": "updateSingleItemsIntegrationEvents",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/ItemsIntegrationEvents"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsIntegrationEvents"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete an Item",
-        "description": "Delete an existing integration_events item.",
-        "tags": [
-          "Items",
-          "ItemsIntegrationEvents"
-        ],
-        "operationId": "deleteSingleItemsIntegrationEvents",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
     "/items/product_categories": {
       "post": {
         "summary": "Create an Item",
@@ -21113,395 +20726,6 @@
         ]
       }
     },
-    "/items/rfq_assignment_rules": {
-      "post": {
-        "summary": "Create an Item",
-        "description": "Create a new rfq_assignment_rules item.",
-        "tags": [
-          "Items",
-          "ItemsRfqAssignmentRules"
-        ],
-        "operationId": "createItemsRfqAssignmentRules",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Meta"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Items",
-        "description": "List the rfq_assignment_rules items.",
-        "tags": [
-          "Items",
-          "ItemsRfqAssignmentRules"
-        ],
-        "operationId": "readItemsRfqAssignmentRules",
-        "security": [
-          {
-            "Auth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-                      }
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/x-metadata"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update Multiple Items",
-        "description": "Update multiple rfq_assignment_rules items at the same time.",
-        "tags": [
-          "Items",
-          "ItemsRfqAssignmentRules"
-        ],
-        "operationId": "updateItemsRfqAssignmentRules",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing rfq_assignment_rules items.",
-        "tags": [
-          "Items",
-          "ItemsRfqAssignmentRules"
-        ],
-        "operationId": "deleteItemsRfqAssignmentRules",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/items/rfq_assignment_rules/{id}": {
-      "get": {
-        "summary": "Retrieve an Item",
-        "description": "Retrieve a single rfq_assignment_rules item by unique identifier.",
-        "tags": [
-          "Items",
-          "ItemsRfqAssignmentRules"
-        ],
-        "operationId": "readSingleItemsRfqAssignmentRules",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Version"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update an Item",
-        "description": "Update an existing rfq_assignment_rules item.",
-        "tags": [
-          "Items",
-          "ItemsRfqAssignmentRules"
-        ],
-        "operationId": "updateSingleItemsRfqAssignmentRules",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete an Item",
-        "description": "Delete an existing rfq_assignment_rules item.",
-        "tags": [
-          "Items",
-          "ItemsRfqAssignmentRules"
-        ],
-        "operationId": "deleteSingleItemsRfqAssignmentRules",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
     "/items/products_industries": {
       "post": {
         "summary": "Create an Item",
@@ -22280,6 +21504,784 @@
         ]
       }
     },
+    "/items/rfq_assignment_rules": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new rfq_assignment_rules item.",
+        "tags": [
+          "Items",
+          "ItemsRfqAssignmentRules"
+        ],
+        "operationId": "createItemsRfqAssignmentRules",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the rfq_assignment_rules items.",
+        "tags": [
+          "Items",
+          "ItemsRfqAssignmentRules"
+        ],
+        "operationId": "readItemsRfqAssignmentRules",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Multiple Items",
+        "description": "Update multiple rfq_assignment_rules items at the same time.",
+        "tags": [
+          "Items",
+          "ItemsRfqAssignmentRules"
+        ],
+        "operationId": "updateItemsRfqAssignmentRules",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Multiple Items",
+        "description": "Delete multiple existing rfq_assignment_rules items.",
+        "tags": [
+          "Items",
+          "ItemsRfqAssignmentRules"
+        ],
+        "operationId": "deleteItemsRfqAssignmentRules",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/items/rfq_assignment_rules/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single rfq_assignment_rules item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsRfqAssignmentRules"
+        ],
+        "operationId": "readSingleItemsRfqAssignmentRules",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Version"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing rfq_assignment_rules item.",
+        "tags": [
+          "Items",
+          "ItemsRfqAssignmentRules"
+        ],
+        "operationId": "updateSingleItemsRfqAssignmentRules",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsRfqAssignmentRules"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing rfq_assignment_rules item.",
+        "tags": [
+          "Items",
+          "ItemsRfqAssignmentRules"
+        ],
+        "operationId": "deleteSingleItemsRfqAssignmentRules",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/items/integration_events": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new integration_events item.",
+        "tags": [
+          "Items",
+          "ItemsIntegrationEvents"
+        ],
+        "operationId": "createItemsIntegrationEvents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsIntegrationEvents"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsIntegrationEvents"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsIntegrationEvents"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the integration_events items.",
+        "tags": [
+          "Items",
+          "ItemsIntegrationEvents"
+        ],
+        "operationId": "readItemsIntegrationEvents",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/ItemsIntegrationEvents"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Multiple Items",
+        "description": "Update multiple integration_events items at the same time.",
+        "tags": [
+          "Items",
+          "ItemsIntegrationEvents"
+        ],
+        "operationId": "updateItemsIntegrationEvents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsIntegrationEvents"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsIntegrationEvents"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsIntegrationEvents"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Multiple Items",
+        "description": "Delete multiple existing integration_events items.",
+        "tags": [
+          "Items",
+          "ItemsIntegrationEvents"
+        ],
+        "operationId": "deleteItemsIntegrationEvents",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/items/integration_events/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single integration_events item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsIntegrationEvents"
+        ],
+        "operationId": "readSingleItemsIntegrationEvents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Version"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsIntegrationEvents"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing integration_events item.",
+        "tags": [
+          "Items",
+          "ItemsIntegrationEvents"
+        ],
+        "operationId": "updateSingleItemsIntegrationEvents",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsIntegrationEvents"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsIntegrationEvents"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing integration_events item.",
+        "tags": [
+          "Items",
+          "ItemsIntegrationEvents"
+        ],
+        "operationId": "deleteSingleItemsIntegrationEvents",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
     "/customer-onboarding/register": {
       "post": {
         "tags": [
@@ -22338,7 +22340,7 @@
         },
         "responses": {
           "201": {
-            "description": "Account created (user active, customer inactive — pending Sales approval)",
+            "description": "Account created (user active, customer active)",
             "content": {
               "application/json": {
                 "schema": {
@@ -22356,7 +22358,7 @@
                         },
                         "status": {
                           "type": "string",
-                          "example": "inactive"
+                          "example": "active"
                         }
                       }
                     }
@@ -22370,6 +22372,64 @@
           },
           "422": {
             "description": "Validation error (missing fields, password mismatch)"
+          }
+        }
+      }
+    },
+    "/auth/login/google": {
+      "get": {
+        "tags": [
+          "Google OAuth"
+        ],
+        "summary": "Initiate Google OAuth 2.0 login",
+        "description": "Redirects to Google consent screen. On success: if email exists in directus_users, logs in and returns token via callback. If email does not exist and ALLOW_PUBLIC_REGISTRATION=false, returns error — frontend should redirect to registration page.",
+        "operationId": "googleOAuthLogin",
+        "security": [],
+        "parameters": [
+          {
+            "name": "redirect",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uri",
+              "example": "http://localhost:3000/auth/callback"
+            },
+            "description": "Frontend callback URL that receives the access/refresh tokens"
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to Google consent screen"
+          },
+          "403": {
+            "description": "Email not found and public registration disabled — redirect user to signup"
+          }
+        }
+      }
+    },
+    "/auth/login/google/callback": {
+      "get": {
+        "tags": [
+          "Google OAuth"
+        ],
+        "summary": "Google OAuth callback (handled by Directus)",
+        "description": "Directus handles this internally. On success, redirects to the frontend redirect URL with access_token and refresh_token as query params.",
+        "operationId": "googleOAuthCallback",
+        "security": [],
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Authorization code from Google (handled automatically)"
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Redirect to frontend with access_token & refresh_token"
           }
         }
       }
@@ -22542,6 +22602,64 @@
         }
       }
     },
+    "/password-change/change": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Change User Password",
+        "description": "Change user's password. Requires current password verification and validates the new password format.",
+        "operationId": "changePassword",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "current_password",
+                  "new_password",
+                  "confirm_password"
+                ],
+                "properties": {
+                  "current_password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "OldSecurePass123!"
+                  },
+                  "new_password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "NewSecurePass123!"
+                  },
+                  "confirm_password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "NewSecurePass123!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Password successfully updated"
+          },
+          "401": {
+            "description": "Unauthorized or invalid current password"
+          },
+          "422": {
+            "description": "Validation error (missing fields, passwords mismatch, or weak new password)"
+          }
+        }
+      }
+    },
     "/media-policy/hard-delete": {
       "post": {
         "tags": [
@@ -22690,24 +22808,24 @@
       "x-collection": "directus_operations"
     },
     {
-      "name": "Extensions",
-      "description": "Directus can easily be extended through the addition of several types of extensions, including layouts, interfaces, and modules.",
-      "x-collection": "directus_extensions"
-    },
-    {
       "name": "Versions",
       "description": "Enables users to create unpublished copies of an item, modify them independently from the main version, and promote them to become the new main version when ready.",
       "x-collection": "directus_versions"
     },
     {
-      "name": "Comments",
-      "description": "Comments can be added to items.",
-      "x-collection": "directus_comments"
+      "name": "Extensions",
+      "description": "Directus can easily be extended through the addition of several types of extensions, including layouts, interfaces, and modules.",
+      "x-collection": "directus_extensions"
     },
     {
       "name": "Settings",
       "description": "Settings control the way the platform works and acts.",
       "x-collection": "directus_settings"
+    },
+    {
+      "name": "Comments",
+      "description": "Comments can be added to items.",
+      "x-collection": "directus_comments"
     },
     {
       "name": "ItemsRegionalHubs",
@@ -22870,11 +22988,6 @@
       "description": "iso_certifications translations"
     },
     {
-      "name": "ItemsIntegrationEvents",
-      "x-collection": "integration_events",
-      "description": "ERP Outbox Events"
-    },
-    {
       "name": "ItemsProductCategories",
       "x-collection": "product_categories",
       "description": "Product Categories"
@@ -22890,17 +23003,22 @@
       "description": "RFQ Requests"
     },
     {
-      "name": "ItemsRfqAssignmentRules",
-      "x-collection": "rfq_assignment_rules",
-      "description": "RFQ Assignment Rules"
-    },
-    {
       "name": "ItemsProductsIndustries",
       "x-collection": "products_industries"
     },
     {
       "name": "ItemsProductsFiles",
       "x-collection": "products_files"
+    },
+    {
+      "name": "ItemsRfqAssignmentRules",
+      "x-collection": "rfq_assignment_rules",
+      "description": "RFQ Assignment Rules"
+    },
+    {
+      "name": "ItemsIntegrationEvents",
+      "x-collection": "integration_events",
+      "description": "ERP Outbox Events"
     },
     {
       "name": "Customer Onboarding"
@@ -24288,35 +24406,6 @@
         },
         "x-collection": "directus_operations"
       },
-      "Extensions": {
-        "type": "object",
-        "properties": {
-          "enabled": {
-            "nullable": false,
-            "type": "boolean"
-          },
-          "id": {
-            "nullable": false,
-            "type": "string",
-            "format": "uuid"
-          },
-          "folder": {
-            "nullable": false,
-            "type": "string"
-          },
-          "source": {
-            "nullable": false,
-            "type": "string"
-          },
-          "bundle": {
-            "description": "Name of the bundle the extension is in.",
-            "example": "directus-extension-my-bundle",
-            "type": "string",
-            "nullable": true
-          }
-        },
-        "x-collection": "directus_extensions"
-      },
       "Versions": {
         "type": "object",
         "properties": {
@@ -24404,76 +24493,34 @@
         },
         "x-collection": "directus_versions"
       },
-      "Comments": {
+      "Extensions": {
         "type": "object",
         "properties": {
+          "enabled": {
+            "nullable": false,
+            "type": "boolean"
+          },
           "id": {
-            "description": "Unique identifier for this single collection preset.",
-            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
-            "type": "string"
-          },
-          "collection": {
-            "description": "The collection of the item the Comment is created for.",
-            "example": "articles",
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/components/schemas/Collections"
-              }
-            ]
-          },
-          "item": {
-            "description": "The item the Comment is created for.",
-            "example": "123",
-            "type": "string"
-          },
-          "comment": {
-            "description": "User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin app.",
-            "example": "This is a comment",
-            "type": "string"
-          },
-          "date_created": {
-            "description": "When the Comment was created.",
+            "nullable": false,
             "type": "string",
-            "example": "2024-01-23T12:34:56Z",
-            "format": "date-time",
-            "nullable": true
+            "format": "uuid"
           },
-          "date_updated": {
-            "description": "When the Comment was updated.",
+          "folder": {
+            "nullable": false,
+            "type": "string"
+          },
+          "source": {
+            "nullable": false,
+            "type": "string"
+          },
+          "bundle": {
+            "description": "Name of the bundle the extension is in.",
+            "example": "directus-extension-my-bundle",
             "type": "string",
-            "example": "2024-01-23T12:34:56Z",
-            "format": "date-time",
             "nullable": true
-          },
-          "user_created": {
-            "description": "User that created the Comment.",
-            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/components/schemas/Users"
-              }
-            ]
-          },
-          "user_updated": {
-            "description": "User that updated the Comment.",
-            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/components/schemas/Users"
-              }
-            ]
           }
         },
-        "x-collection": "directus_comments"
+        "x-collection": "directus_extensions"
       },
       "Settings": {
         "type": "object",
@@ -24838,6 +24885,77 @@
           }
         },
         "x-collection": "directus_settings"
+      },
+      "Comments": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "description": "Unique identifier for this single collection preset.",
+            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
+            "type": "string"
+          },
+          "collection": {
+            "description": "The collection of the item the Comment is created for.",
+            "example": "articles",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Collections"
+              }
+            ]
+          },
+          "item": {
+            "description": "The item the Comment is created for.",
+            "example": "123",
+            "type": "string"
+          },
+          "comment": {
+            "description": "User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin app.",
+            "example": "This is a comment",
+            "type": "string"
+          },
+          "date_created": {
+            "description": "When the Comment was created.",
+            "type": "string",
+            "example": "2024-01-23T12:34:56Z",
+            "format": "date-time",
+            "nullable": true
+          },
+          "date_updated": {
+            "description": "When the Comment was updated.",
+            "type": "string",
+            "example": "2024-01-23T12:34:56Z",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user_created": {
+            "description": "User that created the Comment.",
+            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Users"
+              }
+            ]
+          },
+          "user_updated": {
+            "description": "User that updated the Comment.",
+            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Users"
+              }
+            ]
+          }
+        },
+        "x-collection": "directus_comments"
       },
       "ItemsRegionalHubs": {
         "type": "object",
@@ -26340,10 +26458,6 @@
               }
             ]
           },
-          "erp_ref": {
-            "nullable": true,
-            "type": "string"
-          },
           "company_name": {
             "nullable": true,
             "type": "string"
@@ -26488,73 +26602,6 @@
           }
         },
         "x-collection": "iso_certifications_translations"
-      },
-      "ItemsIntegrationEvents": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "entity": {
-            "nullable": true,
-            "type": "string"
-          },
-          "op": {
-            "nullable": true,
-            "type": "string"
-          },
-          "record_id": {
-            "nullable": true,
-            "type": "string"
-          },
-          "erp_ref": {
-            "nullable": true,
-            "type": "string"
-          },
-          "revision": {
-            "nullable": true,
-            "type": "string"
-          },
-          "idempotency_key": {
-            "nullable": true,
-            "type": "string"
-          },
-          "payload": {
-            "nullable": true
-          },
-          "status": {
-            "nullable": true,
-            "type": "string"
-          },
-          "attempts": {
-            "nullable": true,
-            "type": "integer"
-          },
-          "next_attempt_at": {
-            "nullable": true,
-            "type": "string",
-            "format": "timestamp"
-          },
-          "last_attempt_at": {
-            "nullable": true,
-            "type": "string",
-            "format": "timestamp"
-          },
-          "last_status_code": {
-            "nullable": true,
-            "type": "integer"
-          },
-          "last_error": {
-            "nullable": true,
-            "type": "string"
-          },
-          "destination_url": {
-            "nullable": true,
-            "type": "string"
-          }
-        },
-        "x-collection": "integration_events"
       },
       "ItemsProductCategories": {
         "type": "object",
@@ -26758,58 +26805,6 @@
         },
         "x-collection": "rfq_requests"
       },
-      "ItemsRfqAssignmentRules": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "hub": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsRegionalHubs"
-              }
-            ]
-          },
-          "industry": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsIndustries"
-              }
-            ]
-          },
-          "assigned_sales": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "$ref": "#/components/schemas/Users"
-              }
-            ]
-          },
-          "priority": {
-            "nullable": true,
-            "type": "integer"
-          },
-          "is_default": {
-            "nullable": true,
-            "type": "boolean"
-          }
-        },
-        "x-collection": "rfq_assignment_rules"
-      },
       "ItemsProductsIndustries": {
         "type": "object",
         "properties": {
@@ -26874,6 +26869,125 @@
           }
         },
         "x-collection": "products_files"
+      },
+      "ItemsRfqAssignmentRules": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "hub": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsRegionalHubs"
+              }
+            ]
+          },
+          "industry": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsIndustries"
+              }
+            ]
+          },
+          "assigned_sales": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "$ref": "#/components/schemas/Users"
+              }
+            ]
+          },
+          "priority": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "is_default": {
+            "nullable": true,
+            "type": "boolean"
+          }
+        },
+        "x-collection": "rfq_assignment_rules"
+      },
+      "ItemsIntegrationEvents": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "entity": {
+            "nullable": true,
+            "type": "string"
+          },
+          "op": {
+            "nullable": true,
+            "type": "string"
+          },
+          "record_id": {
+            "nullable": true,
+            "type": "string"
+          },
+          "erp_ref": {
+            "nullable": true,
+            "type": "string"
+          },
+          "revision": {
+            "nullable": true,
+            "type": "string"
+          },
+          "idempotency_key": {
+            "nullable": true,
+            "type": "string"
+          },
+          "payload": {
+            "nullable": true
+          },
+          "status": {
+            "nullable": true,
+            "type": "string"
+          },
+          "attempts": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "next_attempt_at": {
+            "nullable": true,
+            "type": "string",
+            "format": "timestamp"
+          },
+          "last_attempt_at": {
+            "nullable": true,
+            "type": "string",
+            "format": "timestamp"
+          },
+          "last_status_code": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "last_error": {
+            "nullable": true,
+            "type": "string"
+          },
+          "destination_url": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "x-collection": "integration_events"
       }
     },
     "parameters": {
