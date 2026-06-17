@@ -2,6 +2,7 @@ import { parseCommercialCsv, renderCommercialImportErrorRows } from './csv.js';
 
 const COLLECTIONS = new Set(['customers', 'orders', 'invoices', 'deliveries']);
 const DELIVERY_STATUSES = new Set(['scheduled', 'in_transit', 'delivered', 'late', 'cancelled']);
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 function normalizeText(value) {
   return String(value ?? '').trim();
@@ -176,6 +177,10 @@ function normalizeCustomerRow(row, refData) {
 
   if (!payload.company_name) {
     errors.push({ field: 'company_name', message: 'Required.' });
+  }
+
+  if (payload.email && !EMAIL_REGEX.test(payload.email)) {
+    errors.push({ field: 'email', message: 'Invalid email format.' });
   }
 
   if (!payload.erp_ref && !payload.tax_code && !payload.email) {
@@ -555,6 +560,10 @@ export function buildCommercialImportPreview(collection, rows, options = {}) {
     if (collection === 'customers') {
       if (!normalizeText(row.company_name)) {
         errors.push({ field: 'company_name', message: 'Required.' });
+      }
+      const emailValue = normalizeText(row.email);
+      if (emailValue && !EMAIL_REGEX.test(emailValue)) {
+        errors.push({ field: 'email', message: 'Invalid email format.' });
       }
       if (!key) {
         errors.push({ field: 'erp_ref', message: 'Provide erp_ref, tax_code, or email.' });
