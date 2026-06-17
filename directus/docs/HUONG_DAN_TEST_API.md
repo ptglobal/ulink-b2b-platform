@@ -619,10 +619,10 @@ Mỗi flow được viết như một kịch bản tester có thể làm theo ng
 ---
 
 **Tài liệu liên quan**:
-- `directus/overview.md` (tổng quan setup)
-- `directus/SCHEMA.md` (chi tiết collections, relations, RBAC)
+- `directus/docs/overview.md` (tổng quan setup)
+- `directus/docs/SCHEMA.md` (chi tiết collections, relations, RBAC)
 - `docs/specs/SPEC-04-api-spec.md` (toàn bộ API spec, gồm Next.js endpoints)
-- Verify scripts: `directus/verify_*.mjs` (có thể chạy để check contract)
+- Verify scripts: `directus/testing/verify_*.mjs` (có thể chạy để check contract)
 - Live Swagger: http://localhost:8055/docs (luôn cập nhật theo openapi.json merged)
 
 Cập nhật tài liệu này khi thêm hoặc thay đổi endpoint/flow.

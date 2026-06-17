@@ -5,14 +5,14 @@ import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
 import { Pool } from 'pg';
 
-import { drainErpOutbox } from '../frontend/src/lib/erp-outbox-worker.ts';
-import { POST as drainRoutePost } from '../frontend/src/app/api/internal/erp-outbox/route.ts';
-import { POST as mockErpPost } from '../frontend/src/app/api/mock/erp/route.ts';
+import { drainErpOutbox } from '../../frontend/src/lib/erp-outbox-worker.ts';
+import { POST as drainRoutePost } from '../../frontend/src/app/api/internal/erp-outbox/route.ts';
+import { POST as mockErpPost } from '../../frontend/src/app/api/mock/erp/route.ts';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-dotenv.config({ path: path.resolve(__dirname, '../frontend/.env.local') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../frontend/.env.local') });
 
 const internalToken = process.env.INTERNAL_API_TOKEN;
 const mockErpBase = process.env.MOCK_ERP_BASE_URL ?? 'http://mock-erp.local';

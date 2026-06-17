@@ -1,19 +1,19 @@
 import { readItems, createItem, updateItem } from '@directus/sdk';
-import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
+import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from '../lib/config.mjs';
 import path from 'node:path';
 import { unlink } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-import { deleteFileRecord, getFileById, listFilesInFolder, listFolders, withDbClient } from './lib/folder-db.mjs';
+import { deleteFileRecord, getFileById, listFilesInFolder, listFolders, withDbClient } from '../lib/folder-db.mjs';
 import {
   buildAuditRecord,
   buildRetentionRecord,
   extractFileSnapshot,
   isOrphanPurgeCandidate
-} from './lib/media-policy.mjs';
+} from '../lib/media-policy.mjs';
 
 const client = createDirectusClient();
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const localUploadRoot = path.resolve(__dirname, 'uploads');
+const localUploadRoot = path.resolve(__dirname, '../uploads');
 
 function parseArgs(argv) {
   return new Set(argv.slice(2));

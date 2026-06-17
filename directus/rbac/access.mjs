@@ -9,7 +9,7 @@ import {
   EDITOR_POLICY_ID,
   SALES_POLICY_ID,
   CUSTOMER_POLICY_ID
-} from '../constants.mjs';
+} from '../lib/constants.mjs';
 
 export const ACCESS_DEFS = [
   { role: ADMIN_ROLE_ID, policy: ADMIN_POLICY_ID },

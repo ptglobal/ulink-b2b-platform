@@ -1,4 +1,4 @@
-import { CUSTOMER_ROLE_ID } from '../constants.mjs';
+import { CUSTOMER_ROLE_ID } from '../lib/constants.mjs';
 
 export async function seedDemoCommerce(helpers, ids) {
   const customerUserId = await helpers.ensureUser({

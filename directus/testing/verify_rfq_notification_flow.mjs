@@ -7,7 +7,7 @@ import {
   DIRECTUS_ADMIN_EMAIL,
   DIRECTUS_ADMIN_PASSWORD,
   DIRECTUS_URL
-} from './config.mjs';
+} from '../lib/config.mjs';
 
 const internalToken = process.env.INTERNAL_API_TOKEN;
 const mailpitUrl = process.env.MAILPIT_URL ?? 'http://localhost:8025';
@@ -15,7 +15,7 @@ const adminClient = createDirectusClient();
 const salesEmail = 'sales-rbac@example.com';
 const salesPassword = 'sales-password-123';
 const { POST: postRfqNotify } = await import(
-  new URL('../frontend/src/app/api/internal/rfq-notify/route.ts', import.meta.url)
+  new URL('../../frontend/src/app/api/internal/rfq-notify/route.ts', import.meta.url)
 );
 
 if (!internalToken) {

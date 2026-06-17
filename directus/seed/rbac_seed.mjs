@@ -6,9 +6,9 @@ import {
   createItem,
   updateItem
 } from '@directus/sdk';
-import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
-import { EDITOR_ROLE_ID, SALES_ROLE_ID, CUSTOMER_ROLE_ID } from './constants.mjs';
-import { logInfo, logPass, logDone, logFatal } from './logging.mjs';
+import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from '../lib/config.mjs';
+import { EDITOR_ROLE_ID, SALES_ROLE_ID, CUSTOMER_ROLE_ID } from '../lib/constants.mjs';
+import { logInfo, logPass, logDone, logFatal } from '../lib/logging.mjs';
 
 const client = createDirectusClient();
 
@@ -86,7 +86,7 @@ async function main() {
   const electronicsId = electronics[0].id;
 
   await upsertUserByEmail('editor-rbac@example.com', {
-    password: 'editor-password-123',
+    password: 'EditorPassword123!',
     role: EDITOR_ROLE_ID,
     first_name: 'Editor',
     last_name: 'User',
@@ -94,7 +94,7 @@ async function main() {
   });
 
   const salesUserId = await upsertUserByEmail('sales-rbac@example.com', {
-    password: 'sales-password-123',
+    password: 'SalesPassword123!',
     role: SALES_ROLE_ID,
     first_name: 'Sales',
     last_name: 'User',
@@ -102,7 +102,7 @@ async function main() {
   });
 
   const customerAUserId = await upsertUserByEmail('customer-a-rbac@example.com', {
-    password: 'customer-a-password-123',
+    password: 'CustomerAPassword123!',
     role: CUSTOMER_ROLE_ID,
     first_name: 'Customer',
     last_name: 'A',
@@ -110,7 +110,7 @@ async function main() {
   });
 
   const customerBUserId = await upsertUserByEmail('customer-b-rbac@example.com', {
-    password: 'customer-b-password-123',
+    password: 'CustomerBPassword123!',
     role: CUSTOMER_ROLE_ID,
     first_name: 'Customer',
     last_name: 'B',

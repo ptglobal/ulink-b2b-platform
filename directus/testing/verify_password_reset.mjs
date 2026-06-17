@@ -7,8 +7,8 @@ import {
   createUser,
   deleteUser
 } from '@directus/sdk';
-import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
-import { CUSTOMER_ROLE_ID } from './constants.mjs';
+import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from '../lib/config.mjs';
+import { CUSTOMER_ROLE_ID } from '../lib/constants.mjs';
 
 const adminClient = createDirectusClient();
 const MAILPIT_URL = process.env.MAILPIT_URL ?? 'http://localhost:8025';
@@ -96,8 +96,8 @@ async function loginUser(email, password) {
 
 async function runPasswordResetFlow() {
   const email = uniqueEmail('reset-test');
-  const initialPassword = 'initial-password-123';
-  const newPassword = 'new-secure-password-456';
+  const initialPassword = 'InitialPassword123!';
+  const newPassword = 'NewSecurePassword456!';
 
   console.log(`[reset-password] Creating test user with email: ${email}`);
   const testUser = await adminClient.request(

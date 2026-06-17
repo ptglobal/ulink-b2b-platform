@@ -1,10 +1,10 @@
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { logPass, logFail, logDone, logFatal } from './logging.mjs';
+import { logPass, logFail, logDone, logFatal } from '../lib/logging.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const BASE_URL = process.env.DIRECTUS_PUBLIC_URL ?? 'http://localhost:8055';
 const ADMIN_EMAIL = process.env.DIRECTUS_ADMIN_EMAIL;
@@ -375,10 +375,10 @@ async function main() {
   const adminToken = await login(ADMIN_EMAIL, ADMIN_PASSWORD);
   const fixtures = await getFixtures(adminToken);
 
-  const editorToken = await login('editor-rbac@example.com', 'editor-password-123');
-  const salesToken = await login('sales-rbac@example.com', 'sales-password-123');
-  const customerAToken = await login('customer-a-rbac@example.com', 'customer-a-password-123');
-  const customerBToken = await login('customer-b-rbac@example.com', 'customer-b-password-123');
+  const editorToken = await login('editor-rbac@example.com', 'EditorPassword123!');
+  const salesToken = await login('sales-rbac@example.com', 'SalesPassword123!');
+  const customerAToken = await login('customer-a-rbac@example.com', 'CustomerAPassword123!');
+  const customerBToken = await login('customer-b-rbac@example.com', 'CustomerBPassword123!');
 
   await verifyAdmin(adminToken, fixtures);
   await verifyVisitor(fixtures);

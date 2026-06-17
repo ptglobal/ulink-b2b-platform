@@ -1,4 +1,4 @@
-import { ID_FIELD, STATUS_FIELD } from '../constants.mjs';
+import { ID_FIELD, STATUS_FIELD } from '../lib/constants.mjs';
 import { LANGUAGE_COLLECTION_DEF, TRANSLATION_COLLECTION_DEFS, createTranslationAliasField } from '../lib/i18n.mjs';
 
 export const COLLECTION_DEFS = [
@@ -580,6 +580,40 @@ export const COLLECTION_DEFS = [
       ID_FIELD,
       { field: 'products_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       { field: 'directus_files_id', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
+    ]
+  },
+  {
+    collection: 'newsletter_subscribers',
+    meta: { icon: 'mail', note: 'Email Newsletter Subscribers' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      {
+        field: 'email',
+        type: 'string',
+        meta: { interface: 'input', width: 'full', required: true },
+        schema: { is_unique: true }
+      },
+      {
+        field: 'status',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          options: {
+            choices: [
+              { text: 'Active', value: 'active' },
+              { text: 'Inactive', value: 'inactive' }
+            ]
+          }
+        },
+        schema: { default_value: 'active' }
+      },
+      {
+        field: 'created_at',
+        type: 'timestamp',
+        meta: { interface: 'datetime', readonly: true },
+        schema: { default_value: 'CURRENT_TIMESTAMP' }
+      }
     ]
   }
 ];

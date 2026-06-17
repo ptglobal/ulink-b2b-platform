@@ -1,4 +1,4 @@
-import { CUSTOMER_ROLE_ID } from '../../../constants.mjs';
+import { CUSTOMER_ROLE_ID } from '../../../lib/constants.mjs';
 import { sendMail } from '../../../lib/smtp.mjs';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

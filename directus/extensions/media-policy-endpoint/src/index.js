@@ -1,4 +1,4 @@
-import { ADMIN_ROLE_ID, EDITOR_ROLE_ID, SALES_ROLE_ID } from '../../../constants.mjs';
+import { ADMIN_ROLE_ID, EDITOR_ROLE_ID, SALES_ROLE_ID } from '../../../lib/constants.mjs';
 import { hardDeleteFile, softDeleteFile } from '../../media-policy-hook/src/service.js';
 
 const SOFT_DELETE_ROLES = new Set([ADMIN_ROLE_ID, EDITOR_ROLE_ID, SALES_ROLE_ID]);

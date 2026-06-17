@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 
-import { buildCommercialImportPreview, parseCommercialCsv, renderCommercialImportErrorRows, resolveCommercialImportKey } from './extensions/commercial-import-endpoint/src/service.js';
+import { buildCommercialImportPreview, parseCommercialCsv, renderCommercialImportErrorRows, resolveCommercialImportKey } from '../extensions/commercial-import-endpoint/src/service.js';
 
 function runCustomerSmokeTest() {
   const rows = parseCommercialCsv([

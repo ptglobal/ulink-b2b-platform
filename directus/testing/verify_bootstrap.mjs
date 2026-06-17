@@ -10,10 +10,10 @@ import {
   readSingleton,
   readUsers
 } from '@directus/sdk';
-import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
-import { listFolders, withDbClient } from './lib/folder-db.mjs';
-import { DEFAULT_LOCALE, LOCALES, TRANSLATION_COLLECTION_NAMES, TRANSLATION_RELATION_DEFS } from './lib/i18n.mjs';
-import { MEDIA_POLICY } from './lib/media-policy.mjs';
+import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from '../lib/config.mjs';
+import { listFolders, withDbClient } from '../lib/folder-db.mjs';
+import { DEFAULT_LOCALE, LOCALES, TRANSLATION_COLLECTION_NAMES, TRANSLATION_RELATION_DEFS } from '../lib/i18n.mjs';
+import { MEDIA_POLICY } from '../lib/media-policy.mjs';
 import {
   EDITOR_ROLE_ID,
   SALES_ROLE_ID,
@@ -21,8 +21,8 @@ import {
   EDITOR_POLICY_ID,
   SALES_POLICY_ID,
   CUSTOMER_POLICY_ID
-} from './constants.mjs';
-import { logInfo, logStep, logPass, logFail, logDone, logFatal } from './logging.mjs';
+} from '../lib/constants.mjs';
+import { logInfo, logStep, logPass, logFail, logDone, logFatal } from '../lib/logging.mjs';
 
 const client = createDirectusClient();
 
@@ -356,8 +356,12 @@ async function verify() {
   assert(hubs.length >= 2, `Regional Hubs has ${hubs.length} seeded items.`);
   assert(hubs.some((h) => h.slug === 'dong-van-4'), 'Hub "dong-van-4" exists.');
 
-  const users = await client.request(readUsers());
-  assert(users.some((u) => u.email === 'customer@ulink.com'), 'User "customer@ulink.com" exists.');
+  const users = await client.request(readUsers({
+    filter: {
+      email: { _eq: 'customer@ulink.com' }
+    }
+  }));
+  assert(users.length > 0, 'User "customer@ulink.com" exists.');
 
   const customers = await client.request(readItems('customers'));
   assert(customers.length >= 1, `Customers has ${customers.length} seeded items.`);

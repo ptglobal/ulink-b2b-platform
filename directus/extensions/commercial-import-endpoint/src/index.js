@@ -1,4 +1,4 @@
-import { ADMIN_ROLE_ID, SALES_ROLE_ID } from '../../../constants.mjs';
+import { ADMIN_ROLE_ID, SALES_ROLE_ID } from '../../../lib/constants.mjs';
 import { runCommercialImport } from './service.js';
 
 const ALLOWED_ROLES = new Set([ADMIN_ROLE_ID, SALES_ROLE_ID]);

@@ -1,4 +1,4 @@
-import { ADMIN_ROLE_ID, VISITOR_ROLE_ID, EDITOR_ROLE_ID, SALES_ROLE_ID, CUSTOMER_ROLE_ID } from '../constants.mjs';
+import { ADMIN_ROLE_ID, VISITOR_ROLE_ID, EDITOR_ROLE_ID, SALES_ROLE_ID, CUSTOMER_ROLE_ID } from '../lib/constants.mjs';
 
 export const ROLE_DEFS = [
   {

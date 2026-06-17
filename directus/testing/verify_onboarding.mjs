@@ -10,8 +10,8 @@ import {
   createItem,
   updateItem
 } from '@directus/sdk';
-import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
-import { CUSTOMER_ROLE_ID } from './constants.mjs';
+import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from '../lib/config.mjs';
+import { CUSTOMER_ROLE_ID } from '../lib/constants.mjs';
 
 const adminClient = createDirectusClient();
 const MAILPIT_URL = process.env.MAILPIT_URL ?? 'http://localhost:8025';

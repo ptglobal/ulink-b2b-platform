@@ -13,10 +13,10 @@ import {
   uploadFiles,
   updateItem
 } from '@directus/sdk';
-import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from './config.mjs';
-import { ensureFolderTree, getFileById, withDbClient } from './lib/folder-db.mjs';
-import { MEDIA_POLICY } from './lib/media-policy.mjs';
-import { SALES_ROLE_ID } from './constants.mjs';
+import { createDirectusClient, loginAdmin, DIRECTUS_ADMIN_EMAIL, DIRECTUS_URL } from '../lib/config.mjs';
+import { ensureFolderTree, getFileById, withDbClient } from '../lib/folder-db.mjs';
+import { MEDIA_POLICY } from '../lib/media-policy.mjs';
+import { SALES_ROLE_ID } from '../lib/constants.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const adminClient = createDirectusClient();
@@ -172,8 +172,8 @@ async function main() {
 
   await adminClient.request(updateItem('media_retention', retentionAfterSoftDelete.id, { purge_after: '2000-01-01T00:00:00.000Z' }));
 
-  const cleanupRun = spawnSync('node', ['media-cleanup.mjs'], {
-    cwd: __dirname,
+  const cleanupRun = spawnSync('node', ['scripts/media-cleanup.mjs'], {
+    cwd: path.resolve(__dirname, '..'),
     encoding: 'utf8',
     env: process.env
   });

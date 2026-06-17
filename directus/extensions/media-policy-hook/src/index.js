@@ -2,7 +2,7 @@ import { buildMediaAuditRecord, writeMediaAuditEvent } from './audit.js';
 import { createMediaServices } from './service.js';
 import { getFolderNameById, getUploadActor, validateMediaUpload } from './rules.js';
 import { getModuleKeyForFolderName } from '../../../lib/media-policy.mjs';
-import { ADMIN_ROLE_ID, EDITOR_ROLE_ID } from '../../../constants.mjs';
+import { ADMIN_ROLE_ID, EDITOR_ROLE_ID } from '../../../lib/constants.mjs';
 
 export default ({ filter, action }, extensionContext) => {
   action('files.upload', async (meta, context) => {

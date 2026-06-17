@@ -20,14 +20,14 @@ It is **not** a fork of Directus. It is a **code-as-configuration + custom exten
 
 ## Why This Folder Exists
 
-- Directus provides admin UI, REST/GraphQL, auth, RBAC (including row-level), i18n (Translations), media library, and more out of the box (see [ADR-0001](../docs/decisions/ADR-0001-headless-cms-directus.md)).
+- Directus provides admin UI, REST/GraphQL, auth, RBAC (including row-level), i18n (Translations), media library, and more out of the box (see [ADR-0001](../../docs/decisions/ADR-0001-headless-cms-directus.md)).
 - The team only needs to define the **data model**, **strict RBAC**, **business rules**, and **minimal custom logic**.
 - Everything important (schema, roles, permissions, folder structure) is defined in code for reproducibility, reviewability, and CI-friendly setup.
 - `SCHEMA.md` is the human-readable contract that must stay in sync with the implementation.
 
 ## How It Integrates with the Platform
 
-From [docker-compose.yml](../docker-compose.yml):
+From [docker-compose.yml](../../docker-compose.yml):
 
 - The official Directus container mounts:
   - `./directus/uploads` → `/directus/uploads` (media storage)
@@ -470,9 +470,9 @@ Typical development loop when changing the data model:
 - The `dist/` folders in extensions should be kept in sync with `src/` (rebuild when changing extension logic).
 
 For the broader architecture, see:
-- [ENG-01-architecture-overview.md](../docs/engineering/ENG-01-architecture-overview.md)
+- [ENG-01-architecture-overview.md](../../docs/engineering/ENG-01-architecture-overview.md)
 - [SCHEMA.md](./SCHEMA.md)
-- Various specs in `docs/specs/`
+- Various specs in `../../docs/specs/`
 
 ---
 

@@ -93,6 +93,11 @@ services:
       PASSWORD_RESET_URL_ALLOW_LIST: ${PASSWORD_RESET_URL_ALLOW_LIST:-http://localhost:3000/reset-password}
       PASSWORD_RESET_TOKEN_TTL: '15m'
       REFRESH_TOKEN_AUTO_REUSE: 'false'
+      RATE_LIMITER_ENABLED: 'true'
+      RATE_LIMITER_STORE: redis
+      RATE_LIMITER_REDIS: redis://redis:6379
+      RATE_LIMITER_POINTS: 50
+      RATE_LIMITER_DURATION: 60
 
       EMAIL_TRANSPORT: smtp
       EMAIL_FROM: no-reply@ulink.com
@@ -116,7 +121,6 @@ services:
       - ./directus/uploads:/directus/uploads
       - ./directus/extensions:/directus/extensions
       - ./directus/lib:/directus/lib
-      - ./directus/constants.mjs:/directus/constants.mjs
     ports:
       - '8055:8055'
 

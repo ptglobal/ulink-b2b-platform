@@ -1,4 +1,4 @@
-import { VISITOR_POLICY_ID, EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../constants.mjs';
+import { VISITOR_POLICY_ID, EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../lib/constants.mjs';
 import { TRANSLATION_COLLECTION_NAMES } from '../lib/i18n.mjs';
 
 export const CONTENT_COLLECTIONS = [
@@ -55,6 +55,15 @@ export function buildPermissionDefs() {
     action: 'read',
     permissions: {},
     fields: ['*']
+  });
+
+  // Visitor (Public) can create newsletter subscriptions
+  permissions.push({
+    policy: VISITOR_POLICY_ID,
+    collection: 'newsletter_subscribers',
+    action: 'create',
+    permissions: {},
+    fields: ['email', 'status']
   });
 
   for (const col of CONTENT_COLLECTIONS) {
@@ -216,6 +225,19 @@ export function buildPermissionDefs() {
     permissions: {},
     fields: ['*']
   });
+
+  // Editor & Sales have full CRUD access to newsletter subscriptions
+  for (const policy of [EDITOR_POLICY_ID, SALES_POLICY_ID]) {
+    for (const action of ['create', 'read', 'update', 'delete']) {
+      permissions.push({
+        policy,
+        collection: 'newsletter_subscribers',
+        action,
+        permissions: {},
+        fields: ['*']
+      });
+    }
+  }
 
   return permissions;
 }
