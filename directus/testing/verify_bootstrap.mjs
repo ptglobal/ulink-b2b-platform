@@ -359,7 +359,8 @@ async function verify() {
   const users = await client.request(readUsers({
     filter: {
       email: { _eq: 'customer@ulink.com' }
-    }
+    },
+    fields: ['id', 'email']
   }));
   assert(users.length > 0, 'User "customer@ulink.com" exists.');
 

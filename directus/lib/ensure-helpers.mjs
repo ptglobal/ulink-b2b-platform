@@ -143,7 +143,7 @@ export function createEnsureHelpers(client) {
   }
 
   async function ensureUser(data) {
-    const existing = await client.request(readUsers({ filter: { email: { _eq: data.email } } }));
+    const existing = await client.request(readUsers({ filter: { email: { _eq: data.email } }, fields: ['id', 'email'] }));
     if (existing.length > 0) {
       console.log(`=  User: ${data.email} (exists, skipped)`);
       return existing[0].id;

@@ -34,6 +34,7 @@ async function ensureLanguages() {
         filter: {
           code: { _eq: locale.code }
         },
+        fields: ['code'],
         limit: 1
       })
     );
