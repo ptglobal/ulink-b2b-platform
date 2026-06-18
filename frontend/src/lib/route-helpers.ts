@@ -79,7 +79,14 @@ export async function handleRoute<T = unknown>(
         if (!details[path]) details[path] = [];
         details[path].push(issue.message);
       }
-      return jsonErrorRaw(422, 'validation_error', 'Input validation failed', details);
+      // Build a more descriptive top-level message so the user immediately sees
+      // which field failed without having to dig into `details`.
+      const firstField = Object.keys(details)[0] ?? '';
+      const firstMsg = details[firstField]?.[0] ?? 'validation failed';
+      const message = firstField && firstField !== '_root'
+        ? `${firstField}: ${firstMsg}`
+        : firstMsg;
+      return jsonErrorRaw(422, 'validation_error', message, details);
     }
 
     body = result.data;

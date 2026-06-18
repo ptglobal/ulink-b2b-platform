@@ -198,16 +198,45 @@ async function authenticate(socket, readLine, user, password) {
   }
 }
 
-function buildMessage({ from, to, subject, text }) {
-  const headers = [
+function buildMessage({ from, to, subject, text, html }) {
+  const baseHeaders = [
     `From: ${from}`,
     `To: ${to}`,
     `Subject: ${encodeMimeWord(subject)}`,
-    'MIME-Version: 1.0',
+    'MIME-Version: 1.0'
+  ];
+
+  if (html && String(html).trim().length > 0) {
+    // multipart/alternative so plain-text clients fall back gracefully
+    const boundary = `ulink_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const headers = [
+      ...baseHeaders,
+      `Content-Type: multipart/alternative; boundary="${boundary}"`,
+      '',
+      `--${boundary}`,
+      'Content-Type: text/plain; charset=UTF-8',
+      'Content-Transfer-Encoding: 8bit',
+      '',
+      dotStuff(text ?? ''),
+      '',
+      `--${boundary}`,
+      'Content-Type: text/html; charset=UTF-8',
+      'Content-Transfer-Encoding: 8bit',
+      '',
+      dotStuff(html),
+      '',
+      `--${boundary}--`,
+      ''
+    ];
+    return `${headers.join('\r\n')}\r\n.\r\n`;
+  }
+
+  const headers = [
+    ...baseHeaders,
     'Content-Type: text/plain; charset=UTF-8',
     'Content-Transfer-Encoding: 8bit',
     '',
-    dotStuff(text),
+    dotStuff(text ?? ''),
     ''
   ];
 
@@ -231,9 +260,13 @@ export async function sendMail(message, env = process.env) {
   const to = String(message.to ?? '').trim();
   const subject = String(message.subject ?? '').trim();
   const text = String(message.text ?? '');
+  const html = typeof message.html === 'string' ? message.html : null;
 
   if (!from || !to || !subject) {
     throw new Error('SMTP mail requires from, to, and subject.');
+  }
+  if (!text && !html) {
+    throw new Error('SMTP mail requires text or html body.');
   }
 
   const envelopeFrom = extractEnvelopeAddress(from);
@@ -267,7 +300,7 @@ export async function sendMail(message, env = process.env) {
       throw new Error(`SMTP DATA failed: ${response.text}`);
     }
 
-    connection.socket.write(buildMessage({ from, to, subject, text }));
+    connection.socket.write(buildMessage({ from, to, subject, text, html }));
     response = await readResponse(connection.readLine);
     if (response.code !== 250) {
       throw new Error(`SMTP message body rejected: ${response.text}`);

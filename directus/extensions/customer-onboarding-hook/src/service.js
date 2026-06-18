@@ -1,25 +1,12 @@
 import { normalizeEmail } from '../../customer-onboarding-endpoint/src/service.js';
-import { sendMail } from '../../../lib/smtp.mjs';
 
-function buildInviteWelcomeMail({ contactName, email, password }) {
-  const portalUrl = process.env.FRONTEND_PUBLIC_URL ?? 'http://localhost:3000';
-  let text = `Chào ${contactName}, tài khoản ULINK của bạn đã được tạo và kích hoạt thành công.\n\n` +
-             `Thông tin đăng nhập:\n` +
-             `- Email: ${email}\n`;
-
-  if (password) {
-    text += `- Mật khẩu: ${password}\n`;
-  }
-
-  text += `\nĐăng nhập: ${portalUrl}/login`;
-
-  return {
-    from: process.env.MAIL_FROM ?? 'ULINK <no-reply@ulink.com>',
-    to: email,
-    subject: '[ULINK] Tài khoản đã được tạo',
-    text
-  };
-}
+// NOTE: This hook's sole responsibility is to link an existing `customers`
+// row to a newly-created `directus_users` row. The customer-onboarding
+// endpoint is the single source of truth for welcome emails (it sends a
+// password-less message). This hook previously sent a SECOND welcome email
+// here, with a plaintext password leaked from meta.payload — that has been
+// removed for security reasons. If a duplicate welcome ever resurfaces,
+// investigate the endpoint's sendMail call, not this file.
 
 async function getServiceClasses(context) {
   const { ItemsService, UsersService } = context.services ?? {};
@@ -93,15 +80,6 @@ export async function linkCustomerAccount(context, meta) {
   });
 
   console.log(`[customer-onboarding-hook] Successfully linked customer ${customer.id} to user ${userId}.`);
-
-  try {
-    const contactName = customer.contact_name || user.first_name || 'Khách hàng';
-    const password = meta?.payload?.password ?? null;
-    await sendMail(buildInviteWelcomeMail({ contactName, email, password }));
-    console.log(`[customer-onboarding-hook] Sent account active email to ${email}`);
-  } catch (mailError) {
-    console.error(`[customer-onboarding-hook] Failed to send email to ${email}:`, mailError.message);
-  }
 
   return { linked: true, customerId: customer.id };
 }

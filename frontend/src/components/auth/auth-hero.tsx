@@ -34,7 +34,7 @@ export async function AuthHero() {
       <div className="relative z-10 flex flex-1 flex-col justify-between px-14 pb-8 pt-12">
         {/* Cụm trên: logo + headline + mô tả (nhóm sát nhau) */}
         <div>
-          <Link href="/" aria-label="ULink Industries" className="inline-flex">
+          <Link href="/" aria-label="ULink Industries" className="-ml-2 inline-flex">
             <Image
               src={ASSETS.logo.full}
               alt="ULink — Growth platform with logistics"

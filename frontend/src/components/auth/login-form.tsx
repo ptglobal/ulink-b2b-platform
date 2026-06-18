@@ -38,7 +38,7 @@ export function LoginForm() {
     setLoading(true);
     try {
       await login(email, password);
-      router.push('/portal');
+      router.push('/');
     } catch (err) {
       setFormError(
         err instanceof AuthError && err.code === 'network_error'
@@ -60,7 +60,7 @@ export function LoginForm() {
 
       <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
         {formError && (
-          <p role="alert" className="rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-sm text-accent">
+          <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
             {formError}
           </p>
         )}
@@ -82,11 +82,11 @@ export function LoginForm() {
               placeholder={t('emailPlaceholder')}
               aria-invalid={!!fieldErrors.email}
               aria-describedby={fieldErrors.email ? 'email-error' : undefined}
-              className={cn(inputBase, fieldErrors.email ? 'border-accent' : 'border-border')}
+              className={cn(inputBase, fieldErrors.email ? 'border-destructive' : 'border-border')}
             />
           </div>
           {fieldErrors.email && (
-            <p id="email-error" className="mt-1.5 text-xs text-accent">
+            <p id="email-error" className="mt-1.5 text-xs text-destructive">
               {fieldErrors.email}
             </p>
           )}
@@ -109,7 +109,7 @@ export function LoginForm() {
               placeholder={t('passwordPlaceholder')}
               aria-invalid={!!fieldErrors.password}
               aria-describedby={fieldErrors.password ? 'password-error' : undefined}
-              className={cn(inputBase, 'pr-11', fieldErrors.password ? 'border-accent' : 'border-border')}
+              className={cn(inputBase, 'pr-11', fieldErrors.password ? 'border-destructive' : 'border-border')}
             />
             <button
               type="button"
@@ -121,7 +121,7 @@ export function LoginForm() {
             </button>
           </div>
           {fieldErrors.password && (
-            <p id="password-error" className="mt-1.5 text-xs text-accent">
+            <p id="password-error" className="mt-1.5 text-xs text-destructive">
               {fieldErrors.password}
             </p>
           )}

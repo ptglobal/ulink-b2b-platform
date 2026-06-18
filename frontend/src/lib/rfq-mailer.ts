@@ -1,6 +1,6 @@
 import { setTimeout as sleep } from 'node:timers/promises';
 
-// @ts-ignore - reusing the repo's shared SMTP transport from the Directus package.
+// Type declaration lives in src/types/directus-smtp.d.ts.
 import { sendMail } from '../../../directus/lib/smtp.mjs';
 
 export type RfqMailMessage = {

@@ -1,0 +1,16 @@
+{
+  "name": "ulink-password-reset-request-endpoint",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "directus:extension": {
+    "type": "endpoint",
+    "path": "dist/index.js",
+    "source": "src/index.js",
+    "host": "^11.0.0"
+  },
+  "description": "Custom password reset via branded email link (replaces Directus built-in reset)",
+  "dependencies": {
+    "ioredis": "^5.4.0"
+  }
+}
