@@ -120,12 +120,11 @@ export function renderShell({ preheader = '', bodyHtml, footerNote }) {
     <tr>
       <td align="center" style="padding:32px 16px;">
 
-        <!-- Brand bar -->
+        <!-- Brand bar — logo image -->
         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="600" style="max-width:600px;width:100%;">
           <tr>
             <td align="left" style="padding:0 0 16px 0;">
-              <span style="font-family:'Inter',system-ui,sans-serif;font-size:18px;font-weight:700;color:${BRAND.navy};letter-spacing:0.5px;">ULINK<span style="color:${BRAND.blue};">.</span></span>
-              <span style="font-family:'Inter',system-ui,sans-serif;font-size:11px;color:${BRAND.muted};letter-spacing:1.5px;margin-left:8px;">INDUSTRIES</span>
+              <img src="${escapeAttr(portalUrl)}/images/logo/ulink_logo.png" alt="ULINK INDUSTRIES" width="140" height="40" style="display:block;width:140px;height:auto;border:0;" />
             </td>
           </tr>
         </table>

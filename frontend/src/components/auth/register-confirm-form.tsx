@@ -203,7 +203,7 @@ export function RegisterConfirmForm() {
 
       <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
         {formError && (
-          <p role="alert" className="rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-sm text-accent">
+          <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
             {formError}
           </p>
         )}

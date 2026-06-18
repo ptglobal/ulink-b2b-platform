@@ -85,7 +85,7 @@ export function renderResetLinkEmail({ purpose = 'forgot', contactName, resetUrl
       <tr>
         <td style="padding:12px 16px;border-left:3px solid #B8C0CC;background-color:#FAFAFA;">
           <p style="margin:0;font-size:12px;line-height:1.5;color:#5A6473;">
-            &#128274; <strong>Lưu ý bảo mật:</strong> ${escape(copy.ignore)}
+            <strong>Lưu ý bảo mật:</strong> ${escape(copy.ignore)}
             ULINK sẽ không bao giờ yêu cầu bạn cung cấp mật khẩu qua email hoặc tin nhắn.
           </p>
         </td>
