@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { ChevronDown, Search, ShoppingCart, ArrowRight, UserRound } from 'lucide-react';
+import { ChevronDown, Search, ShoppingCart, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
 import { MobileNav } from './mobile-nav';
+import { HeaderAuthButton } from './header-auth-button';
 
 /**
  * Header trang chủ — bám sát thiết kế Figma (node 2071:1118):
@@ -78,13 +79,7 @@ export async function SiteHeader() {
             <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
 
-          <Link
-            href="/login"
-            className="hidden h-[38px] items-center gap-1.5 rounded-lg border border-brand bg-brand px-4 text-[13px] font-medium text-brand-foreground transition-colors hover:bg-brand/90 hover:border-brand sm:inline-flex"
-          >
-            <UserRound className="h-4 w-4" aria-hidden="true" />
-            {t('login')}
-          </Link>
+          <HeaderAuthButton />
 
           {/* Mobile nav — hiện dưới md */}
           <MobileNav items={items} />

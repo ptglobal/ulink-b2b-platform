@@ -1,0 +1,16 @@
+{
+  "name": "ulink-otp-endpoint",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "directus:extension": {
+    "type": "endpoint",
+    "path": "dist/index.js",
+    "source": "src/index.js",
+    "host": "^11.0.0"
+  },
+  "description": "Email OTP issuance + verification for register, password reset, and login 2FA.",
+  "dependencies": {
+    "ioredis": "^5.4.0"
+  }
+}

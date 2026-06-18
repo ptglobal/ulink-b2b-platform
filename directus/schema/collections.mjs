@@ -322,7 +322,12 @@ export const COLLECTION_DEFS = [
       { field: 'email', type: 'string', meta: { interface: 'input' } },
       { field: 'phone', type: 'string', meta: { interface: 'input' } },
       { field: 'address', type: 'text', meta: { interface: 'textarea' } },
-      { field: 'sales_owner', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
+      { field: 'sales_owner', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      // ISO-8601 timestamp of the moment the user accepted the terms of service
+      // during registration. Stamped by customer-onboarding-endpoint from
+      // {agree, agree_at} forwarded by the frontend. Provides an auditable
+      // consent trail (GDPR / ToS compliance).
+      { field: 'consented_at', type: 'timestamp', meta: { interface: 'datetime' } }
     ]
   },
   {

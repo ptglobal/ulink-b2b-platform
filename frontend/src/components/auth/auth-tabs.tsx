@@ -4,10 +4,23 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 
+// Standalone auth pages hide the login/register tabs — they have their own
+// navigation pattern (back link, breadcrumb, etc).
+const STANDALONE_PREFIXES = [
+  '/forgot-password',
+  '/reset-password',
+  '/change-password',
+  '/verify-otp',
+  '/register/confirm'
+];
+
 /** Tab điều hướng giữa Đăng nhập / Đăng ký (route-based, tốt cho SEO & deep-link). */
 export function AuthTabs() {
   const t = useTranslations('auth');
   const pathname = usePathname();
+
+  const isStandalone = STANDALONE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  if (isStandalone) return null;
 
   const tabs = [
     { href: '/login', label: t('tabLogin') },

@@ -46,7 +46,10 @@ services:
       - '8025:8025'
 
   directus:
-    image: directus/directus:11
+    build:
+      context: ./directus
+      dockerfile: Dockerfile
+    image: ulink/directus:local
     restart: unless-stopped
     depends_on:
       postgres:
@@ -73,6 +76,24 @@ services:
       CACHE_ENABLED: 'true'
       CACHE_STORE: redis
       REDIS: redis://redis:6379
+      # Expose Redis to custom endpoint extensions (e.g. otp-endpoint).
+      REDIS_URL: redis://redis:6379
+
+      # --- OTP (otp-endpoint) ---
+      OTP_TTL_SECONDS: ${OTP_TTL_SECONDS:-600}
+      OTP_MAX_ATTEMPTS: ${OTP_MAX_ATTEMPTS:-5}
+      OTP_RESEND_COOLDOWN_SECONDS: ${OTP_RESEND_COOLDOWN_SECONDS:-60}
+      ALLOW_DEBUG_OTP: ${ALLOW_DEBUG_OTP:-false}
+
+      # --- Verified-token & password-change rate-limit ---
+      # verified_token TTL (15 min) aligns with the Directus reset-link window
+      # so a user who verifies their email and then follows a reset link has
+      # the same expiry budget.
+      VERIFIED_TOKEN_TTL_SECONDS: "900"
+      PASSWORD_CHANGE_FAIL_MAX: "3"
+      PASSWORD_CHANGE_FAIL_WINDOW: "900"
+
+      MAIL_FROM: ${MAIL_FROM:-ULINK <no-reply@ulink.com>}
 
       WEBSOCKETS_ENABLED: 'true'
       CORS_ENABLED: 'true'
@@ -89,9 +110,9 @@ services:
       MAIL_SECURE: 'false'
       MAIL_USER: ''
       MAIL_PASSWORD: ''
-      MAIL_FROM: 'ULINK <no-reply@ulink.com>'
-      PASSWORD_RESET_URL_ALLOW_LIST: ${PASSWORD_RESET_URL_ALLOW_LIST:-http://localhost:3000/reset-password}
+      PASSWORD_RESET_URL_ALLOW_LIST: ${PASSWORD_RESET_URL_ALLOW_LIST:-http://localhost:3000/reset-password,http://192.168.1.36:3000/reset-password}
       PASSWORD_RESET_TOKEN_TTL: '15m'
+      FRONTEND_PUBLIC_URL: ${FRONTEND_PUBLIC_URL:-http://192.168.1.36:3000}
       REFRESH_TOKEN_AUTO_REUSE: 'false'
       RATE_LIMITER_ENABLED: 'false'
       RATE_LIMITER_STORE: redis
@@ -117,10 +138,22 @@ services:
       AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION: ${AUTH_GOOGLE_ALLOW_PUBLIC_REGISTRATION:-false}
       AUTH_GOOGLE_DEFAULT_ROLE_ID: ${AUTH_GOOGLE_DEFAULT_ROLE_ID:-e11b0e50-3030-410c-9999-000000000003}
       AUTH_GOOGLE_REDIRECT_ALLOW_LIST: ${AUTH_GOOGLE_REDIRECT_ALLOW_LIST:-http://localhost:3000/auth/callback}
+    # Per-extension bind-mounts keep the baked-in `node_modules/` from the
+    # custom image intact while letting src/ be edited on the host.
     volumes:
       - ./directus/uploads:/directus/uploads
-      - ./directus/extensions:/directus/extensions
       - ./directus/lib:/directus/lib
+      - ./directus/extensions/otp-endpoint/src:/directus/extensions/otp-endpoint/src:ro
+      - ./directus/extensions/password-change-endpoint/src:/directus/extensions/password-change-endpoint/src:ro
+      - ./directus/extensions/password-reset-request-endpoint/src:/directus/extensions/password-reset-request-endpoint/src:ro
+      - ./directus/extensions/customer-onboarding-endpoint/src:/directus/extensions/customer-onboarding-endpoint/src:ro
+      - ./directus/extensions/customer-onboarding-hook:/directus/extensions/customer-onboarding-hook:ro
+      - ./directus/extensions/password-policy-hook:/directus/extensions/password-policy-hook:ro
+      - ./directus/extensions/security-headers-hook:/directus/extensions/security-headers-hook:ro
+      - ./directus/extensions/media-policy-endpoint:/directus/extensions/media-policy-endpoint:ro
+      - ./directus/extensions/media-policy-hook:/directus/extensions/media-policy-hook:ro
+      - ./directus/extensions/commercial-import-endpoint:/directus/extensions/commercial-import-endpoint:ro
+      - ./directus/extensions/docs-endpoint:/directus/extensions/docs-endpoint:ro
     ports:
       - '8055:8055'
 

@@ -26,6 +26,16 @@ export default {
         return res.status(201).json({ data: result });
       } catch (error) {
         const status = error.status ?? error.statusCode ?? 500;
+        // Surface the underlying cause for 500-class failures so we can see
+        // the actual stack in `docker compose logs directus` instead of a
+        // generic "Customer onboarding failed." in the response.
+        console.error('[customer-onboarding/register] failed:', {
+          status,
+          message: error.message,
+          code: error.code,
+          errors: error.errors,
+          stack: error.stack
+        });
         return deny(res, status, error.message || 'Customer onboarding failed.');
       }
     });

@@ -8,5 +8,8 @@
     "path": "dist/index.js",
     "source": "src/index.js",
     "host": "^11.0.0"
+  },
+  "dependencies": {
+    "ioredis": "^5.4.0"
   }
 }

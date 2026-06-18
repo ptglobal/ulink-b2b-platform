@@ -3,30 +3,54 @@
 import { useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2, Building2 } from 'lucide-react';
-import { Link } from '@/i18n/navigation';
-import { register, AuthError } from '@/lib/auth';
+import { Link, useRouter } from '@/i18n/navigation';
+import { requestOtp, AuthError } from '@/lib/auth';
 import { SocialAuth } from '@/components/auth/social-auth';
 import { cn } from '@/lib/utils';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_RE = /^[+()\-\d\s]{6,}$/;
+// Server enforces this — same regex in src/lib/validators.ts and Directus
+// customer-onboarding-endpoint/service.js. Keep in sync.
+const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
-type Fields = 'company' | 'contact' | 'email' | 'phone' | 'password' | 'confirm';
+type Fields = 'company_name' | 'contact_name' | 'email' | 'phone' | 'password' | 'confirm_password';
+
+const REGISTER_DRAFT_KEY = 'register_draft_v1';
+
+interface RegisterDraft {
+  company_name: string;
+  contact_name: string;
+  email: string;
+  phone: string;
+  password: string;
+  confirm_password: string;
+  /**
+   * Whether the user explicitly accepted the terms of service. Persisted into
+   * the draft so the backend can stamp a consent record (consented_at) on the
+   * customer row at the moment the account is created. Without this trail we
+   * would only have the registration timestamp and could not prove consent.
+   */
+  agree: true;
+  /** ISO-8601 timestamp of the moment the user ticked the agree checkbox. */
+  agree_at: string;
+}
 
 export function RegisterForm() {
   const t = useTranslations('auth');
+  const router = useRouter();
 
   const [values, setValues] = useState({
-    company: '',
-    contact: '',
+    company_name: '',
+    contact_name: '',
     email: '',
     phone: '',
     password: '',
-    confirm: ''
+    confirm_password: ''
   });
   const [agree, setAgree] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<Record<Fields | 'agree', string>>>({});
 
@@ -36,14 +60,15 @@ export function RegisterForm() {
 
   function validate() {
     const e: Partial<Record<Fields | 'agree', string>> = {};
-    if (!values.company) e.company = t('companyRequired');
-    if (!values.contact) e.contact = t('contactRequired');
+    if (!values.company_name.trim()) e.company_name = t('companyRequired');
+    if (!values.contact_name.trim()) e.contact_name = t('contactRequired');
     if (!values.email) e.email = t('emailRequired');
     else if (!EMAIL_RE.test(values.email)) e.email = t('emailInvalid');
     if (!values.phone) e.phone = t('phoneRequired');
+    else if (!PHONE_RE.test(values.phone)) e.phone = t('phoneInvalid');
     if (!values.password) e.password = t('passwordRequired');
-    else if (values.password.length < 8) e.password = t('passwordTooShort');
-    if (values.confirm !== values.password) e.confirm = t('passwordMismatch');
+    else if (!PASSWORD_RE.test(values.password)) e.password = t('passwordPolicy');
+    if (values.confirm_password !== values.password) e.confirm_password = t('passwordMismatch');
     if (!agree) e.agree = t('agreeRequired');
     setErrors(e);
     return Object.keys(e).length === 0;
@@ -53,42 +78,51 @@ export function RegisterForm() {
     ev.preventDefault();
     setFormError(null);
     if (!validate()) return;
+
     setLoading(true);
     try {
-      await register({
-        company: values.company,
-        contact: values.contact,
-        email: values.email,
-        phone: values.phone,
+      // Step 1: trigger OTP email verification for the new account's email.
+      // We do NOT call /register yet — we save the form data to sessionStorage
+      // and redirect to /verify-otp so the user can confirm ownership of the
+      // email. After they enter the code, /verify-otp writes verified_token to
+      // sessionStorage, then redirects to /register/confirm which actually
+      // creates the account.
+      await requestOtp(values.email.trim(), 'register');
+
+      const draft: RegisterDraft = {
+        company_name: values.company_name.trim(),
+        contact_name: values.contact_name.trim(),
+        email: values.email.trim(),
+        phone: values.phone.trim(),
         password: values.password,
-        confirm: values.confirm
-      });
-      setDone(true);
+        confirm_password: values.confirm_password,
+        // Stamp the consent at submit time so the timestamp is bound to the act
+        // of agreeing (not to the moment the user first ticked the box, which
+        // could be minutes earlier if they paused to fill the form).
+        agree: true,
+        agree_at: new Date().toISOString()
+      };
+      sessionStorage.setItem(REGISTER_DRAFT_KEY, JSON.stringify(draft));
+
+      const qs = new URLSearchParams({
+        purpose: 'register',
+        email: draft.email,
+        redirect: '/register/confirm'
+      }).toString();
+      router.push(`/verify-otp?${qs}`);
     } catch (err) {
-      setFormError(
-        err instanceof AuthError && err.code === 'network_error' ? t('errorNetwork') : t('registerFailed')
-      );
+      if (err instanceof AuthError) {
+        if (err.status === 429) {
+          setFormError(t('otpCooldown'));
+        } else {
+          setFormError(err.message || t('registerFailed'));
+        }
+      } else {
+        setFormError(t('errorNetwork'));
+      }
     } finally {
       setLoading(false);
     }
-  }
-
-  if (done) {
-    return (
-      <div className="text-center">
-        <span className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-lg bg-brand/10 text-brand">
-          <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
-        </span>
-        <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('registerSuccessTitle')}</h2>
-        <p className="mx-auto mt-3 max-w-sm text-sm text-muted-foreground">{t('registerSuccessDesc')}</p>
-        <Link
-          href="/login"
-          className="mt-6 inline-flex items-center justify-center rounded-lg border border-brand bg-brand px-5 py-2.5 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-strong hover:border-brand-strong"
-        >
-          {t('backToLogin')}
-        </Link>
-      </div>
-    );
   }
 
   const inputBase =
@@ -117,11 +151,11 @@ export function RegisterForm() {
             placeholder={opts.placeholder}
             aria-invalid={!!err}
             aria-describedby={err ? `${name}-error` : undefined}
-            className={cn(inputBase, err ? 'border-accent' : 'border-border')}
+            className={cn(inputBase, err ? 'border-destructive' : 'border-border')}
           />
         </div>
         {err && (
-          <p id={`${name}-error`} className="mt-1.5 text-xs text-accent">
+          <p id={`${name}-error`} className="mt-1.5 text-xs text-destructive">
             {err}
           </p>
         )}
@@ -136,13 +170,13 @@ export function RegisterForm() {
 
       <form className="mt-6 space-y-3.5" onSubmit={onSubmit} noValidate>
         {formError && (
-          <p role="alert" className="rounded-lg border border-accent/30 bg-accent/5 px-3 py-2 text-sm text-accent">
+          <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
             {formError}
           </p>
         )}
 
-        {field('company', { label: t('companyLabel'), placeholder: t('companyPlaceholder'), icon: Building2, autoComplete: 'organization' })}
-        {field('contact', { label: t('contactLabel'), placeholder: t('contactPlaceholder'), icon: User, autoComplete: 'name' })}
+        {field('company_name', { label: t('companyLabel'), placeholder: t('companyPlaceholder'), icon: Building2, autoComplete: 'organization' })}
+        {field('contact_name', { label: t('contactLabel'), placeholder: t('contactPlaceholder'), icon: User, autoComplete: 'name' })}
         {field('email', { label: t('emailLabel'), placeholder: t('emailPlaceholder'), icon: Mail, type: 'email', autoComplete: 'email' })}
         {field('phone', { label: t('phoneLabel'), placeholder: t('phonePlaceholder'), icon: Phone, type: 'tel', autoComplete: 'tel' })}
 
@@ -163,7 +197,7 @@ export function RegisterForm() {
               placeholder={t('passwordPlaceholder')}
               aria-invalid={!!errors.password}
               aria-describedby={errors.password ? 'password-error' : undefined}
-              className={cn(inputBase, 'pr-11', errors.password ? 'border-accent' : 'border-border')}
+              className={cn(inputBase, 'pr-11', errors.password ? 'border-destructive' : 'border-border')}
             />
             <button
               type="button"
@@ -175,13 +209,14 @@ export function RegisterForm() {
             </button>
           </div>
           {errors.password && (
-            <p id="password-error" className="mt-1.5 text-xs text-accent">
+            <p id="password-error" className="mt-1.5 text-xs text-destructive">
               {errors.password}
             </p>
           )}
+          <p className="mt-1 text-[11px] text-muted-foreground">{t('passwordPolicyHint')}</p>
         </div>
 
-        {field('confirm', {
+        {field('confirm_password', {
           label: t('confirmPasswordLabel'),
           placeholder: t('confirmPasswordPlaceholder'),
           icon: Lock,
@@ -201,7 +236,7 @@ export function RegisterForm() {
             />
             <span>{t('agreeTerms')}</span>
           </label>
-          {errors.agree && <p className="mt-1.5 text-xs text-accent">{errors.agree}</p>}
+          {errors.agree && <p className="mt-1.5 text-xs text-destructive">{errors.agree}</p>}
         </div>
 
         <button
@@ -212,7 +247,7 @@ export function RegisterForm() {
           {loading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              <span>{t('registering')}</span>
+              <span>{t('otpSending')}</span>
             </>
           ) : (
             <>
@@ -234,3 +269,5 @@ export function RegisterForm() {
     </div>
   );
 }
+
+export { REGISTER_DRAFT_KEY, type RegisterDraft };

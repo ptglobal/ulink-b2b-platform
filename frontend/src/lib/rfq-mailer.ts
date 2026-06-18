@@ -1,5 +1,4 @@
 import { setTimeout as sleep } from 'node:timers/promises';
-
 import { sendMail } from '../../../directus/lib/smtp.mjs';
 
 export type RfqMailMessage = {

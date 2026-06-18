@@ -33,3 +33,10 @@ export const VISITOR_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 export const EDITOR_POLICY_ID = 'b11b0e50-1010-410c-9999-000000000001';
 export const SALES_POLICY_ID = 'b11b0e50-2020-410c-9999-000000000002';
 export const CUSTOMER_POLICY_ID = 'b11b0e50-3030-410c-9999-000000000003';
+
+// Prefix used for verified tokens issued by our OTP endpoint. The frontend
+// distinguishes between our `vt_*` tokens and Directus built-in reset-link
+// tokens (which are long raw strings without a prefix) by checking this.
+// Keep in sync with the consumer checks in customer-onboarding-endpoint and
+// password-change-endpoint, and the frontend /api/auth/reset-password route.
+export const VERIFIED_TOKEN_PREFIX = 'vt_';

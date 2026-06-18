@@ -20,21 +20,22 @@ export async function AuthHero() {
 
   return (
     <aside className="relative hidden h-screen flex-1 flex-col overflow-hidden lg:flex">
-      {/* Ảnh nền — rõ nét, phủ kín */}
-      <div className="absolute inset-0 bg-muted" />
-      <Image
-        src={ASSETS.banners.loginHero}
-        alt=""
-        fill
-        priority
-        sizes="50vw"
-        className="object-cover object-center"
-      />
+      {/* Phần trên: ảnh nền + overlay + nội dung chính */}
+      <div className="relative flex-1 overflow-hidden">
+        <div className="absolute inset-0 bg-muted" />
+        <Image
+          src={ASSETS.banners.loginHero}
+          alt=""
+          fill
+          priority
+          sizes="50vw"
+          className="object-cover object-center"
+        />
+        {/* Overlay đen mờ nhẹ để text dễ đọc hơn */}
+        <div className="absolute inset-0 bg-black/20" />
 
-      <div className="relative z-10 flex flex-1 flex-col justify-between px-14 pb-8 pt-12">
-        {/* Cụm trên: logo + headline + mô tả (nhóm sát nhau) */}
-        <div>
-          <Link href="/" aria-label="ULink Industries" className="inline-flex">
+        <div className="relative z-10 flex h-full flex-col px-14 pt-12">
+          <Link href="/" aria-label="ULink Industries" className="-ml-2 inline-flex">
             <Image
               src={ASSETS.logo.full}
               alt="ULink — Growth platform with logistics"
@@ -52,22 +53,22 @@ export async function AuthHero() {
             {t('heroDescription')}
           </p>
         </div>
+      </div>
 
-        {/* Cụm dưới: badge + footer — màu sáng để nổi trên ảnh nền */}
-        <div>
-          <ul className="flex flex-wrap gap-x-8 gap-y-4">
-            {features.map(({ icon: Icon, title, desc }) => (
-              <li key={title} className="flex max-w-[22ch] items-start gap-2.5">
-                <Icon className="mt-0.5 h-6 w-6 shrink-0 text-brand" aria-hidden="true" />
-                <span>
-                  <span className="block text-sm font-semibold text-brand">{title}</span>
-                  <span className="block text-xs leading-snug text-white/70">{desc}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-8 font-mono text-xs tracking-wider text-white/50">2026 ULINK INDUSTRIES.</p>
-        </div>
+      {/* Phần dưới: layer #969BA2 — features nằm ở đây, DƯỚI ảnh */}
+      <div className="bg-[#969BA2] px-14 pb-8 pt-6">
+        <ul className="flex flex-wrap gap-x-8 gap-y-4">
+          {features.map(({ icon: Icon, title, desc }) => (
+            <li key={title} className="flex max-w-[22ch] items-start gap-2.5">
+              <Icon className="mt-0.5 h-6 w-6 shrink-0 text-brand" aria-hidden="true" />
+              <span>
+                <span className="block text-sm font-semibold text-brand">{title}</span>
+                <span className="block text-xs leading-snug text-primary/70">{desc}</span>
+              </span>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-6 font-mono text-xs tracking-wider text-primary/50">2026 ULINK INDUSTRIES.</p>
       </div>
     </aside>
   );

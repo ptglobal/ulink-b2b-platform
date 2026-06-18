@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { routing } from '@/i18n/routing';
+import { getCurrentUser } from '@/lib/auth-helpers';
+import { AuthProvider, type AuthUser } from '@/lib/auth-context';
 import '../globals.css';
 
 // Brand typography: Inter (UI/body) + IBM Plex Mono (nhãn, eyebrow, mã SKU)
@@ -45,13 +47,18 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
 
-  const messages = await getMessages();
+  // Resolve the session server-side so the initial render is hydration-correct
+  // (avoids a client-side flash from "loading" to "authenticated").
+  const [messages, initialUser] = await Promise.all([
+    getMessages(),
+    getCurrentUser() as Promise<AuthUser | null>
+  ]);
 
   return (
     <html lang={locale} className={`${inter.variable} ${ibmPlexMono.variable}`}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <AuthProvider initialUser={initialUser}>{children}</AuthProvider>
         </NextIntlClientProvider>
       </body>
     </html>

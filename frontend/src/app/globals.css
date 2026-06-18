@@ -28,6 +28,9 @@
     --input: 216 16% 76%;
     --ring: 214 78% 49%;               /* ULink Blue */
 
+    --destructive: 0 84% 60%;          /* Red #EF4444 — errors, validation */
+    --destructive-foreground: 0 0% 100%;
+
     --silver: 216 16% 76%;             /* Industrial Silver #B8C0CC */
     --onyx: 0 0% 8%;                   /* Deep Onyx #141414 */
 
