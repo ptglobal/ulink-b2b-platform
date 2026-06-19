@@ -1,0 +1,16 @@
+{
+  "name": "stripe_api_details",
+  "description": "Get detailed parameter information for a specific Stripe API operation.\nProvide the stripe_api_operation_id from stripe_api_search results to see all path, query, and body parameters with their types, descriptions, and whether they are required.\n\nUse before calling the relevant Stripe API execution tool for operations with nested object fields.\n",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "stripe_api_operation_id": {
+        "description": "The operation ID to get details for (e.g. 'PostCustomers', 'GetPaymentIntents')",
+        "type": "string"
+      }
+    },
+    "required": [
+      "stripe_api_operation_id"
+    ]
+  }
+}

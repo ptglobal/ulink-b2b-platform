@@ -157,7 +157,32 @@ export const COLLECTION_DEFS = [
             choices: HUB_OPERATING_STATUSES
           }
         }
-      }
+      },
+      { field: 'coordinates', type: 'string', meta: { interface: 'input', options: { placeholder: 'lat,lng' } } },
+      // ── Warehouse Capacity ──
+      { field: 'divider_warehouse', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'Warehouse Capacity' }, special: ['alias'] } },
+      { field: 'warehouse_total_area', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: 'm²' } } },
+      { field: 'warehouse_utilized_area', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: 'm²' } } },
+      { field: 'warehouse_available_area', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: 'm²' } } },
+      { field: 'warehouse_storage_tons', type: 'integer', meta: { interface: 'input', width: 'half', options: { placeholder: 'tons' } } },
+      { field: 'warehouse_pallets', type: 'integer', meta: { interface: 'input', width: 'half', options: { placeholder: 'pallets' } } },
+      // ── SLA Metrics ──
+      { field: 'divider_sla', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'SLA Metrics' }, special: ['alias'] } },
+      { field: 'standard_delivery_time', type: 'string', meta: { interface: 'input', width: 'half' } },
+      { field: 'on_time_rate', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: '%' } } },
+      { field: 'on_time_rate_delta', type: 'string', meta: { interface: 'input', width: 'half', options: { placeholder: 'e.g. +2.1%' } } },
+      { field: 'orders_today', type: 'integer', meta: { interface: 'input', width: 'half' } },
+      { field: 'order_capacity_per_day', type: 'integer', meta: { interface: 'input', width: 'half' } },
+      { field: 'avg_delivery_time', type: 'string', meta: { interface: 'input', width: 'half' } },
+      // ── Technical Team ──
+      { field: 'divider_team', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'Technical Team' }, special: ['alias'] } },
+      { field: 'person_in_charge_name', type: 'string', meta: { interface: 'input', width: 'half' } },
+      { field: 'person_in_charge_title', type: 'string', meta: { interface: 'input', width: 'half' } },
+      { field: 'person_in_charge_phone', type: 'string', meta: { interface: 'input', width: 'half' } },
+      { field: 'current_personnel_count', type: 'integer', meta: { interface: 'input', width: 'half' } },
+      // ── O2M Relations ──
+      { field: 'industrial_zones', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } },
+      { field: 'team_members', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } }
     ]
   },
   {
@@ -597,6 +622,31 @@ export const COLLECTION_DEFS = [
       { field: 'assigned_sales', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       { field: 'priority', type: 'integer', meta: { interface: 'input' }, schema: { default_value: 0 } },
       { field: 'is_default', type: 'boolean', meta: { interface: 'boolean' }, schema: { default_value: false } }
+    ]
+  },
+  {
+    collection: 'hub_industrial_zones',
+    meta: { icon: 'factory', note: 'Hub Industrial Zones' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'hub', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
+      { field: 'image', type: 'uuid', meta: { interface: 'file-image', special: ['file'] } }
+    ]
+  },
+  {
+    collection: 'hub_team_members',
+    meta: { icon: 'group', note: 'Hub Team Members', sort_field: 'sort' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'role', type: 'string', meta: { interface: 'input' } },
+      { field: 'years_experience', type: 'integer', meta: { interface: 'input' } },
+      { field: 'photo', type: 'uuid', meta: { interface: 'file-image', special: ['file'] } },
+      { field: 'hub', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
+      { field: 'sort', type: 'integer', meta: { interface: 'input', hidden: true } }
     ]
   },
   {

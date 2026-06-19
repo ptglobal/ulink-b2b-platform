@@ -74,6 +74,8 @@ async function verify() {
     'rfq_assignment_rules',
     'products_industries',
     'products_files',
+    'hub_industrial_zones',
+    'hub_team_members',
     ...TRANSLATION_COLLECTION_NAMES
   ];
 
@@ -171,6 +173,10 @@ async function verify() {
       'products_industries.industries_id',
       'products_files.products_id',
       'products_files.directus_files_id',
+      'hub_industrial_zones.hub',
+      'hub_industrial_zones.image',
+      'hub_team_members.hub',
+      'hub_team_members.photo',
       'media_retention.file',
       'media_retention.deleted_by',
       'media_retention.hard_deleted_by',
@@ -379,6 +385,23 @@ async function verify() {
   const deliveries = await client.request(readItems('deliveries'));
   assert(deliveries.length >= 1, `Deliveries has ${deliveries.length} seeded items.`);
   assert(deliveries.some((d) => d.erp_ref === 'ERP-DLV-2026-77001'), 'Delivery "ERP-DLV-2026-77001" exists.');
+
+  // Hub management fields
+  const dongVan4Hub = hubs.find((h) => h.slug === 'dong-van-4');
+  if (dongVan4Hub) {
+    assert(typeof dongVan4Hub.warehouse_total_area === 'number', 'Hub "dong-van-4" has warehouse_total_area.');
+    assert(typeof dongVan4Hub.on_time_rate === 'number', 'Hub "dong-van-4" has on_time_rate.');
+    assert(typeof dongVan4Hub.person_in_charge_name === 'string', 'Hub "dong-van-4" has person_in_charge_name.');
+    assert(typeof dongVan4Hub.current_personnel_count === 'number', 'Hub "dong-van-4" has current_personnel_count.');
+  }
+
+  const industrialZones = await client.request(readItems('hub_industrial_zones'));
+  assert(industrialZones.length >= 3, `Hub Industrial Zones has ${industrialZones.length} seeded items.`);
+  assert(industrialZones.some((z) => z.name === 'KCN Đông Vân IV'), 'Industrial zone "KCN Đông Vân IV" exists.');
+
+  const teamMembers = await client.request(readItems('hub_team_members'));
+  assert(teamMembers.length >= 3, `Hub Team Members has ${teamMembers.length} seeded items.`);
+  assert(teamMembers.some((m) => m.name === 'Trần Minh Đức'), 'Team member "Trần Minh Đức" exists.');
 
   if (failed) {
     logFatal('Bootstrap verification failed with one or more checks.');

@@ -1,0 +1,25 @@
+{
+  "name": "set",
+  "description": "Set a Redis key-value pair with optional expiration",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "key": {
+        "type": "string",
+        "description": "Redis key"
+      },
+      "value": {
+        "type": "string",
+        "description": "Value to store"
+      },
+      "expireSeconds": {
+        "type": "number",
+        "description": "Optional expiration time in seconds"
+      }
+    },
+    "required": [
+      "key",
+      "value"
+    ]
+  }
+}

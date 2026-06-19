@@ -256,6 +256,30 @@ export function buildPermissionDefs() {
     }
   }
 
+  // Hub child collections: industrial zones & team members
+  // Visitor & Customer: read access (no status filter — child entities)
+  for (const collection of ['hub_industrial_zones', 'hub_team_members']) {
+    for (const policy of [VISITOR_POLICY_ID, CUSTOMER_POLICY_ID, SALES_POLICY_ID]) {
+      permissions.push({
+        policy,
+        collection,
+        action: 'read',
+        permissions: {},
+        fields: ['*']
+      });
+    }
+    // Editor: full CRUD
+    for (const action of ['create', 'read', 'update', 'delete']) {
+      permissions.push({
+        policy: EDITOR_POLICY_ID,
+        collection,
+        action,
+        permissions: {},
+        fields: ['*']
+      });
+    }
+  }
+
   return permissions;
 }
 

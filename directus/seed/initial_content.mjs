@@ -171,6 +171,22 @@ export async function seedInitialContent(helpers, client, geography) {
     district: kimBangDistrict.id,
     detail_address: 'KCN Đông Vân IV, Kim Bảng, Hà Nam',
     operating_status: 'active',
+    coordinates: '20.5500,105.9100',
+    warehouse_total_area: 5000,
+    warehouse_utilized_area: 3200,
+    warehouse_available_area: 1800,
+    warehouse_storage_tons: 2000,
+    warehouse_pallets: 800,
+    standard_delivery_time: '24 giờ',
+    on_time_rate: 96.5,
+    on_time_rate_delta: '+2.1%',
+    orders_today: 45,
+    order_capacity_per_day: 100,
+    avg_delivery_time: '18 giờ',
+    person_in_charge_name: 'Nguyễn Văn Hùng',
+    person_in_charge_title: 'Giám đốc Hub',
+    person_in_charge_phone: '0912345678',
+    current_personnel_count: 25,
     status: 'published'
   });
   await seedTranslations('regional_hubs', dongVan4Id, 'dong_van_4');
@@ -183,9 +199,62 @@ export async function seedInitialContent(helpers, client, geography) {
     district: dongAnhDistrict.id,
     detail_address: 'Đông Anh, Hà Nội',
     operating_status: 'active',
+    coordinates: '21.1000,105.8500',
+    warehouse_total_area: 3500,
+    warehouse_utilized_area: 2800,
+    warehouse_available_area: 700,
+    warehouse_storage_tons: 1500,
+    warehouse_pallets: 600,
+    standard_delivery_time: '12 giờ',
+    on_time_rate: 98.2,
+    on_time_rate_delta: '+0.5%',
+    orders_today: 72,
+    order_capacity_per_day: 150,
+    avg_delivery_time: '8 giờ',
+    person_in_charge_name: 'Trần Thị Mai',
+    person_in_charge_title: 'Trưởng phòng vận hành',
+    person_in_charge_phone: '0987654321',
+    current_personnel_count: 35,
     status: 'published'
   });
   await seedTranslations('regional_hubs', bacThangLongId, 'bac_thang_long');
+
+  // Hub Industrial Zones
+  await helpers.ensureItem('hub_industrial_zones', 'name', {
+    name: 'KCN Đông Vân IV',
+    hub: dongVan4Id
+  });
+  await helpers.ensureItem('hub_industrial_zones', 'name', {
+    name: 'KCN Đồng Văn III',
+    hub: dongVan4Id
+  });
+  await helpers.ensureItem('hub_industrial_zones', 'name', {
+    name: 'KCN Bắc Thăng Long',
+    hub: bacThangLongId
+  });
+
+  // Hub Team Members
+  await helpers.ensureItem('hub_team_members', 'name', {
+    name: 'Trần Minh Đức',
+    role: 'Kỹ sư phòng sạch',
+    years_experience: 8,
+    hub: dongVan4Id,
+    sort: 1
+  });
+  await helpers.ensureItem('hub_team_members', 'name', {
+    name: 'Lê Hoàng Nam',
+    role: 'Quản lý kho',
+    years_experience: 5,
+    hub: dongVan4Id,
+    sort: 2
+  });
+  await helpers.ensureItem('hub_team_members', 'name', {
+    name: 'Phạm Thị Hoa',
+    role: 'Kỹ sư QC',
+    years_experience: 6,
+    hub: bacThangLongId,
+    sort: 1
+  });
 
   const blogPostId = await helpers.ensureItem('blog_posts', 'slug', {
     title: 'Tối ưu kiểm soát ESD trong phòng sạch điện tử',
@@ -248,7 +317,7 @@ export async function seedInitialContent(helpers, client, geography) {
   await seedTranslations('homepage', homepageId, 'home');
 
   return {
-    hubId,
+    hubId: dongVan4Id,
     sku1Id,
     sku2Id,
     sku3Id,

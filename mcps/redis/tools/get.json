@@ -1,0 +1,16 @@
+{
+  "name": "get",
+  "description": "Get value by key from Redis",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "key": {
+        "type": "string",
+        "description": "Redis key to retrieve"
+      }
+    },
+    "required": [
+      "key"
+    ]
+  }
+}

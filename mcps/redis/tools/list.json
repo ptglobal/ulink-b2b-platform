@@ -1,0 +1,13 @@
+{
+  "name": "list",
+  "description": "List Redis keys matching a pattern",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "pattern": {
+        "type": "string",
+        "description": "Pattern to match keys (default: *)"
+      }
+    }
+  }
+}

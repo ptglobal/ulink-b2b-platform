@@ -1,0 +1,16 @@
+{
+  "name": "fetch_stripe_resources",
+  "description": "Retrieve Stripe object details by ID.\n\nIMPORTANT: Only call this tool after search_stripe_resources is called to get specific object IDs. Do not use this tool to discover or search for objects.\n\nThis tool fetches the object information from Stripe including all available fields. It is only able to fetch the following resources (prefixes):\n- Payment Intents (pi_)\n- Charges (ch_)\n- Invoices (in_)\n- Prices (price_)\n- Products (prod_)\n- Subscriptions (sub_)\n- Customers (cus_)\n\nIt takes one argument:\n- id (str): The unique identifier for the Stripe object (e.g. cus_123, pi_123).\n\nNote that any amount returned is in currency minor units, e.g. cents for USD and yen for JPY.\n",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "id": {
+        "description": "The unique identifier for the Stripe object (e.g. cus_123, pi_123).",
+        "type": "string"
+      }
+    },
+    "required": [
+      "id"
+    ]
+  }
+}

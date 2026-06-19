@@ -1,0 +1,8 @@
+{
+  "name": "get_stripe_account_info",
+  "description": "This will get the account info for the logged in Stripe account.\n",
+  "inputSchema": {
+    "type": "object",
+    "properties": {}
+  }
+}

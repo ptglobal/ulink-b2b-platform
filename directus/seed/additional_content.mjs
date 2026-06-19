@@ -60,37 +60,110 @@ export async function seedAdditionalContent(helpers, ids) {
   const binhDuongId = await helpers.ensureItem('regional_hubs', 'slug', {
     name: 'VSIP Bình Dương',
     slug: 'vsip-binh-duong',
-    delivery_sla: 'Giao trong 24 giờ cho khu vực TP.HCM và Bình Dương; 48 giờ cho Đồng Nai, Long An.',
-    warehouse_capacity: '4.000 m² kho kiểm soát nhiệt độ',
-    technical_team: 'Đội ngũ kỹ sư tại chỗ hỗ trợ tư vấn bao bì và phòng sạch.',
-    cluster_overview: 'Phục vụ cụm công nghiệp VSIP chuyên điện tử, dược phẩm và chế biến thực phẩm.',
-    location: 'KCN VSIP II-A, Tân Uyên, Bình Dương',
+    detail_address: 'KCN VSIP II-A, Tân Uyên, Bình Dương',
+    operating_status: 'active',
     coordinates: '11.0500,106.6500',
+    warehouse_total_area: 4000,
+    warehouse_utilized_area: 3000,
+    warehouse_available_area: 1000,
+    warehouse_storage_tons: 1800,
+    warehouse_pallets: 700,
+    standard_delivery_time: '24 giờ',
+    on_time_rate: 95.0,
+    on_time_rate_delta: '+1.2%',
+    orders_today: 60,
+    order_capacity_per_day: 120,
+    avg_delivery_time: '20 giờ',
+    person_in_charge_name: 'Lê Quang Minh',
+    person_in_charge_title: 'Giám đốc vận hành',
+    person_in_charge_phone: '0901234567',
+    current_personnel_count: 30,
     status: 'published'
   });
 
   const haiPhongId = await helpers.ensureItem('regional_hubs', 'slug', {
     name: 'VSIP Hải Phòng',
     slug: 'vsip-hai-phong',
-    delivery_sla: 'Giao trong 24 giờ cho Hải Phòng và Quảng Ninh; 36 giờ cho Hải Dương, Hưng Yên.',
-    warehouse_capacity: '3.500 m²',
-    technical_team: 'Kỹ sư kỹ thuật hỗ trợ kiểm soát nhiễm bẩn và ESD.',
-    cluster_overview: 'Hỗ trợ khu vực công nghiệp trọng điểm Hải Phòng — điện tử, ô tô và linh kiện.',
-    location: 'KCN VSIP Hải Phòng, Thuỷ Nguyên, Hải Phòng',
+    detail_address: 'KCN VSIP Hải Phòng, Thuỷ Nguyên, Hải Phòng',
+    operating_status: 'active',
     coordinates: '20.9000,106.6800',
+    warehouse_total_area: 3500,
+    warehouse_utilized_area: 2500,
+    warehouse_available_area: 1000,
+    warehouse_storage_tons: 1400,
+    warehouse_pallets: 550,
+    standard_delivery_time: '24 giờ',
+    on_time_rate: 94.8,
+    on_time_rate_delta: '-0.3%',
+    orders_today: 38,
+    order_capacity_per_day: 80,
+    avg_delivery_time: '22 giờ',
+    person_in_charge_name: 'Vũ Đình Tùng',
+    person_in_charge_title: 'Trưởng Hub',
+    person_in_charge_phone: '0918765432',
+    current_personnel_count: 22,
     status: 'published'
   });
 
   const longThanhId = await helpers.ensureItem('regional_hubs', 'slug', {
     name: 'Long Thành',
     slug: 'long-thanh',
-    delivery_sla: 'Giao trong 12 giờ cho Đồng Nai; 24 giờ cho Bà Rịa-Vũng Tàu và Bình Thuận.',
-    warehouse_capacity: '2.500 m²',
-    technical_team: 'Đội ngũ hỗ trợ tối ưu chi phí vật tư tiêu hao.',
-    cluster_overview: 'Phục vụ cụm công nghiệp Long Thành — dệt may, giày dép và cơ khí.',
-    location: 'KCN Long Thành, Long Thành, Đồng Nai',
+    detail_address: 'KCN Long Thành, Long Thành, Đồng Nai',
+    operating_status: 'active',
     coordinates: '10.8000,106.9500',
+    warehouse_total_area: 2500,
+    warehouse_utilized_area: 1800,
+    warehouse_available_area: 700,
+    warehouse_storage_tons: 1000,
+    warehouse_pallets: 400,
+    standard_delivery_time: '12 giờ',
+    on_time_rate: 97.5,
+    on_time_rate_delta: '+1.0%',
+    orders_today: 25,
+    order_capacity_per_day: 60,
+    avg_delivery_time: '10 giờ',
+    person_in_charge_name: 'Hoàng Thị Lan',
+    person_in_charge_title: 'Phó Giám đốc Hub',
+    person_in_charge_phone: '0932109876',
+    current_personnel_count: 18,
     status: 'published'
+  });
+
+  // Industrial zones for additional hubs
+  await helpers.ensureItem('hub_industrial_zones', 'name', {
+    name: 'KCN VSIP II-A',
+    hub: binhDuongId
+  });
+  await helpers.ensureItem('hub_industrial_zones', 'name', {
+    name: 'KCN VSIP Hải Phòng',
+    hub: haiPhongId
+  });
+  await helpers.ensureItem('hub_industrial_zones', 'name', {
+    name: 'KCN Long Thành',
+    hub: longThanhId
+  });
+
+  // Team members for additional hubs
+  await helpers.ensureItem('hub_team_members', 'name', {
+    name: 'Nguyễn Thanh Sơn',
+    role: 'Kỹ sư logistics',
+    years_experience: 7,
+    hub: binhDuongId,
+    sort: 1
+  });
+  await helpers.ensureItem('hub_team_members', 'name', {
+    name: 'Đỗ Văn Bình',
+    role: 'Chuyên viên ESD',
+    years_experience: 4,
+    hub: haiPhongId,
+    sort: 1
+  });
+  await helpers.ensureItem('hub_team_members', 'name', {
+    name: 'Trịnh Minh Tuấn',
+    role: 'Quản lý kho',
+    years_experience: 6,
+    hub: longThanhId,
+    sort: 1
   });
 
   // RFQ assignment rules

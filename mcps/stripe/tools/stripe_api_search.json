@@ -1,0 +1,23 @@
+{
+  "name": "stripe_api_search",
+  "description": "Search for Stripe API operations by keyword.\n\nReturns matching operations with their HTTP method, path, summary, and top-level parameter names with types. Does not include parameter descriptions, enum values, or nested object fields — use stripe_api_details to get those before calling the relevant Stripe API execution tool.\n",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "description": "Search query describing the Stripe API operation you want to find (e.g. 'create customer', 'list payments', 'refund charge')",
+        "type": "string"
+      },
+      "limit": {
+        "description": "Maximum number of results to return (default: 5, max: 20)",
+        "type": "integer",
+        "minimum": 1,
+        "maximum": 20,
+        "default": 5
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

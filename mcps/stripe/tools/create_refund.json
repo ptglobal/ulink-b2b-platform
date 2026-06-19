@@ -1,0 +1,39 @@
+{
+  "name": "create_refund",
+  "description": "This tool will refund a payment intent in Stripe.\n\nIt takes three arguments:\n- payment_intent (str): The ID of the payment intent to refund.\n- amount (int, optional): The amount to refund in currency minor units, e.g. cents for USD and yen for JPY.\n- reason (str, optional): The reason for the refund. Options: \"duplicate\", \"fraudulent\", \"requested_by_customer\".\n",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "payment_intent": {
+        "description": "The ID of the PaymentIntent to refund.",
+        "type": "string"
+      },
+      "amount": {
+        "description": "The amount to refund in cents.",
+        "type": "integer"
+      },
+      "reason": {
+        "description": "The reason for the refund.",
+        "enum": [
+          "duplicate",
+          "fraudulent",
+          "requested_by_customer"
+        ],
+        "type": "string"
+      },
+      "human_confirmation": {
+        "type": "object",
+        "description": "This tool might require human confirmation. To run it, first invoke it with the desired parameters, ignoring the `approval_token` parameter.\nIf it requires human confirmation, the response will include an approval request ID and a URL to an approval page for the human to approve the tool call.\nYou, as the LLM agent, should:\n\n1. Present this URL to the human as a clickable markdown link. Tell them that they have to approve this tool call at that URL, and that they should tell you when they have approved the operation.\n2. The human will approve that call.\n3. After the human tells you they have approved the operation, you must call the tool again with the `approval_token` parameter and the exact same parameters. The operation will then go through.\n",
+        "properties": {
+          "approval_token": {
+            "type": "string",
+            "description": "The ID of the approval token for the request. This is required on only the post-human-confirmation invocation. An example ID is `approval_123`."
+          }
+        }
+      }
+    },
+    "required": [
+      "payment_intent"
+    ]
+  }
+}

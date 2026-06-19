@@ -1,0 +1,26 @@
+{
+  "name": "delete",
+  "description": "Delete one or more keys from Redis",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "key": {
+        "oneOf": [
+          {
+            "type": "string"
+          },
+          {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        ],
+        "description": "Key or array of keys to delete"
+      }
+    },
+    "required": [
+      "key"
+    ]
+  }
+}

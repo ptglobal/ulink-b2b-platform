@@ -30,6 +30,8 @@ export const MEDIA_POLICY = Object.freeze({
     products: 'products',
     documents: 'documents',
     regional_hubs: 'hubs',
+    hub_industrial_zones: 'hubs',
+    hub_team_members: 'hubs',
     partners: 'partners',
     industries: 'partners',
     hero_banners: 'pages',

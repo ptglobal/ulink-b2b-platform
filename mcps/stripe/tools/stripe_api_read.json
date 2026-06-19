@@ -1,0 +1,21 @@
+{
+  "name": "stripe_api_read",
+  "description": "Read data from any Stripe API GET operation:\n1. Use stripe_api_search to find the operation ID.\n2. Use stripe_api_details to understand its parameters (required for operations with nested object fields like address, metadata, or restrictions).\n3. Call this tool with the stripe_api_operation_id and a parameters object containing path and query parameters. For mutations (POST/PATCH/PUT/DELETE), use stripe_api_write instead.\n",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "stripe_api_operation_id": {
+        "description": "The operation ID to execute (e.g. 'PostCustomers', 'GetPaymentIntents')",
+        "type": "string"
+      },
+      "parameters": {
+        "description": "Parameters for the API call. Include path parameters (e.g. 'customer' for /v1/customers/{customer}), query parameters, and body parameters as a flat object. Nested object fields use dot-notation (e.g. \"address.city\"). Array fields (e.g. line_items) must be passed as a JSON array value, not as a plain string.",
+        "type": "object"
+      }
+    },
+    "required": [
+      "stripe_api_operation_id",
+      "parameters"
+    ]
+  }
+}

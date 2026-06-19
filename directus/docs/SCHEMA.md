@@ -28,7 +28,7 @@ Conventions:
 | `products` | `name`, `slug`, `category`, `short_description`, `specifications`, `hero`, `gallery`, `industries`, `status`, `meta_title`, `meta_description` | Product detail, module 5 |
 | `product_skus` | `sku_code`, `product`, `unit`, `pack_size`, `attributes`, `status` | SKU layer, Redis-backed lookup for `/api/sku`; `sku_code` is canonical lowercased text and the DB enforces case-insensitive uniqueness on `lower(btrim(sku_code))` |
 | `documents` | `title`, `doc_type`, `product`, `file`, `language`, `status` | TDS, MSDS, certificate, brochure |
-| `regional_hubs` | `name`, `slug`, `delivery_sla`, `warehouse_capacity`, `technical_team`, `cluster_overview`, `location`, `coordinates`, `status` | Hub landing pages |
+| `regional_hubs` | `hub_code`, `name`, `slug`, `province`, `district`, `detail_address`, `operating_status`, `coordinates`, `warehouse_total_area`, `warehouse_utilized_area`, `warehouse_available_area`, `warehouse_storage_tons`, `warehouse_pallets`, `standard_delivery_time`, `on_time_rate`, `on_time_rate_delta`, `orders_today`, `order_capacity_per_day`, `avg_delivery_time`, `person_in_charge_name`, `person_in_charge_title`, `person_in_charge_phone`, `current_personnel_count`, `status` | Hub management with warehouse, SLA, and team sections |
 | `industries` | `name`, `slug`, `description`, `icon`, `status` | Industry taxonomy |
 | `blog_posts` | `title`, `slug`, `body`, `cover`, `author`, `published_at`, `status`, `meta_title`, `meta_description` | Blog/news |
 | `case_studies` | `title`, `slug`, `summary`, `body`, `industry`, `cover`, `status` | Resource center content |
@@ -45,6 +45,13 @@ SEO defaults live in singleton `site_settings`. Current bootstrap only adds
 |---|---|---|
 | `site_settings` | `logo`, `contact_email`, `contact_phone`, `address`, `meta_title`, `meta_description`, `og_image` | Global contact and default SEO |
 | `homepage` | `title`, `hero_section` | Homepage layout singleton |
+
+## Hub child collections
+
+| Collection | Fields | Purpose |
+|---|---|---|
+| `hub_industrial_zones` | `name`, `hub` (m2o → `regional_hubs`), `image` | Industrial zones / parks served by a hub |
+| `hub_team_members` | `name`, `role`, `years_experience`, `photo`, `hub` (m2o → `regional_hubs`), `sort` | Technical team members at a hub |
 
 ## Hidden junction collections
 
@@ -98,15 +105,19 @@ RFQ cart or order flow.
 | `products_industries.industries_id` | m2o | `industries` | Industry side of m2m |
 | `products_files.products_id` | m2o | `products` | Product side of gallery m2m |
 | `products_files.directus_files_id` | m2o | `directus_files` | File side of gallery m2m |
+| `hub_industrial_zones.hub` | m2o | `regional_hubs` | Industrial zone belongs to hub |
+| `hub_industrial_zones.image` | m2o | `directus_files` | Zone image file |
+| `hub_team_members.hub` | m2o | `regional_hubs` | Team member belongs to hub |
+| `hub_team_members.photo` | m2o | `directus_files` | Team member photo |
 
 ## Roles and access
 
 | Role | Current bootstrap access |
 |---|---|
 | **Admin** | Full Directus admin access |
-| **Editor** | CRUD on all content collections and singletons `site_settings`, `homepage` |
-| **Sales** | Read all content and singletons; full CRUD on `customers`, `orders`, `order_items`, `invoices`, `deliveries`, `rfq_requests`, `rfq_assignment_rules` |
-| **Customer** | Read published content; read singletons; read/update own `customers`; read own `orders`, `order_items`, `invoices`, `deliveries`; read own `rfq_requests` |
+| **Editor** | CRUD on all content collections, singletons `site_settings`, `homepage`, `hub_industrial_zones`, `hub_team_members` |
+| **Sales** | Read all content and singletons; full CRUD on `customers`, `orders`, `order_items`, `invoices`, `deliveries`, `rfq_requests`, `rfq_assignment_rules`; read `hub_industrial_zones`, `hub_team_members` |
+| **Customer** | Read published content; read singletons; read/update own `customers`; read own `orders`, `order_items`, `invoices`, `deliveries`; read own `rfq_requests`; read `hub_industrial_zones`, `hub_team_members` |
 
 Visitor/public users may read published content directly from Directus. RFQ submission for visitors and customers goes through `POST /api/rfq`; Directus visitor/customer roles do not create `rfq_requests` directly. Exact duplicate RFQ payloads reuse the first `rfq_requests` id instead of inserting a second row.
 
@@ -140,6 +151,7 @@ Customer row-level filters in bootstrap:
 - `rfq_requests.source`: `web`, `portal`
 - `rfq_assignment_rules.is_default`: boolean fallback rule marker
 - `documents.doc_type`: `tds`, `msds`, `certificate`, `brochure`
+- `regional_hubs.operating_status`: `active`, `stopped`, `maintenance`, `full`, `temporarily_closed`
 
 ## ERP-ready fields
 

@@ -1,0 +1,24 @@
+{
+  "name": "stripe_implementation_planner",
+  "description": "Stripe payment integration planner. Use this tool to help users accept payments, sell products online, set up billing, or build any Stripe integration. Call this BEFORE writing code when the user wants to charge customers, add a checkout flow, handle subscriptions, create invoices, or monetize their app.\n\nWHEN TO USE:\n  Call this tool when the user wants to:\n  - Accept payments, take payments, or charge customers (credit cards, bank transfers, wallets)\n  - Sell online, build e-commerce, add a shopping cart, or create a checkout page\n  - Set up subscriptions, recurring billing, metered billing, or usage-based pricing\n  - Send invoices or collect one-time payments\n  - Add Stripe to their app, integrate Stripe, or build a payment flow\n  - Understand which Stripe products to use (Checkout, Elements, Payment Intents, Connect, Billing)\n  - Plan an integration architecture before writing code\n  - Monetize an app, add billing, or start charging users\n\nFIRST CALL GUIDANCE:\n  Ask the user about their business and payment requirements before choosing a use case:\n  - What do they sell? (physical goods, digital products, SaaS, services, marketplace)\n  - Payment model? (one-time, subscriptions, invoices, usage-based)\n  - Platform? (web, mobile app, in-person, payment links)\n  - Complexity? (simple payment link vs. custom integration in existing tech stack)\n  Then pass their full description as the message parameter.\n\nReturns JSON with use cases, decision trees, documentation links, and a guide_id for follow-up calls.\n\nRULES:\n  - Do NOT pass a guide_id unless you received it from this tool in this conversation.\n  - Do NOT retry with different guide_ids if one fails — omit guide_id to start fresh.\n",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "guide_id": {
+        "description": "ONLY pass a guide_id that was returned by a previous call to this tool in this conversation. Never fabricate, guess, or reuse guide_ids from other sessions. If you do not have a guide_id from a prior response, omit this field entirely. Invalid guide_ids will be rejected.",
+        "type": "string"
+      },
+      "message": {
+        "description": "For new guides: describe the use case or business requirements. For existing guides: provide the latest user response or the full accepted transcript.",
+        "type": "string"
+      },
+      "accept": {
+        "description": "Set to true when returning the completed decision tree with your chosen options to receive the finalized integration guide.",
+        "type": "boolean"
+      }
+    },
+    "required": [
+      "message"
+    ]
+  }
+}

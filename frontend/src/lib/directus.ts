@@ -25,13 +25,51 @@ export interface RegionalHub {
   id: number;
   name: string;
   slug: string;
-  delivery_sla?: string | null;
-  warehouse_capacity?: string | null;
-  technical_team?: string | null;
-  cluster_overview?: string | null;
-  location?: string | null;
+  hub_code?: string | null;
+  province?: number | null;
+  district?: number | null;
+  detail_address?: string | null;
+  operating_status?: string | null;
   coordinates?: string | null;
+  // Warehouse Capacity
+  warehouse_total_area?: number | null;
+  warehouse_utilized_area?: number | null;
+  warehouse_available_area?: number | null;
+  warehouse_storage_tons?: number | null;
+  warehouse_pallets?: number | null;
+  // SLA Metrics
+  standard_delivery_time?: string | null;
+  on_time_rate?: number | null;
+  on_time_rate_delta?: string | null;
+  orders_today?: number | null;
+  order_capacity_per_day?: number | null;
+  avg_delivery_time?: string | null;
+  // Technical Team
+  person_in_charge_name?: string | null;
+  person_in_charge_title?: string | null;
+  person_in_charge_phone?: string | null;
+  current_personnel_count?: number | null;
+  // O2M relations
+  industrial_zones?: HubIndustrialZone[];
+  team_members?: HubTeamMember[];
   status?: 'published' | 'draft' | 'archived';
+}
+
+export interface HubIndustrialZone {
+  id: number;
+  name: string;
+  hub: number | RegionalHub;
+  image?: string | null;
+}
+
+export interface HubTeamMember {
+  id: number;
+  name: string;
+  role?: string | null;
+  years_experience?: number | null;
+  photo?: string | null;
+  hub: number | RegionalHub;
+  sort?: number | null;
 }
 
 export interface SiteSettings {
@@ -113,6 +151,8 @@ export interface Schema {
   product_skus: ProductSku[];
   industries: Industry[];
   regional_hubs: RegionalHub[];
+  hub_industrial_zones: HubIndustrialZone[];
+  hub_team_members: HubTeamMember[];
   site_settings: SiteSettings;
   homepage: HomePage;
   rfq_requests: RfqRequest[];
