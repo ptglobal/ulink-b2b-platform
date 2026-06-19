@@ -1,56 +1,99 @@
-# Directus API Testing Guide for Testers
+# Directus API Testing Guide
 
-This guide helps QA / testers explore and test the **Directus APIs**, with special focus on the custom business endpoints.
+This is the current tester-facing guide for the Directus layer in ULink.
+It reflects the live custom endpoints implemented in `directus/extensions/`.
 
 ## Quick Access
 
-| Tool | URL | Purpose |
-|------|-----|---------|
-| Interactive Swagger UI | http://localhost:8055/docs | Best starting point. Browse + "Try it out" all endpoints (custom + collections) |
-| Merged OpenAPI JSON | http://localhost:8055/docs/openapi.json | Import into Postman, Insomnia, or generate clients. Custom endpoints are always included. |
-| Export static file | `cd directus && npm run openapi:export` | Generates `openapi.json` in the directus folder |
-| Directus Admin UI | http://localhost:8055 | Login here first to get a Bearer token for full access |
+| Tool | URL / Command | Purpose |
+|---|---|---|
+| Swagger UI | `http://localhost:8055/docs` | Browse and try custom + core APIs |
+| Live merged spec | `http://localhost:8055/docs/spec` | Raw JSON used by Swagger UI |
+| Static export | `cd directus && npm run openapi:export` | Writes `openapi.json` for Postman/Insomnia |
+| Directus Admin | `http://localhost:8055` | Login to obtain a bearer token |
 
-**Tip for testers**: Always log into the Directus Admin UI first with an appropriate role (Admin recommended for full visibility). Then return to `/docs` and click **Authorize** (or use the same token in Postman).
+## Important Notes
 
-## Authentication & Roles
+- `GET /docs/spec` is the live spec route for the custom docs endpoint.
+- The custom docs spec is merged with Directus core APIs.
+- Custom onboarding now requires:
+  - OTP verification,
+  - consent (`agree`, `agree_at`),
+  - `verified_token` from the OTP flow.
+- The onboarding endpoint creates an active user and an active customer row.
 
-All custom endpoints (except registration) check the caller's role via `req.accountability.role`.
+## Authentication
 
-| Role | Description | Typical Use |
-|------|-------------|-------------|
-| Administrator | Full access | Testing everything, hard-delete media, commercial import |
-| Editor | Content + some media actions | Content management |
-| Sales | Commerce data + commercial import + media soft-delete | Business workflows |
-| Customer | Limited to own data | Portal testing (usually not used directly on these custom endpoints) |
-| Visitor (public) | Read-only published content | Public site testing |
+- `Visitor` can call public content and registration endpoints.
+- `Customer`, `Sales`, `Editor`, and `Admin` are role-restricted depending on the endpoint.
+- Use the bearer token from Directus Admin or a login response when testing protected routes.
 
-**How to get a token**:
-1. Go to http://localhost:8055
-2. Login as the desired user/role
-3. Open DevTools → Network → any request → Headers → copy the `Authorization: Bearer ...` value
-4. Paste into Swagger "Authorize" or Postman "Bearer Token"
+## OTP Flow
 
-You can also create static tokens in Directus Admin (Settings → Access Tokens) for CI-style testing.
+### `POST /otp/issue`
 
-## Custom Extension Endpoints
+Used to send a verification code before onboarding or password change.
 
-These are the business-specific endpoints added via Directus extensions. They live under the Directus base URL.
+Request:
 
-### 1. Customer Onboarding – Self Registration
+```json
+{
+  "email": "tester@example.com",
+  "purpose": "register"
+}
+```
 
-**Endpoint**: `POST /customer-onboarding/register`
+Allowed purposes:
+- `register`
+- `login-2fa`
 
-**Purpose**: Public self-registration for B2B customers.  
-Creates:
-- An active `directus_users` record (Customer role)
-- An inactive `customers` record
+Response:
 
-The `customer-onboarding-hook` will automatically link the user to an existing pre-created customer row (by email) and activate it.
+```json
+{
+  "data": {
+    "sent": true,
+    "expires_in_seconds": 600,
+    "debug_code": "123456"
+  }
+}
+```
 
-**Auth**: None (public)
+`debug_code` only appears when debug OTP is enabled in the environment.
 
-**Request Body** (all fields required):
+### `POST /otp/verify`
+
+Validates the code and returns a reusable `verified_token`.
+
+Request:
+
+```json
+{
+  "email": "tester@example.com",
+  "purpose": "register",
+  "code": "123456"
+}
+```
+
+Response:
+
+```json
+{
+  "data": {
+    "verified": true,
+    "verified_token": "vt_..."
+  }
+}
+```
+
+## Customer Onboarding
+
+### `POST /customer-onboarding/register`
+
+Public self-registration for B2B customers.
+
+Required body:
+
 ```json
 {
   "company_name": "ACME Corporation",
@@ -58,209 +101,271 @@ The `customer-onboarding-hook` will automatically link the user to an existing p
   "email": "a@acme.vn",
   "phone": "0987654321",
   "password": "SuperSecret123!",
-  "confirm_password": "SuperSecret123!"
+  "confirm_password": "SuperSecret123!",
+  "agree": true,
+  "agree_at": "2026-06-19T12:00:00.000Z",
+  "verified_token": "vt_..."
 }
 ```
 
-**Success Response (201)**:
+Response:
+
 ```json
 {
   "data": {
     "user_id": "uuid-here",
     "customer_id": 123,
-    "status": "inactive"
+    "status": "active"
   }
 }
 ```
 
-**Common Error Responses**:
-- `409 Conflict` — Email already exists as user or customer
-- `422 Unprocessable Entity` — Missing field, password mismatch, or validation error
-- `500` — Internal error (rare)
+Key behavior:
 
-**Curl Example**:
-```bash
-curl -X POST http://localhost:8055/customer-onboarding/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "company_name": "Test Company",
-    "contact_name": "Test User",
-    "email": "tester@example.com",
-    "phone": "0912345678",
-    "password": "TestPass123!",
-    "confirm_password": "TestPass123!"
-  }'
-```
+- Creates an active `directus_users` row with the Customer role.
+- Creates an active `customers` row linked to that user.
+- Stores consent in `customers.consented_at`.
+- Rejects registration if the OTP token is missing or expired.
+- Sends a welcome email after creation.
 
-**Tester Notes**:
-- After success, the user can log in immediately (status=active on user).
-- The customer row starts as `inactive` — Sales must activate it.
-- Test duplicate email, password mismatch, missing fields.
-- Check that a welcome email is sent (Mailpit at http://localhost:8025).
+Common errors:
 
-### 2. Commercial Data Import
+- `409` if the email already exists for a user or customer.
+- `422` for missing fields, consent issues, or password mismatch.
+- `401` if email verification is missing or expired.
 
-**Endpoints**:
-- `POST /commercial-import/preview`
-- `POST /commercial-import/commit`
+## Password Reset and Password Change
 
-**Purpose**: Bulk import via CSV for commerce data (customers, orders, invoices, deliveries). Preview mode is safe.
+### `POST /password-reset-request/send`
 
-**Auth**: Must be logged in as **Administrator** or **Sales** role. Returns 403 otherwise.
+Sends a password-reset email. Returns success even if the email does not exist.
 
-**Request Body** (both endpoints use the same shape):
+Request:
+
 ```json
 {
-  "collection": "customers",           // or "orders", "invoices", "deliveries"
-  "csvText": "header1,header2\nvalue1,value2\n...",
-  "allowPartial": false                // optional, default false
+  "email": "tester@example.com",
+  "purpose": "forgot"
 }
 ```
 
-**Preview Response** (example):
+Purpose values:
+- `forgot`
+- `change`
+
+Response:
+
+```json
+{ "data": { "sent": true } }
+```
+
+### `POST /password-reset-request/reset`
+
+Uses the reset token from the email link.
+
+Request:
+
+```json
+{
+  "token": "reset-token-from-email",
+  "password": "NewSecurePass123!",
+  "confirm_password": "NewSecurePass123!"
+}
+```
+
+Response:
+
+```json
+{ "data": { "ok": true } }
+```
+
+### `POST /password-change/change`
+
+Changes the password after the user has completed email verification.
+
+Request:
+
+```json
+{
+  "email": "tester@example.com",
+  "verified_token": "vt_...",
+  "new_password": "NewSecurePass123!",
+  "confirm_password": "NewSecurePass123!"
+}
+```
+
+Response:
+
+```json
+{ "data": { "ok": true } }
+```
+
+Notes:
+
+- This endpoint uses the OTP `change` purpose.
+- It does not use `current_password`.
+- It clears active sessions after a successful change.
+
+## Commercial Import
+
+### `POST /commercial-import/preview`
+### `POST /commercial-import/commit`
+
+Allowed roles:
+- `Admin`
+- `Sales`
+
+Request:
+
+```json
+{
+  "collection": "customers",
+  "csvText": "erp_ref,company_name,email\nERP-001,ACME,a@acme.vn",
+  "allowPartial": false
+}
+```
+
+Supported collections:
+- `customers`
+- `orders`
+- `invoices`
+- `deliveries`
+
+Preview response shape:
+
 ```json
 {
   "data": {
-    "parsed": 5,
-    "valid": 4,
-    "errors": [...],
-    "previewRows": [...]
-  }
-}
-```
-
-**Commit Response** (example):
-```json
-{
-  "data": {
-    "created": 3,
-    "updated": 1,
-    "skipped": 0,
-    "errors": []
-  }
-}
-```
-
-**Curl Example (Preview)**:
-```bash
-curl -X POST http://localhost:8055/commercial-import/preview \
-  -H "Authorization: Bearer YOUR_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
     "collection": "customers",
-    "csvText": "erp_ref,company_name,email\nERP-001,ACME,a@acme.vn",
-    "allowPartial": false
-  }'
+    "mode": "preview",
+    "allowPartial": false,
+    "counts": {
+      "created": 1,
+      "updated": 0,
+      "skipped": 0,
+      "failed": 0
+    },
+    "rows": [
+      {
+        "row": 2,
+        "key": "ERP-001",
+        "action": "created",
+        "errors": [],
+        "nested": { "order_items": [] }
+      }
+    ],
+    "errorRows": []
+  }
+}
 ```
 
-**Tester Notes**:
-- Use `preview` first — it never writes data.
-- Test with invalid CSV, duplicate keys, missing required columns.
-- `allowPartial: true` allows partial success (some rows fail).
-- Look at `verify_commercial_data_import.mjs` for more test scenarios.
-- The import service normalizes keys (lower + trim for matching).
+Commit response uses the same shape, plus `committed: true` when at least one row is written, and `aborted: true` when a non-partial commit fails validation.
 
-### 3. Media Policy (Retention & Governance)
+Important behavior:
 
-**Endpoints**:
-- `POST /media-policy/soft-delete`
-- `POST /media-policy/hard-delete`
+- Matching prefers `erp_ref`.
+- For customers, matching falls back to `tax_code`, then `email`.
+- Orders can import nested `order_items_json`.
+- `allowPartial: true` lets valid rows continue even if some rows fail.
 
-**Purpose**: Controlled deletion of uploaded files with audit + retention (soft delete queues for automatic purge after 7 days).
+## Media Policy
 
-**Auth**:
-- soft-delete: Administrator, Editor, or Sales
-- hard-delete: Administrator only + confirmation
+### `POST /media-policy/soft-delete`
 
-**soft-delete Request**:
+Allowed roles:
+- `Admin`
+- `Editor`
+- `Sales`
+
+Request:
+
 ```json
 {
   "fileId": "uuid-of-the-file",
-  "reason": "Obsolete marketing asset",
+  "reason": "Obsolete asset",
   "source": "manual-test"
 }
 ```
 
-**hard-delete Request** (requires confirmation):
+`id` is also accepted as an alias for `fileId`.
+
+Response:
+
+```json
+{
+  "data": {
+    "fileId": "uuid-of-the-file",
+    "module": "pages",
+    "purgeAfter": "2026-06-26T12:00:00.000Z"
+  }
+}
+```
+
+### `POST /media-policy/hard-delete`
+
+Allowed roles:
+- `Admin` only
+
+Request:
+
 ```json
 {
   "fileId": "uuid-of-the-file",
   "reason": "Security incident",
   "confirmHardDelete": true,
-  "confirmFileId": "uuid-of-the-file"
+  "confirmFileId": "uuid-of-the-file",
+  "source": "manual-test"
 }
 ```
 
-**Responses**: `{ "data": { ...result... } }` or error object.
+Response:
 
-**Curl Example (soft-delete)**:
-```bash
-curl -X POST http://localhost:8055/media-policy/soft-delete \
-  -H "Authorization: Bearer YOUR_ADMIN_TOKEN" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "fileId": "123e4567-e89b-12d3-a456-426614174000",
-    "reason": "Test soft delete"
-  }'
+```json
+{
+  "data": {
+    "fileId": "uuid-of-the-file",
+    "module": "pages",
+    "purgedAt": "2026-06-19T12:00:00.000Z"
+  }
+}
 ```
 
-**Tester Notes**:
-- Always test soft-delete first.
-- Hard-delete requires exact `confirmHardDelete: true` and matching `confirmFileId` — otherwise 400.
-- After soft-delete, check `media_retention` collection and `media_audit_events`.
-- Run `npm run media:cleanup` (in directus folder) to simulate the daily purge job.
-- Upload a file first via the Directus Admin UI (or API) so you have a `fileId`.
-- Test permission boundaries (Sales can soft-delete, but not hard-delete).
+Notes:
 
-## Standard Directus Collection APIs (Quick Reference for Testers)
+- Soft delete moves the file into the `trash` folder and creates a retention row.
+- Hard delete removes the file permanently and writes audit records.
+- `confirmHardDelete` and `confirmFileId` must both be present and correct.
 
-Base: `http://localhost:8055`
+## Core Directus APIs
 
-### Authentication
-- Login: `POST /auth/login` (email + password) → returns access token + refresh token
-- Use `Authorization: Bearer <access_token>` on subsequent requests
+Examples:
 
-### Common Patterns
-- Read published content:  
-  `GET /items/products?filter[status][_eq]=published&fields=id,name,slug,hero&limit=20`
-
-- Deep relations + translations:  
-  `GET /items/products?deep[translations][_filter][languages_code][_eq]=en&fields=*,translations.*`
-
-- Create (requires proper role):  
-  `POST /items/customers` with JSON body
-
-- Update / Delete also supported per RBAC rules defined in bootstrap.
-
-**Important**: Customer role has row-level security. A Customer can only see their own orders, invoices, etc.
-
-Use the `/docs` Swagger UI — it shows exactly what your current role can access.
+- `GET /items/products?filter[status][_eq]=published`
+- `GET /items/products?deep[translations][_filter][languages_code][_eq]=en&fields=*,translations.*`
+- `POST /items/customers`
+- `PATCH /items/customers/{id}`
+- `DELETE /items/customers/{id}`
 
 ## Recommended Tester Workflow
 
-1. Start everything: `docker compose up -d`
-2. Open Directus Admin → login as Admin
-3. Open http://localhost:8055/docs → Authorize with the token
-4. Test custom endpoints using "Try it out" (especially register and commercial import)
-5. For repeatable tests: export `openapi.json` and import into Postman
-6. Run verification scripts when needed:
+1. Start the stack with `docker compose up -d`.
+2. Log into Directus Admin and get a bearer token.
+3. Open `http://localhost:8055/docs`.
+4. Test onboarding first, then import, media policy, and password flows.
+5. Use the Directus Admin UI to verify side effects.
+6. Run the matching verification scripts when needed:
    - `cd directus && npm run verify:onboarding`
    - `npm run verify:commercial-import`
    - `npm run media:verify`
-7. Check Mailpit (http://localhost:8025) for emails
-8. Check database directly (Postgres) or via Directus Admin for side effects (customers, media_retention, integration_events, etc.)
+   - `npm run verify:reset-password`
+   - `npm run verify:change-password`
 
-## Additional Resources
+## Source Files
 
-- Live interactive docs: `/docs`
-- Raw OpenAPI (always includes customs): `/docs/openapi.json`
-- Project overview of Directus setup: `directus/overview.md`
-- Detailed schema & RBAC: `directus/SCHEMA.md`
-- Existing test cases: `docs/testing/`
-- Verify scripts (executable contracts): `directus/verify_*.mjs`
+- [directus/docs/overview.md](./overview.md)
+- [directus/docs/SCHEMA.md](./SCHEMA.md)
+- [directus/extensions/docs-endpoint/openapi_custom_endpoints.json](../extensions/docs-endpoint/openapi_custom_endpoints.json)
+- [directus/testing/verify_onboarding.mjs](../testing/verify_onboarding.mjs)
+- [directus/testing/verify_commercial_data_import.mjs](../testing/verify_commercial_data_import.mjs)
+- [directus/testing/verify_media_policy.mjs](../testing/verify_media_policy.mjs)
 
----
-
-**Goal of this guide**: Every custom API should be testable by a tester with copy-paste examples and clear expectations, without needing to read source code.
-
-If an endpoint behavior changes, update both this guide and the OpenAPI definitions in `directus/extensions/docs-endpoint/`.

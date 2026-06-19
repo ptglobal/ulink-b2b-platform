@@ -1,0 +1,13 @@
+{
+  "name": "ulink-hub-code-sync-hook",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "directus:extension": {
+    "type": "hook",
+    "path": "dist/index.js",
+    "source": "src/index.js",
+    "host": "^11.0.0"
+  },
+  "description": "Syncs regional hub codes from province abbreviations and validates hub address payloads."
+}

@@ -210,6 +210,23 @@ export function buildPermissionDefs() {
     });
   }
 
+  for (const collection of ['vn_provinces', 'vn_districts']) {
+    permissions.push({
+      policy: EDITOR_POLICY_ID,
+      collection,
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+    permissions.push({
+      policy: SALES_POLICY_ID,
+      collection,
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+  }
+
   permissions.push({
     policy: EDITOR_POLICY_ID,
     collection: 'directus_folders',

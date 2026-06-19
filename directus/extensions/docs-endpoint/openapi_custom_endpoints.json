@@ -1,10 +1,101 @@
 {
   "paths": {
+    "/otp/issue": {
+      "post": {
+        "tags": ["OTP"],
+        "summary": "Issue an OTP code",
+        "description": "Public endpoint used before registration or email-based password change verification.",
+        "operationId": "otpIssue",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "purpose"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "a@acme.vn" },
+                  "purpose": { "type": "string", "enum": ["register", "login-2fa"] }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP sent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "sent": { "type": "boolean" },
+                        "expires_in_seconds": { "type": "integer" },
+                        "debug_code": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/otp/verify": {
+      "post": {
+        "tags": ["OTP"],
+        "summary": "Verify an OTP code",
+        "operationId": "otpVerify",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "purpose", "code"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "a@acme.vn" },
+                  "purpose": { "type": "string", "enum": ["register", "login-2fa"] },
+                  "code": { "type": "string", "example": "123456" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OTP verified",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "verified": { "type": "boolean" },
+                        "verified_token": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/customer-onboarding/register": {
       "post": {
         "tags": ["Customer Onboarding"],
         "summary": "Register a new customer account",
-        "description": "Public endpoint — no auth required.",
+        "description": "Public endpoint. Requires OTP verification and consent fields.",
         "operationId": "customerOnboardingRegister",
         "security": [],
         "requestBody": {
@@ -13,14 +104,17 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "required": ["company_name", "contact_name", "email", "phone", "password", "confirm_password"],
+                "required": ["company_name", "contact_name", "email", "phone", "password", "confirm_password", "agree", "agree_at", "verified_token"],
                 "properties": {
                   "company_name": { "type": "string", "example": "ACME Corp" },
                   "contact_name": { "type": "string", "example": "Nguyen Van A" },
                   "email": { "type": "string", "format": "email", "example": "a@acme.vn" },
                   "phone": { "type": "string", "example": "0987654321" },
                   "password": { "type": "string", "format": "password", "example": "SecurePass123!" },
-                  "confirm_password": { "type": "string", "format": "password", "example": "SecurePass123!" }
+                  "confirm_password": { "type": "string", "format": "password", "example": "SecurePass123!" },
+                  "agree": { "type": "boolean", "example": true },
+                  "agree_at": { "type": "string", "format": "date-time", "example": "2026-06-19T12:00:00.000Z" },
+                  "verified_token": { "type": "string", "example": "vt_..." }
                 }
               }
             }
@@ -28,7 +122,7 @@
         },
         "responses": {
           "201": {
-            "description": "Account created (user active, customer active)",
+            "description": "Account created",
             "content": {
               "application/json": {
                 "schema": {
@@ -47,50 +141,142 @@
               }
             }
           },
+          "401": { "description": "OTP verification missing or expired" },
           "409": { "description": "User or customer with this email already exists" },
-          "422": { "description": "Validation error (missing fields, password mismatch)" }
+          "422": { "description": "Validation error" }
         }
       }
     },
-    "/auth/login/google": {
-      "get": {
-        "tags": ["Google OAuth"],
-        "summary": "Initiate Google OAuth 2.0 login",
-        "description": "Redirects to Google consent screen. On success: if email exists in directus_users, logs in and returns token via callback. If email does not exist and ALLOW_PUBLIC_REGISTRATION=false, returns error — frontend should redirect to registration page.",
-        "operationId": "googleOAuthLogin",
+    "/password-reset-request/send": {
+      "post": {
+        "tags": ["Password Reset"],
+        "summary": "Send a password reset email",
+        "description": "Public endpoint. Always returns success to avoid email enumeration.",
+        "operationId": "passwordResetSend",
         "security": [],
-        "parameters": [
-          {
-            "name": "redirect",
-            "in": "query",
-            "required": true,
-            "schema": { "type": "string", "format": "uri", "example": "http://localhost:3000/auth/callback" },
-            "description": "Frontend callback URL that receives the access/refresh tokens"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "a@acme.vn" },
+                  "purpose": { "type": "string", "enum": ["forgot", "change"], "example": "forgot" }
+                }
+              }
+            }
           }
-        ],
+        },
         "responses": {
-          "302": { "description": "Redirect to Google consent screen" },
-          "403": { "description": "Email not found and public registration disabled — redirect user to signup" }
+          "200": {
+            "description": "Reset email queued",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "sent": { "type": "boolean" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
-    "/auth/login/google/callback": {
-      "get": {
-        "tags": ["Google OAuth"],
-        "summary": "Google OAuth callback (handled by Directus)",
-        "description": "Directus handles this internally. On success, redirects to the frontend redirect URL with access_token and refresh_token as query params.",
-        "operationId": "googleOAuthCallback",
+    "/password-reset-request/reset": {
+      "post": {
+        "tags": ["Password Reset"],
+        "summary": "Reset a password using a token",
+        "operationId": "passwordResetReset",
         "security": [],
-        "parameters": [
-          {
-            "name": "code",
-            "in": "query",
-            "schema": { "type": "string" },
-            "description": "Authorization code from Google (handled automatically)"
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["token", "password", "confirm_password"],
+                "properties": {
+                  "token": { "type": "string", "example": "reset-token-from-email" },
+                  "password": { "type": "string", "format": "password" },
+                  "confirm_password": { "type": "string", "format": "password" }
+                }
+              }
+            }
           }
-        ],
+        },
         "responses": {
-          "302": { "description": "Redirect to frontend with access_token & refresh_token" }
+          "200": {
+            "description": "Password reset",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ok": { "type": "boolean" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/password-change/change": {
+      "post": {
+        "tags": ["Authentication"],
+        "summary": "Change password after OTP verification",
+        "operationId": "changePassword",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "verified_token", "new_password", "confirm_password"],
+                "properties": {
+                  "email": { "type": "string", "format": "email", "example": "a@acme.vn" },
+                  "verified_token": { "type": "string", "example": "vt_..." },
+                  "new_password": { "type": "string", "format": "password" },
+                  "confirm_password": { "type": "string", "format": "password" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Password updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "ok": { "type": "boolean" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
         }
       }
     },
@@ -108,8 +294,9 @@
                 "type": "object",
                 "required": ["collection", "csvText"],
                 "properties": {
-                  "collection": { "type": "string", "example": "products" },
-                  "csvText": { "type": "string", "example": "name,slug\nTest,test-slug" }
+                  "collection": { "type": "string", "example": "customers" },
+                  "csvText": { "type": "string", "example": "erp_ref,company_name,email\nERP-001,ACME,a@acme.vn" },
+                  "allowPartial": { "type": "boolean", "default": false }
                 }
               }
             }
@@ -126,8 +313,20 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "valid": { "type": "integer" },
-                        "invalid": { "type": "integer" }
+                        "collection": { "type": "string" },
+                        "mode": { "type": "string", "example": "preview" },
+                        "allowPartial": { "type": "boolean" },
+                        "counts": {
+                          "type": "object",
+                          "properties": {
+                            "created": { "type": "integer" },
+                            "updated": { "type": "integer" },
+                            "skipped": { "type": "integer" },
+                            "failed": { "type": "integer" }
+                          }
+                        },
+                        "rows": { "type": "array" },
+                        "errorRows": { "type": "array" }
                       }
                     }
                   }
@@ -152,8 +351,9 @@
                 "type": "object",
                 "required": ["collection", "csvText"],
                 "properties": {
-                  "collection": { "type": "string", "example": "products" },
-                  "csvText": { "type": "string", "example": "name,slug\nTest,test-slug" }
+                  "collection": { "type": "string", "example": "customers" },
+                  "csvText": { "type": "string", "example": "erp_ref,company_name,email\nERP-001,ACME,a@acme.vn" },
+                  "allowPartial": { "type": "boolean", "default": false }
                 }
               }
             }
@@ -170,8 +370,22 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "inserted": { "type": "integer" },
-                        "updated": { "type": "integer" }
+                        "collection": { "type": "string" },
+                        "mode": { "type": "string", "example": "commit" },
+                        "allowPartial": { "type": "boolean" },
+                        "counts": {
+                          "type": "object",
+                          "properties": {
+                            "created": { "type": "integer" },
+                            "updated": { "type": "integer" },
+                            "skipped": { "type": "integer" },
+                            "failed": { "type": "integer" }
+                          }
+                        },
+                        "rows": { "type": "array" },
+                        "errorRows": { "type": "array" },
+                        "committed": { "type": "boolean" },
+                        "aborted": { "type": "boolean" }
                       }
                     }
                   }
@@ -197,7 +411,9 @@
                 "required": ["fileId"],
                 "properties": {
                   "fileId": { "type": "string", "format": "uuid" },
-                  "reason": { "type": "string", "example": "No longer needed" }
+                  "id": { "type": "string", "format": "uuid" },
+                  "reason": { "type": "string", "example": "No longer needed" },
+                  "source": { "type": "string", "example": "manual-test" }
                 }
               }
             }
@@ -205,62 +421,6 @@
         },
         "responses": {
           "200": { "description": "File soft-deleted" }
-        }
-      }
-    },
-     "/auth/password/request": {
-      "post": {
-        "tags": ["Sales Onboarding"],
-        "summary": "Send password reset email (Sales flow step 2)",
-        "description": "After creating the user with a temporary password, Sales calls this to send the customer a password-reset link. The customer clicks the link and sets their own password. Always returns 204 regardless of whether the email exists (security by design).",
-        "operationId": "salesPasswordResetRequest",
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["email"],
-                "properties": {
-                  "email": { "type": "string", "format": "email", "example": "b@acme.vn" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": { "description": "Password reset email sent (always 204, even if email not found)" }
-        }
-      }
-    },
-    "/password-change/change": {
-      "post": {
-        "tags": ["Authentication"],
-        "summary": "Change User Password",
-        "description": "Change user's password. Requires current password verification and validates the new password format.",
-        "operationId": "changePassword",
-        "security": [{ "BearerAuth": [] }],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": ["current_password", "new_password", "confirm_password"],
-                "properties": {
-                  "current_password": { "type": "string", "format": "password", "example": "OldSecurePass123!" },
-                  "new_password": { "type": "string", "format": "password", "example": "NewSecurePass123!" },
-                  "confirm_password": { "type": "string", "format": "password", "example": "NewSecurePass123!" }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "204": { "description": "Password successfully updated" },
-          "401": { "description": "Unauthorized or invalid current password" },
-          "422": { "description": "Validation error (missing fields, passwords mismatch, or weak new password)" }
         }
       }
     },
@@ -281,7 +441,9 @@
                 "properties": {
                   "fileId": { "type": "string", "format": "uuid" },
                   "confirmHardDelete": { "type": "boolean" },
-                  "confirmFileId": { "type": "string", "format": "uuid" }
+                  "confirmFileId": { "type": "string", "format": "uuid" },
+                  "reason": { "type": "string", "example": "Security incident" },
+                  "source": { "type": "string", "example": "manual-test" }
                 }
               }
             }

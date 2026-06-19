@@ -1,0 +1,7 @@
+[
+  { "code": "vn-ha-nam", "abbr": "HNA", "name": "Hà Nam" },
+  { "code": "vn-ha-noi", "abbr": "HAN", "name": "Hà Nội" },
+  { "code": "vn-binh-duong", "abbr": "BDU", "name": "Bình Dương" },
+  { "code": "vn-hai-phong", "abbr": "HPH", "name": "Hải Phòng" },
+  { "code": "vn-dong-nai", "abbr": "DNA", "name": "Đồng Nai" }
+]

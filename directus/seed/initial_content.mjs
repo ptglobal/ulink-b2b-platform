@@ -1,7 +1,34 @@
+import { readItems, updateItem } from '@directus/sdk';
 import { DEFAULT_LOCALE } from '../lib/i18n.mjs';
 import { translations } from './translation_data.mjs';
 
-export async function seedInitialContent(helpers) {
+function getGeoEntry(map, key, label) {
+  const entry = map?.get(key);
+  if (!entry) {
+    throw new Error(`Missing ${label} seed for ${key}.`);
+  }
+  return entry;
+}
+
+async function upsertRegionalHub(client, helpers, slug, data) {
+  const existing = await client.request(
+    readItems('regional_hubs', {
+      filter: { slug: { _eq: slug } },
+      fields: ['id'],
+      limit: 1
+    })
+  );
+
+  const payload = { slug, ...data };
+  if (existing.length > 0) {
+    await client.request(updateItem('regional_hubs', existing[0].id, payload));
+    return existing[0].id;
+  }
+
+  return helpers.ensureItem('regional_hubs', 'slug', payload);
+}
+
+export async function seedInitialContent(helpers, client, geography) {
   async function seedTranslations(collection, sourceId, key) {
     const data = translations[collection]?.[key];
     if (!data) return;
@@ -136,28 +163,26 @@ export async function seedInitialContent(helpers) {
     status: 'published'
   });
 
-  const hubId = await helpers.ensureItem('regional_hubs', 'slug', {
+  const haNamProvince = getGeoEntry(geography?.provincesByAbbr, 'HNA', 'province');
+  const kimBangDistrict = getGeoEntry(geography?.districtsByCode, 'vn-ha-nam-kim-bang', 'district');
+  const dongVan4Id = await upsertRegionalHub(client, helpers, 'dong-van-4', {
     name: 'Đông Vân 4',
-    slug: 'dong-van-4',
-    delivery_sla: 'Giao trong 24 giờ đến cụm Hà Nam và Hà Nội; 48 giờ cho khu vực lân cận.',
-    warehouse_capacity: '5.000 m² kho kiểm soát nhiệt độ',
-    technical_team: 'Kỹ sư kỹ thuật tại chỗ 24/7 hỗ trợ tư vấn phòng sạch.',
-    cluster_overview: 'Phục vụ cụm công nghiệp Đông Vân chuyên điện tử và cơ khí chính xác.',
-    location: 'KCN Đông Vân IV, Kim Bảng, Hà Nam',
-    coordinates: '20.6139,105.9084',
+    province: haNamProvince.id,
+    district: kimBangDistrict.id,
+    detail_address: 'KCN Đông Vân IV, Kim Bảng, Hà Nam',
+    operating_status: 'active',
     status: 'published'
   });
-  await seedTranslations('regional_hubs', hubId, 'dong_van_4');
+  await seedTranslations('regional_hubs', dongVan4Id, 'dong_van_4');
 
-  const bacThangLongId = await helpers.ensureItem('regional_hubs', 'slug', {
+  const haNoiProvince = getGeoEntry(geography?.provincesByAbbr, 'HAN', 'province');
+  const dongAnhDistrict = getGeoEntry(geography?.districtsByCode, 'vn-ha-noi-dong-anh', 'district');
+  const bacThangLongId = await upsertRegionalHub(client, helpers, 'bac-thang-long', {
     name: 'Bắc Thăng Long',
-    slug: 'bac-thang-long',
-    delivery_sla: 'Giao trong 12 giờ trong nội thành.',
-    warehouse_capacity: '3.000 m²',
-    technical_team: 'Đội ngũ kỹ sư tư vấn tối ưu bao bì.',
-    cluster_overview: 'Hỗ trợ trung tâm xuất khẩu điện tử công nghệ cao tại Hà Nội.',
-    location: 'Đông Anh, Hà Nội',
-    coordinates: '21.1235,105.7891',
+    province: haNoiProvince.id,
+    district: dongAnhDistrict.id,
+    detail_address: 'Đông Anh, Hà Nội',
+    operating_status: 'active',
     status: 'published'
   });
   await seedTranslations('regional_hubs', bacThangLongId, 'bac_thang_long');

@@ -1,4 +1,5 @@
 import { ID_FIELD, STATUS_FIELD } from '../lib/constants.mjs';
+import { HUB_OPERATING_STATUSES } from '../lib/hub-domain.mjs';
 import { LANGUAGE_COLLECTION_DEF, TRANSLATION_COLLECTION_DEFS, createTranslationAliasField } from '../lib/i18n.mjs';
 
 export const COLLECTION_DEFS = [
@@ -111,6 +112,28 @@ export const COLLECTION_DEFS = [
     ]
   },
   {
+    collection: 'vn_provinces',
+    meta: { icon: 'map', note: 'Vietnam Provinces', hidden: true },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'code', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
+      { field: 'abbr', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
+      { field: 'name', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } }
+    ]
+  },
+  {
+    collection: 'vn_districts',
+    meta: { icon: 'map', note: 'Vietnam Districts', hidden: true },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'province', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
+      { field: 'code', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
+      { field: 'name', type: 'string', meta: { interface: 'input', required: true } }
+    ]
+  },
+  {
     collection: 'regional_hubs',
     meta: { icon: 'place', note: 'Regional Hubs' },
     schema: {},
@@ -118,14 +141,23 @@ export const COLLECTION_DEFS = [
       ID_FIELD,
       STATUS_FIELD,
       createTranslationAliasField(),
+      { field: 'hub_code', type: 'string', meta: { interface: 'input', readonly: true }, schema: { is_unique: true } },
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
-      { field: 'delivery_sla', type: 'text', meta: { interface: 'textarea' } },
-      { field: 'warehouse_capacity', type: 'string', meta: { interface: 'input' } },
-      { field: 'technical_team', type: 'text', meta: { interface: 'textarea' } },
-      { field: 'cluster_overview', type: 'text', meta: { interface: 'textarea' } },
-      { field: 'location', type: 'string', meta: { interface: 'input' } },
-      { field: 'coordinates', type: 'string', meta: { interface: 'input' } }
+      { field: 'province', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
+      { field: 'district', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
+      { field: 'detail_address', type: 'text', meta: { interface: 'textarea', required: true } },
+      {
+        field: 'operating_status',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          required: true,
+          options: {
+            choices: HUB_OPERATING_STATUSES
+          }
+        }
+      }
     ]
   },
   {

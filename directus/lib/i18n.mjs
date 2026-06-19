@@ -61,12 +61,7 @@ export const TRANSLATION_FIELDS = {
     { field: 'description', type: 'text', meta: { interface: 'textarea' } }
   ],
   regional_hubs: [
-    { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
-    { field: 'delivery_sla', type: 'text', meta: { interface: 'textarea' } },
-    { field: 'warehouse_capacity', type: 'string', meta: { interface: 'input' } },
-    { field: 'technical_team', type: 'text', meta: { interface: 'textarea' } },
-    { field: 'cluster_overview', type: 'text', meta: { interface: 'textarea' } },
-    { field: 'location', type: 'string', meta: { interface: 'input' } }
+    { field: 'name', type: 'string', meta: { interface: 'input', required: true } }
   ],
   blog_posts: [
     { field: 'title', type: 'string', meta: { interface: 'input', required: true } },
@@ -215,4 +210,3 @@ export function createTranslationAliasField() {
     ...LIST_O2M_FIELD
   };
 }
-

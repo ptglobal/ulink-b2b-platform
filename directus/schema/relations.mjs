@@ -11,6 +11,8 @@ export const RELATION_DEFS = [
   { collection: 'customers', field: 'sales_owner', related_collection: 'directus_users' },
   { collection: 'orders', field: 'customer', related_collection: 'customers', meta: { one_field: 'orders' } },
   { collection: 'orders', field: 'hub', related_collection: 'regional_hubs' },
+  { collection: 'regional_hubs', field: 'province', related_collection: 'vn_provinces' },
+  { collection: 'regional_hubs', field: 'district', related_collection: 'vn_districts' },
   { collection: 'order_items', field: 'order', related_collection: 'orders', meta: { one_field: 'items' } },
   { collection: 'order_items', field: 'sku', related_collection: 'product_skus' },
   { collection: 'invoices', field: 'customer', related_collection: 'customers', meta: { one_field: 'invoices' } },

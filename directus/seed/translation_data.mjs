@@ -118,54 +118,24 @@ export const translations = {
   regional_hubs: {
     dong_van_4: {
       vi: {
-        name: 'Đông Vân 4',
-        delivery_sla: 'Giao trong 24 giờ đến cụm Hà Nam và Hà Nội; 48 giờ cho khu vực lân cận.',
-        warehouse_capacity: '5.000 m² kho kiểm soát nhiệt độ',
-        technical_team: 'Kỹ sư kỹ thuật tại chỗ 24/7 hỗ trợ tư vấn phòng sạch.',
-        cluster_overview: 'Phục vụ cụm công nghiệp Đông Vân chuyên điện tử và cơ khí chính xác.',
-        location: 'KCN Đông Vân IV, Kim Bảng, Hà Nam'
+        name: 'Đông Vân 4'
       },
       en: {
-        name: 'Dong Van 4',
-        delivery_sla: 'Delivered within 24 hours to Ha Nam and Hanoi clusters; 48 hours for neighboring areas.',
-        warehouse_capacity: '5,000 m² temperature-controlled warehouse',
-        technical_team: '24/7 on-site technical engineers for cleanroom consultation.',
-        cluster_overview: 'Serving Dong Van industrial cluster specializing in electronics and precision engineering.',
-        location: 'Dong Van IV Industrial Park, Kim Bang, Ha Nam'
+        name: 'Dong Van 4'
       },
       ja: {
-        name: 'ドンヴァン 4',
-        delivery_sla: 'ハナムおよびハノイ地区へは24時間以内、近隣エリアへは48時間以内にお届け。',
-        warehouse_capacity: '5,000 m²の温度管理倉庫',
-        technical_team: 'クリーンルームコンサルティングのための24時間365日常駐の技術エンジニア。',
-        cluster_overview: 'エレクトロニクスおよび精密機械専門のドンヴァン工業団地をカバー。',
-        location: 'ハナム省キムバン、ドンヴァンIV工業団地'
+        name: 'ドンヴァン 4'
       }
     },
     bac_thang_long: {
       vi: {
-        name: 'Bắc Thăng Long',
-        delivery_sla: 'Giao trong 12 giờ trong nội thành.',
-        warehouse_capacity: '3.000 m²',
-        technical_team: 'Đội ngũ kỹ sư tư vấn tối ưu bao bì.',
-        cluster_overview: 'Hỗ trợ trung tâm xuất khẩu điện tử công nghệ cao tại Hà Nội.',
-        location: 'Đông Anh, Hà Nội'
+        name: 'Bắc Thăng Long'
       },
       en: {
-        name: 'Bac Thang Long',
-        delivery_sla: 'Delivered within 12 hours inside city limits.',
-        warehouse_capacity: '3,000 m²',
-        technical_team: 'Technical engineering team for packaging optimization.',
-        cluster_overview: 'Supporting the high-tech electronics export hub in Hanoi.',
-        location: 'Dong Anh, Hanoi'
+        name: 'Bac Thang Long'
       },
       ja: {
-        name: 'バクタンロン',
-        delivery_sla: '市内は12時間以内に配送。',
-        warehouse_capacity: '3,000 m²',
-        technical_team: '包装最適化のための専門エンジニアリングチーム。',
-        cluster_overview: 'ハノイのハイテクエレクトロニクス輸出拠点をサポート。',
-        location: 'ハノイ、ドンアン'
+        name: 'バクタンロン'
       }
     }
   },

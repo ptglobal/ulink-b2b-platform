@@ -57,7 +57,7 @@ SEO defaults live in singleton `site_settings`. Current bootstrap only adds
 
 | Collection | Current bootstrap fields | Purpose |
 |---|---|---|
-| `customers` | `status`, `user`, `erp_ref`, `company_name`, `tax_code`, `contact_name`, `email`, `phone`, `address`, `sales_owner` | Auth mapping and account scoping |
+| `customers` | `status`, `user`, `erp_ref`, `company_name`, `tax_code`, `contact_name`, `email`, `phone`, `address`, `sales_owner`, `consented_at` | Auth mapping, account scoping, and registration consent timestamp |
 | `orders` | `status`, `code`, `customer`, `order_date`, `hub`, `subtotal`, `tax`, `total`, `notes`, `erp_ref` | Order history |
 | `order_items` | `order`, `sku`, `description`, `qty`, `unit_price`, `line_total` | Order lines |
 | `invoices` | `code`, `customer`, `order`, `issue_date`, `due_date`, `amount`, `paid_amount`, `balance`, `paid_status`, `erp_ref` | Accounts receivable / debt |
@@ -111,7 +111,11 @@ RFQ cart or order flow.
 Visitor/public users may read published content directly from Directus. RFQ submission for visitors and customers goes through `POST /api/rfq`; Directus visitor/customer roles do not create `rfq_requests` directly. Exact duplicate RFQ payloads reuse the first `rfq_requests` id instead of inserting a second row.
 
 Customer onboarding contract:
-- Self-register creates `directus_users` active and `customers` inactive.
+- Self-register creates `directus_users` active and `customers` active.
+- The onboarding request now requires terms consent (`agree`, `agree_at`) and
+  an OTP-backed `verified_token` for the same email.
+- The `customers.consented_at` field stores the consent timestamp from the
+  registration request.
 - Sales invite links an existing or pre-created customer row and activates it.
 - Customers can edit `contact_name`, `phone`, and `address` only.
 - `erp_ref`, `company_name`, `tax_code`, and `sales_owner` are Sales/Admin-managed after approval.

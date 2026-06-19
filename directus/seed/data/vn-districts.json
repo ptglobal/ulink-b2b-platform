@@ -1,0 +1,7 @@
+[
+  { "code": "vn-ha-nam-kim-bang", "province_abbr": "HNA", "name": "Kim Bảng" },
+  { "code": "vn-ha-noi-dong-anh", "province_abbr": "HAN", "name": "Đông Anh" },
+  { "code": "vn-binh-duong-tan-uyen", "province_abbr": "BDU", "name": "Tân Uyên" },
+  { "code": "vn-hai-phong-thuy-nguyen", "province_abbr": "HPH", "name": "Thủy Nguyên" },
+  { "code": "vn-dong-nai-long-thanh", "province_abbr": "DNA", "name": "Long Thành" }
+]
