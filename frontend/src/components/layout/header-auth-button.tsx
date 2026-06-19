@@ -36,11 +36,11 @@ export function HeaderAuthButton() {
         {/* Dropdown */}
         <div className="invisible absolute right-0 top-full z-50 mt-1 min-w-[160px] rounded-lg border border-border bg-card py-1 shadow-lg opacity-0 transition-all group-hover:visible group-hover:opacity-100">
           <Link
-            href="/account"
+            href="/settings"
             className="flex items-center gap-2 px-4 py-2 text-sm text-foreground transition-colors hover:bg-muted"
           >
             <UserRound className="h-4 w-4" aria-hidden="true" />
-            {t('account')}
+            {t('settings')}
           </Link>
           <button
             type="button"

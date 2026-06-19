@@ -23,7 +23,12 @@ export const registerSchema = z
     company_name: z.string().min(1, 'required').max(200),
     contact_name: z.string().min(1, 'required').max(200),
     email: z.string().min(1, 'required').email('invalid_email'),
-    phone: z.string().min(1, 'required').max(40),
+    // Digits-only phone number, 6–40 chars. Mirrors the rule in
+    // src/components/auth/register-form.tsx (PHONE_RE) — keep in sync.
+    phone: z
+      .string()
+      .min(1, 'required')
+      .regex(/^\d{6,40}$/, 'invalid_phone'),
     password: z
       .string()
       .min(8, 'too_short')
@@ -33,8 +38,7 @@ export const registerSchema = z
     // timestamp travels with the registration so the backend can stamp a
     // consent record on the customer row (audit trail / GDPR / ToS compliance).
     agree: z.literal(true, { message: 'agree_required' }),
-    agree_at: z.string().min(1, 'required'),
-    verified_token: z.string().optional()
+    agree_at: z.string().min(1, 'required')
   })
   .refine((v) => v.password === v.confirm_password, {
     message: 'password_mismatch',

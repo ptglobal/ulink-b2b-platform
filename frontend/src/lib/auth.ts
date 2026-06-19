@@ -58,8 +58,11 @@ export interface RegisterInput {
   agree: true;
   /** ISO-8601 timestamp of the moment the user consented. */
   agree_at: string;
-  // Optional verification token from a prior /api/auth/verify-otp call.
-  // When present, the registration flow skips the email verification step.
+  /**
+   * Legacy field — kept optional for type compatibility with the still-deployed
+   * /verify-otp and /register/confirm pages. OTP is disabled, so the backend
+   * ignores this value when present.
+   */
   verified_token?: string;
 }
 
@@ -107,6 +110,12 @@ export async function changePassword(email: string): Promise<ForgotPasswordRespo
 }
 
 // ─── OTP / email verification ────────────────────────────────────────────────
+//
+// NOTE: OTP verification is currently DISABLED for the registration flow.
+// /api/auth/verify-otp returns 410 Gone, so the functions below will reject.
+// They are kept exported (along with OtpPurpose, OtpIssueResponse, etc.) so
+// the underlying logic can be re-enabled without rewiring the auth module,
+// and so the still-deployed /verify-otp page keeps compiling.
 
 export type OtpPurpose = 'register' | 'login-2fa';
 

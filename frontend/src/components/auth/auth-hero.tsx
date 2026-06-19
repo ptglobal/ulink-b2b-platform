@@ -31,8 +31,6 @@ export async function AuthHero() {
           sizes="50vw"
           className="object-cover object-center"
         />
-        {/* Overlay đen mờ nhẹ để text dễ đọc hơn */}
-        <div className="absolute inset-0 bg-black/20" />
 
         <div className="relative z-10 flex h-full flex-col px-14 pt-12">
           <Link href="/" aria-label="ULink Industries" className="-ml-2 inline-flex">
@@ -56,10 +54,10 @@ export async function AuthHero() {
       </div>
 
       {/* Phần dưới: layer #969BA2 — features nằm ở đây, DƯỚI ảnh */}
-      <div className="bg-[#969BA2] px-14 pb-8 pt-6">
-        <ul className="flex flex-wrap gap-x-8 gap-y-4">
+      <div className="bg-[#969BA2]/60 px-14 pb-8 pt-6">
+        <ul className="grid grid-cols-3 gap-x-6">
           {features.map(({ icon: Icon, title, desc }) => (
-            <li key={title} className="flex max-w-[22ch] items-start gap-2.5">
+            <li key={title} className="flex items-start gap-2.5">
               <Icon className="mt-0.5 h-6 w-6 shrink-0 text-brand" aria-hidden="true" />
               <span>
                 <span className="block text-sm font-semibold text-brand">{title}</span>

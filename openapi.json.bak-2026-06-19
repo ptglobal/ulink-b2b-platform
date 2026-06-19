@@ -2,12 +2,12 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Dynamic API Specification",
-    "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "52784be5db7139839bc18b703270f8efd2ee8163"
+    "description": "This is a dynamically generated API specification for all endpoints existing on the current project. ULINK extension endpoints merged from previous spec.",
+    "version": "a2ef1b3e05a734bf17e26404ce7a202a72d21db3"
   },
   "servers": [
     {
-      "url": "http://192.168.1.25:8055",
+      "url": "http://localhost:8055",
       "description": "Your current Directus instance."
     }
   ],
@@ -150,8 +150,7 @@
               }
             }
           }
-        },
-        "security": []
+        }
       }
     },
     "/auth/refresh": {
@@ -221,8 +220,7 @@
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
-        },
-        "security": []
+        }
       }
     },
     "/auth/logout": {
@@ -262,8 +260,7 @@
           "200": {
             "description": "Request successful"
           }
-        },
-        "security": []
+        }
       }
     },
     "/auth/password/request": {
@@ -297,8 +294,7 @@
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
-        },
-        "security": []
+        }
       }
     },
     "/auth/password/reset": {
@@ -339,8 +335,7 @@
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
-        },
-        "security": []
+        }
       }
     },
     "/auth/oauth": {
@@ -380,8 +375,7 @@
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
-        },
-        "security": []
+        }
       }
     },
     "/auth/oauth/{provider}": {
@@ -439,8 +433,7 @@
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
-        },
-        "security": []
+        }
       }
     },
     "/schema/snapshot": {
@@ -663,8 +656,7 @@
         },
         "tags": [
           "Server"
-        ],
-        "security": []
+        ]
       }
     },
     "/utils/hash/generate": {
@@ -6030,6 +6022,177 @@
         ]
       }
     },
+    "/extensions": {
+      "get": {
+        "summary": "List Extensions",
+        "description": "List the installed extensions and their configuration in the project.",
+        "operationId": "listExtensions",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Extensions"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/extensions/{name}": {
+      "patch": {
+        "summary": "Update an Extension",
+        "description": "Update an existing extension.",
+        "operationId": "updateExtensions",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "meta": {
+                    "type": "object",
+                    "description": "Directus metadata for the extension. Where the configuration for the extension in the current project is stored.",
+                    "properties": {
+                      "enabled": {
+                        "description": "Whether or not the extension is enabled.",
+                        "example": true,
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Extensions"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
+    "/extensions/{bundle}/{name}": {
+      "patch": {
+        "summary": "Update an Extension",
+        "description": "Update an existing extension.",
+        "operationId": "updateExtensionBundle",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "bundle",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "meta": {
+                    "type": "object",
+                    "description": "Directus metadata for the extension. Where the configuration for the extension in the current project is stored.",
+                    "properties": {
+                      "enabled": {
+                        "description": "Whether or not the extension is enabled.",
+                        "example": true,
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Extensions"
+                    }
+                  }
+                }
+              }
+            },
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Extensions"
+        ]
+      }
+    },
     "/versions": {
       "get": {
         "summary": "List Content Versions",
@@ -6498,264 +6661,6 @@
         ]
       }
     },
-    "/extensions": {
-      "get": {
-        "summary": "List Extensions",
-        "description": "List the installed extensions and their configuration in the project.",
-        "operationId": "listExtensions",
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/Extensions"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "tags": [
-          "Extensions"
-        ]
-      }
-    },
-    "/extensions/{name}": {
-      "patch": {
-        "summary": "Update an Extension",
-        "description": "Update an existing extension.",
-        "operationId": "updateExtensions",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "name",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "meta": {
-                    "type": "object",
-                    "description": "Directus metadata for the extension. Where the configuration for the extension in the current project is stored.",
-                    "properties": {
-                      "enabled": {
-                        "description": "Whether or not the extension is enabled.",
-                        "example": true,
-                        "type": "boolean"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Extensions"
-                    }
-                  }
-                }
-              }
-            },
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "tags": [
-          "Extensions"
-        ]
-      }
-    },
-    "/extensions/{bundle}/{name}": {
-      "patch": {
-        "summary": "Update an Extension",
-        "description": "Update an existing extension.",
-        "operationId": "updateExtensionBundle",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "bundle",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "path",
-            "name": "name",
-            "required": true,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "meta": {
-                    "type": "object",
-                    "description": "Directus metadata for the extension. Where the configuration for the extension in the current project is stored.",
-                    "properties": {
-                      "enabled": {
-                        "description": "Whether or not the extension is enabled.",
-                        "example": true,
-                        "type": "boolean"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Extensions"
-                    }
-                  }
-                }
-              }
-            },
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "tags": [
-          "Extensions"
-        ]
-      }
-    },
-    "/settings": {
-      "get": {
-        "summary": "Retrieve Settings",
-        "description": "List the settings.",
-        "operationId": "getSettings",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Page"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Settings"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "tags": [
-          "Settings"
-        ]
-      },
-      "patch": {
-        "summary": "Update Settings",
-        "description": "Update the settings",
-        "operationId": "updateSetting",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/Settings"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "tags": [
-          "Settings"
-        ]
-      }
-    },
     "/comments": {
       "get": {
         "tags": [
@@ -7127,6 +7032,93 @@
             "$ref": "#/components/responses/UnauthorizedError"
           }
         }
+      }
+    },
+    "/settings": {
+      "get": {
+        "summary": "Retrieve Settings",
+        "description": "List the settings.",
+        "operationId": "getSettings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Page"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Settings"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Settings"
+        ]
+      },
+      "patch": {
+        "summary": "Update Settings",
+        "description": "Update the settings",
+        "operationId": "updateSetting",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/Settings"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "tags": [
+          "Settings"
+        ]
       }
     },
     "/items/regional_hubs": {
@@ -22677,148 +22669,13 @@
         ]
       }
     },
-    "/otp/issue": {
-      "post": {
-        "tags": [
-          "OTP"
-        ],
-        "summary": "Issue an OTP code",
-        "description": "Public endpoint used before registration or email-based password change verification.",
-        "operationId": "otpIssue",
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "purpose"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "a@acme.vn"
-                  },
-                  "purpose": {
-                    "type": "string",
-                    "enum": [
-                      "register",
-                      "login-2fa"
-                    ]
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OTP sent",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "sent": {
-                          "type": "boolean"
-                        },
-                        "expires_in_seconds": {
-                          "type": "integer"
-                        },
-                        "debug_code": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/otp/verify": {
-      "post": {
-        "tags": [
-          "OTP"
-        ],
-        "summary": "Verify an OTP code",
-        "operationId": "otpVerify",
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "purpose",
-                  "code"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "a@acme.vn"
-                  },
-                  "purpose": {
-                    "type": "string",
-                    "enum": [
-                      "register",
-                      "login-2fa"
-                    ]
-                  },
-                  "code": {
-                    "type": "string",
-                    "example": "123456"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OTP verified",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "verified": {
-                          "type": "boolean"
-                        },
-                        "verified_token": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/customer-onboarding/register": {
       "post": {
         "tags": [
           "Customer Onboarding"
         ],
         "summary": "Register a new customer account",
-        "description": "Public endpoint. Requires OTP verification and consent fields.",
+        "description": "Public endpoint — no auth required.",
         "operationId": "customerOnboardingRegister",
         "security": [],
         "requestBody": {
@@ -22833,10 +22690,7 @@
                   "email",
                   "phone",
                   "password",
-                  "confirm_password",
-                  "agree",
-                  "agree_at",
-                  "verified_token"
+                  "confirm_password"
                 ],
                 "properties": {
                   "company_name": {
@@ -22865,19 +22719,6 @@
                     "type": "string",
                     "format": "password",
                     "example": "SecurePass123!"
-                  },
-                  "agree": {
-                    "type": "boolean",
-                    "example": true
-                  },
-                  "agree_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "example": "2026-06-19T12:00:00.000Z"
-                  },
-                  "verified_token": {
-                    "type": "string",
-                    "example": "vt_..."
                   }
                 }
               }
@@ -22886,7 +22727,7 @@
         },
         "responses": {
           "201": {
-            "description": "Account created",
+            "description": "Account created (user active, customer active)",
             "content": {
               "application/json": {
                 "schema": {
@@ -22913,203 +22754,11 @@
               }
             }
           },
-          "401": {
-            "description": "OTP verification missing or expired"
-          },
           "409": {
             "description": "User or customer with this email already exists"
           },
           "422": {
-            "description": "Validation error"
-          }
-        }
-      }
-    },
-    "/password-reset-request/send": {
-      "post": {
-        "tags": [
-          "Password Reset"
-        ],
-        "summary": "Send a password reset email",
-        "description": "Public endpoint. Always returns success to avoid email enumeration.",
-        "operationId": "passwordResetSend",
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "a@acme.vn"
-                  },
-                  "purpose": {
-                    "type": "string",
-                    "enum": [
-                      "forgot",
-                      "change"
-                    ],
-                    "example": "forgot"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Reset email queued",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "sent": {
-                          "type": "boolean"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/password-reset-request/reset": {
-      "post": {
-        "tags": [
-          "Password Reset"
-        ],
-        "summary": "Reset a password using a token",
-        "operationId": "passwordResetReset",
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "token",
-                  "password",
-                  "confirm_password"
-                ],
-                "properties": {
-                  "token": {
-                    "type": "string",
-                    "example": "reset-token-from-email"
-                  },
-                  "password": {
-                    "type": "string",
-                    "format": "password"
-                  },
-                  "confirm_password": {
-                    "type": "string",
-                    "format": "password"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Password reset",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "ok": {
-                          "type": "boolean"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/password-change/change": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "summary": "Change password after OTP verification",
-        "operationId": "changePassword",
-        "security": [],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "email",
-                  "verified_token",
-                  "new_password",
-                  "confirm_password"
-                ],
-                "properties": {
-                  "email": {
-                    "type": "string",
-                    "format": "email",
-                    "example": "a@acme.vn"
-                  },
-                  "verified_token": {
-                    "type": "string",
-                    "example": "vt_..."
-                  },
-                  "new_password": {
-                    "type": "string",
-                    "format": "password"
-                  },
-                  "confirm_password": {
-                    "type": "string",
-                    "format": "password"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Password updated",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "ok": {
-                          "type": "boolean"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
+            "description": "Validation error (missing fields, password mismatch)"
           }
         }
       }
@@ -23139,15 +22788,11 @@
                 "properties": {
                   "collection": {
                     "type": "string",
-                    "example": "customers"
+                    "example": "products"
                   },
                   "csvText": {
                     "type": "string",
-                    "example": "erp_ref,company_name,email\nERP-001,ACME,a@acme.vn"
-                  },
-                  "allowPartial": {
-                    "type": "boolean",
-                    "default": false
+                    "example": "name,slug\nTest,test-slug"
                   }
                 }
               }
@@ -23165,38 +22810,11 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "collection": {
-                          "type": "string"
+                        "valid": {
+                          "type": "integer"
                         },
-                        "mode": {
-                          "type": "string",
-                          "example": "preview"
-                        },
-                        "allowPartial": {
-                          "type": "boolean"
-                        },
-                        "counts": {
-                          "type": "object",
-                          "properties": {
-                            "created": {
-                              "type": "integer"
-                            },
-                            "updated": {
-                              "type": "integer"
-                            },
-                            "skipped": {
-                              "type": "integer"
-                            },
-                            "failed": {
-                              "type": "integer"
-                            }
-                          }
-                        },
-                        "rows": {
-                          "type": "array"
-                        },
-                        "errorRows": {
-                          "type": "array"
+                        "invalid": {
+                          "type": "integer"
                         }
                       }
                     }
@@ -23233,15 +22851,11 @@
                 "properties": {
                   "collection": {
                     "type": "string",
-                    "example": "customers"
+                    "example": "products"
                   },
                   "csvText": {
                     "type": "string",
-                    "example": "erp_ref,company_name,email\nERP-001,ACME,a@acme.vn"
-                  },
-                  "allowPartial": {
-                    "type": "boolean",
-                    "default": false
+                    "example": "name,slug\nTest,test-slug"
                   }
                 }
               }
@@ -23259,44 +22873,11 @@
                     "data": {
                       "type": "object",
                       "properties": {
-                        "collection": {
-                          "type": "string"
+                        "inserted": {
+                          "type": "integer"
                         },
-                        "mode": {
-                          "type": "string",
-                          "example": "commit"
-                        },
-                        "allowPartial": {
-                          "type": "boolean"
-                        },
-                        "counts": {
-                          "type": "object",
-                          "properties": {
-                            "created": {
-                              "type": "integer"
-                            },
-                            "updated": {
-                              "type": "integer"
-                            },
-                            "skipped": {
-                              "type": "integer"
-                            },
-                            "failed": {
-                              "type": "integer"
-                            }
-                          }
-                        },
-                        "rows": {
-                          "type": "array"
-                        },
-                        "errorRows": {
-                          "type": "array"
-                        },
-                        "committed": {
-                          "type": "boolean"
-                        },
-                        "aborted": {
-                          "type": "boolean"
+                        "updated": {
+                          "type": "integer"
                         }
                       }
                     }
@@ -23334,17 +22915,9 @@
                     "type": "string",
                     "format": "uuid"
                   },
-                  "id": {
-                    "type": "string",
-                    "format": "uuid"
-                  },
                   "reason": {
                     "type": "string",
                     "example": "No longer needed"
-                  },
-                  "source": {
-                    "type": "string",
-                    "example": "manual-test"
                   }
                 }
               }
@@ -23393,14 +22966,6 @@
                   "confirmFileId": {
                     "type": "string",
                     "format": "uuid"
-                  },
-                  "reason": {
-                    "type": "string",
-                    "example": "Security incident"
-                  },
-                  "source": {
-                    "type": "string",
-                    "example": "manual-test"
                   }
                 }
               }
@@ -23410,6 +22975,64 @@
         "responses": {
           "200": {
             "description": "File permanently deleted"
+          }
+        }
+      }
+    },
+    "/password-change/change": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Change User Password",
+        "description": "Change user's password. Requires current password verification and validates the new password format.",
+        "operationId": "changePassword",
+        "security": [
+          {
+            "BearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "current_password",
+                  "new_password",
+                  "confirm_password"
+                ],
+                "properties": {
+                  "current_password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "OldSecurePass123!"
+                  },
+                  "new_password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "NewSecurePass123!"
+                  },
+                  "confirm_password": {
+                    "type": "string",
+                    "format": "password",
+                    "example": "NewSecurePass123!"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Password successfully updated"
+          },
+          "401": {
+            "description": "Unauthorized or invalid current password"
+          },
+          "422": {
+            "description": "Validation error (missing fields, passwords mismatch, or weak new password)"
           }
         }
       }
@@ -23514,24 +23137,24 @@
       "x-collection": "directus_operations"
     },
     {
-      "name": "Versions",
-      "description": "Enables users to create unpublished copies of an item, modify them independently from the main version, and promote them to become the new main version when ready.",
-      "x-collection": "directus_versions"
-    },
-    {
       "name": "Extensions",
       "description": "Directus can easily be extended through the addition of several types of extensions, including layouts, interfaces, and modules.",
       "x-collection": "directus_extensions"
     },
     {
-      "name": "Settings",
-      "description": "Settings control the way the platform works and acts.",
-      "x-collection": "directus_settings"
+      "name": "Versions",
+      "description": "Enables users to create unpublished copies of an item, modify them independently from the main version, and promote them to become the new main version when ready.",
+      "x-collection": "directus_versions"
     },
     {
       "name": "Comments",
       "description": "Comments can be added to items.",
       "x-collection": "directus_comments"
+    },
+    {
+      "name": "Settings",
+      "description": "Settings control the way the platform works and acts.",
+      "x-collection": "directus_settings"
     },
     {
       "name": "ItemsRegionalHubs",
@@ -23730,18 +23353,6 @@
     {
       "name": "ItemsProductsFiles",
       "x-collection": "products_files"
-    },
-    {
-      "name": "Customer Onboarding"
-    },
-    {
-      "name": "Commercial Import"
-    },
-    {
-      "name": "Media Policy"
-    },
-    {
-      "name": "Documentation"
     }
   ],
   "components": {
@@ -25117,6 +24728,35 @@
         },
         "x-collection": "directus_operations"
       },
+      "Extensions": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "nullable": false,
+            "type": "boolean"
+          },
+          "id": {
+            "nullable": false,
+            "type": "string",
+            "format": "uuid"
+          },
+          "folder": {
+            "nullable": false,
+            "type": "string"
+          },
+          "source": {
+            "nullable": false,
+            "type": "string"
+          },
+          "bundle": {
+            "description": "Name of the bundle the extension is in.",
+            "example": "directus-extension-my-bundle",
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "x-collection": "directus_extensions"
+      },
       "Versions": {
         "type": "object",
         "properties": {
@@ -25204,34 +24844,76 @@
         },
         "x-collection": "directus_versions"
       },
-      "Extensions": {
+      "Comments": {
         "type": "object",
         "properties": {
-          "enabled": {
-            "nullable": false,
-            "type": "boolean"
-          },
           "id": {
-            "nullable": false,
-            "type": "string",
-            "format": "uuid"
-          },
-          "folder": {
-            "nullable": false,
+            "description": "Unique identifier for this single collection preset.",
+            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
             "type": "string"
           },
-          "source": {
-            "nullable": false,
+          "collection": {
+            "description": "The collection of the item the Comment is created for.",
+            "example": "articles",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Collections"
+              }
+            ]
+          },
+          "item": {
+            "description": "The item the Comment is created for.",
+            "example": "123",
             "type": "string"
           },
-          "bundle": {
-            "description": "Name of the bundle the extension is in.",
-            "example": "directus-extension-my-bundle",
+          "comment": {
+            "description": "User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin app.",
+            "example": "This is a comment",
+            "type": "string"
+          },
+          "date_created": {
+            "description": "When the Comment was created.",
             "type": "string",
+            "example": "2024-01-23T12:34:56Z",
+            "format": "date-time",
             "nullable": true
+          },
+          "date_updated": {
+            "description": "When the Comment was updated.",
+            "type": "string",
+            "example": "2024-01-23T12:34:56Z",
+            "format": "date-time",
+            "nullable": true
+          },
+          "user_created": {
+            "description": "User that created the Comment.",
+            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Users"
+              }
+            ]
+          },
+          "user_updated": {
+            "description": "User that updated the Comment.",
+            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/Users"
+              }
+            ]
           }
         },
-        "x-collection": "directus_extensions"
+        "x-collection": "directus_comments"
       },
       "Settings": {
         "type": "object",
@@ -25596,77 +25278,6 @@
           }
         },
         "x-collection": "directus_settings"
-      },
-      "Comments": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "description": "Unique identifier for this single collection preset.",
-            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
-            "type": "string"
-          },
-          "collection": {
-            "description": "The collection of the item the Comment is created for.",
-            "example": "articles",
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/components/schemas/Collections"
-              }
-            ]
-          },
-          "item": {
-            "description": "The item the Comment is created for.",
-            "example": "123",
-            "type": "string"
-          },
-          "comment": {
-            "description": "User comment. This will store the comments that show up in the right sidebar of the item edit page in the admin app.",
-            "example": "This is a comment",
-            "type": "string"
-          },
-          "date_created": {
-            "description": "When the Comment was created.",
-            "type": "string",
-            "example": "2024-01-23T12:34:56Z",
-            "format": "date-time",
-            "nullable": true
-          },
-          "date_updated": {
-            "description": "When the Comment was updated.",
-            "type": "string",
-            "example": "2024-01-23T12:34:56Z",
-            "format": "date-time",
-            "nullable": true
-          },
-          "user_created": {
-            "description": "User that created the Comment.",
-            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/components/schemas/Users"
-              }
-            ]
-          },
-          "user_updated": {
-            "description": "User that updated the Comment.",
-            "example": "81dfa7e0-56d2-471f-b96a-1cf8a62bdf28",
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/components/schemas/Users"
-              }
-            ]
-          }
-        },
-        "x-collection": "directus_comments"
       },
       "ItemsRegionalHubs": {
         "type": "object",
@@ -27928,16 +27539,16 @@
       }
     },
     "securitySchemes": {
-      "BearerAuth": {
-        "type": "http",
-        "scheme": "bearer",
-        "description": "Login: POST /auth/login {email, password} -> access_token"
+      "KeyAuth": {
+        "type": "apiKey",
+        "in": "query",
+        "name": "access_token"
+      },
+      "Auth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
       }
     }
-  },
-  "security": [
-    {
-      "BearerAuth": []
-    }
-  ]
+  }
 }

@@ -4,18 +4,24 @@ import { useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2, Building2 } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/navigation';
-import { requestOtp, AuthError } from '@/lib/auth';
+import { register, AuthError } from '@/lib/auth';
 import { SocialAuth } from '@/components/auth/social-auth';
 import { cn } from '@/lib/utils';
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const PHONE_RE = /^[+()\-\d\s]{6,}$/;
+// Phone numbers are digits-only (no spaces, dashes, parentheses or leading
+// '+'). The minimum length of 6 mirrors the server-side rule in
+// src/lib/validators.ts. Keep the two in sync.
+const PHONE_RE = /^\d{6,}$/;
 // Server enforces this — same regex in src/lib/validators.ts and Directus
 // customer-onboarding-endpoint/service.js. Keep in sync.
 const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
 type Fields = 'company_name' | 'contact_name' | 'email' | 'phone' | 'password' | 'confirm_password';
 
+// OTP verification in the registration flow is currently disabled — accounts
+// are created directly on submit. This key is kept around so any leftover
+// state from a previous session does not leak into the new flow.
 const REGISTER_DRAFT_KEY = 'register_draft_v1';
 
 interface RegisterDraft {
@@ -26,13 +32,12 @@ interface RegisterDraft {
   password: string;
   confirm_password: string;
   /**
-   * Whether the user explicitly accepted the terms of service. Persisted into
-   * the draft so the backend can stamp a consent record (consented_at) on the
-   * customer row at the moment the account is created. Without this trail we
-   * would only have the registration timestamp and could not prove consent.
+   * Whether the user explicitly accepted the terms of service. The backend
+   * stamps a consent record (consented_at) on the customer row at the moment
+   * the account is created.
    */
   agree: true;
-  /** ISO-8601 timestamp of the moment the user ticked the agree checkbox. */
+  /** ISO-8601 timestamp of the moment the user consented (submit time). */
   agree_at: string;
 }
 
@@ -55,7 +60,11 @@ export function RegisterForm() {
   const [errors, setErrors] = useState<Partial<Record<Fields | 'agree', string>>>({});
 
   function set(field: Fields, value: string) {
-    setValues((v) => ({ ...v, [field]: value }));
+    // Phone field is digits-only — strip everything else at input time so the
+    // user can't even type a non-digit character (which would also fail the
+    // PHONE_RE validation below with a phoneInvalid error).
+    const sanitized = field === 'phone' ? value.replace(/\D/g, '') : value;
+    setValues((v) => ({ ...v, [field]: sanitized }));
   }
 
   function validate() {
@@ -81,39 +90,47 @@ export function RegisterForm() {
 
     setLoading(true);
     try {
-      // Step 1: trigger OTP email verification for the new account's email.
-      // We do NOT call /register yet — we save the form data to sessionStorage
-      // and redirect to /verify-otp so the user can confirm ownership of the
-      // email. After they enter the code, /verify-otp writes verified_token to
-      // sessionStorage, then redirects to /register/confirm which actually
-      // creates the account.
-      await requestOtp(values.email.trim(), 'register');
+      // OTP step is currently disabled — call /api/auth/register directly so
+      // the user is signed in immediately on submit. The legacy draft key is
+      // cleared so a stale draft from a previous OTP-enabled session can't
+      // bleed into the new flow.
+      try { sessionStorage.removeItem(REGISTER_DRAFT_KEY); } catch { /* ignore */ }
+      try { sessionStorage.removeItem('verified_tokens'); } catch { /* ignore */ }
+      try { sessionStorage.removeItem('verified_token'); } catch { /* ignore */ }
 
-      const draft: RegisterDraft = {
+      await register({
         company_name: values.company_name.trim(),
         contact_name: values.contact_name.trim(),
         email: values.email.trim(),
         phone: values.phone.trim(),
         password: values.password,
         confirm_password: values.confirm_password,
-        // Stamp the consent at submit time so the timestamp is bound to the act
-        // of agreeing (not to the moment the user first ticked the box, which
-        // could be minutes earlier if they paused to fill the form).
+        // Stamp the consent at submit time so the timestamp is bound to the
+        // moment the user actually agreed (which may differ from when the
+        // checkbox was first ticked, if they paused to fill the form).
         agree: true,
         agree_at: new Date().toISOString()
-      };
-      sessionStorage.setItem(REGISTER_DRAFT_KEY, JSON.stringify(draft));
-
-      const qs = new URLSearchParams({
-        purpose: 'register',
-        email: draft.email,
-        redirect: '/register/confirm'
-      }).toString();
-      router.push(`/verify-otp?${qs}`);
+      });
+      // The backend auto-logs the user in and the session cookie is set by
+      // the response, so we can go straight to the portal.
+      router.push('/');
     } catch (err) {
       if (err instanceof AuthError) {
-        if (err.status === 429) {
-          setFormError(t('otpCooldown'));
+        if (err.code === 'email_taken' || err.status === 409) {
+          setFormError(t('emailAlreadyRegistered'));
+        } else if (err.code === 'agree_required') {
+          setFormError(t('agreeRequired'));
+        } else if (err.code === 'password_mismatch' || err.code === 'password_policy') {
+          setFormError(t('passwordPolicy'));
+        } else if (err.status === 422) {
+          // Surface server-side validation details so the user knows which
+          // field failed instead of the generic "Input validation failed".
+          const fieldErrors = err.details
+            ? Object.entries(err.details)
+                .map(([field, msgs]) => `${field}: ${(msgs as string[]).join(', ')}`)
+                .join('; ')
+            : null;
+          setFormError(fieldErrors ?? err.message ?? t('registerFailed'));
         } else {
           setFormError(err.message || t('registerFailed'));
         }
@@ -247,7 +264,7 @@ export function RegisterForm() {
           {loading ? (
             <>
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-              <span>{t('otpSending')}</span>
+              <span>{t('registerCreating')}</span>
             </>
           ) : (
             <>
