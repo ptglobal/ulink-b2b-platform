@@ -9,5 +9,8 @@
     "source": "src/index.js",
     "host": "^11.0.0"
   },
-  "description": "Invalidates all user sessions when password is changed or reset."
+  "dependencies": {
+    "argon2": "^0.41.1"
+  },
+  "description": "Blocks password reuse and invalidates all user sessions when a password is changed or reset."
 }

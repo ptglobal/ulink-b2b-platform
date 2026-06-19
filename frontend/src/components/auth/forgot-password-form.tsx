@@ -2,8 +2,8 @@
 
 import { useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { Mail, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
-import { Link } from '@/i18n/navigation';
+import { Mail, ArrowRight, Loader2 } from 'lucide-react';
+import { Link, useRouter } from '@/i18n/navigation';
 import { requestPasswordReset, AuthError } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
@@ -11,9 +11,9 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function ForgotPasswordForm() {
   const t = useTranslations('auth');
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
-  const [done, setDone] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
 
@@ -31,58 +31,22 @@ export function ForgotPasswordForm() {
     }
     setLoading(true);
     try {
-      // API always returns { sent: true } to avoid email enumeration. The actual
-      // reset can come via the Directus email link or via the OTP code path on
-      // the /reset-password page.
+      // API always returns { sent: true } to avoid email enumeration. After
+      // submission we redirect the user to /reset-password so they can either
+      // follow the link in their email (auto-fills ?token=…) or paste the
+      // recovery code into the form on that page.
       await requestPasswordReset(email);
-      setDone(true);
+      router.push('/reset-password');
     } catch (err) {
       if (err instanceof AuthError && err.code === 'network_error') {
         setFormError(t('errorNetwork'));
       } else {
         setFormError(t('errorNetwork'));
       }
-    } finally {
       setLoading(false);
+      return;
     }
-  }
-
-  if (done) {
-    return (
-      <div className="text-center">
-        <span className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-lg bg-brand/10 text-brand">
-          <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
-        </span>
-        <h2 className="text-2xl font-bold tracking-tight text-foreground">
-          {t('forgotPasswordSentTitle')}
-        </h2>
-        <p className="mx-auto mt-3 max-w-sm text-sm text-muted-foreground">
-          {t('forgotPasswordSentDesc')}
-        </p>
-        <div className="mt-6 flex flex-col items-center gap-3">
-          {/* Reset link is in the email — we don't take the user to the reset
-              page directly. They must open the link from their inbox so the
-              server-issued single-use token reaches the form via the URL. */}
-          <Link
-            href="/login"
-            className="inline-flex items-center justify-center rounded-lg border border-brand bg-brand px-5 py-2.5 text-sm font-medium text-brand-foreground transition-colors hover:border-brand-strong hover:bg-brand-strong"
-          >
-            <span>{t('backToLogin')}</span>
-            <ArrowRight className="ml-1.5 h-4 w-4" aria-hidden="true" />
-          </Link>
-          <button
-            type="button"
-            onClick={() => {
-              setDone(false);
-              setEmail('');
-            }}
-            className="text-xs font-medium text-brand hover:underline"
-          >
-            {t('resendEmail')}
-          </button>
-        </div>
-      </div>
-    );
+    // Stay in loading state — navigation will unmount this component.
   }
 
   const inputBase =

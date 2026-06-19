@@ -75,6 +75,59 @@ export const changePasswordSchema = z.object({
 
 export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 
+/**
+ * Authenticated password change — used by the logged-in user's
+ * /change-password form. The user must supply their current password plus
+ * the new password twice. The route handler verifies `current_password` by
+ * probing Directus /auth/login before issuing the update, so a stolen
+ * session cookie alone is not enough.
+ */
+export const changePasswordInSessionSchema = z
+  .object({
+    current_password: z.string().min(1, 'required'),
+    new_password: z
+      .string()
+      .min(8, 'too_short')
+      .regex(PASSWORD_REGEX, 'password_policy'),
+    confirm_new_password: z.string().min(1, 'required')
+  })
+  .refine((v) => v.new_password === v.confirm_new_password, {
+    message: 'password_mismatch',
+    path: ['confirm_new_password']
+  });
+
+export type ChangePasswordInSessionInput = z.infer<typeof changePasswordInSessionSchema>;
+
+/**
+ * Password change via the email-link token flow. The token is the single-use
+ * reset link from the change-password email; `current_password` is still
+ * required so a stolen inbox alone is not enough to take over the account.
+ * The route handler probes Directus /auth/login to verify the current
+ * password *before* consuming the token, so the worst case for a bad actor
+ * is "you'll see a 'wrong current password' error" — they never get the
+ * new-password stage to attempt.
+ */
+export const changePasswordViaTokenSchema = z
+  .object({
+    token: z.string().min(1, 'required'),
+    current_password: z.string().min(1, 'required'),
+    new_password: z
+      .string()
+      .min(8, 'too_short')
+      .regex(PASSWORD_REGEX, 'password_policy'),
+    confirm_new_password: z.string().min(1, 'required')
+  })
+  .refine((v) => v.new_password === v.confirm_new_password, {
+    message: 'password_mismatch',
+    path: ['confirm_new_password']
+  })
+  .refine((v) => v.new_password !== v.current_password, {
+    message: 'password_reuse',
+    path: ['new_password']
+  });
+
+export type ChangePasswordViaTokenInput = z.infer<typeof changePasswordViaTokenSchema>;
+
 export const otpIssueSchema = z.object({
   email: z.string().min(1, 'required').email('invalid_email'),
   purpose: z.enum(['register', 'login-2fa'])

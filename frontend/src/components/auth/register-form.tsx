@@ -90,10 +90,9 @@ export function RegisterForm() {
 
     setLoading(true);
     try {
-      // OTP step is currently disabled — call /api/auth/register directly so
-      // the user is signed in immediately on submit. The legacy draft key is
-      // cleared so a stale draft from a previous OTP-enabled session can't
-      // bleed into the new flow.
+      // OTP step is currently disabled — call /api/auth/register directly.
+      // The legacy draft key is cleared so a stale draft from a previous
+      // OTP-enabled session can't bleed into the new flow.
       try { sessionStorage.removeItem(REGISTER_DRAFT_KEY); } catch { /* ignore */ }
       try { sessionStorage.removeItem('verified_tokens'); } catch { /* ignore */ }
       try { sessionStorage.removeItem('verified_token'); } catch { /* ignore */ }
@@ -111,9 +110,10 @@ export function RegisterForm() {
         agree: true,
         agree_at: new Date().toISOString()
       });
-      // The backend auto-logs the user in and the session cookie is set by
-      // the response, so we can go straight to the portal.
-      router.push('/');
+      // Account created — the /api/auth/register route does NOT set a session
+      // cookie (no auto-login). Send the user to /login so they sign in
+      // explicitly with the credentials they just chose.
+      router.push('/login');
     } catch (err) {
       if (err instanceof AuthError) {
         if (err.code === 'email_taken' || err.status === 409) {
