@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { Suspense, useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/navigation';
 import { login, AuthError } from '@/lib/auth';
 import { SocialAuth } from '@/components/auth/social-auth';
@@ -11,8 +12,29 @@ import { cn } from '@/lib/utils';
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export function LoginForm() {
+  // `useSearchParams` requires a Suspense boundary in Next 14; the
+  // outer wrapper provides the fallback so the page can still
+  // statically pre-render the rest of the route.
+  return (
+    <Suspense fallback={null}>
+      <LoginFormInner />
+    </Suspense>
+  );
+}
+
+function LoginFormInner() {
   const t = useTranslations('auth');
   const router = useRouter();
+  const search = useSearchParams();
+
+  // Show a soft banner if the user was redirected here from a successful
+  // password change. Keeps the user oriented — without it, dropping on the
+  // login page after a password change feels accidental.
+  const reason = search.get('reason');
+  const reasonBanner =
+    reason === 'password-changed'
+      ? { kind: 'success' as const, key: 'loginAfterPasswordChange' }
+      : null;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -61,6 +83,16 @@ export function LoginForm() {
     <div>
       <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('welcomeBack')}</h2>
       <p className="mt-2 text-sm text-muted-foreground">{t('welcomeSubtitle')}</p>
+
+      {reasonBanner && (
+        <p
+          role="status"
+          className="mt-4 flex items-start gap-2 rounded-lg border border-brand/30 bg-brand/5 px-3 py-2 text-sm text-foreground"
+        >
+          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden="true" />
+          <span>{t(reasonBanner.key)}</span>
+        </p>
+      )}
 
       <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
         {formError && (

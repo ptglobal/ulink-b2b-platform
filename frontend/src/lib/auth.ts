@@ -104,9 +104,69 @@ export async function resetPassword(input: ResetPasswordInput): Promise<void> {
  * Request a password-change link. The backend sends an email with a link to
  * /reset-password?token=... with purpose='change'. Always resolves successfully
  * to prevent email enumeration.
+ *
+ * @deprecated The /change-password page now uses the in-session flow below.
+ * Kept exported in case any legacy caller still hits the email-link path.
  */
 export async function changePassword(email: string): Promise<ForgotPasswordResponse> {
   return api.post('/api/auth/change-password', { email });
+}
+
+// ─── Password change (in-session, for logged-in users) ───────────────────────
+
+export interface ChangePasswordInSessionInput {
+  current_password: string;
+  new_password: string;
+  confirm_new_password: string;
+}
+
+/**
+ * Change the password for the currently-authenticated user. The route
+ * verifies `current_password` against Directus /auth/login first, so a
+ * stolen session cookie alone is not enough to take over the account.
+ *
+ * Errors raised (as AuthError):
+ *   - 'unauthenticated' (401) — no session
+ *   - 'invalid_current_password' (401) — current_password didn't match
+ *   - 'PASSWORD_SAME_AS_OLD' (422) — new === current (after hashing)
+ *   - 'password_mismatch' (422) — confirm_new_password didn't match
+ *   - 'password_policy' (422) — new_password failed complexity rule
+ */
+export async function changePasswordInSession(
+  input: ChangePasswordInSessionInput
+): Promise<void> {
+  await api.post('/api/auth/change-password/apply', input);
+}
+
+// ─── Password change via email-link token ────────────────────────────────────
+
+export interface ChangePasswordByTokenInput {
+  token: string;
+  current_password: string;
+  new_password: string;
+  confirm_new_password: string;
+}
+
+/**
+ * Consume the change-password email link. The user lands on
+ * /change-password?token=…, fills the 3-field form, and this function
+ * forwards the submission to /api/auth/change-password/confirm-token.
+ * The route delegates to Directus's /password-reset-request/reset which
+ * validates the token, updates the password, and clears every other
+ * session for the user. The caller's session is also dropped via
+ * `logout()` on the form side after a successful response.
+ *
+ * Errors raised (as AuthError):
+ *   - 'invalid_token' (400) — token expired, malformed, or already used
+ *   - 'password_mismatch' (422) — confirm_new_password didn't match
+ *   - 'password_policy' (422) — new_password failed complexity rule
+ *   - 'rate_limited' (429) — too many attempts on this token
+ *   - 'upstream_error' (502) — Directus unreachable
+ */
+export async function changePasswordByToken(
+  input: ChangePasswordByTokenInput
+): Promise<void> {
+  await api.post('/api/auth/change-password/confirm-token', input);
 }
 
 // ─── OTP / email verification ────────────────────────────────────────────────

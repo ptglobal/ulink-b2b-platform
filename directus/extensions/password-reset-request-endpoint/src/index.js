@@ -115,8 +115,21 @@ export default {
      * email enumeration.
      */
     router.post('/send', async (req, res) => {
-      const { email, purpose: rawPurpose } = req.body ?? {};
+      const { email, purpose: rawPurpose, redirect_path: rawRedirect } = req.body ?? {};
       const purpose = rawPurpose === 'change' ? 'change' : 'forgot';
+
+      // Where should the link in the email send the user? Default to
+      // /reset-password (anonymous-account recovery). For an authenticated
+      // "change password" request the caller passes /change-password so the
+      // same 3-field form handles both flows.
+      //
+      // Restrict to a small allowlist so an attacker who controls the
+      // `email` field cannot smuggle a phishing URL into the email body.
+      const allowedRedirects = ['/reset-password', '/change-password'];
+      const redirectPath =
+        typeof rawRedirect === 'string' && allowedRedirects.includes(rawRedirect)
+          ? rawRedirect
+          : '/reset-password';
 
       // Basic validation — still return 200 to avoid enumeration.
       if (!email || !EMAIL_RE.test(normalizeEmail(email))) {
@@ -169,8 +182,10 @@ export default {
         });
         await redis.set(tokenKey(token), payload, 'EX', RESET_TOKEN_TTL_SECONDS);
 
-        // Build the reset URL that points to the frontend reset-password page.
-        const resetUrl = `${FRONTEND_URL}/reset-password?token=${token}`;
+        // Build the reset URL pointing at the chosen target. The allowlist
+        // above restricts `redirectPath` to known frontend routes so the
+        // email link can never be hijacked to an external host.
+        const resetUrl = `${FRONTEND_URL}${redirectPath}?token=${token}`;
 
         // Build and send the branded email.
         const contactName = [user.first_name, user.last_name].filter(Boolean).join(' ') || null;

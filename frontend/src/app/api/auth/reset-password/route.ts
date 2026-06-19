@@ -42,7 +42,11 @@ export async function POST(req: Request) {
       if (code === 'invalid_token' || res.status === 400) {
         throw new ApiError(400, 'invalid_token', message);
       }
-      if (code === 'password_mismatch' || code === 'password_policy') {
+      if (
+        code === 'password_mismatch' ||
+        code === 'password_policy' ||
+        code === 'PASSWORD_SAME_AS_OLD'
+      ) {
         throw new ApiError(422, code, message);
       }
       if (res.status === 429) {

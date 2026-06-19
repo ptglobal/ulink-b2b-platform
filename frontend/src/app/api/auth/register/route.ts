@@ -1,6 +1,5 @@
 import { ApiError } from '@/lib/api-error';
-import { handleRoute, jsonOk, jsonErrorRaw } from '@/lib/route-helpers';
-import { extractSetCookie } from '@/lib/auth-helpers';
+import { handleRoute, jsonOk } from '@/lib/route-helpers';
 import { registerSchema, type RegisterInput } from '@/lib/validators';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL ?? 'http://localhost:8055';
@@ -39,8 +38,8 @@ async function directusFetch(path: string, init: RequestInit & { cookieHeader?: 
  * POST /api/auth/register
  *
  * Creates a B2B customer account by calling the custom Directus
- * customer-onboarding endpoint, then immediately logs the new user in so the
- * browser has a session cookie.
+ * customer-onboarding endpoint. Does NOT auto-login: the user is redirected
+ * to /login so they sign in explicitly with the credentials they just chose.
  *
  * Body (validated by registerSchema):
  *   company_name, contact_name, email, phone, password, confirm_password,
@@ -89,24 +88,9 @@ export async function POST(req: Request) {
       onboard = { data: { user_id: '', customer_id: '', status: 'active' } };
     }
 
-    // 2. Auto-login so the user lands inside the portal without re-entering
-    //    credentials. The cookie is forwarded back to the client.
-    const loginRes = await directusFetch('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify({ email: data.email, password: data.password, mode: 'session' })
-    });
-
-    if (!loginRes.ok) {
-      // Account is created but auto-login failed — surface a useful error so
-      // the user knows they need to log in manually.
-      return jsonErrorRaw(
-        200,
-        'register_complete_login_required',
-        'Account created. Please sign in to continue.'
-      );
-    }
-
-    const response = jsonOk({
+    // 2. Account created — return 201 with no session cookie. The frontend
+    //    redirects to /login so the user signs in explicitly.
+    return jsonOk({
       ok: true,
       data: {
         user_id: onboard.data?.user_id,
@@ -114,8 +98,5 @@ export async function POST(req: Request) {
         status: onboard.data?.status ?? 'active'
       }
     }, 201);
-    const setCookie = extractSetCookie(loginRes);
-    if (setCookie) response.headers.set('set-cookie', setCookie);
-    return response;
   });
 }

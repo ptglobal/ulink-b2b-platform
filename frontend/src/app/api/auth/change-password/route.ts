@@ -11,9 +11,10 @@ export const dynamic = 'force-dynamic';
  * Body: { email }
  *
  * Sends a password-change link to the user's email. The link points to
- * /reset-password?token=... where they can set a new password. Uses the
- * same custom endpoint as forgot-password but with purpose='change' so
- * the email copy reflects "change" rather than "forgot".
+ * /change-password?token=... (the in-session 3-field form) so the same
+ * page handles both "click from email" and "navigate from Settings"
+ * flows. The actual change is performed when the user submits the
+ * form on /change-password; this route only requests the email.
  *
  * Always returns { sent: true } to prevent email enumeration.
  */
@@ -23,7 +24,15 @@ export async function POST(req: Request) {
       await fetch(`${DIRECTUS_URL}/password-reset-request/send`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: data.email, purpose: 'change' }),
+        body: JSON.stringify({
+          email: data.email,
+          purpose: 'change',
+          // Override the default /reset-password redirect so the email
+          // link lands on the /change-password form (3-field). The
+          // Directus extension restricts redirect_path to a small
+          // allowlist, so this value can't be hijacked.
+          redirect_path: '/change-password'
+        }),
         cache: 'no-store'
       });
     } catch (err) {
