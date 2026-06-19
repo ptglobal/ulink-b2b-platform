@@ -12,7 +12,6 @@ export const RELATION_DEFS = [
   { collection: 'orders', field: 'customer', related_collection: 'customers', meta: { one_field: 'orders' } },
   { collection: 'orders', field: 'hub', related_collection: 'regional_hubs' },
   { collection: 'regional_hubs', field: 'province', related_collection: 'vn_provinces' },
-  { collection: 'regional_hubs', field: 'district', related_collection: 'vn_districts' },
   { collection: 'hub_industrial_zones', field: 'hub', related_collection: 'regional_hubs', meta: { one_field: 'industrial_zones' } },
   { collection: 'hub_industrial_zones', field: 'image', related_collection: 'directus_files' },
   { collection: 'hub_team_members', field: 'hub', related_collection: 'regional_hubs', meta: { one_field: 'team_members' } },

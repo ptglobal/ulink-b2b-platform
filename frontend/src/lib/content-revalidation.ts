@@ -153,6 +153,7 @@ export function resolveRevalidationTargets(
   if (payload.collection === 'regional_hubs') {
     for (const loc of locales) {
       paths.add(`/${loc}/regional-hubs`);
+      paths.add(`/${loc}`); // Homepage also displays hub data
     }
   }
 

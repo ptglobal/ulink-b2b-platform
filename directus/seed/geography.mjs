@@ -16,7 +16,6 @@ function mapProvinceRecord(record, id) {
 
 export async function seedGeography(helpers) {
   const provinceRows = await loadJson('./data/vn-provinces.json');
-  const districtRows = await loadJson('./data/vn-districts.json');
 
   const provincesByAbbr = new Map();
   const provincesByCode = new Map();
@@ -28,30 +27,8 @@ export async function seedGeography(helpers) {
     provincesByCode.set(province.code, record);
   }
 
-  const districtsByCode = new Map();
-
-  for (const district of districtRows) {
-    const province = provincesByAbbr.get(normalizeHubProvinceAbbr(district.province_abbr));
-    if (!province) {
-      throw new Error(`Missing province seed for district ${district.code}.`);
-    }
-
-    const payload = {
-      code: district.code,
-      province: province.id,
-      name: district.name
-    };
-    const id = await helpers.ensureItem('vn_districts', 'code', payload);
-    districtsByCode.set(district.code, {
-      ...district,
-      id,
-      province_id: province.id
-    });
-  }
-
   return {
     provincesByAbbr,
-    provincesByCode,
-    districtsByCode
+    provincesByCode
   };
 }

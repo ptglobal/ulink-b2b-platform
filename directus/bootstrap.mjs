@@ -26,6 +26,7 @@ import { ensureRoles } from './rbac/roles.mjs';
 import { ensurePolicies } from './rbac/policies.mjs';
 import { ensureAccessLinks } from './rbac/access.mjs';
 import { ensurePermissions } from './rbac/permissions.mjs';
+import { seedGeography } from './seed/geography.mjs';
 // Import initialization seed content tasks
 import { seedInitialContent } from './seed/initial_content.mjs';
 import { seedDemoCommerce } from './seed/demo_commerce.mjs';
@@ -66,8 +67,19 @@ async function ensureLanguages() {
       console.log(`=  Language: ${locale.code} (updated)`);
     } else {
       // If it doesn't exist, create a new language entry
-      await client.request(createItem('languages', payload));
-      console.log(`+  Language: ${locale.code} (created)`);
+      try {
+        await client.request(createItem('languages', payload));
+        console.log(`+  Language: ${locale.code} (created)`);
+      } catch (err) {
+        // Handle race condition / stale read — language may already exist
+        const msg = err?.errors?.[0]?.message ?? err?.message ?? '';
+        if (msg.includes('unique')) {
+          await client.request(updateItem('languages', locale.code, payload));
+          console.log(`=  Language: ${locale.code} (updated, was already present)`);
+        } else {
+          throw err;
+        }
+      }
     }
   }
   console.log(`Fallback locale locked to ${DEFAULT_LOCALE}`);
@@ -110,9 +122,10 @@ async function main() {
   await ensureFolders();
 
   // 10. Seed default content, transactional models, and catalog listings
-  const ids = await seedInitialContent(helpers);
+  const geography = await seedGeography(helpers);
+  const ids = await seedInitialContent(helpers, client, geography);
   await seedDemoCommerce(helpers, ids);
-  await seedAdditionalContent(helpers, ids);
+  await seedAdditionalContent(helpers, ids, geography);
 
   // 11. Create a specialized API user mapping to serve the Next.js frontend
   const frontendToken = process.env.DIRECTUS_FRONTEND_TOKEN;

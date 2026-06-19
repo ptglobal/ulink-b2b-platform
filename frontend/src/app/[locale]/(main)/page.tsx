@@ -2,62 +2,46 @@ import Image from 'next/image';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import {
   ArrowRight,
-  Headset,
-  ShieldCheck,
-  Zap,
+  ChevronRight,
   Clock,
+  Users,
+  Route,
   Globe,
-  PackageCheck,
-  Timer,
-  BadgeCheck,
-  Cpu,
-  Heart,
-  Car,
-  UtensilsCrossed,
-  Microscope,
-  GraduationCap,
-  CalendarCheck,
-  RotateCcw,
-  Archive,
-  Combine,
-  AlertCircle
+  Truck,
+  ShieldCheck,
+  TrendingDown,
+  FileText
 } from 'lucide-react';
+import { HeadsetMic } from '@/components/icons/headset-mic';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
+import { VietnamMap, type ClusterMarker } from '@/components/vietnam-map';
+import { fetchRegionalHubs, parseCoordinates } from '@/lib/regional-hub-data';
+
+/** ISR — revalidate every hour; on-demand revalidation via content webhooks */
+export const revalidate = 3600;
 
 export default async function HomePage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
-  const t = await getTranslations('home');
 
-  const trust = [
-    { icon: Globe, title: t('trust.globalTitle'), lines: [t('trust.globalDesc1'), t('trust.globalDesc2')] },
-    { icon: PackageCheck, title: t('trust.sampleTitle'), lines: [t('trust.sampleDesc1')] },
-    { icon: Timer, title: t('trust.deliveryTitle'), lines: [t('trust.deliveryDesc1')] },
-    { icon: BadgeCheck, title: t('trust.isoTitle'), lines: [t('trust.isoDesc1'), t('trust.isoDesc2')] }
-  ];
+  const [t, tHubs, tWhy, tCta] = await Promise.all([
+    getTranslations('home'),
+    getTranslations('regionalHubs'),
+    getTranslations('whyChoose'),
+    getTranslations('ctaBanner')
+  ]);
 
-  const partners = [
-    { name: 'SAMSUNG', color: '#4b58b0', size: 14, weight: 'font-medium' as const },
-    { name: 'LG', color: '#8e8e8f', size: 17, weight: 'font-medium' as const },
-    { name: 'Canon', color: '#f45354', size: 17, weight: 'font-semibold' as const, subtitle: 'All for dreams', subtitleColor: '#7b7b7b' },
-    { name: 'Mider', color: '#5aab76', size: 17, weight: 'font-light' as const, subtitle: 'Walve hum tunonuglion', subtitleColor: '#8e8d8e' },
-    { name: 'FUJIFILM', color: '#716d6d', size: 13, weight: 'font-medium' as const },
-    { name: 'mkor', color: '#6875bc', size: 15, weight: 'font-normal' as const, subtitle: 'Technology', subtitleColor: '#687fc4' }
-  ];
+  // ── Fetch regional hubs from Directus API ──
+  const hubs = await fetchRegionalHubs();
 
-  const news = [
-    { img: ASSETS.home.news1, date: t('news.item1Date'), title: t('news.item1Title') },
-    { img: ASSETS.home.news2, date: t('news.item2Date'), title: t('news.item2Title') },
-    { img: ASSETS.home.news3, date: t('news.item3Date'), title: t('news.item3Title') }
-  ];
-
-  const support = [
-    { icon: Headset, title: t('support.consultingTitle'), desc: t('support.consultingDesc') },
-    { icon: ShieldCheck, title: t('support.guaranteeTitle'), desc: t('support.guaranteeDesc') },
-    { icon: Zap, title: t('support.emergencyTitle'), desc: t('support.emergencyDesc') },
-    { icon: Clock, title: t('support.availabilityTitle'), desc: t('support.availabilityDesc') }
-  ];
-
+  // Parse coordinates for map markers
+  const mapClusters: ClusterMarker[] = hubs
+    .map((hub) => {
+      const coords = parseCoordinates(hub.coordinates);
+      if (!coords) return null;
+      return { id: String(hub.id), lat: coords.lat, lon: coords.lon };
+    })
+    .filter((c): c is ClusterMarker => c !== null);
 
   const fadeLeft = {
     WebkitMaskImage: 'linear-gradient(to right, transparent 0%, #000 16%, #000 100%)',
@@ -66,9 +50,30 @@ export default async function HomePage({ params: { locale } }: { params: { local
 
   return (
     <div className="w-full bg-[#F5F5F5]">
-      {/* ── HERO (Figma 2071:1056) ───────────────────────── */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-background via-muted to-muted md:min-h-[320px] lg:min-h-[380px]">
-        {/* Ảnh găng tay tràn mép phải, fade mép trái để hoà vào nền (desktop) */}
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 2 — BREADCRUMB
+          ═══════════════════════════════════════════════════════════════ */}
+      <nav
+        aria-label="Breadcrumb"
+        className="mx-auto w-full max-w-[1440px] px-4 pt-3 sm:px-8 lg:px-16"
+      >
+        <div className="flex items-center gap-1.5 text-[12px] text-muted-foreground">
+          <Link href="/" className="font-medium text-primary transition-colors hover:text-brand">
+            {tHubs('eyebrow')}
+          </Link>
+          <ChevronRight className="h-3 w-3" />
+          <span className="text-muted-foreground">
+            {t('hero.ctaSolutions')}
+          </span>
+        </div>
+      </nav>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 3 — HERO SECTION
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-background via-muted to-muted md:min-h-[340px] lg:min-h-[400px]">
+        {/* Hero image — fades into background on desktop */}
         <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-[58%] select-none md:block">
           <Image
             src={ASSETS.home.hero}
@@ -79,7 +84,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
             className="object-cover object-center"
             style={fadeLeft}
           />
-          {/* Dot grid pattern (Figma 2071:1059–1083) */}
+          {/* Dot grid pattern */}
           <div className="absolute left-[7%] top-[25%] grid grid-cols-5 gap-[8px]" aria-hidden="true">
             {Array.from({ length: 25 }).map((_, i) => (
               <div key={i} className="h-2 w-2 rounded-full bg-white/40" />
@@ -87,43 +92,45 @@ export default async function HomePage({ params: { locale } }: { params: { local
           </div>
         </div>
 
-        <div className="relative z-10 mx-auto flex w-full max-w-[1440px] items-center px-4 sm:px-8 md:min-h-[320px] lg:min-h-[380px] lg:px-16">
-          <div className="max-w-[460px] py-8 sm:py-10">
-            <p className="text-xs leading-normal text-silver">{t('hero.eyebrow')}</p>
+        <div className="relative z-10 mx-auto flex w-full max-w-[1440px] items-center px-4 sm:px-8 md:min-h-[340px] lg:min-h-[400px] lg:px-16">
+          <div className="max-w-[480px] py-10 sm:py-12">
+            <p className="font-mono text-[11px] uppercase tracking-[0.15em] text-silver">
+              {t('hero.eyebrow')}
+            </p>
 
-            <h1 className="mt-3 font-semibold tracking-tight sm:mt-4">
-              <span className="block text-2xl leading-[1.18] text-primary sm:text-3xl md:text-4xl">
+            <h1 className="mt-4 font-semibold tracking-tight">
+              <span className="block text-[26px] leading-[1.18] text-primary sm:text-[32px] md:text-[38px]">
                 {t('hero.titleLine1')}
               </span>
-              <span className="block text-2xl leading-[1.18] text-primary sm:text-3xl md:text-4xl">
+              <span className="block text-[26px] leading-[1.18] text-primary sm:text-[32px] md:text-[38px]">
                 {t('hero.titleLine2')}
               </span>
             </h1>
 
-            <p className="mt-2 max-w-[388px] text-sm leading-relaxed text-muted-foreground sm:mt-3">
+            <p className="mt-3 max-w-[400px] text-[13px] leading-relaxed text-muted-foreground sm:mt-4">
               {t('hero.description')}
             </p>
 
-            <div className="mt-4 flex flex-wrap gap-2 sm:mt-5 sm:gap-3">
+            <div className="mt-5 flex flex-wrap gap-3 sm:mt-6">
               <Link
                 href="/quick-order"
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-brand bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 hover:border-brand sm:h-10 sm:px-5"
+                className="inline-flex h-10 items-center gap-2 rounded-lg border border-brand bg-brand px-5 text-[13px] font-semibold text-brand-foreground transition-colors hover:bg-brand-strong hover:border-brand-strong sm:h-11 sm:px-6"
               >
                 {t('hero.ctaOrder')}
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
               <Link
                 href="/solutions"
-                className="inline-flex h-9 items-center gap-2 rounded-lg border border-border bg-card px-4 text-sm text-muted-foreground transition-colors hover:border-brand hover:text-brand sm:h-10 sm:px-5"
+                className="inline-flex h-10 items-center gap-2 rounded-lg border border-border bg-card px-5 text-[13px] font-medium text-muted-foreground transition-colors hover:border-brand hover:text-brand sm:h-11 sm:px-6"
               >
                 {t('hero.ctaSolutions')}
-                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Ảnh găng tay cho mobile */}
+        {/* Mobile hero image */}
         <div className="relative w-full md:hidden">
           <div className="relative aspect-[16/7] w-full">
             <Image src={ASSETS.home.hero} alt="" fill className="object-cover object-center" />
@@ -131,340 +138,217 @@ export default async function HomePage({ params: { locale } }: { params: { local
         </div>
       </section>
 
-      {/* ── TRUST BAR (Figma 2071:1097) ──────────────────── */}
-      <section className="relative z-10 -mt-6 mx-auto w-full max-w-[1440px] px-4 pb-2 sm:-mt-11 sm:px-8 lg:px-16">
-        <div className="grid grid-cols-2 overflow-hidden rounded-lg border border-border bg-card lg:grid-cols-4 lg:divide-x lg:divide-border">
-          {trust.map(({ icon: Icon, title, lines }) => (
-            <div key={title} className="flex h-full flex-col items-center gap-1.5 px-3 py-3 text-center sm:flex-row sm:items-start sm:gap-3 sm:px-5 sm:py-5 sm:text-left lg:px-6">
-              <Icon className="h-6 w-6 shrink-0 text-primary sm:mt-0.5 sm:h-9 sm:w-9" strokeWidth={1.5} aria-hidden="true" />
-              <div>
-                <p className="text-[11px] font-medium text-foreground sm:text-xs">{title}</p>
-                {lines.map((line) => (
-                  <p key={line} className="mt-0.5 text-[10px] leading-[1.4] text-muted-foreground sm:text-[11px] sm:leading-[1.5]">
-                    {line}
-                  </p>
-                ))}
-              </div>
-            </div>
-          ))}
+      {/* ── Hero Metrics Bar ── */}
+      <section className="relative z-10 -mt-7 mx-auto w-full max-w-[1440px] px-4 pb-4 sm:-mt-12 sm:px-8 lg:px-16">
+        <div className="grid grid-cols-1 overflow-hidden rounded-lg border border-border bg-card shadow-sm sm:grid-cols-3 sm:divide-x sm:divide-border">
+          <MetricCard
+            icon={<Route className="h-5 w-5 text-brand" />}
+            label={tHubs('stats.distanceLabel')}
+            value={tHubs('stats.distanceValue')}
+            unit={tHubs('stats.distanceUnit')}
+            note={tHubs('stats.distanceNote')}
+          />
+          <MetricCard
+            icon={<Clock className="h-5 w-5 text-brand" />}
+            label={tHubs('stats.timeLabel')}
+            value={tHubs('stats.timeValue')}
+            unit={tHubs('stats.timeUnit')}
+            note={tHubs('stats.timeNote')}
+          />
+          <MetricCard
+            icon={<Users className="h-5 w-5 text-brand" />}
+            label={tHubs('stats.partnersLabel')}
+            value={tHubs('stats.partnersValue')}
+            note={tHubs('stats.partnersNote')}
+          />
         </div>
       </section>
 
-      {/* ── SOLUTIONS (Giải pháp nổi bật) ──── */}
-      <section className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-8 sm:py-8 lg:px-16">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-[200px_1fr_1fr]">
-          {/* Cột tiêu đề bên trái — align top */}
-          <div className="flex flex-col">
-            <h2 className="text-xs font-semibold uppercase tracking-[0.15em] text-primary">
-              {t('products.sectionTitle')}
-            </h2>
-            <div className="mt-2.5 h-0.5 w-5 bg-brand" />
-            <p className="mt-3 whitespace-pre-line text-xs leading-relaxed text-muted-foreground">
-              {t('products.sectionDesc')}
-            </p>
-            <Link
-              href="/solutions"
-              className="mt-4 inline-flex w-fit items-center gap-2 rounded border border-border bg-card px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-brand hover:text-brand"
-            >
-              {t('products.viewAll')}
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </Link>
-          </div>
-
-          {/* Card 1: Phòng sạch */}
-          <div className="grid grid-cols-[1fr_42%] overflow-hidden rounded border border-border bg-card">
-            {/* Bên trái: text */}
-            <div className="flex flex-col p-4">
-              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-foreground">
-                {t('products.item1Label')}
-              </p>
-              <h3 className="mt-1 text-lg font-bold uppercase tracking-tight text-primary sm:text-xl">
-                {t('products.item1Title')}
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                {t('products.item1Desc')}
-              </p>
-              <ul className="mt-2.5 space-y-1.5">
-                <li className="flex items-start gap-1.5 text-xs text-foreground">
-                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M13.5 4.5L6.5 11.5L2.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  {t('products.item1Bullet1')}
-                </li>
-                <li className="flex items-start gap-1.5 text-xs text-foreground">
-                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M13.5 4.5L6.5 11.5L2.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  {t('products.item1Bullet2')}
-                </li>
-              </ul>
-              <div className="mt-auto pt-4">
-                <Link
-                  href="/solutions"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/90"
-                  aria-label={t('products.item1Title')}
-                >
-                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-            {/* Bên phải: ảnh */}
-            <div className="relative min-h-[180px]">
-              <Image
-                src={ASSETS.home.solutionCleanroom}
-                alt={t('products.item1Title')}
-                fill
-                sizes="(max-width: 1024px) 45vw, 220px"
-                className="object-cover"
-              />
-            </div>
-          </div>
-
-          {/* Card 2: Đóng gói */}
-          <div className="grid grid-cols-[1fr_42%] overflow-hidden rounded border border-border bg-card">
-            {/* Bên trái: text */}
-            <div className="flex flex-col p-4">
-              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.15em] text-foreground">
-                {t('products.item2Label')}
-              </p>
-              <h3 className="mt-1 text-lg font-bold uppercase tracking-tight text-primary sm:text-xl">
-                {t('products.item2Title')}
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                {t('products.item2Desc')}
-              </p>
-              <ul className="mt-2.5 space-y-1.5">
-                <li className="flex items-start gap-1.5 text-xs text-foreground">
-                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M13.5 4.5L6.5 11.5L2.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  {t('products.item2Bullet1')}
-                </li>
-                <li className="flex items-start gap-1.5 text-xs text-foreground">
-                  <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-                    <path d="M13.5 4.5L6.5 11.5L2.5 7.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                  {t('products.item2Bullet2')}
-                </li>
-              </ul>
-              <div className="mt-auto pt-4">
-                <Link
-                  href="/solutions"
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-white transition-colors hover:bg-primary/90"
-                  aria-label={t('products.item2Title')}
-                >
-                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-            {/* Bên phải: ảnh */}
-            <div className="relative min-h-[180px]">
-              <Image
-                src={ASSETS.home.solutionPackaging}
-                alt={t('products.item2Title')}
-                fill
-                sizes="(max-width: 1024px) 45vw, 220px"
-                className="object-cover"
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── PARTNERS · NEWS · SUPPORT (Figma 2071:991 / 964 / 948) ── */}
-      <section className="mx-auto grid w-full max-w-[1440px] grid-cols-1 gap-3 px-4 pb-6 sm:px-8 sm:pb-8 lg:grid-cols-12 lg:px-16">
-        {/* Đối tác tiêu biểu — 1 hàng logo (Figma 2071:991) */}
-        <div className="flex flex-col rounded-lg border border-border bg-card px-4 py-4 sm:px-6 lg:col-span-4">
-          <h2 className="text-sm font-semibold text-primary sm:text-base">{t('partners.title')}</h2>
-          <div className="mt-2.5 h-0.5 w-5 bg-brand" />
-          <div className="grid flex-1 grid-cols-3 items-center gap-3 py-4">
-            {partners.map((p) => (
-              <div key={p.name} className="flex flex-col items-center text-center">
-                <span
-                  className={`${p.weight} leading-none`}
-                  style={{ color: p.color, fontSize: `${Math.min(p.size + 4, 18)}px` }}
-                >
-                  {p.name}
-                </span>
-                {'subtitle' in p && p.subtitle && (
-                  <span className="mt-1 text-[7px] font-light leading-none text-center" style={{ color: p.subtitleColor }}>
-                    {p.subtitle}
-                  </span>
-                )}
-              </div>
-            ))}
-          </div>
-          <Link
-            href="/about"
-            className="inline-flex items-center gap-1.5 text-[11px] font-medium text-brand transition-colors hover:text-brand-strong"
-          >
-            {t('partners.viewAll')}
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </Link>
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 4 — VISUAL STATIC MAP (API-driven)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="mx-auto w-full max-w-[1440px] px-4 py-6 sm:px-8 sm:py-10 lg:px-16">
+        <div className="mb-6">
+          <h2 className="text-[22px] font-bold leading-tight text-primary sm:text-[26px] lg:text-[30px]">
+            {tHubs('title')}
+          </h2>
+          <p className="mt-3 max-w-[600px] text-[12px] leading-relaxed text-muted-foreground sm:text-[13px]">
+            {tHubs('description')}
+          </p>
         </div>
 
-        {/* Tin tức mới nhất — 3 cột (Figma 2071:964) */}
-        <div className="rounded-lg border border-border bg-card p-4 sm:p-5 lg:col-span-5">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-primary sm:text-base">{t('news.title')}</h2>
-            <Link
-              href="/resources"
-              className="inline-flex items-center gap-1 text-[11px] font-medium text-brand transition-colors hover:text-brand-strong"
-            >
-              {t('news.viewAll')}
-              <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-            </Link>
+        <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-[354px_1fr]">
+          {/* Map */}
+          <div className="relative hidden h-[540px] w-[354px] shrink-0 lg:block">
+            <VietnamMap className="h-full w-full" clusters={mapClusters} />
           </div>
-          <div className="mt-2.5 h-0.5 w-5 bg-brand" />
-          <ul className="mt-3 grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-3">
-            {news.map((n, i) => (
-              <li
-                key={n.title}
-                className={i > 0 ? 'sm:border-l sm:border-border sm:pl-5' : undefined}
+
+          {/* Cluster Cards — aligned with connector lines */}
+          <div className="flex h-auto flex-col gap-4 lg:h-[540px] lg:justify-between lg:gap-0 lg:py-8">
+            {hubs.map((hub, index) => (
+              <div
+                key={hub.id}
+                className="group flex items-start gap-4 rounded-lg border border-border bg-card p-4 transition-all hover:border-brand/30 hover:shadow-md sm:p-5"
               >
-                <Link href="/resources" className="group flex h-full flex-col">
-                  <div className="relative aspect-[146/38] w-full overflow-hidden bg-muted">
-                    <Image src={n.img} alt="" fill sizes="160px" className="object-cover" />
-                  </div>
-                  <p className="mt-3 text-[11px] text-silver">{n.date}</p>
-                  <p className="mt-1.5 line-clamp-3 flex-1 text-[11px] font-medium leading-snug text-muted-foreground transition-colors group-hover:text-brand">
-                    {n.title}
-                  </p>
-                  <span className="mt-2 inline-flex items-center gap-1 text-[10px] text-brand">
-                    {t('news.readMore')}
-                    <ArrowRight className="h-3 w-3" aria-hidden="true" />
+                {/* Number badge */}
+                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary shadow-sm transition-colors group-hover:bg-brand">
+                  <span className="text-[12px] font-bold text-white">
+                    {String(index + 1).padStart(2, '0')}
                   </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Hỗ trợ nhanh (Figma 2071:948) */}
-        <div className="rounded-lg border border-border bg-card p-4 sm:p-5 lg:col-span-3">
-          <h2 className="text-sm font-semibold text-primary sm:text-base">{t('support.title')}</h2>
-          <div className="mt-2.5 h-0.5 w-5 bg-brand" />
-          <ul className="mt-3 space-y-3">
-            {support.map(({ icon: Icon, title, desc }) => (
-              <li key={title} className="flex items-start gap-3">
-                <Icon
-                  className="mt-0.5 h-[18px] w-[18px] shrink-0 text-primary"
-                  strokeWidth={1.75}
-                  aria-hidden="true"
-                />
-                <div>
-                  <p className="text-xs font-medium text-foreground">{title}</p>
-                  <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{desc}</p>
                 </div>
-              </li>
+
+                {/* Content */}
+                <div className="flex-1">
+                  <p className="text-[14px] font-bold leading-tight text-primary sm:text-[15px]">
+                    {hub.name}
+                  </p>
+                  {hub.industrial_zones && hub.industrial_zones.length > 0 && (
+                    <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground sm:text-[12px]">
+                      {hub.industrial_zones.map((z) => z.name).join(', ')}
+                    </p>
+                  )}
+                </div>
+
+                {/* Arrow */}
+                <Link
+                  href="/regional-hubs"
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-all group-hover:border-brand group-hover:bg-brand group-hover:text-white"
+                  aria-label={hub.name}
+                >
+                  <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
+                </Link>
+              </div>
             ))}
-          </ul>
+
+            {/* Fallback if no hubs from API */}
+            {hubs.length === 0 && (
+              <div className="flex items-center justify-center rounded-lg border border-dashed border-border bg-card p-8 text-sm text-muted-foreground">
+                No regional hubs available
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Mobile map */}
+        <div className="mt-6 lg:hidden">
+          <div className="relative mx-auto h-[400px] w-full max-w-[300px]">
+            <VietnamMap className="h-full w-full" clusters={mapClusters} />
+          </div>
         </div>
       </section>
 
-
-      {/* ── ABOUT + INDUSTRIES (1 block liền, ngăn bằng gạch) ── */}
-      <section className="mx-auto w-full max-w-[1440px] px-4 pb-6 sm:px-8 sm:pb-8 lg:px-16">
-        <div className="flex flex-col overflow-hidden rounded-lg border border-border bg-card lg:flex-row">
-          {/* About ULink Industries */}
-          <div className="flex flex-1 flex-col sm:flex-row lg:w-1/2">
-            {/* Text */}
-            <div className="flex flex-1 flex-col justify-center p-4 sm:p-6">
-              <h2 className="text-base font-semibold tracking-tight text-primary sm:text-lg">
-                {t('about.title')}
-              </h2>
-              <p className="mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground sm:mt-3 sm:text-sm">
-                {t('about.desc')}
-              </p>
-              <Link
-                href="/about"
-                className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-brand transition-colors hover:text-brand-strong sm:mt-4 sm:text-sm"
-              >
-                {t('about.cta')}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
-            {/* Ảnh nhà máy */}
-            <div className="relative hidden w-[40%] shrink-0 sm:block">
-              <Image
-                src={ASSETS.home.factory}
-                alt={t('about.title')}
-                fill
-                sizes="(max-width: 1024px) 50vw, 20vw"
-                className="object-cover"
-              />
-            </div>
-          </div>
-
-          {/* Divider */}
-          <div className="mx-0 border-t border-border lg:my-0 lg:border-l lg:border-t-0" />
-
-          {/* Giải pháp cho các ngành nghề */}
-          <div className="flex flex-1 flex-col p-4 sm:p-6 lg:w-1/2">
-            <h2 className="text-base font-semibold tracking-tight text-primary sm:text-lg">
-              {t('industries.title')}
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 5 — USP SECTION (Why choose ULINK)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="w-full bg-background">
+        <div className="mx-auto w-full max-w-[1440px] px-4 pb-8 sm:px-8 sm:pb-10 lg:px-16">
+          <div className="rounded-lg border border-border bg-card px-5 py-6 sm:px-8 sm:py-8 lg:px-10">
+            {/* Section title */}
+            <h2 className="mb-6 text-[15px] font-bold text-primary sm:text-[16px]">
+              {tWhy('title')}
             </h2>
-            <div className="mt-3 grid flex-1 grid-cols-3 gap-x-3 gap-y-3 sm:mt-4 sm:grid-cols-6 sm:gap-x-4">
+
+            {/* Items row */}
+            <div className="grid grid-cols-1 gap-x-8 gap-y-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
               {[
-                { icon: Cpu, title: t('industries.semiconductor'), desc: t('industries.semiconductorDesc') },
-                { icon: Heart, title: t('industries.medical'), desc: t('industries.medicalDesc') },
-                { icon: Car, title: t('industries.automotive'), desc: t('industries.automotiveDesc') },
-                { icon: UtensilsCrossed, title: t('industries.food'), desc: t('industries.foodDesc') },
-                { icon: Microscope, title: t('industries.precision'), desc: t('industries.precisionDesc') },
-                { icon: GraduationCap, title: t('industries.research'), desc: t('industries.researchDesc') }
-              ].map(({ icon: Icon, title, desc }) => (
-                <div key={title} className="flex flex-col items-center text-center">
-                  <Icon className="h-5 w-5 text-primary sm:h-6 sm:w-6" strokeWidth={1.5} aria-hidden="true" />
-                  <p className="mt-1 text-[10px] font-medium leading-tight text-foreground sm:mt-1.5 sm:text-[11px]">{title}</p>
-                  <p className="mt-0.5 hidden text-[10px] leading-snug text-muted-foreground sm:block">{desc}</p>
+                { key: 'network', icon: <Globe className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> },
+                { key: 'supplyChain', icon: <Truck className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> },
+                { key: 'quality', icon: <ShieldCheck className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> },
+                { key: 'cost', icon: <TrendingDown className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> },
+                { key: 'support', icon: <HeadsetMic className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> }
+              ].map((item) => (
+                <div key={item.key} className="flex items-start gap-3">
+                  {/* Icon */}
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center">
+                    {item.icon}
+                  </div>
+                  {/* Text */}
+                  <div className="flex-1">
+                    <p className="text-[12px] font-bold leading-tight text-primary/80 sm:text-[13px]">
+                      {tWhy(`items.${item.key}.title`)}
+                    </p>
+                    <p className="mt-1.5 text-[10px] leading-relaxed text-muted-foreground sm:text-[11px]">
+                      {tWhy(`items.${item.key}.desc`)}
+                    </p>
+                  </div>
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 6 — BOTTOM BANNER (CTA)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="w-full bg-background">
+        <div className="mx-auto w-full max-w-[1440px] px-4 pb-10 sm:px-8 sm:pb-12 lg:px-16">
+          <div className="flex flex-col items-start justify-between gap-5 rounded-lg border border-[#1f3063] bg-primary px-6 py-6 sm:px-8 md:flex-row md:items-center md:gap-8 lg:px-10">
+            {/* Left: icon + text */}
+            <div className="flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center">
+                <FileText className="h-9 w-9 text-primary-foreground/80" strokeWidth={1.4} />
+              </div>
+              <div>
+                <p className="text-[15px] font-bold leading-tight text-primary-foreground sm:text-[16px]">
+                  {tCta('title')}
+                </p>
+                <p className="mt-1.5 text-[11px] font-medium leading-relaxed text-primary-foreground/60 sm:text-[12px]">
+                  {tCta('desc')}
+                </p>
+              </div>
+            </div>
+
+            {/* Right: CTA button */}
             <Link
-              href="/solutions"
-              className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-brand transition-colors hover:text-brand-strong sm:mt-4 sm:text-sm"
+              href="/quick-order"
+              className="group inline-flex shrink-0 items-center gap-2 rounded-lg border border-brand-strong/40 bg-brand px-6 py-3 text-[13px] font-semibold text-brand-foreground transition-colors hover:bg-brand-strong"
             >
-              {t('industries.viewAll')}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              {tCta('button')}
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ── DỊCH VỤ KHÁC BIỆT (Differentiators) ──────────── */}
-      <section className="mx-auto w-full max-w-[1440px] px-4 pb-6 sm:px-8 sm:pb-8 lg:px-16">
-        <div className="rounded-lg border border-border bg-card px-4 pt-3 pb-4 sm:px-6 sm:pt-4 sm:pb-5">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-primary sm:text-sm">
-            {t('differentiators.title')}
-          </h2>
-          <div className="mt-3 grid grid-cols-2 gap-4 sm:mt-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-5">
-            {[
-              { icon: CalendarCheck, title: t('differentiators.scheduled'), desc: t('differentiators.scheduledDesc') },
-              { icon: RotateCcw, title: t('differentiators.reorder'), desc: t('differentiators.reorderDesc') },
-              { icon: Archive, title: t('differentiators.buffer'), desc: t('differentiators.bufferDesc') },
-              { icon: Combine, title: t('differentiators.consolidation'), desc: t('differentiators.consolidationDesc') },
-              { icon: AlertCircle, title: t('differentiators.emergency'), desc: t('differentiators.emergencyDesc') }
-            ].map(({ icon: Icon, title, desc }) => (
-              <div key={title} className="flex flex-col items-center text-center">
-                <Icon className="h-6 w-6 text-primary sm:h-7 sm:w-7" strokeWidth={1.5} aria-hidden="true" />
-                <p className="mt-2 text-[11px] font-semibold text-primary sm:mt-3 sm:text-xs">{title}</p>
-                <p className="mt-0.5 text-[10px] leading-snug text-muted-foreground sm:mt-1 sm:text-[11px]">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Closing CTA */}
-        <div className="mt-4 flex justify-end">
-          <Link
-            href="/contact"
-            className="inline-flex h-9 items-center gap-2 rounded-lg border border-brand bg-brand pl-[25px] pr-5 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand/90 hover:border-brand"
-          >
-            {t('differentiators.cta')}
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-          </Link>
-        </div>
-      </section>
+    </div>
+  );
+}
 
+/* ─── Sub-components ─── */
+
+function MetricCard({
+  icon,
+  label,
+  value,
+  unit,
+  note
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  unit?: string;
+  note: string;
+}) {
+  return (
+    <div className="flex items-start gap-3 px-5 py-4 sm:px-6 sm:py-5">
+      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand/8">
+        {icon}
+      </div>
+      <div>
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-[11px]">
+          {label}
+        </p>
+        <div className="mt-1 flex items-baseline gap-1">
+          <span className="text-[24px] font-bold leading-none text-primary sm:text-[28px]">
+            {value}
+          </span>
+          {unit && (
+            <span className="text-[16px] font-bold text-primary/65 sm:text-[18px]">{unit}</span>
+          )}
+        </div>
+        <p className="mt-1 text-[10px] text-muted-foreground/80 sm:text-[11px]">{note}</p>
+      </div>
     </div>
   );
 }

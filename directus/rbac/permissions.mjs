@@ -210,7 +210,7 @@ export function buildPermissionDefs() {
     });
   }
 
-  for (const collection of ['vn_provinces', 'vn_districts']) {
+  for (const collection of ['vn_provinces']) {
     permissions.push({
       policy: EDITOR_POLICY_ID,
       collection,

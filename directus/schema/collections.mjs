@@ -123,17 +123,6 @@ export const COLLECTION_DEFS = [
     ]
   },
   {
-    collection: 'vn_districts',
-    meta: { icon: 'map', note: 'Vietnam Districts', hidden: true },
-    schema: {},
-    fields: [
-      ID_FIELD,
-      { field: 'province', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
-      { field: 'code', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
-      { field: 'name', type: 'string', meta: { interface: 'input', required: true } }
-    ]
-  },
-  {
     collection: 'regional_hubs',
     meta: { icon: 'place', note: 'Regional Hubs' },
     schema: {},
@@ -145,7 +134,6 @@ export const COLLECTION_DEFS = [
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
       { field: 'province', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
-      { field: 'district', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
       { field: 'detail_address', type: 'text', meta: { interface: 'textarea', required: true } },
       {
         field: 'operating_status',
@@ -160,14 +148,14 @@ export const COLLECTION_DEFS = [
       },
       { field: 'coordinates', type: 'string', meta: { interface: 'input', options: { placeholder: 'lat,lng' } } },
       // ── Warehouse Capacity ──
-      { field: 'divider_warehouse', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'Warehouse Capacity' }, special: ['alias'] } },
+      { field: 'divider_warehouse', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'Warehouse Capacity' }, special: ['alias', 'no-data'] } },
       { field: 'warehouse_total_area', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: 'm²' } } },
       { field: 'warehouse_utilized_area', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: 'm²' } } },
       { field: 'warehouse_available_area', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: 'm²' } } },
       { field: 'warehouse_storage_tons', type: 'integer', meta: { interface: 'input', width: 'half', options: { placeholder: 'tons' } } },
       { field: 'warehouse_pallets', type: 'integer', meta: { interface: 'input', width: 'half', options: { placeholder: 'pallets' } } },
       // ── SLA Metrics ──
-      { field: 'divider_sla', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'SLA Metrics' }, special: ['alias'] } },
+      { field: 'divider_sla', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'SLA Metrics' }, special: ['alias', 'no-data'] } },
       { field: 'standard_delivery_time', type: 'string', meta: { interface: 'input', width: 'half' } },
       { field: 'on_time_rate', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: '%' } } },
       { field: 'on_time_rate_delta', type: 'string', meta: { interface: 'input', width: 'half', options: { placeholder: 'e.g. +2.1%' } } },
@@ -175,7 +163,7 @@ export const COLLECTION_DEFS = [
       { field: 'order_capacity_per_day', type: 'integer', meta: { interface: 'input', width: 'half' } },
       { field: 'avg_delivery_time', type: 'string', meta: { interface: 'input', width: 'half' } },
       // ── Technical Team ──
-      { field: 'divider_team', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'Technical Team' }, special: ['alias'] } },
+      { field: 'divider_team', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'Technical Team' }, special: ['alias', 'no-data'] } },
       { field: 'person_in_charge_name', type: 'string', meta: { interface: 'input', width: 'half' } },
       { field: 'person_in_charge_title', type: 'string', meta: { interface: 'input', width: 'half' } },
       { field: 'person_in_charge_phone', type: 'string', meta: { interface: 'input', width: 'half' } },

@@ -1,4 +1,12 @@
-export async function seedAdditionalContent(helpers, ids) {
+function getGeoEntry(map, key, label) {
+  const entry = map?.get(key);
+  if (!entry) {
+    throw new Error(`Missing ${label} seed for ${key}.`);
+  }
+  return entry;
+}
+
+export async function seedAdditionalContent(helpers, ids, geography) {
   // Partners
   await helpers.ensureItem('partners', 'name', {
     name: '3M',
@@ -57,9 +65,14 @@ export async function seedAdditionalContent(helpers, ids) {
   });
 
   // Additional regional hubs
+  const binhDuongProvince = getGeoEntry(geography?.provincesByAbbr, 'BD', 'province');
+  const haiPhongProvince = getGeoEntry(geography?.provincesByAbbr, 'HP', 'province');
+  const dongNaiProvince = getGeoEntry(geography?.provincesByAbbr, 'DN', 'province');
+
   const binhDuongId = await helpers.ensureItem('regional_hubs', 'slug', {
     name: 'VSIP Bình Dương',
     slug: 'vsip-binh-duong',
+    province: binhDuongProvince.id,
     detail_address: 'KCN VSIP II-A, Tân Uyên, Bình Dương',
     operating_status: 'active',
     coordinates: '11.0500,106.6500',
@@ -84,6 +97,7 @@ export async function seedAdditionalContent(helpers, ids) {
   const haiPhongId = await helpers.ensureItem('regional_hubs', 'slug', {
     name: 'VSIP Hải Phòng',
     slug: 'vsip-hai-phong',
+    province: haiPhongProvince.id,
     detail_address: 'KCN VSIP Hải Phòng, Thuỷ Nguyên, Hải Phòng',
     operating_status: 'active',
     coordinates: '20.9000,106.6800',
@@ -108,6 +122,7 @@ export async function seedAdditionalContent(helpers, ids) {
   const longThanhId = await helpers.ensureItem('regional_hubs', 'slug', {
     name: 'Long Thành',
     slug: 'long-thanh',
+    province: dongNaiProvince.id,
     detail_address: 'KCN Long Thành, Long Thành, Đồng Nai',
     operating_status: 'active',
     coordinates: '10.8000,106.9500',

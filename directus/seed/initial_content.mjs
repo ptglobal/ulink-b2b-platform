@@ -164,11 +164,9 @@ export async function seedInitialContent(helpers, client, geography) {
   });
 
   const haNamProvince = getGeoEntry(geography?.provincesByAbbr, 'HNA', 'province');
-  const kimBangDistrict = getGeoEntry(geography?.districtsByCode, 'vn-ha-nam-kim-bang', 'district');
   const dongVan4Id = await upsertRegionalHub(client, helpers, 'dong-van-4', {
     name: 'Đông Vân 4',
     province: haNamProvince.id,
-    district: kimBangDistrict.id,
     detail_address: 'KCN Đông Vân IV, Kim Bảng, Hà Nam',
     operating_status: 'active',
     coordinates: '20.5500,105.9100',
@@ -191,12 +189,10 @@ export async function seedInitialContent(helpers, client, geography) {
   });
   await seedTranslations('regional_hubs', dongVan4Id, 'dong_van_4');
 
-  const haNoiProvince = getGeoEntry(geography?.provincesByAbbr, 'HAN', 'province');
-  const dongAnhDistrict = getGeoEntry(geography?.districtsByCode, 'vn-ha-noi-dong-anh', 'district');
+  const haNoiProvince = getGeoEntry(geography?.provincesByAbbr, 'HN', 'province');
   const bacThangLongId = await upsertRegionalHub(client, helpers, 'bac-thang-long', {
     name: 'Bắc Thăng Long',
     province: haNoiProvince.id,
-    district: dongAnhDistrict.id,
     detail_address: 'Đông Anh, Hà Nội',
     operating_status: 'active',
     coordinates: '21.1000,105.8500',

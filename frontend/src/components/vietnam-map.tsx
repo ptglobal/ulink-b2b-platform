@@ -10,13 +10,14 @@
  * Projection: equirectangular onto viewBox 0 0 380 580
  */
 
-type ClusterMarker = {
+export type ClusterMarker = {
   id: string;
   lat: number;
   lon: number;
 };
 
-const CLUSTERS: ClusterMarker[] = [
+/** Fallback clusters if none are provided via props */
+const DEFAULT_CLUSTERS: ClusterMarker[] = [
   { id: '01', lat: 21.12, lon: 106.07 },  // Bắc Ninh
   { id: '02', lat: 20.65, lon: 106.05 },  // Hưng Yên
   { id: '03', lat: 20.86, lon: 106.68 },  // Hải Phòng
@@ -39,16 +40,48 @@ function geoToSvg(lat: number, lon: number): { x: number; y: number } {
   return { x, y };
 }
 
-// Target Y positions for list items — measured from actual flex layout
-// Container: 540px with py-8 (32px), justify-between, 4 items
-// Badge centers mapped to SVG viewBox (0 0 380 580) coordinate space
-const LIST_TARGETS = [59, 213, 367, 521];
+/**
+ * Compute evenly-spaced Y target positions for N items within a container.
+ * Container: 540px with py-8 (32px top + 32px bottom), justify-between.
+ * Mapped into SVG viewBox (0 0 380 580) coordinate space.
+ */
+function computeListTargets(count: number): number[] {
+  if (count <= 0) return [];
+  if (count === 1) return [VIEW_H / 2];
 
-// Staggered bend X per line — prevents overlapping when multiple markers
-// are at similar Y positions (northern clusters are close together)
-const BEND_X_PER_LINE = [270, 295, 320, 350];
+  const containerHeight = 540;
+  const paddingY = 32;
+  const usable = containerHeight - 2 * paddingY; // 476px
+  const step = usable / (count - 1);
+  const scale = VIEW_H / containerHeight;
 
-export function VietnamMap({ className }: { className?: string }) {
+  return Array.from({ length: count }, (_, i) =>
+    Math.round((paddingY + i * step) * scale)
+  );
+}
+
+/**
+ * Compute staggered bend X positions so connector lines don't overlap.
+ */
+function computeBendXPositions(count: number): number[] {
+  const baseX = 270;
+  const stepX = 25;
+  return Array.from({ length: count }, (_, i) =>
+    Math.min(baseX + i * stepX, VIEW_W - 10)
+  );
+}
+
+interface VietnamMapProps {
+  className?: string;
+  /** Dynamic cluster markers — falls back to default hardcoded clusters */
+  clusters?: ClusterMarker[];
+}
+
+export function VietnamMap({ className, clusters }: VietnamMapProps) {
+  const activeMarkers = clusters && clusters.length > 0 ? clusters : DEFAULT_CLUSTERS;
+  const listTargets = computeListTargets(activeMarkers.length);
+  const bendXPositions = computeBendXPositions(activeMarkers.length);
+
   return (
     <div className={`relative ${className ?? ''}`}>
       {/* Province-level SVG map as base layer */}
@@ -69,10 +102,10 @@ export function VietnamMap({ className }: { className?: string }) {
         aria-label="Các cụm công nghiệp"
       >
         {/* Elbow connector lines: point → horizontal → vertical → horizontal to edge */}
-        {CLUSTERS.map((cluster, i) => {
+        {activeMarkers.map((cluster, i) => {
           const { x, y } = geoToSvg(cluster.lat, cluster.lon);
-          const targetY = LIST_TARGETS[i];
-          const bendX = BEND_X_PER_LINE[i];
+          const targetY = listTargets[i];
+          const bendX = bendXPositions[i];
           // Path: from marker → right to bend column → up/down to target Y → right to edge
           const d = `M ${x + 6} ${y} H ${bendX} V ${targetY} H ${VIEW_W}`;
           return (
@@ -89,7 +122,7 @@ export function VietnamMap({ className }: { className?: string }) {
         })}
 
         {/* Cluster markers — subtle solid dot with thin pulse ring */}
-        {CLUSTERS.map((cluster) => {
+        {activeMarkers.map((cluster) => {
           const { x, y } = geoToSvg(cluster.lat, cluster.lon);
           return (
             <g key={cluster.id}>

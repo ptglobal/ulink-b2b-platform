@@ -27,7 +27,6 @@ export interface RegionalHub {
   slug: string;
   hub_code?: string | null;
   province?: number | null;
-  district?: number | null;
   detail_address?: string | null;
   operating_status?: string | null;
   coordinates?: string | null;

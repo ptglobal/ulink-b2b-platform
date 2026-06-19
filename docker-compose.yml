@@ -155,6 +155,7 @@ services:
       - ./directus/extensions/media-policy-hook:/directus/extensions/media-policy-hook:ro
       - ./directus/extensions/commercial-import-endpoint:/directus/extensions/commercial-import-endpoint:ro
       - ./directus/extensions/docs-endpoint:/directus/extensions/docs-endpoint:ro
+      - ./directus/extensions/hub-code-sync:/directus/extensions/hub-code-sync:ro
     ports:
       - '8055:8055'
     healthcheck:
