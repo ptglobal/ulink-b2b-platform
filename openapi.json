@@ -3,11 +3,11 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "a41c6c932dd8e45e2d0f65c40d0d9d36a46ccc0d"
+    "version": "56ee39825efd242a19847f565bcc12d508fa7fd3"
   },
   "servers": [
     {
-      "url": "http://localhost:8055",
+      "url": "http://192.168.1.25:8055",
       "description": "Your current Directus instance."
     }
   ],
@@ -150,7 +150,8 @@
               }
             }
           }
-        }
+        },
+        "security": []
       }
     },
     "/auth/refresh": {
@@ -220,7 +221,8 @@
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
-        }
+        },
+        "security": []
       }
     },
     "/auth/logout": {
@@ -260,7 +262,8 @@
           "200": {
             "description": "Request successful"
           }
-        }
+        },
+        "security": []
       }
     },
     "/auth/password/request": {
@@ -335,7 +338,8 @@
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
-        }
+        },
+        "security": []
       }
     },
     "/auth/oauth": {
@@ -375,7 +379,8 @@
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
-        }
+        },
+        "security": []
       }
     },
     "/auth/oauth/{provider}": {
@@ -433,7 +438,8 @@
           "401": {
             "$ref": "#/components/responses/UnauthorizedError"
           }
-        }
+        },
+        "security": []
       }
     },
     "/schema/snapshot": {
@@ -656,7 +662,8 @@
         },
         "tags": [
           "Server"
-        ]
+        ],
+        "security": []
       }
     },
     "/utils/hash/generate": {
@@ -23369,6 +23376,18 @@
     {
       "name": "ItemsProductsFiles",
       "x-collection": "products_files"
+    },
+    {
+      "name": "Customer Onboarding"
+    },
+    {
+      "name": "Commercial Import"
+    },
+    {
+      "name": "Media Policy"
+    },
+    {
+      "name": "Documentation"
     }
   ],
   "components": {
@@ -26840,6 +26859,7 @@
             "nullable": true,
             "type": "string",
             "format": "timestamp"
+          }
           }
         },
         "x-collection": "customers"

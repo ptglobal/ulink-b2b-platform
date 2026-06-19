@@ -98,6 +98,24 @@ export default {
         };
         spec.security = [{ BearerAuth: [] }];
 
+        // Disable security for public authentication / server endpoints to avoid sending expired tokens in Swagger UI
+        const publicEndpoints = [
+          { path: '/auth/login', method: 'post' },
+          { path: '/auth/refresh', method: 'post' },
+          { path: '/auth/logout', method: 'post' },
+          { path: '/auth/password/request', method: 'post' },
+          { path: '/auth/password/reset', method: 'post' },
+          { path: '/auth/oauth', method: 'get' },
+          { path: '/auth/oauth/{provider}', method: 'get' },
+          { path: '/server/ping', method: 'get' }
+        ];
+
+        for (const ep of publicEndpoints) {
+          if (spec.paths[ep.path] && spec.paths[ep.path][ep.method]) {
+            spec.paths[ep.path][ep.method].security = [];
+          }
+        }
+
         res.json(spec);
       } catch (err) {
         res.status(500).json({ error: err.message });

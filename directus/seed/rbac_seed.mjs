@@ -13,7 +13,7 @@ import { logInfo, logPass, logDone, logFatal } from '../lib/logging.mjs';
 const client = createDirectusClient();
 
 async function upsertUserByEmail(email, data) {
-  const existing = await client.request(readUsers({ filter: { email: { _eq: email } } }));
+  const existing = await client.request(readUsers({ filter: { email: { _eq: email } }, fields: ['id', 'email'] }));
   if (existing.length > 0) {
     const updated = await client.request(
       updateUser(existing[0].id, {

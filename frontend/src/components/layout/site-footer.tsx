@@ -1,9 +1,10 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import { MapPin, Phone, Mail, Clock, Facebook, Linkedin, Youtube, Send } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Facebook, Linkedin, Youtube } from 'lucide-react';
 import { ASSETS } from '@/lib/assets';
 import { FooterLocaleSwitcher } from './footer-locale-switcher';
+import { NewsletterForm } from './newsletter-form';
 
 export async function SiteFooter() {
   const t = await getTranslations('footer');
@@ -171,20 +172,7 @@ export async function SiteFooter() {
             <p className="mt-2 text-[11px] leading-normal text-white/60 line-clamp-2">
               {t('newsletterDesc')}
             </p>
-            <form className="mt-2 flex items-stretch overflow-hidden rounded-lg bg-white">
-              <input
-                type="email"
-                placeholder={t('newsletterPlaceholder')}
-                className="h-9 min-w-0 flex-1 bg-transparent px-2.5 text-[11px] text-foreground placeholder:text-muted-foreground focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="flex h-9 w-9 shrink-0 items-center justify-center bg-transparent text-brand transition-colors hover:text-brand-strong"
-                aria-label={t('newsletterSubmit')}
-              >
-                <Send className="h-3.5 w-3.5" />
-              </button>
-            </form>
+            <NewsletterForm />
           </div>
         </div>
       </div>
