@@ -2,8 +2,8 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Dynamic API Specification",
-    "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "a41c6c932dd8e45e2d0f65c40d0d9d36a46ccc0d"
+    "description": "This is a dynamically generated API specification for all endpoints existing on the current project. ULINK extension endpoints merged from previous spec.",
+    "version": "a2ef1b3e05a734bf17e26404ce7a202a72d21db3"
   },
   "servers": [
     {
@@ -22690,9 +22690,7 @@
                   "email",
                   "phone",
                   "password",
-                  "confirm_password",
-                  "agree",
-                  "agree_at"
+                  "confirm_password"
                 ],
                 "properties": {
                   "company_name": {
@@ -22721,20 +22719,6 @@
                     "type": "string",
                     "format": "password",
                     "example": "SecurePass123!"
-                  },
-                  "agree": {
-                    "type": "boolean",
-                    "enum": [
-                      true
-                    ],
-                    "example": true,
-                    "description": "User must explicitly accept the terms of service. Must be `true`."
-                  },
-                  "agree_at": {
-                    "type": "string",
-                    "format": "date-time",
-                    "example": "2026-06-19T13:56:00.000Z",
-                    "description": "ISO-8601 timestamp of the moment the user consented. Stamped at submit time."
                   }
                 }
               }

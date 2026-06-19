@@ -38,7 +38,11 @@ export function LoginForm() {
     setLoading(true);
     try {
       await login(email, password);
+      // Navigate to home then ask Next.js to re-fetch server-rendered data
+      // (header, session-bound UI) so the "logged in" state shows up without a
+      // full page reload and the resulting flash.
       router.push('/');
+      router.refresh();
     } catch (err) {
       setFormError(
         err instanceof AuthError && err.code === 'network_error'

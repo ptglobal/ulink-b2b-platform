@@ -44,7 +44,10 @@ async function directusFetch(path: string, init: RequestInit & { cookieHeader?: 
  *
  * Body (validated by registerSchema):
  *   company_name, contact_name, email, phone, password, confirm_password,
- *   optional verified_token from a prior /verify-otp call.
+ *   agree, agree_at.
+ *
+ * OTP verification is currently disabled in the registration flow, so no
+ * verified_token is required (and any incoming value is ignored).
  */
 export async function POST(req: Request) {
   return handleRoute<RegisterInput>(req, { schema: registerSchema }, async (data) => {
@@ -64,8 +67,7 @@ export async function POST(req: Request) {
         // stamp consented_at on the customer row. The Zod schema guarantees
         // these are present, so a non-null assertion is safe.
         agree: data.agree,
-        agree_at: data.agree_at,
-        ...(data.verified_token ? { verified_token: data.verified_token } : {})
+        agree_at: data.agree_at
       })
     });
 

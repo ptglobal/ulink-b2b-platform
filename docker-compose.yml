@@ -147,6 +147,7 @@ services:
       - ./directus/extensions/password-change-endpoint/src:/directus/extensions/password-change-endpoint/src:ro
       - ./directus/extensions/password-reset-request-endpoint/src:/directus/extensions/password-reset-request-endpoint/src:ro
       - ./directus/extensions/customer-onboarding-endpoint/src:/directus/extensions/customer-onboarding-endpoint/src:ro
+      - ./directus/extensions/customer-onboarding-endpoint/dist:/directus/extensions/customer-onboarding-endpoint/dist:ro
       - ./directus/extensions/customer-onboarding-hook:/directus/extensions/customer-onboarding-hook:ro
       - ./directus/extensions/password-policy-hook:/directus/extensions/password-policy-hook:ro
       - ./directus/extensions/security-headers-hook:/directus/extensions/security-headers-hook:ro

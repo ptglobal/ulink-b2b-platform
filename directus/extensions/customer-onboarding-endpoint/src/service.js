@@ -156,28 +156,44 @@ export async function createCustomerAccount(context, input) {
     throw error;
   }
 
-  // Require OTP verification for the same email before creating an account.
-  // The frontend calls /otp/verify?purpose=register to obtain verified_token,
-  // then forwards it here. We atomically consume the token so it can't be
-  // replayed to register multiple accounts.
-  const verifiedToken = String(input.verified_token ?? '');
-  if (!verifiedToken.startsWith(VERIFIED_TOKEN_PREFIX)) {
-    const error = new Error('Email verification is required to register.');
-    error.status = 401;
-    error.code = 'email_unverified';
-    throw error;
-  }
+  // ─── Email verification (currently DISABLED) ─────────────────────────────
+  // OTP-based email verification for the registration flow is currently
+  // turned off in the frontend (see src/app/api/auth/verify-otp/route.ts
+  // which returns 410 Gone). The block below is kept verbatim and only
+  // skipped, so it can be re-enabled in one place if/when OTP is brought
+  // back. The Directus OTP extension itself is still deployed and the
+  // helper constants (VERIFIED_TOKEN_PREFIX, getRedis) remain in scope.
+  if (process.env.ULINK_REQUIRE_OTP_FOR_REGISTER === 'true') {
+    // Require OTP verification for the same email before creating an account.
+    // The frontend calls /otp/verify?purpose=register to obtain verified_token,
+    // then forwards it here. We atomically consume the token so it can't be
+    // replayed to register multiple accounts.
+    const verifiedToken = String(input.verified_token ?? '');
+    if (!verifiedToken.startsWith(VERIFIED_TOKEN_PREFIX)) {
+      const error = new Error('Email verification is required to register.');
+      error.status = 401;
+      error.code = 'email_unverified';
+      throw error;
+    }
 
-  const redis = getRedis();
-  const verifiedKey = `ulink:otp:verified:register:${email}`;
-  const storedToken = await redis.get(verifiedKey);
-  if (!storedToken || storedToken !== verifiedToken) {
-    const error = new Error('Email verification has expired. Please verify your email and try again.');
-    error.status = 401;
-    error.code = 'invalid_or_expired_verification';
-    throw error;
+    const redis = getRedis();
+    const verifiedKey = `ulink:otp:verified:register:${email}`;
+    const storedToken = await redis.get(verifiedKey);
+    if (!storedToken || storedToken !== verifiedToken) {
+      const error = new Error('Email verification has expired. Please verify your email and try again.');
+      error.status = 401;
+      error.code = 'invalid_or_expired_verification';
+      throw error;
+    }
+    await redis.del(verifiedKey).catch(() => {});
+  } else {
+    // OTP gating is off — log a one-shot warning so any future incident that
+    // looks like spam sign-ups has an obvious breadcrumb in the Directus
+    // logs. We use console.warn (not logger) because this endpoint runs
+    // before the request-scoped logger is fully wired in some code paths.
+    // eslint-disable-next-line no-console
+    console.warn('[customer-onboarding] OTP verification skipped (ULINK_REQUIRE_OTP_FOR_REGISTER is not "true")');
   }
-  await redis.del(verifiedKey).catch(() => {});
 
   const { usersService, customersService, database } = await getServiceClasses(context);
 
