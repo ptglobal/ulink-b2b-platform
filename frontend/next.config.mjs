@@ -8,6 +8,7 @@ const nextConfig = {
   images: {
     remotePatterns: [
       { protocol: 'http', hostname: 'localhost' },
+      { protocol: 'http', hostname: '103.164.35.132' }, // test backend (Directus assets)
       { protocol: 'https', hostname: '**' }
     ]
   }

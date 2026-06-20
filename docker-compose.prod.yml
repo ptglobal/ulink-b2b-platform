@@ -21,8 +21,10 @@ services:
 
   mailpit:
     ports: !override
-      - '127.0.0.1:1025:1025' # SMTP — loopback only
-      - '127.0.0.1:8025:8025' # web UI — reach via SSH tunnel
+      - '127.0.0.1:1025:1025' # SMTP — loopback only (Directus + frontend send here)
+      - '8025:8025' # web UI — PUBLIC for testing, protected by basic auth (MP_UI_AUTH)
+    environment:
+      MP_UI_AUTH: ${MP_UI_AUTH} # "user:password" — gates the public web UI / API
 
   swagger-ui:
     ports: !override
@@ -37,6 +39,42 @@ services:
     volumes: !override
       - ulink_uploads:/directus/uploads
       - ./directus/lib:/directus/lib
+
+  # Frontend (Next.js) — TEST deployment only. The contract is "frontend runs
+  # separately (Vercel/prod, npm run dev locally)", so it lives in this prod
+  # overlay rather than the base backend stack. Runs `next dev` in a node
+  # container against the live backend so we can click through flows + see mail.
+  frontend:
+    image: node:20-alpine
+    restart: unless-stopped
+    working_dir: /app
+    command: ['sh', '-c', 'npm ci --no-audit --no-fund && npm run dev']
+    environment:
+      # Public backend URL: works for server-side BFF calls AND for asset/image
+      # URLs rendered to the browser. (Container reaches the host's published port.)
+      DIRECTUS_URL: http://103.164.35.132:8055
+      DIRECTUS_FRONTEND_TOKEN: ${DIRECTUS_FRONTEND_TOKEN} # must match the backend token
+      DIRECTUS_TOKEN: ${DIRECTUS_TOKEN:-}
+      REVALIDATE_SECRET: ${REVALIDATE_SECRET}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
+      REDIS_URL: redis://redis:6379 # internal network
+      NEXT_PUBLIC_SITE_URL: http://103.164.35.132:3002
+      SMTP_HOST: mailpit # internal network — RFQ-notify emails land in Mailpit
+      SMTP_PORT: '1025'
+      SMTP_FROM: ULink <no-reply@ulink.local>
+      ERP_SYNC_ENABLED: 'false'
+      NODE_ENV: development
+    volumes:
+      - ./frontend:/app
+    ports:
+      - '3002:3000'
+    depends_on:
+      directus:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mailpit:
+        condition: service_started
 
 volumes:
   ulink_uploads: # Directus uploads — container-owned (uid 1000), survives recreates
