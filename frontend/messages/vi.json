@@ -79,6 +79,7 @@
     "resetPasswordTitle": "Đặt lại mật khẩu",
     "resetPasswordDesc": "Nhập mật khẩu mới cho tài khoản của bạn.",
     "resetPasswordInvalidToken": "Liên kết đặt lại mật khẩu đã hết hạn hoặc không hợp lệ.",
+    "changePasswordSessionMismatch": "Liên kết đặt lại này không thuộc về tài khoản đang đăng nhập. Vui lòng đăng xuất rồi mở lại liên kết.",
     "resetPasswordExpiredDesc": "Liên kết chỉ có hiệu lực trong 15 phút và chỉ sử dụng được một lần. Vui lòng yêu cầu liên kết mới.",
     "resetPasswordCheckEmailDesc": "Chúng tôi vừa gửi một liên kết đặt lại mật khẩu tới email của bạn. Mở liên kết trong email, hoặc dán mã xác nhận bên dưới để tiếp tục.",
     "resetPasswordCodeLabel": "Mã xác nhận",

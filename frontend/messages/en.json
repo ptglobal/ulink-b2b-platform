@@ -79,6 +79,7 @@
     "resetPasswordTitle": "Reset your password",
     "resetPasswordDesc": "Enter a new password for your account.",
     "resetPasswordInvalidToken": "This reset link has expired or is invalid.",
+    "changePasswordSessionMismatch": "This reset link does not belong to the signed-in account. Please sign out and re-open the link.",
     "resetPasswordCheckEmailDesc": "We just emailed you a reset link. Open the link in your email, or paste the verification code below to continue.",
     "resetPasswordCodeLabel": "Verification code",
     "resetPasswordCodePlaceholder": "Paste the code from your email",

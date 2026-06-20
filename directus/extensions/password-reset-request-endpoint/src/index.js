@@ -205,6 +205,48 @@ export default {
     });
 
     /**
+     * POST /password-reset-request/peek
+     *
+     * Body: { token }
+     *
+     * Returns the email + purpose bound to a token WITHOUT consuming it.
+     * Used by the frontend's /change-password?token=… flow so the
+     * confirm-token route can probe current_password against the right
+     * account even when the user has no session (incognito, phone, expired
+     * cookie).
+     *
+     * Response (always 200, never reveals the reason for invalidity):
+     *   { data: { valid: true,  email: string, purpose: 'change'|'forgot' } }
+     *   { data: { valid: false } }
+     *
+     * Non-destructive: never writes / deletes / extends the Redis entry.
+     * The token remains single-use after /reset, TTL keeps ticking down.
+     */
+    router.post('/peek', async (req, res) => {
+      const { token } = req.body ?? {};
+      if (!token || typeof token !== 'string' || token.length < 32) {
+        return res.status(200).json({ data: { valid: false } });
+      }
+      try {
+        const raw = await getRedis().get(tokenKey(token));
+        if (!raw) return res.status(200).json({ data: { valid: false } });
+        let payload;
+        try { payload = JSON.parse(raw); }
+        catch { return res.status(200).json({ data: { valid: false } }); }
+        return res.status(200).json({
+          data: {
+            valid: true,
+            email: payload.email,
+            purpose: payload.purpose === 'change' ? 'change' : 'forgot'
+          }
+        });
+      } catch (error) {
+        console.error('[password-reset-request] Peek error:', error.message);
+        return res.status(200).json({ data: { valid: false } });
+      }
+    });
+
+    /**
      * POST /password-reset-request/reset
      *
      * Body: { token, password, confirm_password }

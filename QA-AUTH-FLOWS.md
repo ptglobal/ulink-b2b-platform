@@ -1,6 +1,5 @@
 # QA — Luồng Authentication ULINK B2B
 
-> **Ngày cập nhật:** 2026-06-18  
 > **URL Frontend:** http://192.168.1.36:3000  
 > **URL Directus:** http://192.168.1.36:8055  
 > **Mailpit (xem email):** http://192.168.1.36:8025  
@@ -11,8 +10,8 @@
 
 | Email | Password | Role |
 |-------|----------|------|
-| admin@ulink.com | (hỏi dev) | Admin |
-| customer@ulink.com | (hỏi dev) | Customer |
+| admin@ulink.com | Admin123! | Admin |
+
 
 ---
 
