@@ -31,3 +31,12 @@ services:
   directus:
     ports: !override
       - '8055:8055' # PUBLIC — the chosen direct-port exposure
+    # The base file bind-mounts each extension's src/ over the image for local
+    # live-editing. On a fresh server clone the host has no built dist/ or
+    # node_modules, so those mounts SHADOW the image's baked artifacts and the
+    # extensions fail to load. In production we run the extensions straight from
+    # the self-contained image — keep only the persistent uploads dir and the
+    # shared lib/ that extensions import via ../../../lib.
+    volumes: !override
+      - ./directus/uploads:/directus/uploads
+      - ./directus/lib:/directus/lib
