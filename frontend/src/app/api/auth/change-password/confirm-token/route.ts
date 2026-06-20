@@ -19,6 +19,16 @@ export const dynamic = 'force-dynamic';
  * could change the password knowing only the new value — which defeats
  * the whole point of requiring a current password.
  *
+ * Identity model:
+ *   - The **token's email is the source of truth** — the link was emailed
+ *     only to that inbox, so whoever has the link proved email-inbox
+ *     control. The current_password check adds the knowledge factor.
+ *   - If the user also has a session, the session email must match the
+ *     token email. Otherwise a logged-in User A could submit User B's
+ *     token + A's own current_password → probe would succeed against A,
+ *     /reset would then consume B's token and change B's password.
+ *   - No session is fine — the token alone is sufficient identity.
+ *
  * On success the response is `{ ok: true, changed: true }`; the client then
  * calls /api/auth/logout to drop its own cookie before redirecting to
  * /login?reason=password-changed.
@@ -26,36 +36,56 @@ export const dynamic = 'force-dynamic';
  * Errors:
  *   400 invalid_token               — token missing/expired/consumed
  *   401 invalid_current_password    — current_password didn't match
+ *   403 token_email_mismatch        — session email ≠ token email
  *   422 password_mismatch           — confirm !== new
  *   422 password_policy             — new failed complexity rule
  *   429 rate_limited                — too many failed attempts
+ *   502 upstream_error              — Directus unreachable
  */
 export async function POST(req: Request) {
   return handleRoute<ChangePasswordViaTokenInput>(
     req,
     { schema: changePasswordViaTokenSchema },
     async (data) => {
-      // 1. Resolve the user id behind the token so we can probe-verify
-      //    current_password against their account. We do this by calling
-      //    /users/me with the request's session cookie — but the email
-      //    link flow is for users who may already be logged in elsewhere.
-      //    If there is no session, we look up by token via a dedicated
-      //    peek endpoint… but we don't have one. Instead, we let
-      //    Directus handle the probe in step 3 below using the email
-      //    attached to the token. For that we need the email here, so we
-      //    must first check the token exists in Directus and read its
-      //    email payload.
-      //
-      //    We expose this via a small probe: hit a Directus endpoint that
-      //    returns the token's user email without consuming it. Since we
-      //    don't have such an endpoint, we fall back to a different
-      //    design: verify current_password against the **currently
-      //    authenticated user** if a session cookie is present. If the
-      //    user opened the email link while signed in, we know who they
-      //    are via /users/me and can probe their password directly.
-      const cookieHeader = req.headers.get('cookie') ?? '';
+      // 1. Peek the token. Token email is the source of truth.
+      let tokenEmail: string | null = null;
+      try {
+        const peekRes = await fetch(
+          `${DIRECTUS_URL}/password-reset-request/peek`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ token: data.token }),
+            cache: 'no-store'
+          }
+        );
+        if (peekRes.ok) {
+          const peekJson = (await peekRes.json()) as {
+            data?: { valid?: boolean; email?: string };
+          };
+          if (peekJson?.data?.valid && typeof peekJson.data.email === 'string') {
+            tokenEmail = peekJson.data.email.toLowerCase();
+          }
+        }
+      } catch {
+        /* fall through — handled below */
+      }
 
-      let probeEmail: string | null = null;
+      if (!tokenEmail) {
+        // Missing / expired / consumed / peek-network-error. Don't
+        // distinguish the reason to the caller.
+        throw new ApiError(
+          400,
+          'invalid_token',
+          'This reset link has expired or already been used. Please request a new one.'
+        );
+      }
+
+      // 2. Cross-user defence. If a session also exists, the two emails
+      //    must match — otherwise a logged-in attacker could use their
+      //    own password to consume someone else's token.
+      const cookieHeader = req.headers.get('cookie') ?? '';
+      let sessionEmail: string | null = null;
       try {
         const meRes = await fetch(`${DIRECTUS_URL}/users/me`, {
           headers: { cookie: cookieHeader },
@@ -63,27 +93,28 @@ export async function POST(req: Request) {
         });
         if (meRes.ok) {
           const meJson = (await meRes.json()) as { data?: { email?: string } };
-          probeEmail = meJson?.data?.email ?? null;
+          if (typeof meJson?.data?.email === 'string') {
+            sessionEmail = meJson.data.email.toLowerCase();
+          }
         }
       } catch {
-        /* fall through — handled below */
+        /* fall through */
       }
 
-      if (!probeEmail) {
-        // No active session. We can't safely verify current_password
-        // without an identity to probe against. Reject the request so
-        // the user knows to sign in first and re-open the form. The
-        // alternative — letting the change through without
-        // current_password — would mean a stolen email link alone is
-        // enough to take over the account.
+      if (sessionEmail && sessionEmail !== tokenEmail) {
+        console.warn(
+          `[change-password/confirm-token] token/session email mismatch: ` +
+            `session=${sessionEmail} token=${tokenEmail}`
+        );
         throw new ApiError(
-          401,
-          'unauthenticated',
-          'Please sign in to your account, then re-open the change-password link.'
+          403,
+          'token_email_mismatch',
+          'This reset link does not belong to the signed-in account.'
         );
       }
 
-      // 2. Probe current_password against the authenticated user.
+      // 3. Probe current_password against the token's email.
+      const probeEmail = tokenEmail;
       let probeSetCookie: string | null = null;
       try {
         const probeRes = await fetch(`${DIRECTUS_URL}/auth/login`, {
@@ -109,7 +140,7 @@ export async function POST(req: Request) {
         throw new ApiError(502, 'upstream_error', 'Could not reach Directus.');
       }
 
-      // 3. Forward to Directus's reset endpoint with the token + new
+      // 4. Forward to Directus's reset endpoint with the token + new
       //    password.
       let res: Response;
       try {
@@ -133,7 +164,7 @@ export async function POST(req: Request) {
         errors?: Array<{ extensions?: { code?: string }; message?: string }>;
       };
 
-      // 4. Kill the probe login session so we don't leak a fresh Directus
+      // 5. Kill the probe login session so we don't leak a fresh Directus
       //    session into the void.
       if (probeSetCookie) {
         try {

@@ -4,7 +4,13 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ChangePasswordForm } from '@/components/auth/change-password-form';
 import { getCurrentUser } from '@/lib/auth-helpers';
 
-type Props = { params: { locale: string } };
+type Props = {
+  params: { locale: string };
+  // Token in URL is proof of intent (link was emailed only to that inbox).
+  // We must render the form even when the user has no session — that's
+  // the email-link flow's whole point.
+  searchParams: { token?: string };
+};
 
 export async function generateMetadata({ params: { locale } }: Props): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: 'auth' });
@@ -19,11 +25,19 @@ export async function generateMetadata({ params: { locale } }: Props): Promise<M
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
-// Server-side guard: only logged-in users can change their password in
-// place (the form requires `current_password`). Anonymous visitors who
-// want to recover their account should use /forgot-password instead.
-export default async function ChangePasswordPage({ params: { locale } }: Props) {
+// Server-side guard:
+//   - With ?token=… (email-link path): render unconditionally — the token
+//     itself proves identity (it was emailed only to that inbox) and the
+//     form's current_password check verifies knowledge.
+//   - Without ?token=… (in-session path): require a session and redirect
+//     anonymous visitors to /login?next=/change-password so they come back
+//     here after signing in.
+export default async function ChangePasswordPage({
+  params: { locale },
+  searchParams
+}: Props) {
   setRequestLocale(locale);
+  if (searchParams.token) return <ChangePasswordForm />;
   const user = await getCurrentUser();
   if (!user) redirect('/login?next=/change-password');
   return <ChangePasswordForm />;

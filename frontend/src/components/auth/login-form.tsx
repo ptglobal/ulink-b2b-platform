@@ -60,10 +60,23 @@ function LoginFormInner() {
     setLoading(true);
     try {
       await login(email, password);
-      // Navigate to home then ask Next.js to re-fetch server-rendered data
-      // (header, session-bound UI) so the "logged in" state shows up without a
-      // full page reload and the resulting flash.
-      router.push('/');
+      // Honor ?next= for post-login redirects, but only when it points at
+      // a same-origin, internal route. Without this guard, /change-password
+      // redirects signed-out visitors here with ?next=/change-password —
+      // after they sign in they need to land back on that page, not at /.
+      // A `//evil.com/path` value would otherwise let an attacker craft a
+      // phishing link that bounces through /login?next=//evil.com to a
+      // hostile site. We restrict to paths that begin with a single `/`
+      // (relative, not protocol-relative) and exclude `//` and `/\\`.
+      const nextRaw = search.get('next');
+      const nextSafe =
+        typeof nextRaw === 'string' &&
+        nextRaw.startsWith('/') &&
+        !nextRaw.startsWith('//') &&
+        !nextRaw.startsWith('/\\')
+          ? nextRaw
+          : '/';
+      router.push(nextSafe);
       router.refresh();
     } catch (err) {
       setFormError(

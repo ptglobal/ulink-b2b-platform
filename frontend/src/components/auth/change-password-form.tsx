@@ -131,6 +131,9 @@ function ChangePasswordFormInner() {
           case 'invalid_token':
             setFormError(t('resetPasswordInvalidToken'));
             break;
+          case 'token_email_mismatch':
+            setFormError(t('changePasswordSessionMismatch'));
+            break;
           case 'PASSWORD_SAME_AS_OLD':
           case 'passwordReuse':
             setErrors((cur) => ({ ...cur, new_password: t('passwordReuse') }));

@@ -79,6 +79,7 @@
     "resetPasswordTitle": "パスワードを再設定",
     "resetPasswordDesc": "新しいパスワードを入力してください。",
     "resetPasswordInvalidToken": "再設定リンクの有効期限が切れているか、無効です。",
+    "changePasswordSessionMismatch": "この再設定リンクは、現在サインインしているアカウントのものではありません。サインアウトしてからリンクを開き直してください。",
     "resetPasswordCheckEmailDesc": "再設定リンクをメールでお送りしました。メール内のリンクを開くか、下に確認コードを貼り付けて続行してください。",
     "resetPasswordCodeLabel": "確認コード",
     "resetPasswordCodePlaceholder": "メールからコードを貼り付け",
