@@ -1,0 +1,40 @@
+# ULink CI/CD — host deploy pipeline.
+#
+# Runs on a dedicated SHELL runner tagged `ulink-deploy` that executes directly on the
+# host (gitlab.pathtech.net / 103.164.35.132), where /opt/ulink holds the persistent
+# working tree and the git-ignored .env (real secrets live there, never in the repo).
+#
+# The job fetches the pushed commit using the short-lived CI_JOB_TOKEN (no long-lived
+# token stored on disk), hard-resets /opt/ulink to it, rebuilds + recreates the stack
+# with the production port overlay, then runs the idempotent bootstrap.
+#
+# Trigger is MANUAL on `dev` so an ordinary push never redeploys the live box by
+# surprise — press "play" on the deploy job to ship. Flip `when: manual` to `when: on_success`
+# later if you want auto-deploy on every dev push.
+
+stages:
+  - deploy
+
+variables:
+  DEPLOY_DIR: '/opt/ulink'
+  COMPOSE_FILES: '-f docker-compose.yml -f docker-compose.prod.yml'
+
+deploy:
+  stage: deploy
+  tags:
+    - ulink-deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      when: manual
+      allow_failure: false
+  environment:
+    name: production
+    url: http://103.164.35.132:8055
+  script:
+    - cd "$DEPLOY_DIR"
+    - git fetch "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.pathtech.net/${CI_PROJECT_PATH}.git" "$CI_COMMIT_BRANCH"
+    - git reset --hard FETCH_HEAD
+    - git log -1 --oneline
+    - docker compose $COMPOSE_FILES up -d --build --remove-orphans
+    - docker compose $COMPOSE_FILES ps
+    - bash deploy/wait-and-bootstrap.sh

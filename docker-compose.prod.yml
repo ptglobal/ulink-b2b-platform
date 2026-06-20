@@ -1,0 +1,33 @@
+# ULink — production overlay for the shared PUBLIC host (gitlab.pathtech.net / 103.164.35.132).
+#
+# The base docker-compose.yml publishes Postgres/Redis/Mailpit/Swagger to 0.0.0.0,
+# which is fine on a laptop but unacceptable on a server with a public IP — an open
+# Postgres or Redis on the internet is compromised within hours.
+#
+# This overlay uses Compose's `!override` tag (Compose v2.24+) to REPLACE — not append —
+# each service's published ports, so infrastructure stays on loopback and only Directus
+# is reachable from the internet (the chosen "direct port :8055" exposure).
+#
+# Deploy:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+services:
+  postgres:
+    ports: !override
+      - '127.0.0.1:5432:5432' # loopback only (Directus reaches it via the compose network)
+
+  redis:
+    ports: !override
+      - '127.0.0.1:6379:6379' # loopback only
+
+  mailpit:
+    ports: !override
+      - '127.0.0.1:1025:1025' # SMTP — loopback only
+      - '127.0.0.1:8025:8025' # web UI — reach via SSH tunnel
+
+  swagger-ui:
+    ports: !override
+      - '127.0.0.1:8056:8080' # API docs — reach via SSH tunnel
+
+  directus:
+    ports: !override
+      - '8055:8055' # PUBLIC — the chosen direct-port exposure
