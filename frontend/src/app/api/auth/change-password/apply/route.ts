@@ -61,6 +61,42 @@ export async function POST(req: Request) {
         throw new ApiError(401, 'unauthenticated', 'Session is invalid or expired.');
       }
 
+      // 2b. Anti-brute-force gate. Block the probe if this email is
+      //     currently locked out from prior wrong current_password
+      //     guesses. Keyed on the session's own email.
+      try {
+        const statusRes = await fetch(
+          `${DIRECTUS_URL}/password-reset-request/password-change/status`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: userEmail }),
+            cache: 'no-store'
+          }
+        );
+        if (statusRes.ok) {
+          const statusJson = (await statusRes.json().catch(() => ({}))) as {
+            data?: { locked?: boolean; lockedUntil?: number; ttlSeconds?: number };
+          };
+          if (statusJson?.data?.locked) {
+            throw new ApiError(
+              429,
+              'too_many_attempts',
+              'Too many wrong attempts. Please try again later.',
+              undefined,
+              {
+                lockedUntil: statusJson.data.lockedUntil ?? null,
+                ttlSeconds: statusJson.data.ttlSeconds ?? 0,
+                locked: true
+              }
+            );
+          }
+        }
+      } catch (err) {
+        if (err instanceof ApiError) throw err;
+        /* non-fatal: probe path below will still surface a 401 on bad input */
+      }
+
       // 3. Verify current_password by attempting a probe login. We do NOT
       //    forward the resulting session cookies back to the client — they
       //    belong to a throwaway session that we kill in step 6.
@@ -75,7 +111,35 @@ export async function POST(req: Request) {
         cache: 'no-store'
       });
       if (!probeRes.ok) {
-        throw new ApiError(401, 'invalid_current_password', 'Current password is incorrect.');
+        // Increment the counter and pull fresh state so the form can
+        // show the live countdown / remaining-attempts hint.
+        let payload: Record<string, unknown> | undefined;
+        try {
+          const failRes = await fetch(
+            `${DIRECTUS_URL}/password-reset-request/password-change/fail`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ email: userEmail }),
+              cache: 'no-store'
+            }
+          );
+          if (failRes.ok) {
+            const failJson = (await failRes.json().catch(() => ({}))) as {
+              data?: { remaining?: number; locked?: boolean; lockedUntil?: number };
+            };
+            if (failJson?.data) payload = failJson.data as Record<string, unknown>;
+          }
+        } catch {
+          /* best-effort */
+        }
+        throw new ApiError(
+          401,
+          'invalid_current_password',
+          'Current password is incorrect.',
+          undefined,
+          payload
+        );
       }
 
       // 4. PATCH the user with the new password. The password-policy-hook
@@ -133,6 +197,20 @@ export async function POST(req: Request) {
         } catch {
           /* best-effort cleanup */
         }
+      }
+
+      // 7. Best-effort: clear the current-password fail counter so a
+      //    successful change wipes any earlier misses. Failure here is
+      //    not surfaced — the user already changed their password.
+      try {
+        await fetch(`${DIRECTUS_URL}/password-reset-request/password-change/clear`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: userEmail }),
+          cache: 'no-store'
+        });
+      } catch {
+        /* non-fatal */
       }
 
       return jsonOk({ ok: true, changed: true }, 200);

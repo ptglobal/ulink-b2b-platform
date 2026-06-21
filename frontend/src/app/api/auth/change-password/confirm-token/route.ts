@@ -113,6 +113,43 @@ export async function POST(req: Request) {
         );
       }
 
+      // 2b. Anti-brute-force gate. Before we burn a probe login, check
+      //     whether this email is already locked out from a prior wave of
+      //     wrong guesses. Keyed on `tokenEmail` so a token-mismatch
+      //     attacker cannot spam-lock someone else's surface.
+      try {
+        const statusRes = await fetch(
+          `${DIRECTUS_URL}/password-reset-request/password-change/status`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: tokenEmail }),
+            cache: 'no-store'
+          }
+        );
+        if (statusRes.ok) {
+          const statusJson = (await statusRes.json().catch(() => ({}))) as {
+            data?: { locked?: boolean; lockedUntil?: number; ttlSeconds?: number };
+          };
+          if (statusJson?.data?.locked) {
+            throw new ApiError(
+              429,
+              'too_many_attempts',
+              'Too many wrong attempts. Please try again later.',
+              undefined,
+              {
+                lockedUntil: statusJson.data.lockedUntil ?? null,
+                ttlSeconds: statusJson.data.ttlSeconds ?? 0,
+                locked: true
+              }
+            );
+          }
+        }
+      } catch (err) {
+        if (err instanceof ApiError) throw err;
+        /* non-fatal: probe path below will still surface a 401 on bad input */
+      }
+
       // 3. Probe current_password against the token's email.
       const probeEmail = tokenEmail;
       let probeSetCookie: string | null = null;
@@ -128,10 +165,37 @@ export async function POST(req: Request) {
           cache: 'no-store'
         });
         if (!probeRes.ok) {
+          // Increment the counter and pull fresh state. The 401 is mapped
+          // to `invalid_current_password` so the existing client switch
+          // case continues to work; the new payload field carries the
+          // remaining-count / lockout info that the form needs to render
+          // the live countdown.
+          let payload: Record<string, unknown> | undefined;
+          try {
+            const failRes = await fetch(
+              `${DIRECTUS_URL}/password-reset-request/password-change/fail`,
+              {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: tokenEmail }),
+                cache: 'no-store'
+              }
+            );
+            if (failRes.ok) {
+              const failJson = (await failRes.json().catch(() => ({}))) as {
+                data?: { remaining?: number; locked?: boolean; lockedUntil?: number };
+              };
+              if (failJson?.data) payload = failJson.data as Record<string, unknown>;
+            }
+          } catch {
+            /* best-effort — surface a plain 401 if Redis is unreachable */
+          }
           throw new ApiError(
             401,
             'invalid_current_password',
-            'Current password is incorrect.'
+            'Current password is incorrect.',
+            undefined,
+            payload
           );
         }
         probeSetCookie = probeRes.headers.get('set-cookie');
@@ -196,6 +260,20 @@ export async function POST(req: Request) {
                 ? 422
                 : res.status;
         throw new ApiError(status, code, message);
+      }
+
+      // 6. Best-effort: clear the current-password fail counter so a
+      //    successful change wipes any earlier misses. Failure here is
+      //    not surfaced — the user already changed their password.
+      try {
+        await fetch(`${DIRECTUS_URL}/password-reset-request/password-change/clear`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: tokenEmail }),
+          cache: 'no-store'
+        });
+      } catch {
+        /* non-fatal */
       }
 
       return jsonOk({ ok: true, changed: true }, 200);
