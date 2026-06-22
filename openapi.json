@@ -3,11 +3,11 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "bdd5a2db8ed1761523075387e70557320032e765"
+    "version": "42f1269bd3e2b7218c8ce0678acc30418abe4694"
   },
   "servers": [
     {
-      "url": "http://100.114.7.34:8055/",
+      "url": "http://100.87.242.47:8055",
       "description": "Your current Directus instance."
     }
   ],
@@ -10241,395 +10241,6 @@
         ]
       }
     },
-    "/items/vn_districts": {
-      "post": {
-        "summary": "Create an Item",
-        "description": "Create a new vn_districts item.",
-        "tags": [
-          "Items",
-          "ItemsVnDistricts"
-        ],
-        "operationId": "createItemsVnDistricts",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Meta"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsVnDistricts"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsVnDistricts"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsVnDistricts"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Items",
-        "description": "List the vn_districts items.",
-        "tags": [
-          "Items",
-          "ItemsVnDistricts"
-        ],
-        "operationId": "readItemsVnDistricts",
-        "security": [
-          {
-            "Auth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "$ref": "#/components/schemas/ItemsVnDistricts"
-                      }
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/x-metadata"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update Multiple Items",
-        "description": "Update multiple vn_districts items at the same time.",
-        "tags": [
-          "Items",
-          "ItemsVnDistricts"
-        ],
-        "operationId": "updateItemsVnDistricts",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsVnDistricts"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsVnDistricts"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsVnDistricts"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing vn_districts items.",
-        "tags": [
-          "Items",
-          "ItemsVnDistricts"
-        ],
-        "operationId": "deleteItemsVnDistricts",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/items/vn_districts/{id}": {
-      "get": {
-        "summary": "Retrieve an Item",
-        "description": "Retrieve a single vn_districts item by unique identifier.",
-        "tags": [
-          "Items",
-          "ItemsVnDistricts"
-        ],
-        "operationId": "readSingleItemsVnDistricts",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Version"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsVnDistricts"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update an Item",
-        "description": "Update an existing vn_districts item.",
-        "tags": [
-          "Items",
-          "ItemsVnDistricts"
-        ],
-        "operationId": "updateSingleItemsVnDistricts",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/ItemsVnDistricts"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsVnDistricts"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete an Item",
-        "description": "Delete an existing vn_districts item.",
-        "tags": [
-          "Items",
-          "ItemsVnDistricts"
-        ],
-        "operationId": "deleteSingleItemsVnDistricts",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
     "/items/iso_certifications": {
       "post": {
         "summary": "Create an Item",
@@ -12151,6 +11762,389 @@
           "ItemsBlogPosts"
         ],
         "operationId": "deleteSingleItemsBlogPosts",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/items/site_settings": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new site_settings item.",
+        "tags": [
+          "Items",
+          "ItemsSiteSettings"
+        ],
+        "operationId": "createItemsSiteSettings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsSiteSettings"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsSiteSettings"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ItemsSiteSettings"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the site_settings items.",
+        "tags": [
+          "Items",
+          "ItemsSiteSettings"
+        ],
+        "operationId": "readItemsSiteSettings",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      },
+                      "$ref": "#/components/schemas/ItemsSiteSettings"
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Multiple Items",
+        "description": "Update multiple site_settings items at the same time.",
+        "tags": [
+          "Items",
+          "ItemsSiteSettings"
+        ],
+        "operationId": "updateItemsSiteSettings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsSiteSettings"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsSiteSettings"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "$ref": "#/components/schemas/ItemsSiteSettings"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Multiple Items",
+        "description": "Delete multiple existing site_settings items.",
+        "tags": [
+          "Items",
+          "ItemsSiteSettings"
+        ],
+        "operationId": "deleteItemsSiteSettings",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/items/site_settings/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single site_settings item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsSiteSettings"
+        ],
+        "operationId": "readSingleItemsSiteSettings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Version"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsSiteSettings"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing site_settings item.",
+        "tags": [
+          "Items",
+          "ItemsSiteSettings"
+        ],
+        "operationId": "updateSingleItemsSiteSettings",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsSiteSettings"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsSiteSettings"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing site_settings item.",
+        "tags": [
+          "Items",
+          "ItemsSiteSettings"
+        ],
+        "operationId": "deleteSingleItemsSiteSettings",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -14909,15 +14903,15 @@
         ]
       }
     },
-    "/items/site_settings": {
+    "/items/industries_translations": {
       "post": {
         "summary": "Create an Item",
-        "description": "Create a new site_settings item.",
+        "description": "Create a new industries_translations item.",
         "tags": [
           "Items",
-          "ItemsSiteSettings"
+          "ItemsIndustriesTranslations"
         ],
-        "operationId": "createItemsSiteSettings",
+        "operationId": "createItemsIndustriesTranslations",
         "parameters": [
           {
             "$ref": "#/components/parameters/Meta"
@@ -14931,394 +14925,11 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ItemsSiteSettings"
+                      "$ref": "#/components/schemas/ItemsIndustriesTranslations"
                     }
                   },
                   {
-                    "$ref": "#/components/schemas/ItemsSiteSettings"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/ItemsSiteSettings"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Items",
-        "description": "List the site_settings items.",
-        "tags": [
-          "Items",
-          "ItemsSiteSettings"
-        ],
-        "operationId": "readItemsSiteSettings",
-        "security": [
-          {
-            "Auth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object"
-                      },
-                      "$ref": "#/components/schemas/ItemsSiteSettings"
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/x-metadata"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update Multiple Items",
-        "description": "Update multiple site_settings items at the same time.",
-        "tags": [
-          "Items",
-          "ItemsSiteSettings"
-        ],
-        "operationId": "updateItemsSiteSettings",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsSiteSettings"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsSiteSettings"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "$ref": "#/components/schemas/ItemsSiteSettings"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing site_settings items.",
-        "tags": [
-          "Items",
-          "ItemsSiteSettings"
-        ],
-        "operationId": "deleteItemsSiteSettings",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/items/site_settings/{id}": {
-      "get": {
-        "summary": "Retrieve an Item",
-        "description": "Retrieve a single site_settings item by unique identifier.",
-        "tags": [
-          "Items",
-          "ItemsSiteSettings"
-        ],
-        "operationId": "readSingleItemsSiteSettings",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Version"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsSiteSettings"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update an Item",
-        "description": "Update an existing site_settings item.",
-        "tags": [
-          "Items",
-          "ItemsSiteSettings"
-        ],
-        "operationId": "updateSingleItemsSiteSettings",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/ItemsSiteSettings"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsSiteSettings"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete an Item",
-        "description": "Delete an existing site_settings item.",
-        "tags": [
-          "Items",
-          "ItemsSiteSettings"
-        ],
-        "operationId": "deleteSingleItemsSiteSettings",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
-    "/items/media_retention": {
-      "post": {
-        "summary": "Create an Item",
-        "description": "Create a new media_retention item.",
-        "tags": [
-          "Items",
-          "ItemsMediaRetention"
-        ],
-        "operationId": "createItemsMediaRetention",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Meta"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsMediaRetention"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsMediaRetention"
+                    "$ref": "#/components/schemas/ItemsIndustriesTranslations"
                   }
                 ]
               }
@@ -15336,7 +14947,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/ItemsMediaRetention"
+                        "$ref": "#/components/schemas/ItemsIndustriesTranslations"
                       }
                     }
                   }
@@ -15351,12 +14962,12 @@
       },
       "get": {
         "summary": "List Items",
-        "description": "List the media_retention items.",
+        "description": "List the industries_translations items.",
         "tags": [
           "Items",
-          "ItemsMediaRetention"
+          "ItemsIndustriesTranslations"
         ],
-        "operationId": "readItemsMediaRetention",
+        "operationId": "readItemsIndustriesTranslations",
         "security": [
           {
             "Auth": []
@@ -15397,7 +15008,7 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "$ref": "#/components/schemas/ItemsMediaRetention"
+                        "$ref": "#/components/schemas/ItemsIndustriesTranslations"
                       }
                     },
                     "meta": {
@@ -15415,12 +15026,12 @@
       },
       "patch": {
         "summary": "Update Multiple Items",
-        "description": "Update multiple media_retention items at the same time.",
+        "description": "Update multiple industries_translations items at the same time.",
         "tags": [
           "Items",
-          "ItemsMediaRetention"
+          "ItemsIndustriesTranslations"
         ],
-        "operationId": "updateItemsMediaRetention",
+        "operationId": "updateItemsIndustriesTranslations",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -15452,11 +15063,11 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ItemsMediaRetention"
+                      "$ref": "#/components/schemas/ItemsIndustriesTranslations"
                     }
                   },
                   {
-                    "$ref": "#/components/schemas/ItemsMediaRetention"
+                    "$ref": "#/components/schemas/ItemsIndustriesTranslations"
                   }
                 ]
               }
@@ -15473,7 +15084,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/ItemsMediaRetention"
+                        "$ref": "#/components/schemas/ItemsIndustriesTranslations"
                       }
                     }
                   }
@@ -15485,12 +15096,12 @@
       },
       "delete": {
         "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing media_retention items.",
+        "description": "Delete multiple existing industries_translations items.",
         "tags": [
           "Items",
-          "ItemsMediaRetention"
+          "ItemsIndustriesTranslations"
         ],
-        "operationId": "deleteItemsMediaRetention",
+        "operationId": "deleteItemsIndustriesTranslations",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -15502,15 +15113,15 @@
         "parameters": []
       }
     },
-    "/items/media_retention/{id}": {
+    "/items/industries_translations/{id}": {
       "get": {
         "summary": "Retrieve an Item",
-        "description": "Retrieve a single media_retention item by unique identifier.",
+        "description": "Retrieve a single industries_translations item by unique identifier.",
         "tags": [
           "Items",
-          "ItemsMediaRetention"
+          "ItemsIndustriesTranslations"
         ],
-        "operationId": "readSingleItemsMediaRetention",
+        "operationId": "readSingleItemsIndustriesTranslations",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -15552,7 +15163,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/ItemsMediaRetention"
+                      "$ref": "#/components/schemas/ItemsIndustriesTranslations"
                     }
                   }
                 }
@@ -15569,12 +15180,12 @@
       },
       "patch": {
         "summary": "Update an Item",
-        "description": "Update an existing media_retention item.",
+        "description": "Update an existing industries_translations item.",
         "tags": [
           "Items",
-          "ItemsMediaRetention"
+          "ItemsIndustriesTranslations"
         ],
-        "operationId": "updateSingleItemsMediaRetention",
+        "operationId": "updateSingleItemsIndustriesTranslations",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -15608,7 +15219,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "$ref": "#/components/schemas/ItemsMediaRetention"
+                "$ref": "#/components/schemas/ItemsIndustriesTranslations"
               }
             }
           }
@@ -15623,7 +15234,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/ItemsMediaRetention"
+                      "$ref": "#/components/schemas/ItemsIndustriesTranslations"
                     }
                   }
                 }
@@ -15640,12 +15251,12 @@
       },
       "delete": {
         "summary": "Delete an Item",
-        "description": "Delete an existing media_retention item.",
+        "description": "Delete an existing industries_translations item.",
         "tags": [
           "Items",
-          "ItemsMediaRetention"
+          "ItemsIndustriesTranslations"
         ],
-        "operationId": "deleteSingleItemsMediaRetention",
+        "operationId": "deleteSingleItemsIndustriesTranslations",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -16064,15 +15675,15 @@
         ]
       }
     },
-    "/items/blog_posts_translations": {
+    "/items/media_retention": {
       "post": {
         "summary": "Create an Item",
-        "description": "Create a new blog_posts_translations item.",
+        "description": "Create a new media_retention item.",
         "tags": [
           "Items",
-          "ItemsBlogPostsTranslations"
+          "ItemsMediaRetention"
         ],
-        "operationId": "createItemsBlogPostsTranslations",
+        "operationId": "createItemsMediaRetention",
         "parameters": [
           {
             "$ref": "#/components/parameters/Meta"
@@ -16086,11 +15697,11 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                      "$ref": "#/components/schemas/ItemsMediaRetention"
                     }
                   },
                   {
-                    "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                    "$ref": "#/components/schemas/ItemsMediaRetention"
                   }
                 ]
               }
@@ -16108,7 +15719,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                        "$ref": "#/components/schemas/ItemsMediaRetention"
                       }
                     }
                   }
@@ -16123,12 +15734,12 @@
       },
       "get": {
         "summary": "List Items",
-        "description": "List the blog_posts_translations items.",
+        "description": "List the media_retention items.",
         "tags": [
           "Items",
-          "ItemsBlogPostsTranslations"
+          "ItemsMediaRetention"
         ],
-        "operationId": "readItemsBlogPostsTranslations",
+        "operationId": "readItemsMediaRetention",
         "security": [
           {
             "Auth": []
@@ -16169,7 +15780,7 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                        "$ref": "#/components/schemas/ItemsMediaRetention"
                       }
                     },
                     "meta": {
@@ -16187,12 +15798,12 @@
       },
       "patch": {
         "summary": "Update Multiple Items",
-        "description": "Update multiple blog_posts_translations items at the same time.",
+        "description": "Update multiple media_retention items at the same time.",
         "tags": [
           "Items",
-          "ItemsBlogPostsTranslations"
+          "ItemsMediaRetention"
         ],
-        "operationId": "updateItemsBlogPostsTranslations",
+        "operationId": "updateItemsMediaRetention",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -16224,11 +15835,11 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                      "$ref": "#/components/schemas/ItemsMediaRetention"
                     }
                   },
                   {
-                    "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                    "$ref": "#/components/schemas/ItemsMediaRetention"
                   }
                 ]
               }
@@ -16245,7 +15856,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                        "$ref": "#/components/schemas/ItemsMediaRetention"
                       }
                     }
                   }
@@ -16257,12 +15868,12 @@
       },
       "delete": {
         "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing blog_posts_translations items.",
+        "description": "Delete multiple existing media_retention items.",
         "tags": [
           "Items",
-          "ItemsBlogPostsTranslations"
+          "ItemsMediaRetention"
         ],
-        "operationId": "deleteItemsBlogPostsTranslations",
+        "operationId": "deleteItemsMediaRetention",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -16274,15 +15885,15 @@
         "parameters": []
       }
     },
-    "/items/blog_posts_translations/{id}": {
+    "/items/media_retention/{id}": {
       "get": {
         "summary": "Retrieve an Item",
-        "description": "Retrieve a single blog_posts_translations item by unique identifier.",
+        "description": "Retrieve a single media_retention item by unique identifier.",
         "tags": [
           "Items",
-          "ItemsBlogPostsTranslations"
+          "ItemsMediaRetention"
         ],
-        "operationId": "readSingleItemsBlogPostsTranslations",
+        "operationId": "readSingleItemsMediaRetention",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -16324,7 +15935,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                      "$ref": "#/components/schemas/ItemsMediaRetention"
                     }
                   }
                 }
@@ -16341,12 +15952,12 @@
       },
       "patch": {
         "summary": "Update an Item",
-        "description": "Update an existing blog_posts_translations item.",
+        "description": "Update an existing media_retention item.",
         "tags": [
           "Items",
-          "ItemsBlogPostsTranslations"
+          "ItemsMediaRetention"
         ],
-        "operationId": "updateSingleItemsBlogPostsTranslations",
+        "operationId": "updateSingleItemsMediaRetention",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -16380,7 +15991,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                "$ref": "#/components/schemas/ItemsMediaRetention"
               }
             }
           }
@@ -16395,7 +16006,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                      "$ref": "#/components/schemas/ItemsMediaRetention"
                     }
                   }
                 }
@@ -16412,12 +16023,12 @@
       },
       "delete": {
         "summary": "Delete an Item",
-        "description": "Delete an existing blog_posts_translations item.",
+        "description": "Delete an existing media_retention item.",
         "tags": [
           "Items",
-          "ItemsBlogPostsTranslations"
+          "ItemsMediaRetention"
         ],
-        "operationId": "deleteSingleItemsBlogPostsTranslations",
+        "operationId": "deleteSingleItemsMediaRetention",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -18398,15 +18009,15 @@
         ]
       }
     },
-    "/items/industries_translations": {
+    "/items/orders": {
       "post": {
         "summary": "Create an Item",
-        "description": "Create a new industries_translations item.",
+        "description": "Create a new orders item.",
         "tags": [
           "Items",
-          "ItemsIndustriesTranslations"
+          "ItemsOrders"
         ],
-        "operationId": "createItemsIndustriesTranslations",
+        "operationId": "createItemsOrders",
         "parameters": [
           {
             "$ref": "#/components/parameters/Meta"
@@ -18420,11 +18031,11 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                      "$ref": "#/components/schemas/ItemsOrders"
                     }
                   },
                   {
-                    "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                    "$ref": "#/components/schemas/ItemsOrders"
                   }
                 ]
               }
@@ -18442,7 +18053,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                        "$ref": "#/components/schemas/ItemsOrders"
                       }
                     }
                   }
@@ -18457,12 +18068,12 @@
       },
       "get": {
         "summary": "List Items",
-        "description": "List the industries_translations items.",
+        "description": "List the orders items.",
         "tags": [
           "Items",
-          "ItemsIndustriesTranslations"
+          "ItemsOrders"
         ],
-        "operationId": "readItemsIndustriesTranslations",
+        "operationId": "readItemsOrders",
         "security": [
           {
             "Auth": []
@@ -18503,7 +18114,7 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                        "$ref": "#/components/schemas/ItemsOrders"
                       }
                     },
                     "meta": {
@@ -18521,12 +18132,12 @@
       },
       "patch": {
         "summary": "Update Multiple Items",
-        "description": "Update multiple industries_translations items at the same time.",
+        "description": "Update multiple orders items at the same time.",
         "tags": [
           "Items",
-          "ItemsIndustriesTranslations"
+          "ItemsOrders"
         ],
-        "operationId": "updateItemsIndustriesTranslations",
+        "operationId": "updateItemsOrders",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -18558,11 +18169,11 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                      "$ref": "#/components/schemas/ItemsOrders"
                     }
                   },
                   {
-                    "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                    "$ref": "#/components/schemas/ItemsOrders"
                   }
                 ]
               }
@@ -18579,7 +18190,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                        "$ref": "#/components/schemas/ItemsOrders"
                       }
                     }
                   }
@@ -18591,12 +18202,12 @@
       },
       "delete": {
         "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing industries_translations items.",
+        "description": "Delete multiple existing orders items.",
         "tags": [
           "Items",
-          "ItemsIndustriesTranslations"
+          "ItemsOrders"
         ],
-        "operationId": "deleteItemsIndustriesTranslations",
+        "operationId": "deleteItemsOrders",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -18608,15 +18219,15 @@
         "parameters": []
       }
     },
-    "/items/industries_translations/{id}": {
+    "/items/orders/{id}": {
       "get": {
         "summary": "Retrieve an Item",
-        "description": "Retrieve a single industries_translations item by unique identifier.",
+        "description": "Retrieve a single orders item by unique identifier.",
         "tags": [
           "Items",
-          "ItemsIndustriesTranslations"
+          "ItemsOrders"
         ],
-        "operationId": "readSingleItemsIndustriesTranslations",
+        "operationId": "readSingleItemsOrders",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -18658,7 +18269,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                      "$ref": "#/components/schemas/ItemsOrders"
                     }
                   }
                 }
@@ -18675,12 +18286,12 @@
       },
       "patch": {
         "summary": "Update an Item",
-        "description": "Update an existing industries_translations item.",
+        "description": "Update an existing orders item.",
         "tags": [
           "Items",
-          "ItemsIndustriesTranslations"
+          "ItemsOrders"
         ],
-        "operationId": "updateSingleItemsIndustriesTranslations",
+        "operationId": "updateSingleItemsOrders",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -18714,7 +18325,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                "$ref": "#/components/schemas/ItemsOrders"
               }
             }
           }
@@ -18729,7 +18340,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/ItemsIndustriesTranslations"
+                      "$ref": "#/components/schemas/ItemsOrders"
                     }
                   }
                 }
@@ -18746,401 +18357,12 @@
       },
       "delete": {
         "summary": "Delete an Item",
-        "description": "Delete an existing industries_translations item.",
+        "description": "Delete an existing orders item.",
         "tags": [
           "Items",
-          "ItemsIndustriesTranslations"
+          "ItemsOrders"
         ],
-        "operationId": "deleteSingleItemsIndustriesTranslations",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
-    "/items/customers": {
-      "post": {
-        "summary": "Create an Item",
-        "description": "Create a new customers item.",
-        "tags": [
-          "Items",
-          "ItemsCustomers"
-        ],
-        "operationId": "createItemsCustomers",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Meta"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsCustomers"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsCustomers"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsCustomers"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Items",
-        "description": "List the customers items.",
-        "tags": [
-          "Items",
-          "ItemsCustomers"
-        ],
-        "operationId": "readItemsCustomers",
-        "security": [
-          {
-            "Auth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "$ref": "#/components/schemas/ItemsCustomers"
-                      }
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/x-metadata"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update Multiple Items",
-        "description": "Update multiple customers items at the same time.",
-        "tags": [
-          "Items",
-          "ItemsCustomers"
-        ],
-        "operationId": "updateItemsCustomers",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsCustomers"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsCustomers"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsCustomers"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing customers items.",
-        "tags": [
-          "Items",
-          "ItemsCustomers"
-        ],
-        "operationId": "deleteItemsCustomers",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/items/customers/{id}": {
-      "get": {
-        "summary": "Retrieve an Item",
-        "description": "Retrieve a single customers item by unique identifier.",
-        "tags": [
-          "Items",
-          "ItemsCustomers"
-        ],
-        "operationId": "readSingleItemsCustomers",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Version"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsCustomers"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update an Item",
-        "description": "Update an existing customers item.",
-        "tags": [
-          "Items",
-          "ItemsCustomers"
-        ],
-        "operationId": "updateSingleItemsCustomers",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/ItemsCustomers"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsCustomers"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete an Item",
-        "description": "Delete an existing customers item.",
-        "tags": [
-          "Items",
-          "ItemsCustomers"
-        ],
-        "operationId": "deleteSingleItemsCustomers",
+        "operationId": "deleteSingleItemsOrders",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -19565,15 +18787,15 @@
         ]
       }
     },
-    "/items/hub_industrial_zones": {
+    "/items/customers": {
       "post": {
         "summary": "Create an Item",
-        "description": "Create a new hub_industrial_zones item.",
+        "description": "Create a new customers item.",
         "tags": [
           "Items",
-          "ItemsHubIndustrialZones"
+          "ItemsCustomers"
         ],
-        "operationId": "createItemsHubIndustrialZones",
+        "operationId": "createItemsCustomers",
         "parameters": [
           {
             "$ref": "#/components/parameters/Meta"
@@ -19587,11 +18809,11 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                      "$ref": "#/components/schemas/ItemsCustomers"
                     }
                   },
                   {
-                    "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                    "$ref": "#/components/schemas/ItemsCustomers"
                   }
                 ]
               }
@@ -19609,7 +18831,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                        "$ref": "#/components/schemas/ItemsCustomers"
                       }
                     }
                   }
@@ -19624,12 +18846,12 @@
       },
       "get": {
         "summary": "List Items",
-        "description": "List the hub_industrial_zones items.",
+        "description": "List the customers items.",
         "tags": [
           "Items",
-          "ItemsHubIndustrialZones"
+          "ItemsCustomers"
         ],
-        "operationId": "readItemsHubIndustrialZones",
+        "operationId": "readItemsCustomers",
         "security": [
           {
             "Auth": []
@@ -19670,7 +18892,7 @@
                       "type": "array",
                       "items": {
                         "type": "object",
-                        "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                        "$ref": "#/components/schemas/ItemsCustomers"
                       }
                     },
                     "meta": {
@@ -19688,12 +18910,12 @@
       },
       "patch": {
         "summary": "Update Multiple Items",
-        "description": "Update multiple hub_industrial_zones items at the same time.",
+        "description": "Update multiple customers items at the same time.",
         "tags": [
           "Items",
-          "ItemsHubIndustrialZones"
+          "ItemsCustomers"
         ],
-        "operationId": "updateItemsHubIndustrialZones",
+        "operationId": "updateItemsCustomers",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -19725,11 +18947,11 @@
                   {
                     "type": "array",
                     "items": {
-                      "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                      "$ref": "#/components/schemas/ItemsCustomers"
                     }
                   },
                   {
-                    "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                    "$ref": "#/components/schemas/ItemsCustomers"
                   }
                 ]
               }
@@ -19746,7 +18968,7 @@
                     "data": {
                       "type": "array",
                       "items": {
-                        "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                        "$ref": "#/components/schemas/ItemsCustomers"
                       }
                     }
                   }
@@ -19758,12 +18980,12 @@
       },
       "delete": {
         "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing hub_industrial_zones items.",
+        "description": "Delete multiple existing customers items.",
         "tags": [
           "Items",
-          "ItemsHubIndustrialZones"
+          "ItemsCustomers"
         ],
-        "operationId": "deleteItemsHubIndustrialZones",
+        "operationId": "deleteItemsCustomers",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -19775,15 +18997,15 @@
         "parameters": []
       }
     },
-    "/items/hub_industrial_zones/{id}": {
+    "/items/customers/{id}": {
       "get": {
         "summary": "Retrieve an Item",
-        "description": "Retrieve a single hub_industrial_zones item by unique identifier.",
+        "description": "Retrieve a single customers item by unique identifier.",
         "tags": [
           "Items",
-          "ItemsHubIndustrialZones"
+          "ItemsCustomers"
         ],
-        "operationId": "readSingleItemsHubIndustrialZones",
+        "operationId": "readSingleItemsCustomers",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -19825,7 +19047,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                      "$ref": "#/components/schemas/ItemsCustomers"
                     }
                   }
                 }
@@ -19842,12 +19064,12 @@
       },
       "patch": {
         "summary": "Update an Item",
-        "description": "Update an existing hub_industrial_zones item.",
+        "description": "Update an existing customers item.",
         "tags": [
           "Items",
-          "ItemsHubIndustrialZones"
+          "ItemsCustomers"
         ],
-        "operationId": "updateSingleItemsHubIndustrialZones",
+        "operationId": "updateSingleItemsCustomers",
         "parameters": [
           {
             "$ref": "#/components/parameters/Fields"
@@ -19881,7 +19103,7 @@
             "application/json": {
               "schema": {
                 "type": "object",
-                "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                "$ref": "#/components/schemas/ItemsCustomers"
               }
             }
           }
@@ -19896,7 +19118,7 @@
                   "properties": {
                     "data": {
                       "type": "object",
-                      "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                      "$ref": "#/components/schemas/ItemsCustomers"
                     }
                   }
                 }
@@ -19913,12 +19135,401 @@
       },
       "delete": {
         "summary": "Delete an Item",
-        "description": "Delete an existing hub_industrial_zones item.",
+        "description": "Delete an existing customers item.",
         "tags": [
           "Items",
-          "ItemsHubIndustrialZones"
+          "ItemsCustomers"
         ],
-        "operationId": "deleteSingleItemsHubIndustrialZones",
+        "operationId": "deleteSingleItemsCustomers",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/items/blog_posts_translations": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new blog_posts_translations item.",
+        "tags": [
+          "Items",
+          "ItemsBlogPostsTranslations"
+        ],
+        "operationId": "createItemsBlogPostsTranslations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the blog_posts_translations items.",
+        "tags": [
+          "Items",
+          "ItemsBlogPostsTranslations"
+        ],
+        "operationId": "readItemsBlogPostsTranslations",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Multiple Items",
+        "description": "Update multiple blog_posts_translations items at the same time.",
+        "tags": [
+          "Items",
+          "ItemsBlogPostsTranslations"
+        ],
+        "operationId": "updateItemsBlogPostsTranslations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Multiple Items",
+        "description": "Delete multiple existing blog_posts_translations items.",
+        "tags": [
+          "Items",
+          "ItemsBlogPostsTranslations"
+        ],
+        "operationId": "deleteItemsBlogPostsTranslations",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/items/blog_posts_translations/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single blog_posts_translations item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsBlogPostsTranslations"
+        ],
+        "operationId": "readSingleItemsBlogPostsTranslations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Version"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing blog_posts_translations item.",
+        "tags": [
+          "Items",
+          "ItemsBlogPostsTranslations"
+        ],
+        "operationId": "updateSingleItemsBlogPostsTranslations",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsBlogPostsTranslations"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing blog_posts_translations item.",
+        "tags": [
+          "Items",
+          "ItemsBlogPostsTranslations"
+        ],
+        "operationId": "deleteSingleItemsBlogPostsTranslations",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -21510,395 +21121,6 @@
         ]
       }
     },
-    "/items/orders": {
-      "post": {
-        "summary": "Create an Item",
-        "description": "Create a new orders item.",
-        "tags": [
-          "Items",
-          "ItemsOrders"
-        ],
-        "operationId": "createItemsOrders",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Meta"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsOrders"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsOrders"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsOrders"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Items",
-        "description": "List the orders items.",
-        "tags": [
-          "Items",
-          "ItemsOrders"
-        ],
-        "operationId": "readItemsOrders",
-        "security": [
-          {
-            "Auth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "$ref": "#/components/schemas/ItemsOrders"
-                      }
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/x-metadata"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update Multiple Items",
-        "description": "Update multiple orders items at the same time.",
-        "tags": [
-          "Items",
-          "ItemsOrders"
-        ],
-        "operationId": "updateItemsOrders",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsOrders"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsOrders"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsOrders"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing orders items.",
-        "tags": [
-          "Items",
-          "ItemsOrders"
-        ],
-        "operationId": "deleteItemsOrders",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/items/orders/{id}": {
-      "get": {
-        "summary": "Retrieve an Item",
-        "description": "Retrieve a single orders item by unique identifier.",
-        "tags": [
-          "Items",
-          "ItemsOrders"
-        ],
-        "operationId": "readSingleItemsOrders",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Version"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsOrders"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update an Item",
-        "description": "Update an existing orders item.",
-        "tags": [
-          "Items",
-          "ItemsOrders"
-        ],
-        "operationId": "updateSingleItemsOrders",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/ItemsOrders"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsOrders"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete an Item",
-        "description": "Delete an existing orders item.",
-        "tags": [
-          "Items",
-          "ItemsOrders"
-        ],
-        "operationId": "deleteSingleItemsOrders",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
     "/items/order_items": {
       "post": {
         "summary": "Create an Item",
@@ -22288,784 +21510,6 @@
         ]
       }
     },
-    "/items/invoices": {
-      "post": {
-        "summary": "Create an Item",
-        "description": "Create a new invoices item.",
-        "tags": [
-          "Items",
-          "ItemsInvoices"
-        ],
-        "operationId": "createItemsInvoices",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Meta"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsInvoices"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsInvoices"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsInvoices"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Items",
-        "description": "List the invoices items.",
-        "tags": [
-          "Items",
-          "ItemsInvoices"
-        ],
-        "operationId": "readItemsInvoices",
-        "security": [
-          {
-            "Auth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "$ref": "#/components/schemas/ItemsInvoices"
-                      }
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/x-metadata"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update Multiple Items",
-        "description": "Update multiple invoices items at the same time.",
-        "tags": [
-          "Items",
-          "ItemsInvoices"
-        ],
-        "operationId": "updateItemsInvoices",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsInvoices"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsInvoices"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsInvoices"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing invoices items.",
-        "tags": [
-          "Items",
-          "ItemsInvoices"
-        ],
-        "operationId": "deleteItemsInvoices",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/items/invoices/{id}": {
-      "get": {
-        "summary": "Retrieve an Item",
-        "description": "Retrieve a single invoices item by unique identifier.",
-        "tags": [
-          "Items",
-          "ItemsInvoices"
-        ],
-        "operationId": "readSingleItemsInvoices",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Version"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsInvoices"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update an Item",
-        "description": "Update an existing invoices item.",
-        "tags": [
-          "Items",
-          "ItemsInvoices"
-        ],
-        "operationId": "updateSingleItemsInvoices",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/ItemsInvoices"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsInvoices"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete an Item",
-        "description": "Delete an existing invoices item.",
-        "tags": [
-          "Items",
-          "ItemsInvoices"
-        ],
-        "operationId": "deleteSingleItemsInvoices",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
-    "/items/newsletter_subscribers": {
-      "post": {
-        "summary": "Create an Item",
-        "description": "Create a new newsletter_subscribers item.",
-        "tags": [
-          "Items",
-          "ItemsNewsletterSubscribers"
-        ],
-        "operationId": "createItemsNewsletterSubscribers",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Meta"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "get": {
-        "summary": "List Items",
-        "description": "List the newsletter_subscribers items.",
-        "tags": [
-          "Items",
-          "ItemsNewsletterSubscribers"
-        ],
-        "operationId": "readItemsNewsletterSubscribers",
-        "security": [
-          {
-            "Auth": []
-          }
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-                      }
-                    },
-                    "meta": {
-                      "$ref": "#/components/schemas/x-metadata"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update Multiple Items",
-        "description": "Update multiple newsletter_subscribers items at the same time.",
-        "tags": [
-          "Items",
-          "ItemsNewsletterSubscribers"
-        ],
-        "operationId": "updateItemsNewsletterSubscribers",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Limit"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Offset"
-          },
-          {
-            "$ref": "#/components/parameters/Sort"
-          },
-          {
-            "$ref": "#/components/parameters/Filter"
-          },
-          {
-            "$ref": "#/components/parameters/Search"
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "oneOf": [
-                  {
-                    "type": "array",
-                    "items": {
-                      "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-                    }
-                  },
-                  {
-                    "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-                  }
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete Multiple Items",
-        "description": "Delete multiple existing newsletter_subscribers items.",
-        "tags": [
-          "Items",
-          "ItemsNewsletterSubscribers"
-        ],
-        "operationId": "deleteItemsNewsletterSubscribers",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          }
-        },
-        "parameters": []
-      }
-    },
-    "/items/newsletter_subscribers/{id}": {
-      "get": {
-        "summary": "Retrieve an Item",
-        "description": "Retrieve a single newsletter_subscribers item by unique identifier.",
-        "tags": [
-          "Items",
-          "ItemsNewsletterSubscribers"
-        ],
-        "operationId": "readSingleItemsNewsletterSubscribers",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "$ref": "#/components/parameters/Version"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "patch": {
-        "summary": "Update an Item",
-        "description": "Update an existing newsletter_subscribers item.",
-        "tags": [
-          "Items",
-          "ItemsNewsletterSubscribers"
-        ],
-        "operationId": "updateSingleItemsNewsletterSubscribers",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/Fields"
-          },
-          {
-            "$ref": "#/components/parameters/Meta"
-          },
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Delete an Item",
-        "description": "Delete an existing newsletter_subscribers item.",
-        "tags": [
-          "Items",
-          "ItemsNewsletterSubscribers"
-        ],
-        "operationId": "deleteSingleItemsNewsletterSubscribers",
-        "responses": {
-          "200": {
-            "description": "Successful request"
-          },
-          "401": {
-            "$ref": "#/components/responses/UnauthorizedError"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFoundError"
-          }
-        },
-        "parameters": [
-          {
-            "name": "id",
-            "description": "Index of the item.",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "oneOf": [
-                {
-                  "type": "integer",
-                  "description": "Incremental index of the item.",
-                  "example": 1
-                },
-                {
-                  "type": "string",
-                  "description": "Unique identifier of the item.",
-                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
-                }
-              ]
-            }
-          }
-        ]
-      }
-    },
     "/items/hub_team_members": {
       "post": {
         "summary": "Create an Item",
@@ -23420,6 +21864,395 @@
           "ItemsHubTeamMembers"
         ],
         "operationId": "deleteSingleItemsHubTeamMembers",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/items/invoices": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new invoices item.",
+        "tags": [
+          "Items",
+          "ItemsInvoices"
+        ],
+        "operationId": "createItemsInvoices",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsInvoices"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsInvoices"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsInvoices"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the invoices items.",
+        "tags": [
+          "Items",
+          "ItemsInvoices"
+        ],
+        "operationId": "readItemsInvoices",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/ItemsInvoices"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Multiple Items",
+        "description": "Update multiple invoices items at the same time.",
+        "tags": [
+          "Items",
+          "ItemsInvoices"
+        ],
+        "operationId": "updateItemsInvoices",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsInvoices"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsInvoices"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsInvoices"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Multiple Items",
+        "description": "Delete multiple existing invoices items.",
+        "tags": [
+          "Items",
+          "ItemsInvoices"
+        ],
+        "operationId": "deleteItemsInvoices",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/items/invoices/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single invoices item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsInvoices"
+        ],
+        "operationId": "readSingleItemsInvoices",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Version"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsInvoices"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing invoices item.",
+        "tags": [
+          "Items",
+          "ItemsInvoices"
+        ],
+        "operationId": "updateSingleItemsInvoices",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsInvoices"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsInvoices"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing invoices item.",
+        "tags": [
+          "Items",
+          "ItemsInvoices"
+        ],
+        "operationId": "deleteSingleItemsInvoices",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -24198,6 +23031,784 @@
           "ItemsProductsFiles"
         ],
         "operationId": "deleteSingleItemsProductsFiles",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/items/newsletter_subscribers": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new newsletter_subscribers item.",
+        "tags": [
+          "Items",
+          "ItemsNewsletterSubscribers"
+        ],
+        "operationId": "createItemsNewsletterSubscribers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the newsletter_subscribers items.",
+        "tags": [
+          "Items",
+          "ItemsNewsletterSubscribers"
+        ],
+        "operationId": "readItemsNewsletterSubscribers",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Multiple Items",
+        "description": "Update multiple newsletter_subscribers items at the same time.",
+        "tags": [
+          "Items",
+          "ItemsNewsletterSubscribers"
+        ],
+        "operationId": "updateItemsNewsletterSubscribers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Multiple Items",
+        "description": "Delete multiple existing newsletter_subscribers items.",
+        "tags": [
+          "Items",
+          "ItemsNewsletterSubscribers"
+        ],
+        "operationId": "deleteItemsNewsletterSubscribers",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/items/newsletter_subscribers/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single newsletter_subscribers item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsNewsletterSubscribers"
+        ],
+        "operationId": "readSingleItemsNewsletterSubscribers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Version"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing newsletter_subscribers item.",
+        "tags": [
+          "Items",
+          "ItemsNewsletterSubscribers"
+        ],
+        "operationId": "updateSingleItemsNewsletterSubscribers",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsNewsletterSubscribers"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing newsletter_subscribers item.",
+        "tags": [
+          "Items",
+          "ItemsNewsletterSubscribers"
+        ],
+        "operationId": "deleteSingleItemsNewsletterSubscribers",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "/items/hub_industrial_zones": {
+      "post": {
+        "summary": "Create an Item",
+        "description": "Create a new hub_industrial_zones item.",
+        "tags": [
+          "Items",
+          "ItemsHubIndustrialZones"
+        ],
+        "operationId": "createItemsHubIndustrialZones",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Meta"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "get": {
+        "summary": "List Items",
+        "description": "List the hub_industrial_zones items.",
+        "tags": [
+          "Items",
+          "ItemsHubIndustrialZones"
+        ],
+        "operationId": "readItemsHubIndustrialZones",
+        "security": [
+          {
+            "Auth": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                      }
+                    },
+                    "meta": {
+                      "$ref": "#/components/schemas/x-metadata"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update Multiple Items",
+        "description": "Update multiple hub_industrial_zones items at the same time.",
+        "tags": [
+          "Items",
+          "ItemsHubIndustrialZones"
+        ],
+        "operationId": "updateItemsHubIndustrialZones",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Limit"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Offset"
+          },
+          {
+            "$ref": "#/components/parameters/Sort"
+          },
+          {
+            "$ref": "#/components/parameters/Filter"
+          },
+          {
+            "$ref": "#/components/parameters/Search"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                    }
+                  },
+                  {
+                    "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Multiple Items",
+        "description": "Delete multiple existing hub_industrial_zones items.",
+        "tags": [
+          "Items",
+          "ItemsHubIndustrialZones"
+        ],
+        "operationId": "deleteItemsHubIndustrialZones",
+        "responses": {
+          "200": {
+            "description": "Successful request"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          }
+        },
+        "parameters": []
+      }
+    },
+    "/items/hub_industrial_zones/{id}": {
+      "get": {
+        "summary": "Retrieve an Item",
+        "description": "Retrieve a single hub_industrial_zones item by unique identifier.",
+        "tags": [
+          "Items",
+          "ItemsHubIndustrialZones"
+        ],
+        "operationId": "readSingleItemsHubIndustrialZones",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "$ref": "#/components/parameters/Version"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update an Item",
+        "description": "Update an existing hub_industrial_zones item.",
+        "tags": [
+          "Items",
+          "ItemsHubIndustrialZones"
+        ],
+        "operationId": "updateSingleItemsHubIndustrialZones",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Fields"
+          },
+          {
+            "$ref": "#/components/parameters/Meta"
+          },
+          {
+            "name": "id",
+            "description": "Index of the item.",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "description": "Incremental index of the item.",
+                  "example": 1
+                },
+                {
+                  "type": "string",
+                  "description": "Unique identifier of the item.",
+                  "example": "8cbb43fe-4cdf-4991-8352-c461779cec02"
+                }
+              ]
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "$ref": "#/components/schemas/ItemsHubIndustrialZones"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFoundError"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an Item",
+        "description": "Delete an existing hub_industrial_zones item.",
+        "tags": [
+          "Items",
+          "ItemsHubIndustrialZones"
+        ],
+        "operationId": "deleteSingleItemsHubIndustrialZones",
         "responses": {
           "200": {
             "description": "Successful request"
@@ -25130,11 +24741,6 @@
       "description": "Hero Banners"
     },
     {
-      "name": "ItemsVnDistricts",
-      "x-collection": "vn_districts",
-      "description": "Vietnam Districts"
-    },
-    {
       "name": "ItemsISOCertifications",
       "x-collection": "iso_certifications",
       "description": "ISO Certifications"
@@ -25153,6 +24759,11 @@
       "name": "ItemsBlogPosts",
       "x-collection": "blog_posts",
       "description": "Blog Posts"
+    },
+    {
+      "name": "ItemsSiteSettings",
+      "x-collection": "site_settings",
+      "description": "Site Settings"
     },
     {
       "name": "ItemsCaseStudies",
@@ -25190,14 +24801,9 @@
       "description": "products translations"
     },
     {
-      "name": "ItemsSiteSettings",
-      "x-collection": "site_settings",
-      "description": "Site Settings"
-    },
-    {
-      "name": "ItemsMediaRetention",
-      "x-collection": "media_retention",
-      "description": "Media Retention Queue"
+      "name": "ItemsIndustriesTranslations",
+      "x-collection": "industries_translations",
+      "description": "industries translations"
     },
     {
       "name": "ItemsHomepage",
@@ -25205,9 +24811,9 @@
       "description": "Homepage Layout"
     },
     {
-      "name": "ItemsBlogPostsTranslations",
-      "x-collection": "blog_posts_translations",
-      "description": "blog_posts translations"
+      "name": "ItemsMediaRetention",
+      "x-collection": "media_retention",
+      "description": "Media Retention Queue"
     },
     {
       "name": "ItemsCaseStudiesTranslations",
@@ -25235,14 +24841,9 @@
       "description": "homepage translations"
     },
     {
-      "name": "ItemsIndustriesTranslations",
-      "x-collection": "industries_translations",
-      "description": "industries translations"
-    },
-    {
-      "name": "ItemsCustomers",
-      "x-collection": "customers",
-      "description": "Customers"
+      "name": "ItemsOrders",
+      "x-collection": "orders",
+      "description": "Orders"
     },
     {
       "name": "ItemsRegionalHubsTranslations",
@@ -25250,9 +24851,14 @@
       "description": "regional_hubs translations"
     },
     {
-      "name": "ItemsHubIndustrialZones",
-      "x-collection": "hub_industrial_zones",
-      "description": "Hub Industrial Zones"
+      "name": "ItemsCustomers",
+      "x-collection": "customers",
+      "description": "Customers"
+    },
+    {
+      "name": "ItemsBlogPostsTranslations",
+      "x-collection": "blog_posts_translations",
+      "description": "blog_posts translations"
     },
     {
       "name": "ItemsDeliveries",
@@ -25275,29 +24881,19 @@
       "description": "RFQ Assignment Rules"
     },
     {
-      "name": "ItemsOrders",
-      "x-collection": "orders",
-      "description": "Orders"
-    },
-    {
       "name": "ItemsOrderItems",
       "x-collection": "order_items",
       "description": "Order Items"
     },
     {
-      "name": "ItemsInvoices",
-      "x-collection": "invoices",
-      "description": "Invoices"
-    },
-    {
-      "name": "ItemsNewsletterSubscribers",
-      "x-collection": "newsletter_subscribers",
-      "description": "Email Newsletter Subscribers"
-    },
-    {
       "name": "ItemsHubTeamMembers",
       "x-collection": "hub_team_members",
       "description": "Hub Team Members"
+    },
+    {
+      "name": "ItemsInvoices",
+      "x-collection": "invoices",
+      "description": "Invoices"
     },
     {
       "name": "ItemsProductsIndustries",
@@ -25306,6 +24902,16 @@
     {
       "name": "ItemsProductsFiles",
       "x-collection": "products_files"
+    },
+    {
+      "name": "ItemsNewsletterSubscribers",
+      "x-collection": "newsletter_subscribers",
+      "description": "Email Newsletter Subscribers"
+    },
+    {
+      "name": "ItemsHubIndustrialZones",
+      "x-collection": "hub_industrial_zones",
+      "description": "Hub Industrial Zones"
     },
     {
       "name": "Customer Onboarding"
@@ -27661,28 +27267,6 @@
         },
         "x-collection": "hero_banners"
       },
-      "ItemsVnDistricts": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "province": {
-            "nullable": true,
-            "type": "integer"
-          },
-          "code": {
-            "nullable": true,
-            "type": "string"
-          },
-          "name": {
-            "nullable": true,
-            "type": "string"
-          }
-        },
-        "x-collection": "vn_districts"
-      },
       "ItemsISOCertifications": {
         "type": "object",
         "properties": {
@@ -27764,17 +27348,6 @@
               },
               {
                 "$ref": "#/components/schemas/ItemsVnProvinces"
-              }
-            ]
-          },
-          "district": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsVnDistricts"
               }
             ]
           },
@@ -28008,6 +27581,60 @@
           }
         },
         "x-collection": "blog_posts"
+      },
+      "ItemsSiteSettings": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "logo": {
+            "nullable": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          "contact_email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "contact_phone": {
+            "nullable": true,
+            "type": "string"
+          },
+          "address": {
+            "nullable": true,
+            "type": "string"
+          },
+          "meta_title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "meta_description": {
+            "nullable": true,
+            "type": "string"
+          },
+          "og_image": {
+            "nullable": true,
+            "type": "string",
+            "format": "uuid"
+          },
+          "translations": {
+            "nullable": true,
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "integer"
+                },
+                {
+                  "$ref": "#/components/schemas/ItemsSiteSettingsTranslations"
+                }
+              ]
+            }
+          }
+        },
+        "x-collection": "site_settings"
       },
       "ItemsCaseStudies": {
         "type": "object",
@@ -28337,42 +27964,59 @@
         },
         "x-collection": "products_translations"
       },
-      "ItemsSiteSettings": {
+      "ItemsIndustriesTranslations": {
         "type": "object",
         "properties": {
           "id": {
             "nullable": false,
             "type": "integer"
           },
-          "logo": {
+          "industries_id": {
             "nullable": true,
-            "type": "string",
-            "format": "uuid"
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsIndustries"
+              }
+            ]
           },
-          "contact_email": {
+          "languages_code": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsLanguages"
+              }
+            ]
+          },
+          "name": {
             "nullable": true,
             "type": "string"
           },
-          "contact_phone": {
+          "description": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "x-collection": "industries_translations"
+      },
+      "ItemsHomepage": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "title": {
             "nullable": true,
             "type": "string"
           },
-          "address": {
-            "nullable": true,
-            "type": "string"
-          },
-          "meta_title": {
-            "nullable": true,
-            "type": "string"
-          },
-          "meta_description": {
-            "nullable": true,
-            "type": "string"
-          },
-          "og_image": {
-            "nullable": true,
-            "type": "string",
-            "format": "uuid"
+          "hero_section": {
+            "nullable": true
           },
           "translations": {
             "nullable": true,
@@ -28383,13 +28027,13 @@
                   "type": "integer"
                 },
                 {
-                  "$ref": "#/components/schemas/ItemsSiteSettingsTranslations"
+                  "$ref": "#/components/schemas/ItemsHomepageTranslations"
                 }
               ]
             }
           }
         },
-        "x-collection": "site_settings"
+        "x-collection": "homepage"
       },
       "ItemsMediaRetention": {
         "type": "object",
@@ -28479,85 +28123,6 @@
           }
         },
         "x-collection": "media_retention"
-      },
-      "ItemsHomepage": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "title": {
-            "nullable": true,
-            "type": "string"
-          },
-          "hero_section": {
-            "nullable": true
-          },
-          "translations": {
-            "nullable": true,
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "type": "integer"
-                },
-                {
-                  "$ref": "#/components/schemas/ItemsHomepageTranslations"
-                }
-              ]
-            }
-          }
-        },
-        "x-collection": "homepage"
-      },
-      "ItemsBlogPostsTranslations": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "blog_posts_id": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsBlogPosts"
-              }
-            ]
-          },
-          "languages_code": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "string"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsLanguages"
-              }
-            ]
-          },
-          "title": {
-            "nullable": true,
-            "type": "string"
-          },
-          "body": {
-            "nullable": true,
-            "type": "string"
-          },
-          "meta_title": {
-            "nullable": true,
-            "type": "string"
-          },
-          "meta_description": {
-            "nullable": true,
-            "type": "string"
-          }
-        },
-        "x-collection": "blog_posts_translations"
       },
       "ItemsCaseStudiesTranslations": {
         "type": "object",
@@ -28771,21 +28336,86 @@
         },
         "x-collection": "homepage_translations"
       },
-      "ItemsIndustriesTranslations": {
+      "ItemsOrders": {
         "type": "object",
         "properties": {
           "id": {
             "nullable": false,
             "type": "integer"
           },
-          "industries_id": {
+          "status": {
+            "nullable": true,
+            "type": "string"
+          },
+          "code": {
+            "nullable": true,
+            "type": "string"
+          },
+          "customer": {
             "nullable": true,
             "oneOf": [
               {
                 "type": "integer"
               },
               {
-                "$ref": "#/components/schemas/ItemsIndustries"
+                "$ref": "#/components/schemas/ItemsCustomers"
+              }
+            ]
+          },
+          "order_date": {
+            "nullable": true,
+            "type": "string",
+            "format": "date"
+          },
+          "hub": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsRegionalHubs"
+              }
+            ]
+          },
+          "subtotal": {
+            "nullable": true,
+            "type": "number"
+          },
+          "tax": {
+            "nullable": true,
+            "type": "number"
+          },
+          "total": {
+            "nullable": true,
+            "type": "number"
+          },
+          "notes": {
+            "nullable": true,
+            "type": "string"
+          },
+          "erp_ref": {
+            "nullable": true,
+            "type": "string"
+          }
+        },
+        "x-collection": "orders"
+      },
+      "ItemsRegionalHubsTranslations": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "regional_hubs_id": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsRegionalHubs"
               }
             ]
           },
@@ -28803,13 +28433,9 @@
           "name": {
             "nullable": true,
             "type": "string"
-          },
-          "description": {
-            "nullable": true,
-            "type": "string"
           }
         },
-        "x-collection": "industries_translations"
+        "x-collection": "regional_hubs_translations"
       },
       "ItemsCustomers": {
         "type": "object",
@@ -28882,21 +28508,21 @@
         },
         "x-collection": "customers"
       },
-      "ItemsRegionalHubsTranslations": {
+      "ItemsBlogPostsTranslations": {
         "type": "object",
         "properties": {
           "id": {
             "nullable": false,
             "type": "integer"
           },
-          "regional_hubs_id": {
+          "blog_posts_id": {
             "nullable": true,
             "oneOf": [
               {
                 "type": "integer"
               },
               {
-                "$ref": "#/components/schemas/ItemsRegionalHubs"
+                "$ref": "#/components/schemas/ItemsBlogPosts"
               }
             ]
           },
@@ -28911,49 +28537,24 @@
               }
             ]
           },
-          "name": {
+          "title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "body": {
+            "nullable": true,
+            "type": "string"
+          },
+          "meta_title": {
+            "nullable": true,
+            "type": "string"
+          },
+          "meta_description": {
             "nullable": true,
             "type": "string"
           }
         },
-        "x-collection": "regional_hubs_translations"
-      },
-      "ItemsHubIndustrialZones": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "name": {
-            "nullable": true,
-            "type": "string"
-          },
-          "hub": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsRegionalHubs"
-              }
-            ]
-          },
-          "image": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "$ref": "#/components/schemas/Files"
-              }
-            ]
-          }
-        },
-        "x-collection": "hub_industrial_zones"
+        "x-collection": "blog_posts_translations"
       },
       "ItemsDeliveries": {
         "type": "object",
@@ -29208,71 +28809,6 @@
         },
         "x-collection": "rfq_assignment_rules"
       },
-      "ItemsOrders": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "status": {
-            "nullable": true,
-            "type": "string"
-          },
-          "code": {
-            "nullable": true,
-            "type": "string"
-          },
-          "customer": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsCustomers"
-              }
-            ]
-          },
-          "order_date": {
-            "nullable": true,
-            "type": "string",
-            "format": "date"
-          },
-          "hub": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsRegionalHubs"
-              }
-            ]
-          },
-          "subtotal": {
-            "nullable": true,
-            "type": "number"
-          },
-          "tax": {
-            "nullable": true,
-            "type": "number"
-          },
-          "total": {
-            "nullable": true,
-            "type": "number"
-          },
-          "notes": {
-            "nullable": true,
-            "type": "string"
-          },
-          "erp_ref": {
-            "nullable": true,
-            "type": "string"
-          }
-        },
-        "x-collection": "orders"
-      },
       "ItemsOrderItems": {
         "type": "object",
         "properties": {
@@ -29320,6 +28856,55 @@
           }
         },
         "x-collection": "order_items"
+      },
+      "ItemsHubTeamMembers": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "role": {
+            "nullable": true,
+            "type": "string"
+          },
+          "years_experience": {
+            "nullable": true,
+            "type": "integer"
+          },
+          "photo": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "$ref": "#/components/schemas/Files"
+              }
+            ]
+          },
+          "hub": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsRegionalHubs"
+              }
+            ]
+          },
+          "sort": {
+            "nullable": true,
+            "type": "integer"
+          }
+        },
+        "x-collection": "hub_team_members"
       },
       "ItemsInvoices": {
         "type": "object",
@@ -29387,78 +28972,6 @@
         },
         "x-collection": "invoices"
       },
-      "ItemsNewsletterSubscribers": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "email": {
-            "nullable": true,
-            "type": "string"
-          },
-          "status": {
-            "nullable": true,
-            "type": "string"
-          },
-          "created_at": {
-            "nullable": true,
-            "type": "string",
-            "format": "timestamp"
-          }
-        },
-        "x-collection": "newsletter_subscribers"
-      },
-      "ItemsHubTeamMembers": {
-        "type": "object",
-        "properties": {
-          "id": {
-            "nullable": false,
-            "type": "integer"
-          },
-          "name": {
-            "nullable": true,
-            "type": "string"
-          },
-          "role": {
-            "nullable": true,
-            "type": "string"
-          },
-          "years_experience": {
-            "nullable": true,
-            "type": "integer"
-          },
-          "photo": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "string",
-                "format": "uuid"
-              },
-              {
-                "$ref": "#/components/schemas/Files"
-              }
-            ]
-          },
-          "hub": {
-            "nullable": true,
-            "oneOf": [
-              {
-                "type": "integer"
-              },
-              {
-                "$ref": "#/components/schemas/ItemsRegionalHubs"
-              }
-            ]
-          },
-          "sort": {
-            "nullable": true,
-            "type": "integer"
-          }
-        },
-        "x-collection": "hub_team_members"
-      },
       "ItemsProductsIndustries": {
         "type": "object",
         "properties": {
@@ -29523,6 +29036,66 @@
           }
         },
         "x-collection": "products_files"
+      },
+      "ItemsNewsletterSubscribers": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "email": {
+            "nullable": true,
+            "type": "string"
+          },
+          "status": {
+            "nullable": true,
+            "type": "string"
+          },
+          "created_at": {
+            "nullable": true,
+            "type": "string",
+            "format": "timestamp"
+          }
+        },
+        "x-collection": "newsletter_subscribers"
+      },
+      "ItemsHubIndustrialZones": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "nullable": false,
+            "type": "integer"
+          },
+          "name": {
+            "nullable": true,
+            "type": "string"
+          },
+          "hub": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "$ref": "#/components/schemas/ItemsRegionalHubs"
+              }
+            ]
+          },
+          "image": {
+            "nullable": true,
+            "oneOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "$ref": "#/components/schemas/Files"
+              }
+            ]
+          }
+        },
+        "x-collection": "hub_industrial_zones"
       }
     },
     "parameters": {

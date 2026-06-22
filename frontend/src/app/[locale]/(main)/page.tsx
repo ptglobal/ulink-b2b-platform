@@ -16,7 +16,7 @@ import { HeadsetMic } from '@/components/icons/headset-mic';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
 import { VietnamMap, type ClusterMarker } from '@/components/vietnam-map';
-import { fetchRegionalHubs, parseCoordinates } from '@/lib/regional-hub-data';
+import { fetchRegionalHubs, parseCoordinates, getHubName } from '@/lib/regional-hub-data';
 
 /** ISR — revalidate every hour; on-demand revalidation via content webhooks */
 export const revalidate = 3600;
@@ -186,8 +186,9 @@ export default async function HomePage({ params: { locale } }: { params: { local
           {/* Cluster Cards — aligned with connector lines */}
           <div className="flex h-auto flex-col gap-4 lg:h-[540px] lg:justify-between lg:gap-0 lg:py-8">
             {hubs.map((hub, index) => (
-              <div
+              <Link
                 key={hub.id}
+                href={`/regional-hubs/${hub.slug}`}
                 className="group flex items-start gap-4 rounded-lg border border-border bg-card p-4 transition-all hover:border-brand/30 hover:shadow-md sm:p-5"
               >
                 {/* Number badge */}
@@ -199,8 +200,8 @@ export default async function HomePage({ params: { locale } }: { params: { local
 
                 {/* Content */}
                 <div className="flex-1">
-                  <p className="text-[14px] font-bold leading-tight text-primary sm:text-[15px]">
-                    {hub.name}
+                  <p className="text-[14px] font-bold leading-tight text-primary sm:text-[15px] group-hover:text-brand transition-colors">
+                    {getHubName(hub, locale)}
                   </p>
                   {hub.industrial_zones && hub.industrial_zones.length > 0 && (
                     <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground sm:text-[12px]">
@@ -210,14 +211,13 @@ export default async function HomePage({ params: { locale } }: { params: { local
                 </div>
 
                 {/* Arrow */}
-                <Link
-                  href="/regional-hubs"
+                <div
                   className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-border text-muted-foreground transition-all group-hover:border-brand group-hover:bg-brand group-hover:text-white"
                   aria-label={hub.name}
                 >
                   <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
-                </Link>
-              </div>
+                </div>
+              </Link>
             ))}
 
             {/* Fallback if no hubs from API */}

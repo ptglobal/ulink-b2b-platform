@@ -5,8 +5,9 @@ import { publicDirectus, type RegionalHub, type HubIndustrialZone } from './dire
  * Regional hub data used on the homepage map section.
  * Fetched server-side from Directus (public/anonymous read).
  */
-export interface RegionalHubWithZones extends RegionalHub {
+export interface RegionalHubWithZones extends Omit<RegionalHub, 'industrial_zones'> {
   industrial_zones: Pick<HubIndustrialZone, 'id' | 'name'>[];
+  translations?: { id: number; languages_code: string; name: string }[];
 }
 
 /**
@@ -31,13 +32,15 @@ export async function fetchRegionalHubs(): Promise<RegionalHubWithZones[]> {
           'warehouse_total_area',
           'standard_delivery_time',
           'on_time_rate',
-          { industrial_zones: ['id', 'name'] }
+          { industrial_zones: ['id', 'name'] },
+          // @ts-ignore
+          { translations: ['id', 'languages_code', 'name'] }
         ],
         sort: ['id'],
         limit: -1
       })
     );
-    return hubs as RegionalHubWithZones[];
+    return hubs as unknown as RegionalHubWithZones[];
   } catch (err) {
     // Graceful degradation — return empty array so the homepage still renders
     console.error('[regional-hub-data] Failed to fetch hubs:', err);
@@ -60,3 +63,82 @@ export function parseCoordinates(
   if (Number.isNaN(lat) || Number.isNaN(lon)) return null;
   return { lat, lon };
 }
+
+export interface RegionalHubDetail extends Omit<RegionalHub, 'province' | 'district' | 'industrial_zones' | 'team_members'> {
+  province?: { name: string; code: string } | null;
+  district?: { name: string; code: string } | null;
+  industrial_zones?: { id: number; name: string; image?: string | null }[];
+  team_members?: { id: number; name: string; role?: string | null; years_experience?: number | null; photo?: string | null }[];
+  translations?: { id: number; languages_code: string; name: string }[];
+}
+
+/**
+ * Fetch a single published regional hub by its slug with relations.
+ */
+export async function fetchRegionalHubBySlug(slug: string): Promise<RegionalHubDetail | null> {
+  try {
+    const hubs = await publicDirectus.request(
+      readItems('regional_hubs', {
+        filter: {
+          slug: { _eq: slug },
+          status: { _eq: 'published' }
+        },
+        fields: [
+          'id',
+          'name',
+          'slug',
+          'hub_code',
+          'detail_address',
+          'operating_status',
+          'coordinates',
+          'warehouse_total_area',
+          'warehouse_utilized_area',
+          'warehouse_available_area',
+          'warehouse_storage_tons',
+          'warehouse_pallets',
+          'standard_delivery_time',
+          'on_time_rate',
+          'on_time_rate_delta',
+          'orders_today',
+          'order_capacity_per_day',
+          'avg_delivery_time',
+          'person_in_charge_name',
+          'person_in_charge_title',
+          'person_in_charge_phone',
+          'current_personnel_count',
+          // @ts-ignore
+          { province: ['name', 'code'] },
+          // @ts-ignore
+          { district: ['name', 'code'] },
+          // @ts-ignore
+          { industrial_zones: ['id', 'name', 'image'] },
+          // @ts-ignore
+          { team_members: ['id', 'name', 'role', 'years_experience', 'photo'] },
+          // @ts-ignore
+          { translations: ['id', 'languages_code', 'name'] }
+        ],
+        limit: 1
+      })
+    );
+    return hubs && hubs.length > 0 ? (hubs[0] as RegionalHubDetail) : null;
+  } catch (err) {
+    console.error(`[regional-hub-data] Failed to fetch hub by slug ${slug}:`, err);
+    return null;
+  }
+}
+
+/**
+ * Get localized name of a regional hub or fallback to base name.
+ */
+export function getHubName(
+  hub: { name: string; translations?: { languages_code: string; name: string }[] | null },
+  locale: string
+): string {
+  if (hub.translations && Array.isArray(hub.translations)) {
+    const t = hub.translations.find((trans) => trans.languages_code === locale);
+    if (t && t.name) return t.name;
+  }
+  return hub.name;
+}
+
+
