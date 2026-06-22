@@ -14,7 +14,9 @@ import {
   FileText
 } from 'lucide-react';
 import { HeadsetMic } from '@/components/icons/headset-mic';
-import { VietnamMap } from '@/components/vietnam-map';
+import { VietnamMap, type ClusterMarker } from '@/components/vietnam-map';
+import { Link } from '@/i18n/navigation';
+import { fetchRegionalHubs, parseCoordinates, getHubName } from '@/lib/regional-hub-data';
 
 export default async function RegionalHubsPage({
   params: { locale }
@@ -24,12 +26,16 @@ export default async function RegionalHubsPage({
   setRequestLocale(locale);
   const t = await getTranslations('regionalHubs');
 
-  const clusters = [
-    { id: '01', name: t('clusters.bacNinh'), desc: t('clusters.bacNinhDesc') },
-    { id: '02', name: t('clusters.hungYen'), desc: t('clusters.hungYenDesc') },
-    { id: '03', name: t('clusters.haiPhong'), desc: t('clusters.haiPhongDesc') },
-    { id: '04', name: t('clusters.dongNai'), desc: t('clusters.dongNaiDesc') },
-  ];
+  const hubs = await fetchRegionalHubs();
+
+  // Parse coordinates for map markers
+  const mapClusters: ClusterMarker[] = hubs
+    .map((hub) => {
+      const coords = parseCoordinates(hub.coordinates);
+      if (!coords) return null;
+      return { id: String(hub.id), lat: coords.lat, lon: coords.lon };
+    })
+    .filter((c): c is ClusterMarker => c !== null);
 
   return (
     <>
@@ -94,26 +100,48 @@ export default async function RegionalHubsPage({
             <div className="relative flex items-start gap-0">
               {/* Map */}
               <div className="relative hidden h-[540px] w-[354px] shrink-0 lg:block">
-                <VietnamMap className="h-full w-full" />
+                <VietnamMap className="h-full w-full" clusters={mapClusters} />
               </div>
 
               {/* Cluster List — evenly spaced vertically */}
               <div className="flex h-[540px] flex-col justify-between py-8">
-                {clusters.map((cluster) => (
-                  <div key={cluster.id} className="flex items-center gap-3">
-                    {/* Number badge — white text on Dark Navy bg */}
-                    <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary shadow-sm">
-                      <span className="text-[11px] font-bold text-white">{cluster.id}</span>
-                    </div>
-                    {/* Text */}
-                    <div>
-                      <p className="text-[13px] font-bold leading-tight text-primary">{cluster.name}</p>
-                      <p className="mt-0.5 max-w-[170px] text-[10px] leading-snug text-muted-foreground">
-                        {cluster.desc}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                {hubs.map((hub, index) => {
+                  const localizedName = getHubName(hub, locale);
+                  const isZonesStr = hub.industrial_zones && hub.industrial_zones.length > 0
+                    ? hub.industrial_zones.map((z) => z.name).join(', ')
+                    : '';
+                  return (
+                    <Link
+                      key={hub.id}
+                      href={`/regional-hubs/${hub.slug}`}
+                      className="group flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted"
+                    >
+                      {/* Number badge — white text on Dark Navy bg */}
+                      <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary shadow-sm group-hover:bg-brand transition-colors">
+                        <span className="text-[11px] font-bold text-white">
+                          {String(index + 1).padStart(2, '0')}
+                        </span>
+                      </div>
+                      {/* Text */}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[13px] font-bold leading-tight text-primary group-hover:text-brand transition-colors truncate">
+                          {localizedName}
+                        </p>
+                        {isZonesStr && (
+                          <p className="mt-0.5 max-w-[170px] text-[10px] leading-snug text-muted-foreground truncate">
+                            {isZonesStr}
+                          </p>
+                        )}
+                      </div>
+                      <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:text-brand transition-all" />
+                    </Link>
+                  );
+                })}
+                {hubs.length === 0 && (
+                  <p className="text-[12px] text-muted-foreground text-center py-4">
+                    No regional hubs available
+                  </p>
+                )}
               </div>
             </div>
 
