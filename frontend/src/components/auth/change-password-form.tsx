@@ -220,6 +220,7 @@ function ChangePasswordFormInner() {
     const e: Partial<Record<Fields, string>> = {};
     if (!values.current_password) e.current_password = t('currentPasswordRequired');
     if (!values.new_password) e.new_password = t('passwordRequired');
+    else if (values.new_password.length > 128) e.new_password = t('passwordTooLong');
     else if (!PASSWORD_REGEX.test(values.new_password)) e.new_password = t('passwordPolicy');
     if (!values.confirm_new_password) e.confirm_new_password = t('passwordRequired');
     // NOTE: mismatch and password-reuse are intentionally NOT checked

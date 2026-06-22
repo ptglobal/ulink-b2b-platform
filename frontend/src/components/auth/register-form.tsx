@@ -77,6 +77,7 @@ export function RegisterForm() {
     if (!values.phone) e.phone = t('phoneRequired');
     else if (!PHONE_RE.test(values.phone)) e.phone = t('phoneInvalid');
     if (!values.password) e.password = t('passwordRequired');
+    else if (values.password.length > 128) e.password = t('passwordTooLong');
     else if (!PASSWORD_RE.test(values.password)) e.password = t('passwordPolicy');
     if (values.confirm_password !== values.password) e.confirm_password = t('passwordMismatch');
     if (!agree) e.agree = t('agreeRequired');
