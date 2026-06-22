@@ -3,11 +3,11 @@
   "info": {
     "title": "Dynamic API Specification",
     "description": "This is a dynamically generated API specification for all endpoints existing on the current project.",
-    "version": "42f1269bd3e2b7218c8ce0678acc30418abe4694"
+    "version": "28cbe5ecb372088261a5e5fbd07d93425c367e25"
   },
   "servers": [
     {
-      "url": "http://100.87.242.47:8055",
+      "url": "http://192.168.1.25:8055",
       "description": "Your current Directus instance."
     }
   ],

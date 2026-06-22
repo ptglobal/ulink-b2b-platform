@@ -14,6 +14,7 @@ import {
 export const ACCESS_DEFS = [
   { role: ADMIN_ROLE_ID, policy: ADMIN_POLICY_ID },
   { role: null, policy: VISITOR_POLICY_ID },
+  { role: VISITOR_ROLE_ID, policy: VISITOR_POLICY_ID },
   { role: EDITOR_ROLE_ID, policy: EDITOR_POLICY_ID },
   { role: SALES_ROLE_ID, policy: SALES_POLICY_ID },
   { role: CUSTOMER_ROLE_ID, policy: CUSTOMER_POLICY_ID }
