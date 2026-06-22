@@ -2,8 +2,8 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { Mail, ArrowRight, Loader2 } from 'lucide-react';
-import { Link, useRouter } from '@/i18n/navigation';
+import { Mail, ArrowRight, Loader2, CheckCircle2, RotateCw } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 import { requestPasswordReset, AuthError } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 
@@ -28,14 +28,17 @@ function readLockedUntil(): number | null {
 
 export function ForgotPasswordForm() {
   const t = useTranslations('auth');
-  const router = useRouter();
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [emailError, setEmailError] = useState<string | null>(null);
 
-  // Shared lockout awareness — read from sessionStorage on mount so the
-  // user can't escape the lockout by navigating back to this page.
+  // After successful submission, switch to "sent" view in-place
+  const [sent, setSent] = useState(false);
+  const [resending, setResending] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  // Shared lockout awareness
   const [lockedUntil, setLockedUntil] = useState<number | null>(null);
   const [now, setNow] = useState<number>(() => Date.now());
 
@@ -48,12 +51,15 @@ export function ForgotPasswordForm() {
     setNow(Date.now());
   }, [t]);
 
-  // Tick clock while locked
+  // Tick clock while locked or resend cooldown active
   useEffect(() => {
-    if (lockedUntil == null) return;
-    const id = setInterval(() => setNow(Date.now()), 1000);
+    if (lockedUntil == null && resendCooldown <= 0) return;
+    const id = setInterval(() => {
+      setNow(Date.now());
+      setResendCooldown((prev) => Math.max(0, prev - 1));
+    }, 1000);
     return () => clearInterval(id);
-  }, [lockedUntil]);
+  }, [lockedUntil, resendCooldown]);
 
   // Clear lockout when TTL expires
   useEffect(() => {
@@ -68,7 +74,6 @@ export function ForgotPasswordForm() {
     setFormError(null);
     setEmailError(null);
 
-    // Block submission while locked
     if (lockedUntil != null && Date.now() < lockedUntil) return;
 
     if (!email) {
@@ -81,22 +86,31 @@ export function ForgotPasswordForm() {
     }
     setLoading(true);
     try {
-      // API always returns { sent: true } to avoid email enumeration. After
-      // submission we redirect the user to /reset-password so they can either
-      // follow the link in their email (auto-fills ?token=…) or paste the
-      // recovery code into the form on that page.
       await requestPasswordReset(email);
-      router.push('/reset-password');
+      setSent(true);
+      setResendCooldown(60);
     } catch (err) {
       if (err instanceof AuthError && err.code === 'network_error') {
         setFormError(t('errorNetwork'));
       } else {
         setFormError(t('errorNetwork'));
       }
+    } finally {
       setLoading(false);
-      return;
     }
-    // Stay in loading state — navigation will unmount this component.
+  }
+
+  async function handleResend() {
+    if (resending || resendCooldown > 0) return;
+    setResending(true);
+    try {
+      await requestPasswordReset(email);
+      setResendCooldown(60);
+    } catch {
+      // Silently fail — avoid email enumeration
+    } finally {
+      setResending(false);
+    }
   }
 
   const inputBase =
@@ -104,6 +118,78 @@ export function ForgotPasswordForm() {
 
   const isLocked = lockedUntil != null && lockedUntil > now;
 
+  // ─── "Sent" view: centered success ──────────────────────────────────────────
+  if (sent) {
+    return (
+      <div className="text-center">
+        {/* Red lockout banner — takes priority */}
+        {isLocked && (
+          <div
+            role="alert"
+            className="mb-6 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-left text-sm text-destructive"
+          >
+            <p className="font-medium">{t('resetPasswordLockedTitle')}</p>
+            <p className="mt-1 text-xs">
+              {t('resetPasswordLockedWithCountdown', {
+                mm: String(Math.max(0, Math.floor((lockedUntil! - now) / 60000))).padStart(2, '0'),
+                ss: String(Math.max(0, Math.floor(((lockedUntil! - now) % 60000) / 1000))).padStart(2, '0')
+              })}
+            </p>
+          </div>
+        )}
+
+        {/* Large success icon */}
+        {!isLocked && (
+          <span className="mx-auto mb-5 flex h-14 w-14 items-center justify-center rounded-full bg-brand/10 text-brand">
+            <CheckCircle2 className="h-7 w-7" aria-hidden="true" />
+          </span>
+        )}
+
+        {/* Title */}
+        <h2 className="text-2xl font-bold tracking-tight text-foreground">
+          {t('forgotPasswordSentTitle')}
+        </h2>
+
+        {/* Description + email */}
+        {!isLocked && (
+          <div className="mt-3 text-sm text-muted-foreground">
+            <p>{t('forgotPasswordSentDesc')}</p>
+            <p className="mt-1 font-medium text-foreground">{email}</p>
+            <p className="mt-3 text-sm text-foreground">{t('forgotPasswordSentAction')}</p>
+          </div>
+        )}
+
+        {/* Resend + check spam inline */}
+        {!isLocked && (
+          <div className="mt-6 flex items-center justify-center gap-2 text-sm text-muted-foreground">
+            <span>{t('forgotPasswordNoEmail')}</span>
+            <span className="text-border">·</span>
+            <span>{t('forgotPasswordCheckSpam')}</span>
+            <span className="text-border">·</span>
+            <button
+              type="button"
+              onClick={handleResend}
+              disabled={resending || resendCooldown > 0}
+              className="inline-flex items-center gap-1 font-medium text-brand hover:underline disabled:opacity-50 disabled:no-underline disabled:cursor-not-allowed"
+            >
+              <RotateCw className={cn('h-3 w-3', resending && 'animate-spin')} aria-hidden="true" />
+              {resendCooldown > 0
+                ? t('forgotPasswordResendCooldown', { seconds: resendCooldown })
+                : t('forgotPasswordResend')}
+            </button>
+          </div>
+        )}
+
+        <p className="mt-6 text-sm text-muted-foreground">
+          <Link href="/login" className="inline-flex items-center gap-1 font-medium text-brand hover:underline">
+            ← {t('backToLogin')}
+          </Link>
+        </p>
+      </div>
+    );
+  }
+
+  // ─── Default view: email input ─────────────────────────────────────────────
   return (
     <div>
       <h2 className="text-2xl font-bold tracking-tight text-foreground">

@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2, KeyRound } from 'lucide-react';
+import { Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/navigation';
 import { resetPassword, AuthError } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -60,11 +60,8 @@ function ResetPasswordFormInner() {
   const params = useSearchParams();
 
   const tokenFromUrl = params.get('token') ?? '';
-  // Pre-fill from ?token= OR a manually-pasted value. The user arrives here
-  // either via the email link (?token=…) or by navigating from /forgot-password,
-  // in which case we show a small "paste the code from your email" form.
-  const [manualToken, setManualToken] = useState('');
-  const [tokenError, setTokenError] = useState<string | null>(null);
+  // Pre-fill from ?token= — the user arrives here via the email link (?token=…)
+  // or gets redirected to /forgot-password if no token is present.
 
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -171,92 +168,11 @@ function ResetPasswordFormInner() {
     }
   }, [lockedUntil, now, t]);
 
-  // No token yet — show a small "enter the code from your email" form. This
-  // is the destination the user lands on after submitting /forgot-password,
-  // so the message here says "check your email, then paste the code below".
+  // No token — redirect to /forgot-password which now handles the full
+  // "enter email → get code → paste code" flow in-place.
   if (!tokenFromUrl && !done) {
-    return (
-      <div>
-        <h2 className="text-2xl font-bold tracking-tight text-foreground">
-          {t('resetPassword')}
-        </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t('resetPasswordCheckEmailDesc')}
-        </p>
-
-        {formError && (
-          <p
-            role="alert"
-            className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
-          >
-            {formError}
-          </p>
-        )}
-
-        <form
-          className="mt-6 space-y-3.5"
-          onSubmit={(e) => {
-            e.preventDefault();
-            setTokenError(null);
-            if (!manualToken.trim()) {
-              setTokenError(t('resetPasswordCodeRequired'));
-              return;
-            }
-            // Navigate to the same page with ?token=… so the form below
-            // re-renders. Using a hard replace so back-button history
-            // doesn't trap the user on a transient URL.
-            router.replace(`/reset-password?token=${encodeURIComponent(manualToken.trim())}`);
-          }}
-          noValidate
-        >
-          <div>
-            <label htmlFor="token" className="mb-1 block text-sm text-foreground">
-              {t('resetPasswordCodeLabel')}
-            </label>
-            <div className="relative">
-              <KeyRound className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
-              <input
-                id="token"
-                name="token"
-                type="text"
-                autoComplete="one-time-code"
-                value={manualToken}
-                onChange={(e) => setManualToken(e.target.value)}
-                placeholder={t('resetPasswordCodePlaceholder')}
-                aria-invalid={!!tokenError}
-                aria-describedby={tokenError ? 'token-error' : undefined}
-                className={cn(
-                  'w-full rounded-lg border bg-card py-2.5 pl-10 pr-4 text-sm outline-none transition-colors placeholder:text-muted-foreground/60 focus:border-brand focus:ring-1 focus:ring-brand',
-                  tokenError ? 'border-destructive' : 'border-border'
-                )}
-              />
-            </div>
-            {tokenError && (
-              <p id="token-error" className="mt-1.5 text-xs text-destructive">
-                {tokenError}
-              </p>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="flex w-full items-center justify-center gap-2 rounded-lg border border-brand bg-brand py-3 text-sm font-medium text-brand-foreground transition-colors hover:border-brand-strong hover:bg-brand-strong"
-          >
-            <span>{t('resetPasswordCodeSubmit')}</span>
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          <Link
-            href="/forgot-password"
-            className="font-medium text-brand hover:underline"
-          >
-            {t('resendEmail')}
-          </Link>
-        </p>
-      </div>
-    );
+    router.replace('/forgot-password');
+    return null;
   }
 
   if (done) {

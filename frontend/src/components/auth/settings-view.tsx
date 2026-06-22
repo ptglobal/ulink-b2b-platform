@@ -139,6 +139,22 @@ function ChangePasswordButton({ email: _email }: { email: string }) {
   );
 }
 
+// Shared lockout keys — same as forgot-password / reset-password / change-password
+const LOCKOUT_KEYS = ['reset_pwd_locked_until', 'change_pwd_locked_until'];
+
+function readLockedUntilFromStorage(): number | null {
+  try {
+    for (const key of LOCKOUT_KEYS) {
+      const v = sessionStorage.getItem(key);
+      if (v != null) {
+        const n = Number(v);
+        if (Number.isFinite(n) && n > Date.now()) return n;
+      }
+    }
+  } catch { /* SSR / quota */ }
+  return null;
+}
+
 function ChangePasswordDialog({ email }: { email: string }) {
   const t = useTranslations('auth');
   const [open, setOpen] = useState(false);
@@ -146,12 +162,20 @@ function ChangePasswordDialog({ email }: { email: string }) {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Shared lockout awareness
+  const [lockedUntil, setLockedUntil] = useState<number | null>(null);
+  const [now, setNow] = useState<number>(() => Date.now());
+
   // Open/close event channel — the trigger button lives in a sibling card,
   // and we don't want to lift `open` up just to share one boolean.
   useEffect(() => {
     const onOpen = () => {
       setSent(false);
       setError(null);
+      // Check lockout state each time dialog opens
+      const stored = readLockedUntilFromStorage();
+      setLockedUntil(stored);
+      setNow(Date.now());
       setOpen(true);
     };
     const onKey = (e: KeyboardEvent) => {
@@ -165,10 +189,27 @@ function ChangePasswordDialog({ email }: { email: string }) {
     };
   }, []);
 
+  // Tick clock while locked
+  useEffect(() => {
+    if (lockedUntil == null) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [lockedUntil]);
+
+  // Clear lockout when TTL expires
+  useEffect(() => {
+    if (lockedUntil != null && now >= lockedUntil) {
+      setLockedUntil(null);
+    }
+  }, [lockedUntil, now]);
+
   // SSR guard — portal needs document
   if (!open || typeof document === 'undefined') return null;
 
+  const isLocked = lockedUntil != null && lockedUntil > now;
+
   async function onSend() {
+    if (isLocked) return;
     setSending(true);
     setError(null);
     try {
@@ -217,13 +258,31 @@ function ChangePasswordDialog({ email }: { email: string }) {
           </button>
         </div>
 
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-          {sent
-            ? t('settingsChangePasswordDialogSentDesc', { email })
-            : t('settingsChangePasswordDialogDesc', { email })}
-        </p>
+        {!isLocked && (
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+            {sent
+              ? t('settingsChangePasswordDialogSentDesc', { email })
+              : t('settingsChangePasswordDialogDesc', { email })}
+          </p>
+        )}
 
-        {error && (
+        {/* Red lockout banner with live MM:SS countdown */}
+        {isLocked && (
+          <div
+            role="alert"
+            className="mt-3 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+          >
+            <p className="font-medium">{t('resetPasswordLockedTitle')}</p>
+            <p className="mt-1 text-xs">
+              {t('resetPasswordLockedWithCountdown', {
+                mm: String(Math.max(0, Math.floor((lockedUntil! - now) / 60000))).padStart(2, '0'),
+                ss: String(Math.max(0, Math.floor(((lockedUntil! - now) % 60000) / 1000))).padStart(2, '0')
+              })}
+            </p>
+          </div>
+        )}
+
+        {error && !isLocked && (
           <p role="alert" className="mt-3 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
             {error}
           </p>
@@ -251,7 +310,7 @@ function ChangePasswordDialog({ email }: { email: string }) {
               <button
                 type="button"
                 onClick={onSend}
-                disabled={sending}
+                disabled={sending || isLocked}
                 className="inline-flex h-9 items-center gap-2 rounded-lg border border-brand bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-strong disabled:opacity-60"
               >
                 {sending && <Loader2 className="h-4 w-4 animate-spin" aria-hidden={true} />}
