@@ -72,6 +72,7 @@ export function RegisterForm() {
     if (!values.company_name.trim()) e.company_name = t('companyRequired');
     if (!values.contact_name.trim()) e.contact_name = t('contactRequired');
     if (!values.email) e.email = t('emailRequired');
+    else if (values.email.length > 254) e.email = t('emailTooLong');
     else if (!EMAIL_RE.test(values.email)) e.email = t('emailInvalid');
     if (!values.phone) e.phone = t('phoneRequired');
     else if (!PHONE_RE.test(values.phone)) e.phone = t('phoneInvalid');
@@ -123,14 +124,19 @@ export function RegisterForm() {
         } else if (err.code === 'password_mismatch' || err.code === 'password_policy') {
           setFormError(t('passwordPolicy'));
         } else if (err.status === 422) {
-          // Surface server-side validation details so the user knows which
-          // field failed instead of the generic "Input validation failed".
-          const fieldErrors = err.details
-            ? Object.entries(err.details)
-                .map(([field, msgs]) => `${field}: ${(msgs as string[]).join(', ')}`)
-                .join('; ')
-            : null;
-          setFormError(fieldErrors ?? err.message ?? t('registerFailed'));
+          // Map raw Directus validation messages to user-friendly translations.
+          // The server returns messages like 'Validation failed for field "email"...'
+          // which should never be shown verbatim.
+          const rawMsg = err.message?.toLowerCase() ?? '';
+          if (rawMsg.includes('email')) {
+            setErrors((cur) => ({ ...cur, email: t('emailInvalid') }));
+          } else if (rawMsg.includes('password')) {
+            setErrors((cur) => ({ ...cur, password: t('passwordPolicy') }));
+          } else if (rawMsg.includes('phone')) {
+            setErrors((cur) => ({ ...cur, phone: t('phoneInvalid') }));
+          } else {
+            setFormError(t('registerFailed'));
+          }
         } else {
           setFormError(err.message || t('registerFailed'));
         }

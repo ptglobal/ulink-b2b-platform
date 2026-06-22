@@ -31,6 +31,7 @@
     "loggingIn": "Đang đăng nhập…",
     "emailRequired": "Vui lòng nhập email.",
     "emailInvalid": "Email không hợp lệ.",
+    "emailTooLong": "Email quá dài (tối đa 254 ký tự).",
     "passwordRequired": "Vui lòng nhập mật khẩu.",
     "errorInvalidCredentials": "Email hoặc mật khẩu không đúng.",
     "accountLockedContactAdmin": "Tài khoản của bạn đã bị tạm khóa, xin vui lòng liên hệ với quản trị viên.",

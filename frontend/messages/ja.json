@@ -31,6 +31,7 @@
     "loggingIn": "ログイン中…",
     "emailRequired": "メールアドレスを入力してください。",
     "emailInvalid": "メールアドレスが正しくありません。",
+    "emailTooLong": "メールアドレスが長すぎます（最大254文字）。",
     "passwordRequired": "パスワードを入力してください。",
     "errorInvalidCredentials": "メールアドレスまたはパスワードが正しくありません。",
     "accountLockedContactAdmin": "アカウントは一時的にロックされています。管理者にお問い合わせください。",

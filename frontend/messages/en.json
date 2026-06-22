@@ -31,6 +31,7 @@
     "loggingIn": "Signing in…",
     "emailRequired": "Please enter your email.",
     "emailInvalid": "Invalid email address.",
+    "emailTooLong": "Email is too long (max 254 characters).",
     "passwordRequired": "Please enter your password.",
     "errorInvalidCredentials": "Incorrect email or password.",
     "accountLockedContactAdmin": "Your account has been temporarily locked. Please contact the administrator.",
