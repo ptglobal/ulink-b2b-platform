@@ -20,6 +20,7 @@ function buildHtml(publicUrl) {
 <head>
   <meta charset="UTF-8"/>
   <title>ULink API Docs</title>
+  <link rel="icon" href="data:,"/>
   <link rel="stylesheet" href="${SWAGGER_CDN}/swagger-ui.css"/>
   <style>body{margin:0}.topbar{display:none}</style>
 </head>
@@ -44,6 +45,22 @@ export default {
   handler(router, context) {
     router.get('/', (req, res) => {
       const publicUrl = context.env?.PUBLIC_URL || 'http://localhost:8055';
+      // Relax CSP for THIS docs page only: Swagger UI is loaded from the unpkg
+      // CDN plus an inline bootstrap <script>, both of which Directus's strict
+      // default CSP (script-src 'self' 'unsafe-eval') blocks. The global CSP
+      // still protects every other Directus/API route.
+      res.setHeader(
+        'Content-Security-Policy',
+        [
+          "default-src 'self'",
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://unpkg.com",
+          "style-src 'self' 'unsafe-inline' https://unpkg.com",
+          "img-src 'self' data: https:",
+          "font-src 'self' data: https:",
+          "connect-src 'self' https://* wss://*",
+          "worker-src 'self' blob:"
+        ].join('; ')
+      );
       res.setHeader('Content-Type', 'text/html');
       res.send(buildHtml(publicUrl));
     });
