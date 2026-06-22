@@ -1,4 +1,11 @@
-import { ADMIN_POLICY_ID, VISITOR_POLICY_ID, EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../lib/constants.mjs';
+import {
+  ADMIN_POLICY_ID,
+  VISITOR_POLICY_ID,
+  EDITOR_POLICY_ID,
+  SALES_POLICY_ID,
+  CUSTOMER_POLICY_ID,
+  FRONTEND_SERVICE_POLICY_ID
+} from '../lib/constants.mjs';
 
 export const POLICY_DEFS = [
   {
@@ -34,6 +41,13 @@ export const POLICY_DEFS = [
     name: 'Customer Portal Access Policy',
     description: 'Read access to content and row-level access to own commerce data',
     app_access: true,
+    admin_access: false
+  },
+  {
+    id: FRONTEND_SERVICE_POLICY_ID,
+    name: 'Frontend Service Policy',
+    description: 'Server-side write access for the Next.js frontend service token (RFQ + newsletter submissions)',
+    app_access: false,
     admin_access: false
   }
 ];

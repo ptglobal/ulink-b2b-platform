@@ -33,6 +33,10 @@ export const VISITOR_POLICY_ID = 'abf8a154-5b1c-4a46-ac9c-7300570f4f17';
 export const EDITOR_POLICY_ID = 'b11b0e50-1010-410c-9999-000000000001';
 export const SALES_POLICY_ID = 'b11b0e50-2020-410c-9999-000000000002';
 export const CUSTOMER_POLICY_ID = 'b11b0e50-3030-410c-9999-000000000003';
+// Scoped policy for the Next.js frontend service token (DIRECTUS_TOKEN =
+// the frontend-api user's static token). Grants ONLY the server-side writes
+// the frontend performs: create newsletter_subscribers + rfq_requests.
+export const FRONTEND_SERVICE_POLICY_ID = 'b11b0e50-f0f0-410c-9999-0000000000f5';
 
 // Prefix used for verified tokens issued by our OTP endpoint. The frontend
 // distinguishes between our `vt_*` tokens and Directus built-in reset-link
