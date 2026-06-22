@@ -53,19 +53,18 @@ export const forgotPasswordSchema = z.object({
 
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 
-export const resetPasswordSchema = z
-  .object({
-    token: z.string().min(1, 'required'),
-    password: z
-      .string()
-      .min(8, 'too_short')
-      .regex(PASSWORD_REGEX, 'password_policy'),
-    confirm_password: z.string().min(1, 'required')
-  })
-  .refine((v) => v.password === v.confirm_password, {
-    message: 'password_mismatch',
-    path: ['confirm_password']
-  });
+export const resetPasswordSchema = z.object({
+  token: z.string().min(1, 'required'),
+  password: z.string().min(1, 'required'),
+  confirm_password: z.string().min(1, 'required')
+  // Intentionally NO policy validation here. The Directus /reset endpoint
+  // is the source of truth for the shared anti-brute-force counter —
+  // if the Next.js route pre-validates and 422s locally, the counter never
+  // increments, the 3-fail/15-min lockout never fires, and the user never
+  // sees the attempts-left hint or the red countdown banner. The backend
+  // already returns password_mismatch / password_policy 422 + payload
+  // { remaining, attempts } we need to drive the UI.
+});
 
 export type ResetPasswordInput = z.infer<typeof resetPasswordSchema>;
 

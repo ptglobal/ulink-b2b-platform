@@ -5,7 +5,8 @@ import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
 import { Link, useRouter } from '@/i18n/navigation';
-import { login, AuthError } from '@/lib/auth';
+import { AuthError } from '@/lib/auth';
+import { useAuth } from '@/lib/auth-context';
 import { SocialAuth } from '@/components/auth/social-auth';
 import { cn } from '@/lib/utils';
 
@@ -26,6 +27,7 @@ function LoginFormInner() {
   const t = useTranslations('auth');
   const router = useRouter();
   const search = useSearchParams();
+  const { login } = useAuth();
 
   // Show a soft banner if the user was redirected here from a successful
   // password change. Keeps the user oriented — without it, dropping on the
@@ -79,11 +81,16 @@ function LoginFormInner() {
       router.push(nextSafe);
       router.refresh();
     } catch (err) {
-      setFormError(
-        err instanceof AuthError && err.code === 'network_error'
-          ? t('errorNetwork')
-          : t('errorInvalidCredentials')
-      );
+      // Surface a friendly "contact admin" message for suspended/locked
+      // accounts, instead of the generic "incorrect credentials"
+      // string which is misleading — the password may be perfectly fine.
+      if (err instanceof AuthError && err.code === 'account_locked') {
+        setFormError(t('accountLockedContactAdmin'));
+      } else if (err instanceof AuthError && err.code === 'network_error') {
+        setFormError(t('errorNetwork'));
+      } else {
+        setFormError(t('errorInvalidCredentials'));
+      }
     } finally {
       setLoading(false);
     }

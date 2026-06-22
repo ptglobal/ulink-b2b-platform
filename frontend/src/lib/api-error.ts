@@ -9,19 +9,35 @@ export interface ApiErrorBody {
   error: string;
   message?: string;
   details?: Record<string, string[]>;
+  /**
+   * Optional structured context for the client. Use for things that should
+   * drive UI without being squeezed into a localized `message` (e.g. the
+   * change-password rate-limit returns `{ remaining, locked, lockedUntil,
+   * ttlSeconds }` here so the form can show a live countdown and an
+   * attempts-left hint).
+   */
+  payload?: Record<string, unknown>;
 }
 
 export class ApiError extends Error {
   status: number;
   code: string;
   details?: Record<string, string[]>;
+  payload?: Record<string, unknown>;
 
-  constructor(status: number, code: string, message?: string, details?: Record<string, string[]>) {
+  constructor(
+    status: number,
+    code: string,
+    message?: string,
+    details?: Record<string, string[]>,
+    payload?: Record<string, unknown>
+  ) {
     super(message ?? code);
     this.name = 'ApiError';
     this.status = status;
     this.code = code;
     this.details = details;
+    this.payload = payload;
   }
 
   /** Serialize cho JSON response trong route handlers. */
@@ -29,7 +45,8 @@ export class ApiError extends Error {
     return {
       error: this.code,
       ...(this.message !== this.code && { message: this.message }),
-      ...(this.details && { details: this.details })
+      ...(this.details && { details: this.details }),
+      ...(this.payload && Object.keys(this.payload).length > 0 && { payload: this.payload })
     };
   }
 }

@@ -71,7 +71,8 @@ export async function api<T = unknown>(url: string, options: RequestOptions = {}
       res.status,
       errorBody?.error ?? `http_${res.status}`,
       errorBody?.message ?? res.statusText,
-      errorBody?.details
+      errorBody?.details,
+      errorBody?.payload
     );
   }
 

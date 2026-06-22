@@ -21,6 +21,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode
 } from 'react';
@@ -75,6 +76,10 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
   const [status, setStatus] = useState<AuthStatus>(initialUser ? 'authenticated' : 'loading');
   const [error, setError] = useState<string | null>(null);
 
+  // Cross-tab auth sync via BroadcastChannel. When login/logout happens in
+  // one tab, other tabs pick it up immediately without a manual reload.
+  const channelRef = useRef<BroadcastChannel | null>(null);
+
   const refresh = useCallback(async () => {
     setStatus((prev) => (prev === 'loading' ? prev : 'loading'));
     setError(null);
@@ -109,11 +114,39 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
     refresh();
   }, [refresh, initialUser]);
 
+  // Set up cross-tab BroadcastChannel listener
+  useEffect(() => {
+    if (typeof BroadcastChannel === 'undefined') return;
+    const channel = new BroadcastChannel('ulink_auth');
+    channelRef.current = channel;
+
+    channel.onmessage = (event) => {
+      const msg = event.data as { type: string };
+      if (msg.type === 'login') {
+        // Another tab logged in — refresh to pick up the session
+        refresh().then(() => router.refresh());
+      } else if (msg.type === 'logout') {
+        // Another tab logged out — clear state immediately
+        setUser(null);
+        setStatus('unauthenticated');
+        setError(null);
+        router.refresh();
+      }
+    };
+
+    return () => {
+      channel.close();
+      channelRef.current = null;
+    };
+  }, [refresh, router]);
+
   const login = useCallback<AuthContextValue['login']>(async (email, password) => {
     setError(null);
     try {
       await loginRequest(email, password);
       await refresh();
+      // Notify other tabs that a login just happened
+      channelRef.current?.postMessage({ type: 'login' });
     } catch (err) {
       const message = err instanceof ApiError ? err.message : 'login_failed';
       setError(message);
@@ -128,6 +161,7 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
       // Most registration flows auto-login on the server, so refresh the
       // session shape and let the caller decide where to navigate.
       await refresh();
+      channelRef.current?.postMessage({ type: 'login' });
     } catch (err) {
       const message = err instanceof ApiError ? err.message : 'register_failed';
       setError(message);
@@ -142,6 +176,8 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
       setUser(null);
       setStatus('unauthenticated');
       setError(null);
+      // Notify other tabs that a logout just happened
+      channelRef.current?.postMessage({ type: 'logout' });
       router.push(redirectTo);
       router.refresh();
     }
