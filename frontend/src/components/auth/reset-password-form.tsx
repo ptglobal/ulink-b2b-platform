@@ -223,6 +223,14 @@ function ResetPasswordFormInner() {
     // blocked locally the counter would never fire, the user would
     // never see the "N attempts remaining" hint or the lockout banner,
     // and they could retry indefinitely.
+    //
+    // Exception: max-length (128 chars, OWASP) is a pure format guard —
+    // no real user types 128+ chars accidentally, and blocking it
+    // locally doesn't undermine the lockout model.
+    const fe: Record<string, string> = {};
+    if (password.length > 128) fe.password = t('passwordTooLong');
+    if (confirm.length > 128) fe.confirm_password = t('passwordTooLong');
+    if (Object.keys(fe).length) { setFieldErrors(fe); setLoading(false); return; }
     setFieldErrors({});
 
     setLoading(true);
