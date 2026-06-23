@@ -92,7 +92,7 @@ export function createRfqRateLimiter(redis: Redis) {
   return async (ip: string) => {
     // Bypass rate limiter for Playwright tests
     if (process.env.NODE_ENV !== 'production' && process.env.PLAYWRIGHT_TEST_MODE === 'true') {
-      return { ok: true };
+      return { ok: true as const };
     }
 
     const key = `${keyPrefix}${ip}`;

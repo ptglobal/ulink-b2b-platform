@@ -95,6 +95,8 @@ export interface RfqRequest {
   phone?: string;
   industry?: string | Industry | null;
   message?: string;
+  scheduled_delivery?: boolean;
+  requested_delivery_date?: string;
   line_items?: Array<{ sku: string; qty: number }>;
   status?: string;
   source?: 'web' | 'portal';

@@ -596,6 +596,8 @@ export const COLLECTION_DEFS = [
         },
         schema: { default_value: 'web' }
       },
+      { field: 'scheduled_delivery', type: 'boolean', meta: { interface: 'boolean' }, schema: { default_value: false } },
+      { field: 'requested_delivery_date', type: 'date', meta: { interface: 'datetime' } },
       { field: 'user', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       {
         field: 'created_at',

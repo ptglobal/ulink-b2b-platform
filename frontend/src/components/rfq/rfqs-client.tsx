@@ -80,6 +80,8 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
   const [formIndustry, setFormIndustry] = useState('');
   const [formMessage, setFormMessage] = useState('');
   const [formItems, setFormItems] = useState<Array<{ sku: string; qty: number }>>([{ sku: '', qty: 1 }]);
+  const [formScheduled, setFormScheduled] = useState(false);
+  const [formDeliveryDate, setFormDeliveryDate] = useState('');
   
   const [formError, setFormError] = useState<string | null>(null);
   const [formFieldErrors, setFormFieldErrors] = useState<Record<string, string>>({});
@@ -129,6 +131,8 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
     setFormIndustry(customerMeta?.customer?.industry || '');
     setFormMessage('');
     setFormItems([{ sku: '', qty: 1 }]);
+    setFormScheduled(false);
+    setFormDeliveryDate('');
     setFormError(null);
     setFormFieldErrors({});
     setIsCreateOpen(true);
@@ -169,6 +173,34 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formEmail.trim())) {
       errors.email = 'Email không đúng định dạng.';
     }
+    if (!formPhone.trim()) {
+      errors.phone = 'Số điện thoại là bắt buộc.';
+    } else if (!/^[0-9+\s()-]+$/.test(formPhone.trim())) {
+      errors.phone = 'Số điện thoại không đúng định dạng.';
+    }
+    if (!formHub) {
+      errors.hub = 'Hub khu vực là bắt buộc.';
+    }
+    if (!formIndustry) {
+      errors.industry = 'Ngành nghề là bắt buộc.';
+    }
+    if (!formMessage.trim()) {
+      errors.message = 'Ghi chú là bắt buộc.';
+    }
+
+    if (formScheduled) {
+      if (!formDeliveryDate) {
+        errors.requested_delivery_date = 'Ngày giao hàng mong muốn là bắt buộc.';
+      } else {
+        const dateVal = new Date(formDeliveryDate);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const parsedDate = new Date(dateVal.getFullYear(), dateVal.getMonth(), dateVal.getDate());
+        if (parsedDate.getTime() < today.getTime()) {
+          errors.requested_delivery_date = 'Ngày giao hàng mong muốn phải ở hiện tại hoặc tương lai.';
+        }
+      }
+    }
 
     const validItems = formItems.filter((it) => it.sku.trim() !== '');
     if (validItems.length === 0) {
@@ -195,10 +227,12 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
           company: formCompany.trim(),
           contact: formContact.trim(),
           email: formEmail.trim(),
-          phone: formPhone.trim() || undefined,
-          hub: formHub ? parseInt(formHub) : undefined,
-          industry: formIndustry || undefined,
-          message: formMessage.trim() || undefined,
+          phone: formPhone.trim(),
+          hub: parseInt(formHub),
+          industry: formIndustry,
+          message: formMessage.trim(),
+          scheduled_delivery: formScheduled,
+          requested_delivery_date: formScheduled ? formDeliveryDate : undefined,
           items: validItems.map((it) => ({
             sku: it.sku.trim(),
             qty: it.qty
@@ -248,9 +282,16 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
     return rfqs.filter((rfq) => {
       // 1. Search filter (by ID)
       if (searchQuery.trim()) {
-        const idStr = String(rfq.id || '').toLowerCase();
         const query = searchQuery.trim().toLowerCase();
-        if (!idStr.includes(query)) return false;
+        const idStr = String(rfq.id || '');
+        const parsedQuery = parseInt(query, 10);
+        
+        const matchesRaw = idStr.includes(query);
+        const matchesNumeric = !isNaN(parsedQuery) && rfq.id === parsedQuery;
+        
+        if (!matchesRaw && !matchesNumeric) {
+          return false;
+        }
       }
 
       // 2. Status filter
@@ -295,6 +336,25 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
         day: '2-digit',
         hour: '2-digit',
         minute: '2-digit'
+      });
+    } catch {
+      return '—';
+    }
+  };
+
+  const formatDateOnly = (dateStr: string | undefined) => {
+    if (!dateStr) return '—';
+    try {
+      const match = dateStr.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (match) {
+        return `${match[3]}/${match[2]}/${match[1]}`;
+      }
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return '—';
+      return d.toLocaleDateString('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
       });
     } catch {
       return '—';
@@ -423,10 +483,16 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                       className="transition-colors hover:bg-muted/20"
                     >
                       <td className="px-6 py-4 font-mono font-medium text-foreground">
-                        #{String(rfq.id).padStart(4, '0')}
+                        {rfq.id}
                       </td>
                       <td className="px-6 py-4 text-muted-foreground">
-                        {formatDate(rfq.created_at)}
+                        <div>{formatDate(rfq.created_at)}</div>
+                        {rfq.scheduled_delivery && (
+                          <div className="mt-1 flex items-center gap-1 text-[11px] font-medium text-brand">
+                            <Calendar className="h-3.5 w-3.5 shrink-0" />
+                            <span>Giao: {formatDateOnly(rfq.requested_delivery_date)}</span>
+                          </div>
+                        )}
                       </td>
                       <td className="px-6 py-4 text-foreground font-medium">
                         {rfq.company}
@@ -485,7 +551,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
             <div className="flex items-center justify-between border-b border-border/80 px-6 py-4 bg-muted/30">
               <div>
                 <h2 className="text-lg font-semibold text-foreground">
-                  Chi tiết Yêu cầu báo giá #{String(selectedRfq.id).padStart(4, '0')}
+                  Chi tiết Yêu cầu báo giá {selectedRfq.id}
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
                   Tạo ngày {formatDate(selectedRfq.created_at)}
@@ -559,6 +625,30 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                             : selectedRfq.industry?.name || '—'}
                         </span>
                       </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Delivery Information */}
+              <div className="space-y-3">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5 border-b border-border/50 pb-1.5">
+                  <Calendar className="h-4 w-4 text-brand" />
+                  Thông tin giao hàng
+                </h3>
+                <div className="grid gap-3 sm:grid-cols-2 text-sm">
+                  <div className="space-y-1">
+                    <span className="text-xs text-muted-foreground block">Phương thức giao hàng</span>
+                    <span className="font-medium text-foreground">
+                      {selectedRfq.scheduled_delivery ? 'Lên lịch giao hàng (Scheduled Delivery)' : 'Giao hàng thông thường'}
+                    </span>
+                  </div>
+                  {selectedRfq.scheduled_delivery && (
+                    <div className="space-y-1">
+                      <span className="text-xs text-muted-foreground block">Ngày giao hàng mong muốn</span>
+                      <span className="font-medium text-foreground">
+                        {formatDateOnly(selectedRfq.requested_delivery_date)}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -724,9 +814,10 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                     )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Số điện thoại</label>
+                    <label className="text-xs font-medium text-muted-foreground block">Số điện thoại *</label>
                     <input
                       type="text"
+                      required
                       value={formPhone}
                       onChange={(e) => {
                         setFormPhone(e.target.value);
@@ -752,11 +843,18 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                 </h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Hub khu vực ưu tiên</label>
+                    <label className="text-xs font-medium text-muted-foreground block">Hub khu vực ưu tiên *</label>
                     <select
+                      required
                       value={formHub}
-                      onChange={(e) => setFormHub(e.target.value)}
-                      className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand"
+                      onChange={(e) => {
+                        setFormHub(e.target.value);
+                        setFormFieldErrors((p) => ({ ...p, hub: '' }));
+                      }}
+                      className={cn(
+                        "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
+                        formFieldErrors.hub ? "border-rose-500" : "border-border/80"
+                      )}
                     >
                       <option value="">Chọn Regional Hub...</option>
                       {customerMeta?.hubs.map((hub) => (
@@ -765,13 +863,23 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         </option>
                       ))}
                     </select>
+                    {formFieldErrors.hub && (
+                      <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.hub}</span>
+                    )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Ngành nghề</label>
+                    <label className="text-xs font-medium text-muted-foreground block">Ngành nghề *</label>
                     <select
+                      required
                       value={formIndustry}
-                      onChange={(e) => setFormIndustry(e.target.value)}
-                      className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand"
+                      onChange={(e) => {
+                        setFormIndustry(e.target.value);
+                        setFormFieldErrors((p) => ({ ...p, industry: '' }));
+                      }}
+                      className={cn(
+                        "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
+                        formFieldErrors.industry ? "border-rose-500" : "border-border/80"
+                      )}
                     >
                       <option value="">Chọn ngành nghề...</option>
                       {customerMeta?.industries.map((ind) => (
@@ -780,7 +888,69 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         </option>
                       ))}
                     </select>
+                    {formFieldErrors.industry && (
+                      <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.industry}</span>
+                    )}
                   </div>
+                </div>
+              </div>
+
+              {/* Delivery Option */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5 border-b border-border/50 pb-1.5">
+                  <Calendar className="h-4 w-4 text-brand" />
+                  Phương thức giao hàng
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3">
+                    <input
+                      type="checkbox"
+                      id="scheduled_delivery"
+                      checked={formScheduled}
+                      onChange={(e) => {
+                        setFormScheduled(e.target.checked);
+                        if (!e.target.checked) {
+                          setFormDeliveryDate('');
+                          setFormFieldErrors((p) => {
+                            const next = { ...p };
+                            delete next.requested_delivery_date;
+                            return next;
+                          });
+                        }
+                      }}
+                      className="h-4 w-4 rounded border-border text-brand focus:ring-brand"
+                    />
+                    <label htmlFor="scheduled_delivery" className="text-sm font-medium text-foreground cursor-pointer select-none">
+                      Lên lịch giao hàng (Scheduled Delivery)
+                    </label>
+                  </div>
+
+                  {formScheduled && (
+                    <div className="space-y-1 animate-in fade-in slide-in-from-top-2 duration-200 max-w-sm">
+                      <label className="text-xs font-medium text-muted-foreground block">Ngày giao hàng mong muốn *</label>
+                      <input
+                        type="date"
+                        required={formScheduled}
+                        min={new Date().toISOString().split('T')[0]}
+                        value={formDeliveryDate}
+                        onChange={(e) => {
+                          setFormDeliveryDate(e.target.value);
+                          setFormFieldErrors((p) => {
+                            const next = { ...p };
+                            delete next.requested_delivery_date;
+                            return next;
+                          });
+                        }}
+                        className={cn(
+                          "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand font-medium",
+                          formFieldErrors.requested_delivery_date ? "border-rose-500" : "border-border/80"
+                        )}
+                      />
+                      {formFieldErrors.requested_delivery_date && (
+                        <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.requested_delivery_date}</span>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -881,14 +1051,24 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
 
               {/* Section 4: Notes */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground block">Ghi chú / Yêu cầu thêm</label>
+                <label className="text-xs font-medium text-muted-foreground block">Ghi chú / Yêu cầu thêm *</label>
                 <textarea
                   rows={3}
+                  required
                   value={formMessage}
-                  onChange={(e) => setFormMessage(e.target.value)}
+                  onChange={(e) => {
+                    setFormMessage(e.target.value);
+                    setFormFieldErrors((p) => ({ ...p, message: '' }));
+                  }}
                   placeholder="Mô tả chi tiết các yêu cầu đặc thù, quy cách đóng gói, tiến độ mong muốn..."
-                  className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand resize-none placeholder:text-muted-foreground"
+                  className={cn(
+                    "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand resize-none placeholder:text-muted-foreground",
+                    formFieldErrors.message ? "border-rose-500" : "border-border/80"
+                  )}
                 />
+                {formFieldErrors.message && (
+                  <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.message}</span>
+                )}
               </div>
 
               {/* Modal Footer Buttons */}

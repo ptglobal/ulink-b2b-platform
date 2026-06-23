@@ -7,10 +7,12 @@ type CreateRfqInput = {
   company: string;
   contact_name: string;
   email: string;
-  phone?: string;
-  hub?: number;
-  industry?: string;
-  message?: string;
+  phone: string;
+  hub: number;
+  industry: string;
+  message: string;
+  scheduled_delivery?: boolean;
+  requested_delivery_date?: string;
   line_items: Array<{ sku: string; qty: number }>;
   status: 'new';
   source: 'web' | 'portal';
@@ -141,10 +143,12 @@ export async function submitRfq(body: unknown, deps: SubmitRfqDeps): Promise<Sub
       company: validation.value.company,
       contact_name: validation.value.contact_name,
       email: validation.value.email,
-      ...(validation.value.phone ? { phone: validation.value.phone } : {}),
-      ...(validation.value.hub ? { hub: validation.value.hub } : {}),
-      ...(validation.value.industry ? { industry: validation.value.industry } : {}),
-      ...(validation.value.message ? { message: validation.value.message } : {}),
+      phone: validation.value.phone,
+      hub: validation.value.hub,
+      industry: validation.value.industry,
+      message: validation.value.message,
+      scheduled_delivery: validation.value.scheduled_delivery,
+      requested_delivery_date: validation.value.requested_delivery_date,
       line_items: skuCheck.value,
       status: 'new',
       source: validation.value.source === 'portal' ? 'portal' : 'web'

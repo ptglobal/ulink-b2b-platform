@@ -33,7 +33,7 @@ export async function fetchRegionalHubs(): Promise<RegionalHubWithZones[]> {
           'standard_delivery_time',
           'on_time_rate',
           { industrial_zones: ['id', 'name', { translations: ['id', 'languages_code', 'name'] }] },
-          // @ts-ignore
+          // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { translations: ['id', 'languages_code', 'name'] }
         ],
         sort: ['id'],
@@ -111,15 +111,13 @@ export async function fetchRegionalHubBySlug(slug: string): Promise<RegionalHubD
           'person_in_charge_title',
           'person_in_charge_phone',
           'current_personnel_count',
-          // @ts-ignore
+          // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { province: ['name', 'code'] },
-          // @ts-ignore
+          // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { district: ['name', 'code'] },
-          // @ts-ignore
           { industrial_zones: ['id', 'name', 'image', { translations: ['id', 'languages_code', 'name'] }] },
-          // @ts-ignore
           { team_members: ['id', 'name', 'role', 'years_experience', 'photo'] },
-          // @ts-ignore
+          // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { translations: ['id', 'languages_code', 'name'] }
         ],
         limit: 1

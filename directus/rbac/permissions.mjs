@@ -99,7 +99,9 @@ export function buildPermissionDefs() {
         'line_items',
         'status',
         'source',
-        'user'
+        'user',
+        'scheduled_delivery',
+        'requested_delivery_date'
       ]
     },
     {
