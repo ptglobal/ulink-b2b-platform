@@ -244,7 +244,11 @@ export async function createCustomerAccount(context, input) {
 
     customerId = createdCustomer?.id ?? createdCustomer;
 
-    await sendMail(buildWelcomeMail({ contactName, email, companyName }));
+    try {
+      await sendMail(buildWelcomeMail({ contactName, email, companyName }));
+    } catch (mailError) {
+      console.error('[customer-onboarding] Failed to send welcome email:', mailError);
+    }
 
     return {
       user_id: userId,

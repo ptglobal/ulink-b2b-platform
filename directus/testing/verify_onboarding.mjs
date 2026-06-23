@@ -176,7 +176,9 @@ async function runSelfRegisterFlow() {
     email,
     phone: '0901234567',
     password,
-    confirm_password: password
+    confirm_password: password,
+    agree: true,
+    agree_at: new Date().toISOString()
   };
 
   const response = await fetch(`${DIRECTUS_URL}/customer-onboarding/register`, {
@@ -209,7 +211,7 @@ async function runSelfRegisterFlow() {
 
   const welcomeMail = await waitForMail({
     to: email,
-    subject: '[ULINK] Tài khoản đã được tạo'
+    subject: '[ULINK] Chào mừng đến với ULINK INDUSTRIES'
   });
   const messageBlob = `${JSON.stringify(welcomeMail.message)}\n${JSON.stringify(welcomeMail.detail)}`;
   assert.match(messageBlob, /\/login/, 'Welcome mail points to /login');
@@ -261,6 +263,10 @@ async function runInviteFlow() {
   assert.equal(linkedCustomer.company_name, customerSeed.company_name);
   assert.equal(seededCustomer.id, linkedCustomer.id, 'Hook updates pre-created customer row');
 
+  // Note: The welcome email for the invite flow (previously sent by the hook
+  // with a plaintext password) has been removed for security reasons.
+  // Therefore, we no longer assert email reception in the invite flow here.
+  /*
   const welcomeMail = await waitForMail({
     to: email,
     subject: '[ULINK] Tài khoản đã được tạo'
@@ -269,6 +275,7 @@ async function runInviteFlow() {
   assert.match(messageBlob, /\/login/, 'Welcome mail points to /login');
   assert.match(messageBlob, new RegExp(email), 'Welcome mail contains email');
   assert.match(messageBlob, new RegExp(password), 'Welcome mail contains password');
+  */
 }
 
 async function main() {

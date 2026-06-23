@@ -1,4 +1,10 @@
-import { VISITOR_POLICY_ID, EDITOR_POLICY_ID, SALES_POLICY_ID, CUSTOMER_POLICY_ID } from '../lib/constants.mjs';
+import {
+  VISITOR_POLICY_ID,
+  EDITOR_POLICY_ID,
+  SALES_POLICY_ID,
+  CUSTOMER_POLICY_ID,
+  FRONTEND_SERVICE_POLICY_ID
+} from '../lib/constants.mjs';
 import { TRANSLATION_COLLECTION_NAMES } from '../lib/i18n.mjs';
 
 export const CONTENT_COLLECTIONS = [
@@ -65,6 +71,37 @@ export function buildPermissionDefs() {
     permissions: {},
     fields: ['email', 'status']
   });
+
+  // Frontend Service Policy — the only perms the Next.js server-side write token
+  // (DIRECTUS_TOKEN = frontend-api static token) needs: create RFQ + newsletter.
+  // Attached to VISITOR_ROLE in access.mjs (only the frontend-api user has it).
+  permissions.push(
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'newsletter_subscribers',
+      action: 'create',
+      permissions: {},
+      fields: ['email', 'status']
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'rfq_requests',
+      action: 'create',
+      permissions: {},
+      fields: [
+        'company',
+        'contact_name',
+        'email',
+        'phone',
+        'hub',
+        'industry',
+        'message',
+        'line_items',
+        'status',
+        'source'
+      ]
+    }
+  );
 
   for (const col of CONTENT_COLLECTIONS) {
     permissions.push({
