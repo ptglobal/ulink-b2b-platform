@@ -16,6 +16,7 @@ export const CONTENT_COLLECTIONS = [
   'documents',
   'regional_hubs',
   'industries',
+  'standards',
   'blog_posts',
   'case_studies',
   'iso_certifications',
@@ -286,6 +287,37 @@ export function buildPermissionDefs() {
       permissions.push({
         policy,
         collection: 'newsletter_subscribers',
+        action,
+        permissions: {},
+        fields: ['*']
+      });
+    }
+  }
+
+  // Junction tables: products_industries, products_files & products_standards
+  // Visitor & Customer need read access for M2M queries (filter by industry/standard, load gallery)
+  for (const collection of ['products_industries', 'products_files', 'products_standards']) {
+    for (const policy of [VISITOR_POLICY_ID, CUSTOMER_POLICY_ID]) {
+      permissions.push({
+        policy,
+        collection,
+        action: 'read',
+        permissions: {},
+        fields: ['*']
+      });
+    }
+    // Editor & Sales: full CRUD (manage product relations)
+    for (const action of ['create', 'read', 'update', 'delete']) {
+      permissions.push({
+        policy: EDITOR_POLICY_ID,
+        collection,
+        action,
+        permissions: {},
+        fields: ['*']
+      });
+      permissions.push({
+        policy: SALES_POLICY_ID,
+        collection,
         action,
         permissions: {},
         fields: ['*']

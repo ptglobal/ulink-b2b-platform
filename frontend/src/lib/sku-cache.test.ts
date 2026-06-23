@@ -83,6 +83,7 @@ test('read-through lookup returns HIT on cached data and MISS on directus fill',
       unit: 'box',
       pack_size: '100 pcs/box',
       attributes: { size: 'S' },
+      stock_status: 'in_stock' as const,
       status: 'published'
     })
   });
@@ -183,6 +184,7 @@ test('applySkuCachePlan batches deletes before primes', async () => {
           unit: 'box',
           pack_size: '100 pcs/box',
           attributes: { size: 'S' },
+          stock_status: 'in_stock',
           status: 'published'
         }
       }

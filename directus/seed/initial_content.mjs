@@ -88,6 +88,7 @@ export async function seedInitialContent(helpers, client, geography) {
   const glovesProductId = await helpers.ensureItem('products', 'slug', {
     name: 'Găng tay nitrile phòng sạch',
     slug: 'nitrile-cleanroom-gloves',
+    brand: 'Ansell',
     category: glovesCategoryId,
     short_description: 'Găng tay nitrile không bột, Class 100 / ISO 5, đầu ngón có vân.',
     specifications: {
@@ -106,6 +107,7 @@ export async function seedInitialContent(helpers, client, geography) {
   const wipersProductId = await helpers.ensureItem('products', 'slug', {
     name: 'Khăn lau polyester phòng sạch',
     slug: 'polyester-cleanroom-wipers',
+    brand: 'Texwipe',
     category: wipersCategoryId,
     short_description: 'Khăn lau polyester sợi liên tục 100% với mép cắt laser.',
     specifications: {
@@ -136,12 +138,87 @@ export async function seedInitialContent(helpers, client, geography) {
     industries_id: electronicsId
   });
 
+  // Standards seed data
+  const isoCleanroomId = await helpers.ensureItem('standards', 'slug', {
+    name: 'ISO 14644-1',
+    slug: 'iso-14644-1',
+    description: 'Cleanrooms and associated controlled environments — Classification of air cleanliness by particle concentration.',
+    status: 'published'
+  });
+
+  const en455Id = await helpers.ensureItem('standards', 'slug', {
+    name: 'EN 455',
+    slug: 'en-455',
+    description: 'Medical gloves for single use — Requirements and testing for freedom from holes, physical properties, and biological evaluation.',
+    status: 'published'
+  });
+
+  const isoLaunderingId = await helpers.ensureItem('standards', 'slug', {
+    name: 'ISO 9001',
+    slug: 'iso-9001',
+    description: 'Quality management systems — Requirements.',
+    status: 'published'
+  });
+
+  // Link products to standards
+  await helpers.ensureItem('products_standards', 'id', {
+    id: 1,
+    products_id: glovesProductId,
+    standards_id: isoCleanroomId
+  });
+  await helpers.ensureItem('products_standards', 'id', {
+    id: 2,
+    products_id: glovesProductId,
+    standards_id: en455Id
+  });
+  await helpers.ensureItem('products_standards', 'id', {
+    id: 3,
+    products_id: wipersProductId,
+    standards_id: isoCleanroomId
+  });
+  await helpers.ensureItem('products_standards', 'id', {
+    id: 4,
+    products_id: wipersProductId,
+    standards_id: isoLaunderingId
+  });
+
+  // Technical documents seed (Task 4-5: Product Detail & Downloads)
+  await helpers.ensureItem('documents', 'title', {
+    title: 'Nitrile Gloves Technical Data Sheet',
+    doc_type: 'tds',
+    product: glovesProductId,
+    language: 'en',
+    status: 'published'
+  });
+  await helpers.ensureItem('documents', 'title', {
+    title: 'Nitrile Gloves Material Safety Data Sheet',
+    doc_type: 'msds',
+    product: glovesProductId,
+    language: 'en',
+    status: 'published'
+  });
+  await helpers.ensureItem('documents', 'title', {
+    title: 'Polyester Wipers Technical Data Sheet',
+    doc_type: 'tds',
+    product: wipersProductId,
+    language: 'en',
+    status: 'published'
+  });
+  await helpers.ensureItem('documents', 'title', {
+    title: 'Cleanroom Wipers Brochure',
+    doc_type: 'brochure',
+    product: wipersProductId,
+    language: 'vi',
+    status: 'published'
+  });
+
   const sku1Id = await helpers.ensureItem('product_skus', 'sku_code', {
     sku_code: 'sku-gloves-nitrile-s',
     product: glovesProductId,
     unit: 'box',
     pack_size: '100 pcs/box',
     attributes: { size: 'S', color: 'white' },
+    stock_status: 'in_stock',
     status: 'published'
   });
 
@@ -151,6 +228,7 @@ export async function seedInitialContent(helpers, client, geography) {
     unit: 'box',
     pack_size: '100 pcs/box',
     attributes: { size: 'M', color: 'white' },
+    stock_status: 'low_stock',
     status: 'published'
   });
 
@@ -160,6 +238,7 @@ export async function seedInitialContent(helpers, client, geography) {
     unit: 'pack',
     pack_size: '150 sheets/pack',
     attributes: { size: '9x9', sterile: false },
+    stock_status: 'out_of_stock',
     status: 'published'
   });
 

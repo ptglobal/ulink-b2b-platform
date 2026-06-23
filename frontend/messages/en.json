@@ -622,5 +622,38 @@
       "satisfactionValue": "4.8/5",
       "note": "Data from 2023"
     }
+  },
+  "solutions": {
+    "title": "Solutions & Products",
+    "searchPlaceholder": "Search products...",
+    "filterByIndustry": "Industry",
+    "filterByStandard": "Standard",
+    "clearFilters": "Clear filters",
+    "noResults": "No products found",
+    "noResultsDesc": "Try changing your search term or filters.",
+    "showingResults": "Showing {count} products",
+    "page": "Page",
+    "previous": "Previous",
+    "next": "Next",
+    "inStock": "In Stock",
+    "lowStock": "Low Stock",
+    "outOfStock": "Out of Stock",
+    "brand": "Brand",
+    "category": "Category",
+    "specifications": "Specifications",
+    "skuVariants": "Variants / SKU",
+    "industries": "Industry Applications",
+    "standards": "Applicable Standards",
+    "documents": "Technical Documents",
+    "download": "Download",
+    "preview": "Preview",
+    "noDocuments": "No documents available",
+    "gallery": "Gallery",
+    "breadcrumbHome": "Home",
+    "breadcrumbSolutions": "Products",
+    "requestQuote": "Request Quote",
+    "skuCode": "SKU Code",
+    "unit": "Unit",
+    "packSize": "Pack Size"
   }
 }

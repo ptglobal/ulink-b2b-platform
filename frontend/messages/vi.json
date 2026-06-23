@@ -622,5 +622,38 @@
       "satisfactionValue": "4.8/5",
       "note": "Số liệu năm 2023"
     }
+  },
+  "solutions": {
+    "title": "Giải pháp & Sản phẩm",
+    "searchPlaceholder": "Tìm kiếm sản phẩm...",
+    "filterByIndustry": "Ngành nghề",
+    "filterByStandard": "Tiêu chuẩn",
+    "clearFilters": "Xóa bộ lọc",
+    "noResults": "Không tìm thấy sản phẩm nào",
+    "noResultsDesc": "Thử thay đổi từ khóa hoặc bộ lọc.",
+    "showingResults": "Hiển thị {count} sản phẩm",
+    "page": "Trang",
+    "previous": "Trước",
+    "next": "Tiếp",
+    "inStock": "Còn hàng",
+    "lowStock": "Sắp hết",
+    "outOfStock": "Hết hàng",
+    "brand": "Thương hiệu",
+    "category": "Danh mục",
+    "specifications": "Thông số kỹ thuật",
+    "skuVariants": "Mẫu mã / SKU",
+    "industries": "Ứng dụng ngành",
+    "standards": "Tiêu chuẩn áp dụng",
+    "documents": "Tài liệu kỹ thuật",
+    "download": "Tải về",
+    "preview": "Xem trước",
+    "noDocuments": "Chưa có tài liệu",
+    "gallery": "Hình ảnh",
+    "breadcrumbHome": "Trang chủ",
+    "breadcrumbSolutions": "Sản phẩm",
+    "requestQuote": "Yêu cầu báo giá",
+    "skuCode": "Mã SKU",
+    "unit": "Đơn vị",
+    "packSize": "Quy cách"
   }
 }

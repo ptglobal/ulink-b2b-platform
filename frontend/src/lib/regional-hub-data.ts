@@ -33,7 +33,7 @@ export async function fetchRegionalHubs(): Promise<RegionalHubWithZones[]> {
           'standard_delivery_time',
           'on_time_rate',
           { industrial_zones: ['id', 'name'] },
-          // @ts-ignore
+          // @ts-expect-error — Directus SDK field types are overly strict for translation relations
           { translations: ['id', 'languages_code', 'name'] }
         ],
         sort: ['id'],
@@ -106,15 +106,13 @@ export async function fetchRegionalHubBySlug(slug: string): Promise<RegionalHubD
           'person_in_charge_title',
           'person_in_charge_phone',
           'current_personnel_count',
-          // @ts-ignore
+          // @ts-expect-error — Directus SDK field types are overly strict for nested relations
           { province: ['name', 'code'] },
-          // @ts-ignore
+          // @ts-expect-error — Directus SDK field types are overly strict for nested relations
           { district: ['name', 'code'] },
-          // @ts-ignore
           { industrial_zones: ['id', 'name', 'image'] },
-          // @ts-ignore
           { team_members: ['id', 'name', 'role', 'years_experience', 'photo'] },
-          // @ts-ignore
+          // @ts-expect-error — Directus SDK field types are overly strict for translation relations
           { translations: ['id', 'languages_code', 'name'] }
         ],
         limit: 1

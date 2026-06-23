@@ -59,12 +59,16 @@ export const COLLECTION_DEFS = [
       createTranslationAliasField(),
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
+      { field: 'brand', type: 'string', meta: { interface: 'input', width: 'half', note: 'Brand name (e.g. 3M, Honeywell, Ansell)' } },
       { field: 'category', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       { field: 'short_description', type: 'text', meta: { interface: 'textarea' } },
       { field: 'specifications', type: 'json', meta: { interface: 'json' } },
       { field: 'hero', type: 'uuid', meta: { interface: 'file-image', special: ['file'] } },
       { field: 'gallery', type: 'alias', meta: { interface: 'files', special: ['m2m'] } },
       { field: 'industries', type: 'alias', meta: { interface: 'list-m2m', special: ['m2m'] } },
+      { field: 'standards', type: 'alias', meta: { interface: 'list-m2m', special: ['m2m'] } },
+      { field: 'documents', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } },
+      { field: 'skus', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } },
       { field: 'meta_title', type: 'string', meta: { interface: 'input' } },
       { field: 'meta_description', type: 'text', meta: { interface: 'textarea' } }
     ]
@@ -78,6 +82,23 @@ export const COLLECTION_DEFS = [
       STATUS_FIELD,
       { field: 'sku_code', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
       { field: 'product', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      {
+        field: 'stock_status',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          options: {
+            choices: [
+              { text: 'In Stock', value: 'in_stock' },
+              { text: 'Low Stock', value: 'low_stock' },
+              { text: 'Out of Stock', value: 'out_of_stock' }
+            ]
+          },
+          width: 'half',
+          note: 'Inventory availability status shown as badge on product card'
+        },
+        schema: { default_value: 'in_stock' }
+      },
       { field: 'unit', type: 'string', meta: { interface: 'input' } },
       { field: 'pack_size', type: 'string', meta: { interface: 'input' } },
       { field: 'attributes', type: 'json', meta: { interface: 'json' } }
@@ -655,6 +676,28 @@ export const COLLECTION_DEFS = [
       ID_FIELD,
       { field: 'products_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       { field: 'directus_files_id', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
+    ]
+  },
+  {
+    collection: 'standards',
+    meta: { icon: 'verified', note: 'Product Standards & Certifications (e.g. ISO 14644, EN 455)' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      STATUS_FIELD,
+      { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
+      { field: 'description', type: 'text', meta: { interface: 'textarea' } }
+    ]
+  },
+  {
+    collection: 'products_standards',
+    meta: { hidden: true },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'products_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'standards_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
     ]
   },
   {

@@ -622,5 +622,38 @@
       "satisfactionValue": "4.8/5",
       "note": "2023年データ"
     }
+  },
+  "solutions": {
+    "title": "ソリューション＆製品",
+    "searchPlaceholder": "製品を検索...",
+    "filterByIndustry": "業種",
+    "filterByStandard": "規格",
+    "clearFilters": "フィルターをクリア",
+    "noResults": "製品が見つかりません",
+    "noResultsDesc": "検索キーワードまたはフィルターを変更してください。",
+    "showingResults": "{count}件の製品を表示中",
+    "page": "ページ",
+    "previous": "前へ",
+    "next": "次へ",
+    "inStock": "在庫あり",
+    "lowStock": "残りわずか",
+    "outOfStock": "在庫切れ",
+    "brand": "ブランド",
+    "category": "カテゴリ",
+    "specifications": "仕様",
+    "skuVariants": "バリエーション / SKU",
+    "industries": "業種別用途",
+    "standards": "適用規格",
+    "documents": "技術資料",
+    "download": "ダウンロード",
+    "preview": "プレビュー",
+    "noDocuments": "資料がありません",
+    "gallery": "ギャラリー",
+    "breadcrumbHome": "ホーム",
+    "breadcrumbSolutions": "製品",
+    "requestQuote": "見積依頼",
+    "skuCode": "SKUコード",
+    "unit": "単位",
+    "packSize": "梱包仕様"
   }
 }
