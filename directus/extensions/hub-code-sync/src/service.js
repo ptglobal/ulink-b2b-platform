@@ -177,7 +177,7 @@ export async function syncHubCode(context, meta) {
       filter: {
         _and: [
           { hub_code: { _eq: code } },
-          { id: { _ne: hubId } }
+          { id: { _neq: hubId } }
         ]
       },
       fields: ['id'],

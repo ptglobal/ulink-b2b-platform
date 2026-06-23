@@ -59,6 +59,7 @@ export interface HubIndustrialZone {
   name: string;
   hub: number | RegionalHub;
   image?: string | null;
+  translations?: { id: number; languages_code: string; name: string }[];
 }
 
 export interface HubTeamMember {
@@ -100,6 +101,7 @@ export interface RfqRequest {
   user?: string | number | { id: string };
   hub?: string | number | RegionalHub | null;
   assigned_sales?: string | number | { id: string; email?: string } | null;
+  created_at?: string;
 }
 
 export interface RfqAssignmentRule {

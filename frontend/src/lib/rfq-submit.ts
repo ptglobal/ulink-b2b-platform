@@ -163,6 +163,7 @@ export async function submitRfq(body: unknown, deps: SubmitRfqDeps): Promise<Sub
       }
     };
   } catch (err) {
+    console.error('RFQ submission failed:', err);
     if (err instanceof Error && err.message.includes('DIRECTUS_TOKEN is required')) {
       return {
         ok: false,

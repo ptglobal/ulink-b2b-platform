@@ -216,18 +216,23 @@ export async function seedInitialContent(helpers, client, geography) {
   await seedTranslations('regional_hubs', bacThangLongId, 'bac_thang_long');
 
   // Hub Industrial Zones
-  await helpers.ensureItem('hub_industrial_zones', 'name', {
+  const dongVanIvZoneId = await helpers.ensureItem('hub_industrial_zones', 'name', {
     name: 'KCN Đông Vân IV',
     hub: dongVan4Id
   });
-  await helpers.ensureItem('hub_industrial_zones', 'name', {
+  await seedTranslations('hub_industrial_zones', dongVanIvZoneId, 'dong_van_iv');
+
+  const dongVanIiiZoneId = await helpers.ensureItem('hub_industrial_zones', 'name', {
     name: 'KCN Đồng Văn III',
     hub: dongVan4Id
   });
-  await helpers.ensureItem('hub_industrial_zones', 'name', {
+  await seedTranslations('hub_industrial_zones', dongVanIiiZoneId, 'dong_van_iii');
+
+  const bacThangLongZoneId = await helpers.ensureItem('hub_industrial_zones', 'name', {
     name: 'KCN Bắc Thăng Long',
     hub: bacThangLongId
   });
+  await seedTranslations('hub_industrial_zones', bacThangLongZoneId, 'bac_thang_long');
 
   // Hub Team Members
   await helpers.ensureItem('hub_team_members', 'name', {

@@ -1,4 +1,5 @@
 import { createItem, readItems } from '@directus/sdk';
+import { NextResponse } from 'next/server';
 
 import { errorJson, successJson } from '@/lib/api-response-next';
 import { createRfqRateLimiter, createTurnstileVerifier } from '@/lib/rfq-anti-spam';
@@ -6,6 +7,7 @@ import { publicDirectus, createWriteDirectusClient } from '@/lib/directus';
 import { createRfqIdempotencyStore } from '@/lib/rfq-idempotency';
 import { submitRfq } from '@/lib/rfq-submit';
 import { getRedis } from '@/lib/redis';
+import { proxyToDirectus, getRequestCookieHeader, getCurrentUser } from '@/lib/auth-helpers';
 
 function getClientIp(req: Request): string {
   const headers = req.headers;
@@ -55,11 +57,19 @@ export async function POST(req: Request) {
   const redis = getRedis();
   const idempotencyStore = createRfqIdempotencyStore(redis);
 
+  const user = await getCurrentUser();
+
   try {
     const writeDirectus = createWriteDirectusClient();
     const result = await submitRfq(body, {
       ip,
-      verifyTurnstile: createTurnstileVerifier(),
+      verifyTurnstile: async (token, ipAddress) => {
+        if (user) {
+          return true;
+        }
+        const verify = createTurnstileVerifier();
+        return verify(token, ipAddress);
+      },
       rateLimit: createRfqRateLimiter(redis),
       fetchSkus: async (skus: string[]) => {
         if (skus.length === 0) {
@@ -82,7 +92,12 @@ export async function POST(req: Request) {
       saveIdempotencyKey: (key: string, rfqId: number | string) =>
         idempotencyStore.saveIdempotencyKey(key, rfqId),
       createRfq: async (input) => {
-        const created = await writeDirectus.request(createItem('rfq_requests', input));
+        const created = await writeDirectus.request(
+          createItem('rfq_requests', {
+            ...input,
+            user: user?.id || undefined
+          })
+        );
         return { id: (created as { id: number | string }).id };
       }
     });
@@ -106,3 +121,40 @@ export async function POST(req: Request) {
     return errorJson(502, 'BAD_GATEWAY', 'Failed to submit RFQ.');
   }
 }
+
+export async function GET(req: Request) {
+  try {
+    const user = await getCurrentUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: 'unauthorized', message: 'Authentication required.' },
+        { status: 401 }
+      );
+    }
+    console.log('GET /api/rfq - Authenticated User:', user);
+    const cookieHeader = getRequestCookieHeader(req);
+    const response = await proxyToDirectus('/items/rfq_requests?fields=*&sort=-created_at,-id', {
+      method: 'GET',
+      cookieHeader
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error('Directus rfq fetch failed:', response.status, errorText);
+      return NextResponse.json(
+        { error: 'failed_to_fetch_rfq', message: 'Failed to fetch RFQs from Directus.' },
+        { status: response.status }
+      );
+    }
+
+    const payload = await response.json();
+    return NextResponse.json(payload);
+  } catch (err) {
+    console.error('RFQ GET handler failed:', err);
+    return NextResponse.json(
+      { error: 'internal_server_error', message: 'Internal server error.' },
+      { status: 500 }
+    );
+  }
+}
+

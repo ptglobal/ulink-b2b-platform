@@ -399,6 +399,21 @@ async function verify() {
   assert(industrialZones.length >= 3, `Hub Industrial Zones has ${industrialZones.length} seeded items.`);
   assert(industrialZones.some((z) => z.name === 'KCN Đông Vân IV'), 'Industrial zone "KCN Đông Vân IV" exists.');
 
+  const dongVanIvZone = industrialZones.find((z) => z.name === 'KCN Đông Vân IV');
+  if (dongVanIvZone) {
+    const zoneTranslations = await client.request(
+      readItems('hub_industrial_zones_translations', {
+        filter: { hub_industrial_zones_id: { _eq: dongVanIvZone.id } },
+        fields: ['languages_code', 'name']
+      })
+    );
+    assert(zoneTranslations.length >= 3, `hub_industrial_zones_translations has ${zoneTranslations.length} rows for KCN Đông Vân IV.`);
+    assert(
+      zoneTranslations.some((t) => t.languages_code === 'en' && t.name === 'Dong Van IV Industrial Park'),
+      'Industrial zone English translation exists.'
+    );
+  }
+
   const teamMembers = await client.request(readItems('hub_team_members'));
   assert(teamMembers.length >= 3, `Hub Team Members has ${teamMembers.length} seeded items.`);
   assert(teamMembers.some((m) => m.name === 'Trần Minh Đức'), 'Team member "Trần Minh Đức" exists.');

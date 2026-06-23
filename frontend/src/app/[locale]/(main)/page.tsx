@@ -16,7 +16,7 @@ import { HeadsetMic } from '@/components/icons/headset-mic';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
 import { VietnamMap, type ClusterMarker } from '@/components/vietnam-map';
-import { fetchRegionalHubs, parseCoordinates, getHubName } from '@/lib/regional-hub-data';
+import { fetchRegionalHubs, parseCoordinates, getHubName, getIndustrialZoneName } from '@/lib/regional-hub-data';
 
 /** ISR — revalidate every hour; on-demand revalidation via content webhooks */
 export const revalidate = 3600;
@@ -205,7 +205,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
                   </p>
                   {hub.industrial_zones && hub.industrial_zones.length > 0 && (
                     <p className="mt-1.5 text-[11px] leading-snug text-muted-foreground sm:text-[12px]">
-                      {hub.industrial_zones.map((z) => z.name).join(', ')}
+                      {hub.industrial_zones.map((z) => getIndustrialZoneName(z, locale)).join(', ')}
                     </p>
                   )}
                 </div>

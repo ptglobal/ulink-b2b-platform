@@ -73,7 +73,7 @@ services:
       DB_USER: ${POSTGRES_USER}
       DB_PASSWORD: ${POSTGRES_PASSWORD}
 
-      CACHE_ENABLED: 'true'
+      CACHE_ENABLED: 'false'
       CACHE_STORE: redis
       REDIS: redis://redis:6379
       # Expose Redis to custom endpoint extensions (e.g. otp-endpoint).

@@ -15,7 +15,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import { fetchRegionalHubBySlug, getHubName } from '@/lib/regional-hub-data';
+import { fetchRegionalHubBySlug, getHubName, getIndustrialZoneName } from '@/lib/regional-hub-data';
 
 interface PageProps {
   params: {
@@ -364,7 +364,9 @@ export default async function RegionalHubDetailPage({
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {hub.industrial_zones && hub.industrial_zones.length > 0 ? (
-              hub.industrial_zones.map((zone) => (
+              hub.industrial_zones.map((zone) => {
+                const zoneName = getIndustrialZoneName(zone, locale);
+                return (
                 <div 
                   key={zone.id}
                   className="group overflow-hidden rounded-lg border border-[#B8C0CC]/60 bg-slate-50/50 hover:bg-white hover:shadow-md hover:border-brand/40 transition-all flex flex-col"
@@ -375,7 +377,7 @@ export default async function RegionalHubDetailPage({
                       // eslint-disable-next-line @next/next/no-img-element
                       <img 
                         src={getImageUrl(zone.image)} 
-                        alt={zone.name}
+                        alt={zoneName}
                         className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
                         loading="lazy"
                       />
@@ -388,11 +390,12 @@ export default async function RegionalHubDetailPage({
                   {/* Content */}
                   <div className="p-3.5 flex-1 flex flex-col justify-center">
                     <p className="text-[13px] font-bold leading-snug text-primary group-hover:text-brand transition-colors">
-                      {zone.name}
+                      {zoneName}
                     </p>
                   </div>
                 </div>
-              ))
+                );
+              })
             ) : (
               <div className="col-span-full py-8 text-center text-xs text-muted-foreground border border-dashed border-slate-200 rounded-lg">
                 No industrial zones linked to this hub.

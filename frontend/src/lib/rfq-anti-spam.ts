@@ -51,6 +51,10 @@ export async function enforceRfqAntiSpam(
 export function createTurnstileVerifier(secret = process.env.TURNSTILE_SECRET_KEY) {
   return async (token: string, ip: string) => {
     if (!secret) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn('TURNSTILE_SECRET_KEY is not configured. Bypassing Turnstile verifier in development.');
+        return true;
+      }
       return false;
     }
 

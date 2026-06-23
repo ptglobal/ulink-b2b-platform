@@ -1,3 +1,19 @@
+import { translations } from './translation_data.mjs';
+
+async function seedTranslations(helpers, collection, sourceId, key) {
+  const data = translations[collection]?.[key];
+  if (!data) return;
+  if (data.vi) {
+    await helpers.ensureTranslation(collection, sourceId, 'vi', data.vi);
+  }
+  if (data.en) {
+    await helpers.ensureTranslation(collection, sourceId, 'en', data.en);
+  }
+  if (data.ja) {
+    await helpers.ensureTranslation(collection, sourceId, 'ja', data.ja);
+  }
+}
+
 function getGeoEntry(map, key, label) {
   const entry = map?.get(key);
   if (!entry) {
@@ -145,18 +161,23 @@ export async function seedAdditionalContent(helpers, ids, geography) {
   });
 
   // Industrial zones for additional hubs
-  await helpers.ensureItem('hub_industrial_zones', 'name', {
+  const vsipIiAZoneId = await helpers.ensureItem('hub_industrial_zones', 'name', {
     name: 'KCN VSIP II-A',
     hub: binhDuongId
   });
-  await helpers.ensureItem('hub_industrial_zones', 'name', {
+  await seedTranslations(helpers, 'hub_industrial_zones', vsipIiAZoneId, 'vsip_ii_a');
+
+  const vsipHaiPhongZoneId = await helpers.ensureItem('hub_industrial_zones', 'name', {
     name: 'KCN VSIP Hải Phòng',
     hub: haiPhongId
   });
-  await helpers.ensureItem('hub_industrial_zones', 'name', {
+  await seedTranslations(helpers, 'hub_industrial_zones', vsipHaiPhongZoneId, 'vsip_hai_phong');
+
+  const longThanhZoneId = await helpers.ensureItem('hub_industrial_zones', 'name', {
     name: 'KCN Long Thành',
     hub: longThanhId
   });
+  await seedTranslations(helpers, 'hub_industrial_zones', longThanhZoneId, 'long_thanh');
 
   // Team members for additional hubs
   await helpers.ensureItem('hub_team_members', 'name', {
