@@ -204,6 +204,18 @@ export async function POST(req: Request) {
         throw new ApiError(502, 'upstream_error', 'Could not reach Directus.');
       }
 
+      // 3b. Reuse guard — new password must differ from the current one.
+      //     We check here (not in Zod) so the error uses the same ApiError
+      //     code that the client switch-case expects. This does NOT count
+      //     toward the lockout counter — only wrong current_password does.
+      if (data.new_password === data.current_password) {
+        throw new ApiError(
+          422,
+          'PASSWORD_SAME_AS_OLD',
+          'New password must be different from the current password.'
+        );
+      }
+
       // 4. Forward to Directus's reset endpoint with the token + new
       //    password.
       let res: Response;
