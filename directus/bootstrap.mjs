@@ -34,7 +34,7 @@ import { seedAdditionalContent } from './seed/additional_content.mjs';
 // Import helper to apply relational database index enhancements
 import { applyDbIndexes } from './lib/db-indexes.mjs';
 // Import constant identifier representing the visitor role
-import { VISITOR_ROLE_ID, SALES_ROLE_ID } from './lib/constants.mjs';
+import { VISITOR_ROLE_ID, SALES_ROLE_ID, FRONTEND_SERVICE_ROLE_ID } from './lib/constants.mjs';
 
 // Initialize the Directus SDK client and instantiate helper wrappers
 const client = createDirectusClient();
@@ -133,7 +133,7 @@ async function main() {
     await helpers.ensureUser({
       email: 'frontend-api@ulink.vn',
       password: 'unused-frontend-api-user',
-      role: SALES_ROLE_ID,
+      role: FRONTEND_SERVICE_ROLE_ID,
       first_name: 'Frontend',
       last_name: 'API',
       status: 'active',

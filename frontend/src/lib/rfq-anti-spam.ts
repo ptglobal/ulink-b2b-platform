@@ -58,6 +58,13 @@ export function createTurnstileVerifier(secret = process.env.TURNSTILE_SECRET_KE
       return false;
     }
 
+    // Bypass Turnstile check if server is configured with a bypass token (for Staging E2E tests)
+    const bypassToken = process.env.TURNSTILE_BYPASS_TOKEN;
+    if (bypassToken && token === bypassToken) {
+      console.warn('Bypassing Turnstile verification via TURNSTILE_BYPASS_TOKEN match.');
+      return true;
+    }
+
     const form = new FormData();
     form.set('secret', secret);
     form.set('response', token);
@@ -83,6 +90,11 @@ export function createRfqRateLimiter(redis: Redis) {
   const windowSeconds = 600;
 
   return async (ip: string) => {
+    // Bypass rate limiter for Playwright tests
+    if (process.env.NODE_ENV !== 'production' && process.env.PLAYWRIGHT_TEST_MODE === 'true') {
+      return { ok: true };
+    }
+
     const key = `${keyPrefix}${ip}`;
     const count = await redis.incr(key);
 

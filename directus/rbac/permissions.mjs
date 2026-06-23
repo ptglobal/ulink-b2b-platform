@@ -98,8 +98,44 @@ export function buildPermissionDefs() {
         'message',
         'line_items',
         'status',
-        'source'
+        'source',
+        'user'
       ]
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'rfq_requests',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'rfq_requests',
+      action: 'update',
+      permissions: {},
+      fields: ['assigned_sales']
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'directus_notifications',
+      action: 'create',
+      permissions: {},
+      fields: ['*']
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'rfq_assignment_rules',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'directus_users',
+      action: 'read',
+      permissions: {},
+      fields: ['id', 'email', 'first_name', 'last_name']
     }
   );
 
@@ -329,7 +365,8 @@ export async function ensurePermissions(helpers) {
     VISITOR_POLICY_ID,
     EDITOR_POLICY_ID,
     SALES_POLICY_ID,
-    CUSTOMER_POLICY_ID
+    CUSTOMER_POLICY_ID,
+    FRONTEND_SERVICE_POLICY_ID
   ]);
   const currentPermissions = await helpers.listPermissions();
   const staleIds = currentPermissions
