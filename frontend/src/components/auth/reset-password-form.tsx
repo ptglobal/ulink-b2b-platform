@@ -256,6 +256,8 @@ function ResetPasswordFormInner() {
             setFormError(t('resetPasswordInvalidToken'));
             break;
           case 'PASSWORD_SAME_AS_OLD':
+          case 'password_reuse':
+          case 'passwordReuse':
             setFormError(t('passwordSameAsOld'));
             if (err.payload && typeof err.payload === 'object') {
               const rem = err.payload.remaining as number | undefined;

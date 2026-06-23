@@ -54,7 +54,10 @@ services:
       # URLs rendered to the browser. (Container reaches the host's published port.)
       DIRECTUS_URL: http://103.164.35.132:8055
       DIRECTUS_FRONTEND_TOKEN: ${DIRECTUS_FRONTEND_TOKEN} # must match the backend token
-      DIRECTUS_TOKEN: ${DIRECTUS_TOKEN:-}
+      # Server-side write token (RFQ + newsletter). Defaults to the frontend-api
+      # token, which the Frontend Service policy (rbac) scopes to exactly those
+      # creates. Override DIRECTUS_TOKEN in .env to use a different token.
+      DIRECTUS_TOKEN: ${DIRECTUS_TOKEN:-${DIRECTUS_FRONTEND_TOKEN}}
       REVALIDATE_SECRET: ${REVALIDATE_SECRET}
       INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN}
       REDIS_URL: redis://redis:6379 # internal network

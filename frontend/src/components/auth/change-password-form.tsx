@@ -303,6 +303,7 @@ function ChangePasswordFormInner() {
             setFormError(t('changePasswordSessionMismatch'));
             break;
           case 'PASSWORD_SAME_AS_OLD':
+          case 'password_reuse':
           case 'passwordReuse':
             setErrors((cur) => ({ ...cur, new_password: t('passwordReuse') }));
             if (err.payload && typeof err.payload === 'object') {

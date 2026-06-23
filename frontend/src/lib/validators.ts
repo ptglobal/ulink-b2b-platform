@@ -119,10 +119,6 @@ export const changePasswordViaTokenSchema = z
   .refine((v) => v.new_password === v.confirm_new_password, {
     message: 'password_mismatch',
     path: ['confirm_new_password']
-  })
-  .refine((v) => v.new_password !== v.current_password, {
-    message: 'password_reuse',
-    path: ['new_password']
   });
 
 export type ChangePasswordViaTokenInput = z.infer<typeof changePasswordViaTokenSchema>;
