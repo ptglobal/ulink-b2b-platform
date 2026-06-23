@@ -10,6 +10,7 @@ export interface NormalizedRfqPayload {
   contact_name: string;
   email: string;
   phone: string;
+  address: string;
   hub: number;
   industry: string;
   message: string;
@@ -286,6 +287,11 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
 
   const email = normalizeEmail(record.email, state);
   const phone = normalizePhone(record.phone, state);
+  const address = cleanString(record.address);
+  if (!address) {
+    addMissing(state, 'address');
+  }
+
   const hub = normalizeHub(record.hub, state);
   const items = normalizeItems(record.items, state);
   const industry = normalizeSlug(record.industry, state, 'industry');
@@ -324,6 +330,7 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
       contact_name: contactName as string,
       email: email as string,
       phone: phone as string,
+      address: address as string,
       hub: hub as number,
       industry: industry as string,
       message: message as string,

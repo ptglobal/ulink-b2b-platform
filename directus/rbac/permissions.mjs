@@ -93,6 +93,7 @@ export function buildPermissionDefs() {
         'contact_name',
         'email',
         'phone',
+        'address',
         'hub',
         'industry',
         'message',

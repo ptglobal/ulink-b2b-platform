@@ -8,6 +8,7 @@ type CreateRfqInput = {
   contact_name: string;
   email: string;
   phone: string;
+  address: string;
   hub: number;
   industry: string;
   message: string;
@@ -144,6 +145,7 @@ export async function submitRfq(body: unknown, deps: SubmitRfqDeps): Promise<Sub
       contact_name: validation.value.contact_name,
       email: validation.value.email,
       phone: validation.value.phone,
+      address: validation.value.address,
       hub: validation.value.hub,
       industry: validation.value.industry,
       message: validation.value.message,

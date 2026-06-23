@@ -93,6 +93,7 @@ export interface RfqRequest {
   contact_name: string;
   email: string;
   phone?: string;
+  address?: string;
   industry?: string | Industry | null;
   message?: string;
   scheduled_delivery?: boolean;

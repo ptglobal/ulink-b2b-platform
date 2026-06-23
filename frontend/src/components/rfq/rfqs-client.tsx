@@ -76,6 +76,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
   const [formContact, setFormContact] = useState('');
   const [formEmail, setFormEmail] = useState('');
   const [formPhone, setFormPhone] = useState('');
+  const [formAddress, setFormAddress] = useState('');
   const [formHub, setFormHub] = useState('');
   const [formIndustry, setFormIndustry] = useState('');
   const [formMessage, setFormMessage] = useState('');
@@ -127,6 +128,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
     setFormContact(customerMeta?.customer?.contact_name || (user?.last_name || user?.first_name ? `${user.last_name ?? ''} ${user.first_name ?? ''}`.trim() : ''));
     setFormEmail(customerMeta?.customer?.email || user?.email || '');
     setFormPhone(customerMeta?.customer?.phone || '');
+    setFormAddress(customerMeta?.customer?.address || '');
     setFormHub(customerMeta?.customer?.hub ? String(customerMeta.customer.hub) : '');
     setFormIndustry(customerMeta?.customer?.industry || '');
     setFormMessage('');
@@ -178,6 +180,9 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
     } else if (!/^[0-9+\s()-]+$/.test(formPhone.trim())) {
       errors.phone = 'Số điện thoại không đúng định dạng.';
     }
+    if (!formAddress.trim()) {
+      errors.address = 'Địa chỉ là bắt buộc.';
+    }
     if (!formHub) {
       errors.hub = 'Hub khu vực là bắt buộc.';
     }
@@ -228,6 +233,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
           contact: formContact.trim(),
           email: formEmail.trim(),
           phone: formPhone.trim(),
+          address: formAddress.trim(),
           hub: parseInt(formHub),
           industry: formIndustry,
           message: formMessage.trim(),
@@ -832,6 +838,28 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                       <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.phone}</span>
                     )}
                   </div>
+                </div>
+
+                {/* Address */}
+                <div className="space-y-1">
+                  <label className="text-xs font-medium text-muted-foreground block">Địa chỉ nhận hàng *</label>
+                  <input
+                    type="text"
+                    required
+                    value={formAddress}
+                    onChange={(e) => {
+                      setFormAddress(e.target.value);
+                      setFormFieldErrors((p) => ({ ...p, address: '' }));
+                    }}
+                    className={cn(
+                      "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
+                      formFieldErrors.address ? "border-rose-500" : "border-border/80"
+                    )}
+                    placeholder="Số nhà, tên đường, khu công nghiệp..."
+                  />
+                  {formFieldErrors.address && (
+                    <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.address}</span>
+                  )}
                 </div>
               </div>
 

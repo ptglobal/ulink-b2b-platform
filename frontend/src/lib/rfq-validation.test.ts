@@ -9,6 +9,7 @@ test('rejects invalid email, empty items, and zero qty', () => {
     contact: 'Mr A',
     email: 'not-an-email',
     phone: '+84 123 456',
+    address: '123 Test St',
     hub: '3',
     industry: 'Chemical',
     items: [{ sku: 'CR-GLV-001', qty: 0 }],
@@ -27,6 +28,7 @@ test('normalizes phone and source and trims strings', () => {
     contact: '  Mr A  ',
     email: 'a@acme.vn',
     phone: ' (+84) 901-234-567 ',
+    address: '  123 Test St  ',
     hub: ' 3 ',
     industry: '  Chemical  ',
     message: '  Need quote  ',
@@ -38,6 +40,7 @@ test('normalizes phone and source and trims strings', () => {
   assert.equal(result.value.company, 'ACME');
   assert.equal(result.value.contact_name, 'Mr A');
   assert.equal(result.value.phone, '+84901234567');
+  assert.equal(result.value.address, '123 Test St');
   assert.equal(result.value.hub, 3);
   assert.equal(result.value.industry, 'chemical');
   assert.equal(result.value.message, 'Need quote');
@@ -50,6 +53,7 @@ test('lowercases sku codes in RFQ items', () => {
     contact: 'Mr A',
     email: 'a@acme.vn',
     phone: '+84901234567',
+    address: '123 Test St',
     hub: 3,
     industry: 'Chemical',
     message: 'Need quote',
@@ -61,6 +65,23 @@ test('lowercases sku codes in RFQ items', () => {
   assert.deepEqual(result.value.items, [{ sku: 'cr-glv-001', qty: 1 }]);
 });
 
+test('rejects missing address', () => {
+  const result = validateRfqPayload({
+    company: 'ACME',
+    contact: 'Mr A',
+    email: 'a@acme.vn',
+    phone: '+84901234567',
+    hub: 3,
+    industry: 'Chemical',
+    items: [{ sku: 'CR-GLV-001', qty: 1 }],
+    message: 'Need quote'
+  });
+
+  assert.equal(result.ok, false);
+  assert.ok(result.error.details.missingFields);
+  assert.ok(result.error.details.missingFields.includes('address'));
+});
+
 test('validates scheduled delivery fields', () => {
   // 1. Rejects if scheduled_delivery is true but requested_delivery_date is missing
   const result1 = validateRfqPayload({
@@ -68,6 +89,7 @@ test('validates scheduled delivery fields', () => {
     contact: 'Mr A',
     email: 'a@acme.vn',
     phone: '+84901234567',
+    address: '123 Test St',
     hub: 3,
     industry: 'Chemical',
     message: 'Need quote',
@@ -84,6 +106,7 @@ test('validates scheduled delivery fields', () => {
     contact: 'Mr A',
     email: 'a@acme.vn',
     phone: '+84901234567',
+    address: '123 Test St',
     hub: 3,
     industry: 'Chemical',
     message: 'Need quote',
@@ -101,6 +124,7 @@ test('validates scheduled delivery fields', () => {
     contact: 'Mr A',
     email: 'a@acme.vn',
     phone: '+84901234567',
+    address: '123 Test St',
     hub: 3,
     industry: 'Chemical',
     message: 'Need quote',
@@ -119,6 +143,7 @@ test('validates scheduled delivery fields', () => {
     contact: 'Mr A',
     email: 'a@acme.vn',
     phone: '+84901234567',
+    address: '123 Test St',
     hub: 3,
     industry: 'Chemical',
     message: 'Need quote',

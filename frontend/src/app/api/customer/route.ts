@@ -6,22 +6,18 @@ export const dynamic = 'force-dynamic';
 export async function GET(req: Request) {
   try {
     const user = await getCurrentUser();
-    if (!user) {
-      return NextResponse.json(
-        { error: 'unauthorized', message: 'Authentication required.' },
-        { status: 401 }
-      );
-    }
-
     const cookieHeader = getRequestCookieHeader(req);
 
-    // 1. Fetch customer details
-    const customerRes = await proxyToDirectus('/items/customers?fields=*', {
-      method: 'GET',
-      cookieHeader
-    });
-    const customerPayload = customerRes.ok ? await customerRes.json() : null;
-    const customerData = customerPayload?.data || [];
+    // 1. Fetch customer details (only if authenticated)
+    let customerData = [];
+    if (user) {
+      const customerRes = await proxyToDirectus('/items/customers?fields=*', {
+        method: 'GET',
+        cookieHeader
+      });
+      const customerPayload = customerRes.ok ? await customerRes.json() : null;
+      customerData = customerPayload?.data || [];
+    }
 
     // 2. Fetch regional hubs
     const hubsRes = await proxyToDirectus('/items/regional_hubs?fields=id,name,slug&filter[status][_eq]=published', {

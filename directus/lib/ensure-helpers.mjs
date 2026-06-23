@@ -24,7 +24,33 @@ export function createEnsureHelpers(client) {
       await client.request(createCollection(def));
       console.log(`+  Collection: ${def.collection} (created)`);
     } catch {
-      console.log(`=  Collection: ${def.collection} (already exists / skipped)`);
+      console.log(`=  Collection: ${def.collection} (already exists / checking fields)`);
+      try {
+        const fields = await client.request(
+          customEndpoint({
+            path: `/fields/${def.collection}`,
+            method: 'GET'
+          })
+        );
+        const existingFields = fields.map((f) => f.field);
+        for (const fieldDef of def.fields || []) {
+          if (!existingFields.includes(fieldDef.field)) {
+            await client.request(
+              customEndpoint({
+                path: `/fields/${def.collection}`,
+                method: 'POST',
+                body: JSON.stringify(fieldDef),
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              })
+            );
+            console.log(`+  Field: ${def.collection}.${fieldDef.field} (created dynamically)`);
+          }
+        }
+      } catch (err) {
+        console.error(`Failed to ensure fields for collection ${def.collection}:`, err?.message || err);
+      }
     }
   }
 
