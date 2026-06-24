@@ -699,7 +699,8 @@ export const COLLECTION_DEFS = [
       STATUS_FIELD,
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'slug', type: 'string', meta: { interface: 'input', required: true }, schema: { is_unique: true } },
-      { field: 'description', type: 'text', meta: { interface: 'textarea' } }
+      { field: 'description', type: 'text', meta: { interface: 'textarea' } },
+      createTranslationAliasField()
     ]
   },
   {

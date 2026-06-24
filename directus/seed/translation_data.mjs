@@ -228,6 +228,50 @@ export const translations = {
       }
     }
   },
+  standards: {
+    iso_14644_1: {
+      vi: {
+        name: 'ISO 14644-1',
+        description: 'Phòng sạch và môi trường kiểm soát liên quan — Phân loại độ sạch không khí theo nồng độ hạt.'
+      },
+      en: {
+        name: 'ISO 14644-1',
+        description: 'Cleanrooms and associated controlled environments — Classification of air cleanliness by particle concentration.'
+      },
+      ja: {
+        name: 'ISO 14644-1',
+        description: 'クリーンルームおよび関連する管理環境 — 粒子濃度による空気清浄度の分類。'
+      }
+    },
+    en_455: {
+      vi: {
+        name: 'EN 455',
+        description: 'Găng tay y tế sử dụng một lần — Yêu cầu và thử nghiệm về không lỗ, tính chất vật lý và đánh giá sinh học.'
+      },
+      en: {
+        name: 'EN 455',
+        description: 'Medical gloves for single use — Requirements and testing for freedom from holes, physical properties, and biological evaluation.'
+      },
+      ja: {
+        name: 'EN 455',
+        description: '使い捨て医療用手袋 — 穴のないこと、物理的特性および生物学的評価に関する要求事項と試験。'
+      }
+    },
+    iso_9001: {
+      vi: {
+        name: 'ISO 9001',
+        description: 'Hệ thống quản lý chất lượng — Các yêu cầu.'
+      },
+      en: {
+        name: 'ISO 9001',
+        description: 'Quality management systems — Requirements.'
+      },
+      ja: {
+        name: 'ISO 9001',
+        description: '品質マネジメントシステム — 要求事項。'
+      }
+    }
+  },
   hero_banners: {
     banner1: {
       vi: {

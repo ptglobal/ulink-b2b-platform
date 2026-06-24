@@ -3,6 +3,7 @@ import { SearchX } from 'lucide-react';
 import ProductCard from '@/components/product/product-card';
 import ProductSearch from '@/components/product/product-search';
 import ProductFilter from '@/components/product/product-filter';
+import { getTranslatedName } from '@/lib/i18n-content';
 import {
   fetchProducts,
   fetchIndustries,
@@ -58,7 +59,7 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
       label: t('filterByIndustry'),
       options: industries.map((ind: Industry) => ({
         slug: ind.slug,
-        name: ind.name,
+        name: getTranslatedName(ind, locale),
         count: industryCounts[String(ind.id)] ?? 0
       }))
     },
@@ -67,7 +68,7 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
       label: t('filterByStandard'),
       options: standards.map((std: Standard) => ({
         slug: std.slug,
-        name: std.name,
+        name: getTranslatedName(std, locale),
         count: standardCounts[String(std.id)] ?? 0
       }))
     },
@@ -76,7 +77,7 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
       label: t('filterByRegion'),
       options: hubs.map((hub) => ({
         slug: hub.slug,
-        name: hub.name,
+        name: getTranslatedName(hub, locale),
         count: regionCounts[String(hub.id)] ?? 0
       }))
     }

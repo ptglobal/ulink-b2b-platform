@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Package, ShieldCheck, Clock, BoxesIcon, FileDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
+import { getTranslatedName, getTranslatedField } from '@/lib/i18n-content';
 import type { Product } from '@/lib/directus';
 
 interface ProductCardProps {
@@ -12,6 +13,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, locale }: ProductCardProps) {
   const DIRECTUS_URL = getDirectusUrl();
+  const productName = getTranslatedName(product, locale);
 
   // Derive stock status from SKUs — show worst-case to alert buyers
   const stockStatus = (() => {
@@ -29,10 +31,10 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
   const firstSku = product.skus?.[0];
   const firstSkuCode = firstSku?.sku_code;
 
-  // Get first standard name
+  // Get first standard name (translated)
   const firstStandard = product.standards?.[0];
   const standardName = firstStandard && typeof firstStandard.standards_id === 'object'
-    ? firstStandard.standards_id.name
+    ? getTranslatedName(firstStandard.standards_id, locale)
     : null;
 
   // Get pack size from first SKU
@@ -48,7 +50,7 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
         {product.hero ? (
           <Image
             src={`${DIRECTUS_URL}/assets/${product.hero}`}
-            alt={product.name ?? ''}
+            alt={productName}
             fill
             className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -82,7 +84,7 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
 
         <Link href={`/${locale}/solutions/${product.slug}`}>
           <h3 className="mt-1 line-clamp-2 font-semibold leading-tight hover:text-primary transition-colors">
-            {product.name}
+            {productName}
           </h3>
         </Link>
 

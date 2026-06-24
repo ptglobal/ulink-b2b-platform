@@ -48,10 +48,14 @@ function buildProductsUrl(params: {
 
 const PRODUCT_LIST_FIELDS = [
   'id', 'name', 'slug', 'brand', 'short_description', 'hero', 'meta_title',
+  'translations.languages_code', 'translations.name', 'translations.short_description', 'translations.meta_title', 'translations.meta_description',
   'category.id', 'category.name', 'category.slug',
+  'category.translations.languages_code', 'category.translations.name',
   'skus.id', 'skus.sku_code', 'skus.stock_status', 'skus.unit', 'skus.pack_size', 'skus.status',
   'industries.industries_id.id', 'industries.industries_id.name', 'industries.industries_id.slug',
+  'industries.industries_id.translations.languages_code', 'industries.industries_id.translations.name',
   'standards.standards_id.id', 'standards.standards_id.name', 'standards.standards_id.slug',
+  'standards.standards_id.translations.languages_code', 'standards.standards_id.translations.name',
   'documents.id', 'documents.title', 'documents.doc_type'
 ];
 
@@ -124,10 +128,14 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
     const fields = [
       'id', 'name', 'slug', 'brand', 'short_description', 'specifications', 'hero',
       'meta_title', 'meta_description',
+      'translations.languages_code', 'translations.name', 'translations.short_description', 'translations.meta_title', 'translations.meta_description',
       'category.id', 'category.name', 'category.slug',
+      'category.translations.languages_code', 'category.translations.name', 'category.translations.description',
       'skus.id', 'skus.sku_code', 'skus.stock_status', 'skus.unit', 'skus.pack_size', 'skus.attributes', 'skus.status',
-      'industries.industries_id.id', 'industries.industries_id.name', 'industries.industries_id.slug',
+      'industries.industries_id.id', 'industries.industries_id.name', 'industries.industries_id.slug', 'industries.industries_id.description',
+      'industries.industries_id.translations.languages_code', 'industries.industries_id.translations.name', 'industries.industries_id.translations.description',
       'standards.standards_id.id', 'standards.standards_id.name', 'standards.standards_id.slug', 'standards.standards_id.description',
+      'standards.standards_id.translations.languages_code', 'standards.standards_id.translations.name', 'standards.standards_id.translations.description',
       'documents.id', 'documents.title', 'documents.doc_type', 'documents.language',
       'documents.file.id', 'documents.file.filename_download', 'documents.file.type', 'documents.file.filesize',
       'gallery.directus_files_id.id', 'gallery.directus_files_id.filename_download', 'gallery.directus_files_id.type'
@@ -152,7 +160,7 @@ export async function fetchIndustries(): Promise<Industry[]> {
     const base = getDirectusUrl();
     const url = new URL('/items/industries', base);
     url.searchParams.set('filter', JSON.stringify({ status: { _eq: 'published' } }));
-    url.searchParams.set('fields', 'id,name,slug,description');
+    url.searchParams.set('fields', 'id,name,slug,description,translations.languages_code,translations.name,translations.description');
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
@@ -171,7 +179,7 @@ export async function fetchStandards(): Promise<Standard[]> {
     const base = getDirectusUrl();
     const url = new URL('/items/standards', base);
     url.searchParams.set('filter', JSON.stringify({ status: { _eq: 'published' } }));
-    url.searchParams.set('fields', 'id,name,slug,description');
+    url.searchParams.set('fields', 'id,name,slug,description,translations.languages_code,translations.name,translations.description');
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
@@ -190,7 +198,7 @@ export async function fetchProductCategories(): Promise<ProductCategory[]> {
     const base = getDirectusUrl();
     const url = new URL('/items/product_categories', base);
     url.searchParams.set('filter', JSON.stringify({ status: { _eq: 'published' } }));
-    url.searchParams.set('fields', 'id,name,slug,parent');
+    url.searchParams.set('fields', 'id,name,slug,parent,translations.languages_code,translations.name,translations.description');
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
@@ -275,7 +283,7 @@ export async function fetchRegionalHubs(): Promise<RegionalHub[]> {
     const base = getDirectusUrl();
     const url = new URL('/items/regional_hubs', base);
     url.searchParams.set('filter', JSON.stringify({ status: { _eq: 'published' } }));
-    url.searchParams.set('fields', 'id,name,slug');
+    url.searchParams.set('fields', 'id,name,slug,translations.languages_code,translations.name');
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
