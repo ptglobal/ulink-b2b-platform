@@ -1,4 +1,4 @@
-import { ADMIN_ROLE_ID, VISITOR_ROLE_ID, EDITOR_ROLE_ID, SALES_ROLE_ID, CUSTOMER_ROLE_ID } from '../lib/constants.mjs';
+import { ADMIN_ROLE_ID, VISITOR_ROLE_ID, EDITOR_ROLE_ID, SALES_ROLE_ID, CUSTOMER_ROLE_ID, FRONTEND_SERVICE_ROLE_ID } from '../lib/constants.mjs';
 
 export const ROLE_DEFS = [
   {
@@ -30,6 +30,12 @@ export const ROLE_DEFS = [
     name: 'Customer',
     icon: 'person',
     description: 'Authenticated B2B Customer Portal user'
+  },
+  {
+    id: FRONTEND_SERVICE_ROLE_ID,
+    name: 'Frontend Service',
+    icon: 'api',
+    description: 'Role for Next.js API server to proxy requests with least privilege'
   }
 ];
 

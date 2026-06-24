@@ -6,6 +6,7 @@ import {
   updatePermission,
   createUser,
   readUsers,
+  updateUser,
   createItem,
   readItems,
   readPermissions,
@@ -23,7 +24,33 @@ export function createEnsureHelpers(client) {
       await client.request(createCollection(def));
       console.log(`+  Collection: ${def.collection} (created)`);
     } catch {
-      console.log(`=  Collection: ${def.collection} (already exists / skipped)`);
+      console.log(`=  Collection: ${def.collection} (already exists / checking fields)`);
+      try {
+        const fields = await client.request(
+          customEndpoint({
+            path: `/fields/${def.collection}`,
+            method: 'GET'
+          })
+        );
+        const existingFields = fields.map((f) => f.field);
+        for (const fieldDef of def.fields || []) {
+          if (!existingFields.includes(fieldDef.field)) {
+            await client.request(
+              customEndpoint({
+                path: `/fields/${def.collection}`,
+                method: 'POST',
+                body: JSON.stringify(fieldDef),
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              })
+            );
+            console.log(`+  Field: ${def.collection}.${fieldDef.field} (created dynamically)`);
+          }
+        }
+      } catch (err) {
+        console.error(`Failed to ensure fields for collection ${def.collection}:`, err?.message || err);
+      }
     }
   }
 
@@ -143,10 +170,19 @@ export function createEnsureHelpers(client) {
   }
 
   async function ensureUser(data) {
-    const existing = await client.request(readUsers({ filter: { email: { _eq: data.email } }, fields: ['id', 'email'] }));
+    const existing = await client.request(readUsers({ filter: { email: { _eq: data.email } }, fields: ['id', 'email', 'role', 'status'] }));
     if (existing.length > 0) {
-      console.log(`=  User: ${data.email} (exists, skipped)`);
-      return existing[0].id;
+      const user = existing[0];
+      // Resolve role checking (handling both raw UUID string and object relation formats)
+      const currentRoleId = typeof user.role === 'string' ? user.role : user.role?.id ?? null;
+      const needsUpdate = currentRoleId !== data.role || user.status !== data.status;
+      if (needsUpdate) {
+        await client.request(updateUser(user.id, data));
+        console.log(`~  User: ${data.email} (role/status updated)`);
+      } else {
+        console.log(`=  User: ${data.email} (exists, skipped)`);
+      }
+      return user.id;
     }
     try {
       const created = await client.request(createUser(data));

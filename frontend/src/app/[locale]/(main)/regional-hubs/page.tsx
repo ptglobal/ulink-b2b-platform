@@ -16,7 +16,7 @@ import {
 import { HeadsetMic } from '@/components/icons/headset-mic';
 import { VietnamMap, type ClusterMarker } from '@/components/vietnam-map';
 import { Link } from '@/i18n/navigation';
-import { fetchRegionalHubs, parseCoordinates, getHubName } from '@/lib/regional-hub-data';
+import { fetchRegionalHubs, parseCoordinates, getHubName, getIndustrialZoneName } from '@/lib/regional-hub-data';
 
 export default async function RegionalHubsPage({
   params: { locale }
@@ -108,7 +108,7 @@ export default async function RegionalHubsPage({
                 {hubs.map((hub, index) => {
                   const localizedName = getHubName(hub, locale);
                   const isZonesStr = hub.industrial_zones && hub.industrial_zones.length > 0
-                    ? hub.industrial_zones.map((z) => z.name).join(', ')
+                    ? hub.industrial_zones.map((z) => getIndustrialZoneName(z, locale)).join(', ')
                     : '';
                   return (
                     <Link

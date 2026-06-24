@@ -4,6 +4,7 @@ import {
   EDITOR_ROLE_ID,
   SALES_ROLE_ID,
   CUSTOMER_ROLE_ID,
+  FRONTEND_SERVICE_ROLE_ID,
   ADMIN_POLICY_ID,
   VISITOR_POLICY_ID,
   EDITOR_POLICY_ID,
@@ -19,9 +20,11 @@ export const ACCESS_DEFS = [
   { role: EDITOR_ROLE_ID, policy: EDITOR_POLICY_ID },
   { role: SALES_ROLE_ID, policy: SALES_POLICY_ID },
   { role: CUSTOMER_ROLE_ID, policy: CUSTOMER_POLICY_ID },
-  // The frontend-api user carries VISITOR_ROLE; attach the scoped write policy
-  // to that role so its static token (DIRECTUS_TOKEN) can create RFQ + newsletter.
-  { role: VISITOR_ROLE_ID, policy: FRONTEND_SERVICE_POLICY_ID }
+  // The frontend-api user is assigned FRONTEND_SERVICE_ROLE.
+  // It needs the scoped write policy (for creating RFQs and Notifications)
+  // AND the visitor policy (to read public content).
+  { role: FRONTEND_SERVICE_ROLE_ID, policy: FRONTEND_SERVICE_POLICY_ID },
+  { role: FRONTEND_SERVICE_ROLE_ID, policy: VISITOR_POLICY_ID }
 ];
 
 export async function ensureAccessLinks(helpers) {

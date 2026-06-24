@@ -6,7 +6,7 @@ import { publicDirectus, type RegionalHub, type HubIndustrialZone } from './dire
  * Fetched server-side from Directus (public/anonymous read).
  */
 export interface RegionalHubWithZones extends Omit<RegionalHub, 'industrial_zones'> {
-  industrial_zones: Pick<HubIndustrialZone, 'id' | 'name'>[];
+  industrial_zones: Pick<HubIndustrialZone, 'id' | 'name' | 'translations'>[];
   translations?: { id: number; languages_code: string; name: string }[];
 }
 
@@ -32,8 +32,8 @@ export async function fetchRegionalHubs(): Promise<RegionalHubWithZones[]> {
           'warehouse_total_area',
           'standard_delivery_time',
           'on_time_rate',
-          { industrial_zones: ['id', 'name'] },
-          // @ts-expect-error — Directus SDK field types are overly strict for translation relations
+          { industrial_zones: ['id', 'name', { translations: ['id', 'languages_code', 'name'] }] },
+          // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { translations: ['id', 'languages_code', 'name'] }
         ],
         sort: ['id'],
@@ -67,7 +67,12 @@ export function parseCoordinates(
 export interface RegionalHubDetail extends Omit<RegionalHub, 'province' | 'district' | 'industrial_zones' | 'team_members'> {
   province?: { name: string; code: string } | null;
   district?: { name: string; code: string } | null;
-  industrial_zones?: { id: number; name: string; image?: string | null }[];
+  industrial_zones?: {
+    id: number;
+    name: string;
+    image?: string | null;
+    translations?: { id: number; languages_code: string; name: string }[];
+  }[];
   team_members?: { id: number; name: string; role?: string | null; years_experience?: number | null; photo?: string | null }[];
   translations?: { id: number; languages_code: string; name: string }[];
 }
@@ -106,13 +111,13 @@ export async function fetchRegionalHubBySlug(slug: string): Promise<RegionalHubD
           'person_in_charge_title',
           'person_in_charge_phone',
           'current_personnel_count',
-          // @ts-expect-error — Directus SDK field types are overly strict for nested relations
+          // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { province: ['name', 'code'] },
-          // @ts-expect-error — Directus SDK field types are overly strict for nested relations
+          // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { district: ['name', 'code'] },
-          { industrial_zones: ['id', 'name', 'image'] },
+          { industrial_zones: ['id', 'name', 'image', { translations: ['id', 'languages_code', 'name'] }] },
           { team_members: ['id', 'name', 'role', 'years_experience', 'photo'] },
-          // @ts-expect-error — Directus SDK field types are overly strict for translation relations
+          // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { translations: ['id', 'languages_code', 'name'] }
         ],
         limit: 1
@@ -125,18 +130,30 @@ export async function fetchRegionalHubBySlug(slug: string): Promise<RegionalHubD
   }
 }
 
+type TranslatableName = {
+  name: string;
+  translations?: { languages_code: string; name: string }[] | null;
+};
+
 /**
- * Get localized name of a regional hub or fallback to base name.
+ * Resolve a localized display name from base field + translations.
  */
-export function getHubName(
-  hub: { name: string; translations?: { languages_code: string; name: string }[] | null },
-  locale: string
-): string {
-  if (hub.translations && Array.isArray(hub.translations)) {
-    const t = hub.translations.find((trans) => trans.languages_code === locale);
+export function getTranslatedName(item: TranslatableName, locale: string): string {
+  if (item.translations && Array.isArray(item.translations)) {
+    const t = item.translations.find((trans) => trans.languages_code === locale);
     if (t && t.name) return t.name;
   }
-  return hub.name;
+  return item.name;
+}
+
+/** Get localized name of a regional hub or fallback to base name. */
+export function getHubName(hub: TranslatableName, locale: string): string {
+  return getTranslatedName(hub, locale);
+}
+
+/** Get localized name of an industrial zone or fallback to base name. */
+export function getIndustrialZoneName(zone: TranslatableName, locale: string): string {
+  return getTranslatedName(zone, locale);
 }
 
 

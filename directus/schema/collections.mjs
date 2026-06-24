@@ -583,6 +583,7 @@ export const COLLECTION_DEFS = [
       { field: 'contact_name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'email', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'phone', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'address', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'industry', type: 'string', meta: { interface: 'input' } },
       { field: 'hub', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       { field: 'line_items', type: 'json', meta: { interface: 'json', required: true } },
@@ -618,7 +619,15 @@ export const COLLECTION_DEFS = [
         },
         schema: { default_value: 'web' }
       },
-      { field: 'user', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
+      { field: 'scheduled_delivery', type: 'boolean', meta: { interface: 'boolean' }, schema: { default_value: false } },
+      { field: 'requested_delivery_date', type: 'date', meta: { interface: 'datetime' } },
+      { field: 'user', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      {
+        field: 'created_at',
+        type: 'timestamp',
+        meta: { interface: 'datetime', readonly: true },
+        schema: { default_value: 'CURRENT_TIMESTAMP' }
+      }
     ]
   },
   {
@@ -640,6 +649,7 @@ export const COLLECTION_DEFS = [
     schema: {},
     fields: [
       ID_FIELD,
+      createTranslationAliasField(),
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'hub', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
       { field: 'image', type: 'uuid', meta: { interface: 'file-image', special: ['file'] } }

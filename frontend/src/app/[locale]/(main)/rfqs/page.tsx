@@ -1,7 +1,8 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
+import { redirect } from '@/i18n/navigation';
 import { getCurrentUser } from '@/lib/auth-helpers';
-import { QuickOrderClient } from '@/components/rfq/quick-order-client';
+import { RfqsClient } from '@/components/rfq/rfqs-client';
 
 type Props = { params: { locale: string } };
 
@@ -10,23 +11,26 @@ export async function generateMetadata({ params: { locale } }: Props): Promise<M
   const isJa = locale === 'ja';
   return {
     title: isVi
-      ? 'Đặt hàng nhanh (Quick Order) | ULink B2B'
+      ? 'Yêu cầu báo giá (RFQs) | ULink B2B'
       : isJa
-      ? 'クイックオーダー (Quick Order) | ULink B2B'
-      : 'Quick Order | ULink B2B',
+      ? '見積依頼 (RFQs) | ULink B2B'
+      : 'Request for Quotation (RFQs) | ULink B2B',
     description: isVi
-      ? 'Tạo nhanh yêu cầu báo giá bằng cách thêm trực tiếp SKU sản phẩm.'
+      ? 'Quản lý và theo dõi danh sách yêu cầu báo giá'
       : isJa
-      ? '製品SKUを直接追加して見積依頼を素早く作成します。'
-      : 'Create requests for quotation quickly by directly adding product SKUs.'
+      ? '見積依頼リストの管理と追跡'
+      : 'Manage and track your requests for quotation'
   };
 }
 
-export default async function QuickOrderPage({ params: { locale } }: Props) {
+export default async function RfqsPage({ params: { locale } }: Props) {
   setRequestLocale(locale);
 
-  // Get current user (can be guest/visitor, so null is allowed)
+  // Authenticate-only check
   const user = await getCurrentUser();
+  if (!user) {
+    redirect({ href: '/login', locale });
+  }
 
   return (
     <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(0,106,167,0.1),_transparent_40%),linear-gradient(180deg,_rgba(255,255,255,0.9),_rgba(248,250,252,1))] min-h-screen">
@@ -36,14 +40,14 @@ export default async function QuickOrderPage({ params: { locale } }: Props) {
         <div className="max-w-3xl">
           <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-brand">Portal</p>
           <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Đặt hàng nhanh (Quick Order)
+            Yêu cầu báo giá (RFQs)
           </h1>
           <p className="mt-2 text-xs leading-6 text-muted-foreground sm:text-sm">
-            Tạo nhanh yêu cầu báo giá bằng cách chọn sản phẩm hoặc dán danh sách mã SKU trực tiếp vào giỏ hàng.
+            Xem, tìm kiếm, lọc và kiểm tra chi tiết các yêu cầu báo giá của doanh nghiệp bạn được đồng bộ trực tiếp với hệ thống ULink.
           </p>
         </div>
 
-        <QuickOrderClient user={user} />
+        <RfqsClient user={user} />
       </div>
     </section>
   );

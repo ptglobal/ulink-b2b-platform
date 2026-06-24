@@ -115,6 +115,38 @@ export const translations = {
       }
     }
   },
+  hub_industrial_zones: {
+    dong_van_iv: {
+      vi: { name: 'KCN Đông Vân IV' },
+      en: { name: 'Dong Van IV Industrial Park' },
+      ja: { name: 'ドンヴァンIV工業団地' }
+    },
+    dong_van_iii: {
+      vi: { name: 'KCN Đồng Văn III' },
+      en: { name: 'Dong Van III Industrial Park' },
+      ja: { name: 'ドンヴァンIII工業団地' }
+    },
+    bac_thang_long: {
+      vi: { name: 'KCN Bắc Thăng Long' },
+      en: { name: 'Bac Thang Long Industrial Park' },
+      ja: { name: 'バクタンロン工業団地' }
+    },
+    vsip_ii_a: {
+      vi: { name: 'KCN VSIP II-A' },
+      en: { name: 'VSIP II-A Industrial Park' },
+      ja: { name: 'VSIP II-A工業団地' }
+    },
+    vsip_hai_phong: {
+      vi: { name: 'KCN VSIP Hải Phòng' },
+      en: { name: 'VSIP Hai Phong Industrial Park' },
+      ja: { name: 'VSIPハイフォン工業団地' }
+    },
+    long_thanh: {
+      vi: { name: 'KCN Long Thành' },
+      en: { name: 'Long Thanh Industrial Park' },
+      ja: { name: 'ロンタイン工業団地' }
+    }
+  },
   regional_hubs: {
     dong_van_4: {
       vi: {

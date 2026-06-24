@@ -9,10 +9,13 @@ export interface NormalizedRfqPayload {
   company: string;
   contact_name: string;
   email: string;
-  phone?: string;
-  hub?: number;
-  industry?: string;
-  message?: string;
+  phone: string;
+  address: string;
+  hub: number;
+  industry: string;
+  message: string;
+  scheduled_delivery?: boolean;
+  requested_delivery_date?: string;
   website?: string;
   source: 'web' | 'portal';
   items: NormalizedRfqItem[];
@@ -70,6 +73,7 @@ function cleanString(value: unknown): string | undefined {
 function normalizeSlug(value: unknown, state: ValidationState, field: 'industry'): string | undefined {
   const raw = cleanString(value);
   if (!raw) {
+    addMissing(state, field);
     return undefined;
   }
 
@@ -104,6 +108,7 @@ function normalizeEmail(value: unknown, state: ValidationState): string | undefi
 
 function normalizePhone(value: unknown, state: ValidationState): string | undefined {
   if (value === undefined || value === null || value === '') {
+    addMissing(state, 'phone');
     return undefined;
   }
 
@@ -114,6 +119,7 @@ function normalizePhone(value: unknown, state: ValidationState): string | undefi
 
   const trimmed = value.trim();
   if (!trimmed) {
+    addMissing(state, 'phone');
     return undefined;
   }
 
@@ -133,6 +139,7 @@ function normalizePhone(value: unknown, state: ValidationState): string | undefi
 
 function normalizeHub(value: unknown, state: ValidationState): number | undefined {
   if (value === undefined || value === null || value === '') {
+    addMissing(state, 'hub');
     return undefined;
   }
 
@@ -204,6 +211,53 @@ function normalizeItems(value: unknown, state: ValidationState): NormalizedRfqIt
   return items;
 }
 
+function normalizeScheduledDelivery(value: unknown): boolean {
+  if (value === true || String(value).trim().toLowerCase() === 'true') {
+    return true;
+  }
+  return false;
+}
+
+function normalizeDeliveryDate(value: unknown, scheduled: boolean, state: ValidationState): string | undefined {
+  if (!scheduled) {
+    return undefined;
+  }
+
+  const raw = cleanString(value);
+  if (!raw) {
+    addMissing(state, 'requested_delivery_date');
+    return undefined;
+  }
+
+  const match = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) {
+    addInvalid(state, 'requested_delivery_date', 'INVALID_DATE_FORMAT');
+    return undefined;
+  }
+
+  const [, yStr, mStr, dStr] = match;
+  const year = parseInt(yStr, 10);
+  const month = parseInt(mStr, 10) - 1;
+  const day = parseInt(dStr, 10);
+  
+  const date = new Date(year, month, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) {
+    addInvalid(state, 'requested_delivery_date', 'INVALID_DATE');
+    return undefined;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  
+  const parsedDate = new Date(year, month, day);
+  if (parsedDate.getTime() < today.getTime()) {
+    addInvalid(state, 'requested_delivery_date', 'PAST_DATE');
+    return undefined;
+  }
+
+  return `${yStr}-${mStr}-${dStr}`;
+}
+
 export function validateRfqPayload(input: unknown): RfqValidationResult {
   if (!input || typeof input !== 'object' || Array.isArray(input)) {
     return {
@@ -212,7 +266,7 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
         code: 'UNPROCESSABLE_ENTITY',
         message: 'RFQ payload is invalid.',
         details: {
-          missingFields: ['company', 'email', 'items']
+          missingFields: ['company', 'contact', 'email', 'phone', 'hub', 'industry', 'message', 'items']
         }
       }
     };
@@ -226,13 +280,30 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
     addMissing(state, 'company');
   }
 
+  const contactName = cleanString(record.contact);
+  if (!contactName) {
+    addMissing(state, 'contact');
+  }
+
   const email = normalizeEmail(record.email, state);
   const phone = normalizePhone(record.phone, state);
+  const address = cleanString(record.address);
+  if (!address) {
+    addMissing(state, 'address');
+  }
+
   const hub = normalizeHub(record.hub, state);
   const items = normalizeItems(record.items, state);
-  const contactName = cleanString(record.contact) ?? '';
   const industry = normalizeSlug(record.industry, state, 'industry');
+  
   const message = cleanString(record.message);
+  if (!message) {
+    addMissing(state, 'message');
+  }
+
+  const scheduledDelivery = normalizeScheduledDelivery(record.scheduled_delivery);
+  const requestedDeliveryDate = normalizeDeliveryDate(record.requested_delivery_date, scheduledDelivery, state);
+
   const website = cleanString(record.website);
   const source = normalizeSource(record.source);
 
@@ -256,12 +327,15 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
     ok: true,
     value: {
       company: company as string,
-      contact_name: contactName,
+      contact_name: contactName as string,
       email: email as string,
-      ...(phone ? { phone } : {}),
-      ...(hub ? { hub } : {}),
-      ...(industry ? { industry } : {}),
-      ...(message ? { message } : {}),
+      phone: phone as string,
+      address: address as string,
+      hub: hub as number,
+      industry: industry as string,
+      message: message as string,
+      scheduled_delivery: scheduledDelivery,
+      ...(requestedDeliveryDate ? { requested_delivery_date: requestedDeliveryDate } : {}),
       ...(website ? { website } : {}),
       source,
       items: items as NormalizedRfqItem[]

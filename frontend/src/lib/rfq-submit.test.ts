@@ -14,6 +14,7 @@ test('submits only after validation, sku check, and anti-spam pass', async () =>
       contact: 'Mr A',
       email: 'a@acme.vn',
       phone: '+84901234567',
+      address: '123 Test St',
       hub: '3',
       industry: 'Chemical',
       items: [{ sku: 'CR-GLV-001', qty: 1 }],
@@ -66,9 +67,12 @@ test('submits only after validation, sku check, and anti-spam pass', async () =>
     contact_name: 'Mr A',
     email: 'a@acme.vn',
     phone: '+84901234567',
+    address: '123 Test St',
     hub: 3,
     industry: 'chemical',
     message: 'Need quote',
+    scheduled_delivery: false,
+    requested_delivery_date: undefined,
     line_items: [{ sku: 'cr-glv-001', qty: 1 }],
     status: 'new',
     source: 'web'
@@ -92,7 +96,12 @@ test('returns the existing RFQ id for an exact duplicate payload', async () => {
       company: 'ACME',
       contact: 'Mr A',
       email: 'a@acme.vn',
+      phone: '+84901234567',
+      address: '123 Test St',
+      hub: '3',
+      industry: 'Chemical',
       items: [{ sku: 'CR-GLV-001', qty: 1 }],
+      message: 'Need quote',
       token: 'good-token'
     },
     {

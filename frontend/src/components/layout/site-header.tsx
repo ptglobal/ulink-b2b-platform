@@ -4,6 +4,7 @@ import { ChevronDown, Search, ShoppingCart, ArrowRight } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
 import { MobileNav } from './mobile-nav';
+import { CartBadge } from './cart-badge';
 import { HeaderAuthButton } from './header-auth-button';
 
 /**
@@ -66,9 +67,7 @@ export async function SiteHeader() {
             className="relative flex h-9 w-9 items-center justify-center text-primary transition-colors hover:bg-muted sm:h-10 sm:w-10"
           >
             <ShoppingCart className="h-5 w-5 sm:h-[22px] sm:w-[22px]" aria-hidden="true" />
-            <span className="absolute right-0.5 top-0.5 flex h-[15px] min-w-[15px] items-center justify-center rounded-full bg-primary px-1 text-[9px] font-medium leading-none text-primary-foreground sm:right-0.5 sm:top-1">
-              2
-            </span>
+            <CartBadge />
           </Link>
 
           <Link
