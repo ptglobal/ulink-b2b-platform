@@ -28,6 +28,7 @@ export const TRANSLATABLE_COLLECTIONS = [
   'product_categories',
   'products',
   'industries',
+  'standards',
   'regional_hubs',
   'hub_industrial_zones',
   'blog_posts',
@@ -58,6 +59,10 @@ export const TRANSLATION_FIELDS = {
     { field: 'meta_description', type: 'text', meta: { interface: 'textarea' } }
   ],
   industries: [
+    { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
+    { field: 'description', type: 'text', meta: { interface: 'textarea' } }
+  ],
+  standards: [
     { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
     { field: 'description', type: 'text', meta: { interface: 'textarea' } }
   ],
