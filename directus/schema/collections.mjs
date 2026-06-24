@@ -573,15 +573,16 @@ export const COLLECTION_DEFS = [
           interface: 'select-dropdown',
           options: {
             choices: [
-              { text: 'New', value: 'new' },
-              { text: 'Quoted', value: 'quoted' },
-              { text: 'Won', value: 'won' },
-              { text: 'Lost', value: 'lost' }
+              { text: 'Pending', value: 'pending' },
+              { text: 'Approved', value: 'approved' },
+              { text: 'Rejected', value: 'rejected' }
             ]
           }
         },
-        schema: { default_value: 'new' }
+        schema: { default_value: 'pending' }
       },
+      { field: 'approval_note', type: 'text', meta: { interface: 'textarea' } },
+      { field: 'reject_reason', type: 'text', meta: { interface: 'textarea' } },
       { field: 'assigned_sales', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       {
         field: 'source',

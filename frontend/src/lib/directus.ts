@@ -103,8 +103,10 @@ export interface RfqRequest {
   source?: 'web' | 'portal';
   user?: string | number | { id: string };
   hub?: string | number | RegionalHub | null;
-  assigned_sales?: string | number | { id: string; email?: string } | null;
+  assigned_sales?: string | number | { id: string; first_name?: string; last_name?: string; email?: string; avatar?: string } | null;
   created_at?: string;
+  approval_note?: string | null;
+  reject_reason?: string | null;
 }
 
 export interface RfqAssignmentRule {
