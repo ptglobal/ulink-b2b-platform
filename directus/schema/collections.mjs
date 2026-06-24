@@ -595,16 +595,47 @@ export const COLLECTION_DEFS = [
           interface: 'select-dropdown',
           options: {
             choices: [
-              { text: 'Pending', value: 'pending' },
-              { text: 'Approved', value: 'approved' },
-              { text: 'Rejected', value: 'rejected' }
+              { text: 'Pending (Đang chờ)', value: 'pending', color: '#fbbf24' },
+              { text: 'Approved (Duyệt)', value: 'approved', color: '#10b981' },
+              { text: 'Rejected (Từ chối)', value: 'rejected', color: '#ef4444' }
             ]
           }
         },
         schema: { default_value: 'pending' }
       },
-      { field: 'approval_note', type: 'text', meta: { interface: 'textarea' } },
-      { field: 'reject_reason', type: 'text', meta: { interface: 'textarea' } },
+      {
+        field: 'approval_note',
+        type: 'text',
+        meta: {
+          interface: 'textarea',
+          conditions: [
+            {
+              name: 'Hide if not approved',
+              rule: { status: { _neq: 'approved' } },
+              hidden: true
+            }
+          ]
+        }
+      },
+      {
+        field: 'reject_reason',
+        type: 'text',
+        meta: {
+          interface: 'textarea',
+          conditions: [
+            {
+              name: 'Require if rejected',
+              rule: { status: { _eq: 'rejected' } },
+              required: true
+            },
+            {
+              name: 'Hide if not rejected',
+              rule: { status: { _neq: 'rejected' } },
+              hidden: true
+            }
+          ]
+        }
+      },
       { field: 'assigned_sales', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       {
         field: 'source',

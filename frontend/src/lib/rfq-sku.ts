@@ -1,5 +1,4 @@
 import { readItems } from '@directus/sdk';
-import { normalizeSkuCode } from './sku-cache';
 import { publicDirectus } from './directus';
 
 export interface RfqSkuItem {
@@ -46,14 +45,14 @@ export async function assertRfqSkusExist(
   deps: RfqSkuDeps = {}
 ): Promise<RfqSkuResult> {
   const normalized = items.map((item) => ({
-    sku: normalizeSkuCode(item.sku),
+    sku: item.sku.trim(),
     qty: item.qty
   }));
 
   const uniqueSkus = [...new Set(normalized.map((item) => item.sku))];
   const fetchSkus = deps.fetchSkus ?? fetchPublishedSkus;
   const rows = await fetchSkus(uniqueSkus);
-  const found = new Set(rows.map((row) => normalizeSkuCode(row.sku_code)));
+  const found = new Set(rows.map((row) => row.sku_code));
   const invalidSkus = uniqueSkus.filter((sku) => !found.has(sku));
 
   if (invalidSkus.length > 0) {
