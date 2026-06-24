@@ -73,7 +73,7 @@ test('submits only after validation, sku check, and anti-spam pass', async () =>
     message: 'Need quote',
     scheduled_delivery: false,
     requested_delivery_date: undefined,
-    line_items: [{ sku: 'cr-glv-001', qty: 1 }],
+    line_items: [{ sku: 'CR-GLV-001', qty: 1 }],
     status: 'new',
     source: 'web'
   });
@@ -81,7 +81,6 @@ test('submits only after validation, sku check, and anti-spam pass', async () =>
     `get-existing:${idempotencyKey}`,
     'turnstile',
     'rate-limit',
-    'fetch-skus',
     `reserve:${idempotencyKey}`,
     'create-rfq',
     `save:${idempotencyKey}:123`

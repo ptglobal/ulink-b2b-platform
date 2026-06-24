@@ -35,17 +35,26 @@ export function createEnsureHelpers(client) {
         const existingFields = fields.map((f) => f.field);
         for (const fieldDef of def.fields || []) {
           if (!existingFields.includes(fieldDef.field)) {
-            await client.request(
-              customEndpoint({
-                path: `/fields/${def.collection}`,
-                method: 'POST',
-                body: JSON.stringify(fieldDef),
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              })
-            );
-            console.log(`+  Field: ${def.collection}.${fieldDef.field} (created dynamically)`);
+            try {
+              await client.request(
+                customEndpoint({
+                  path: `/fields/${def.collection}`,
+                  method: 'POST',
+                  body: JSON.stringify(fieldDef),
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                })
+              );
+              console.log(`+  Field: ${def.collection}.${fieldDef.field} (created dynamically)`);
+            } catch (fieldErr) {
+              const msg = fieldErr?.message || String(fieldErr);
+              if (msg.includes('already exists')) {
+                console.log(`=  Field: ${def.collection}.${fieldDef.field} (already exists / skipped)`);
+              } else {
+                console.error(`!  Field: ${def.collection}.${fieldDef.field} creation failed:`, msg);
+              }
+            }
           }
         }
       } catch (err) {
@@ -206,19 +215,19 @@ export function createEnsureHelpers(client) {
     const filter = {
       [uniqueField]: { _eq: data[uniqueField] }
     };
-    const existing = await client.request(readItems(collection, { filter }));
+    const existing = await client.request(readItems(collection, { filter, fields: ['id', uniqueField], limit: 1 }));
     if (existing.length > 0) {
       console.log(`=  Seed Item in ${collection} [${data[uniqueField]}] (exists, skipped)`);
       return existing[0].id;
     }
     try {
-      const created = await client.request(createItem(collection, data));
+      const created = await client.request(createItem(collection, data, { fields: ['id'] }));
       console.log(`+  Seed Item in ${collection} [${data[uniqueField]}] (created)`);
       return created.id;
     } catch (err) {
       const msg = err?.errors?.[0]?.message ?? err?.message ?? '';
       if (msg.includes('unique')) {
-        const all = await client.request(readItems(collection, { limit: -1 }));
+        const all = await client.request(readItems(collection, { fields: ['id', uniqueField], limit: -1 }));
         const match = all.find(item => item[uniqueField] === data[uniqueField]);
         if (match) {
           console.log(`=  Seed Item in ${collection} [${data[uniqueField]}] (exists, skipped)`);

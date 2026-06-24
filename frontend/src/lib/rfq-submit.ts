@@ -1,4 +1,3 @@
-import { assertRfqSkusExist } from './rfq-sku';
 import { enforceRfqAntiSpam } from './rfq-anti-spam';
 import { buildRfqIdempotencyKey, waitForExistingRfqId } from './rfq-idempotency';
 import { validateRfqPayload } from './rfq-validation';
@@ -11,10 +10,10 @@ type CreateRfqInput = {
   address: string;
   hub: number;
   industry: string;
-  message: string;
+  message?: string;
   scheduled_delivery?: boolean;
   requested_delivery_date?: string;
-  line_items: Array<{ sku: string; qty: number }>;
+  line_items?: Array<{ sku: string; qty: number }>;
   status: 'new';
   source: 'web' | 'portal';
 };
@@ -107,17 +106,6 @@ export async function submitRfq(body: unknown, deps: SubmitRfqDeps): Promise<Sub
     };
   }
 
-  const skuCheck = await assertRfqSkusExist(validation.value.items, {
-    fetchSkus: deps.fetchSkus
-  });
-
-  if (!skuCheck.ok) {
-    return {
-      ok: false,
-      error: skuCheck.error
-    };
-  }
-
   try {
     const reserved = await deps.reserveIdempotencyKey(idempotencyKey);
     if (!reserved.ok) {
@@ -148,10 +136,10 @@ export async function submitRfq(body: unknown, deps: SubmitRfqDeps): Promise<Sub
       address: validation.value.address,
       hub: validation.value.hub,
       industry: validation.value.industry,
-      message: validation.value.message,
+      message: validation.value.message || '',
       scheduled_delivery: validation.value.scheduled_delivery,
       requested_delivery_date: validation.value.requested_delivery_date,
-      line_items: skuCheck.value,
+      ...(validation.value.items && validation.value.items.length > 0 ? { line_items: validation.value.items } : {}),
       status: 'new',
       source: validation.value.source === 'portal' ? 'portal' : 'web'
     });

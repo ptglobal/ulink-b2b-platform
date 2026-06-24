@@ -19,7 +19,7 @@ export const dynamic = 'force-dynamic';
 
 interface SolutionsPageProps {
   params: { locale: string };
-  searchParams: { search?: string; industry?: string; standard?: string; region?: string; page?: string };
+  searchParams: { search?: string; industry?: string; standard?: string; region?: string; category?: string; page?: string };
 }
 
 export async function generateMetadata({ params: { locale } }: SolutionsPageProps) {
@@ -40,6 +40,7 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
         industry: searchParams.industry,
         standard: searchParams.standard,
         region: searchParams.region,
+        category: searchParams.category,
         page
       }),
       fetchIndustries(),
@@ -191,6 +192,7 @@ function PaginationLink({
   if (searchParams.industry) params.set('industry', searchParams.industry);
   if (searchParams.standard) params.set('standard', searchParams.standard);
   if (searchParams.region) params.set('region', searchParams.region);
+  if (searchParams.category) params.set('category', searchParams.category);
   if (page > 1) params.set('page', String(page));
   const qs = params.toString();
   const href = `/${locale}/solutions${qs ? `?${qs}` : ''}`;
