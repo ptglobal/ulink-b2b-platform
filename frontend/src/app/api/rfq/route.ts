@@ -133,7 +133,7 @@ export async function GET(req: Request) {
     }
     console.log('GET /api/rfq - Authenticated User:', user);
     const cookieHeader = getRequestCookieHeader(req);
-    const response = await proxyToDirectus('/items/rfq_requests?fields=*&sort=-created_at,-id', {
+    const response = await proxyToDirectus('/items/rfq_requests?fields=*,assigned_sales.first_name,assigned_sales.last_name,assigned_sales.email,assigned_sales.avatar&sort=-created_at,-id', {
       method: 'GET',
       cookieHeader
     });

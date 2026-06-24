@@ -70,6 +70,12 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
   // Detail Modal
   const [selectedRfq, setSelectedRfq] = useState<RfqRequest | null>(null);
 
+  // Action Modal State
+  const [actionModalType, setActionModalType] = useState<'approve' | 'reject' | null>(null);
+  const [actionNote, setActionNote] = useState('');
+  const [actionSubmitting, setActionSubmitting] = useState(false);
+  const [actionError, setActionError] = useState<string | null>(null);
+
   // Create Request Modal & Form States
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [formCompany, setFormCompany] = useState('');
@@ -189,9 +195,6 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
     if (!formIndustry) {
       errors.industry = 'Ngành nghề là bắt buộc.';
     }
-    if (!formMessage.trim()) {
-      errors.message = 'Ghi chú là bắt buộc.';
-    }
 
     if (formScheduled) {
       if (!formDeliveryDate) {
@@ -280,6 +283,50 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
       setFormError(err.message || 'Gửi yêu cầu báo giá thất bại.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleActionSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedRfq) return;
+    
+    if (actionModalType === 'reject' && !actionNote.trim()) {
+      setActionError('Vui lòng nhập lý do từ chối.');
+      return;
+    }
+
+    setActionError(null);
+    setActionSubmitting(true);
+
+    try {
+      const payload: any = {
+        status: actionModalType === 'approve' ? 'approved' : 'rejected'
+      };
+      if (actionModalType === 'approve') {
+        payload.approval_note = actionNote.trim() || null;
+      } else {
+        payload.reject_reason = actionNote.trim();
+      }
+
+      const res = await fetch(`/api/rfq/${selectedRfq.id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!res.ok) {
+        const json = await res.json();
+        throw new Error(json.message || 'Cập nhật trạng thái thất bại.');
+      }
+
+      // Success
+      setActionModalType(null);
+      setSelectedRfq(null); // Close details modal too
+      await fetchRfqs();
+    } catch (err: any) {
+      setActionError(err.message || 'Có lỗi xảy ra.');
+    } finally {
+      setActionSubmitting(false);
     }
   };
 
@@ -636,6 +683,35 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                 </div>
               </div>
 
+              {/* Sales Rep */}
+              {selectedRfq.assigned_sales && typeof selectedRfq.assigned_sales === 'object' && (
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5 border-b border-border/50 pb-1.5">
+                    <User className="h-4 w-4 text-brand" />
+                    Sale phụ trách
+                  </h3>
+                  <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-muted/20 p-3">
+                    <div className="h-10 w-10 shrink-0 rounded-full bg-brand/10 flex items-center justify-center text-brand font-semibold border border-brand/20">
+                      {(selectedRfq.assigned_sales.first_name?.[0] || selectedRfq.assigned_sales.email?.[0] || 'S').toUpperCase()}
+                    </div>
+                    <div>
+                      <div className="text-sm font-semibold text-foreground">
+                        {selectedRfq.assigned_sales.first_name || ''} {selectedRfq.assigned_sales.last_name || ''}
+                        {!(selectedRfq.assigned_sales.first_name || selectedRfq.assigned_sales.last_name) && 'Nhân viên Sales'}
+                      </div>
+                      {selectedRfq.assigned_sales.email && (
+                        <div className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                          <Mail className="h-3 w-3" />
+                          <a href={`mailto:${selectedRfq.assigned_sales.email}`} className="hover:text-brand hover:underline">
+                            {selectedRfq.assigned_sales.email}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              )}
+
               {/* Delivery Information */}
               <div className="space-y-3">
                 <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5 border-b border-border/50 pb-1.5">
@@ -699,10 +775,60 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                   {selectedRfq.message || 'Không có ghi chú thêm.'}
                 </div>
               </div>
+
+              {selectedRfq.status === 'approved' && selectedRfq.approval_note && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-emerald-600 border-b border-border/50 pb-1.5">
+                    Ghi chú duyệt
+                  </h3>
+                  <div className="rounded-xl border border-emerald-200/50 bg-emerald-50/50 p-4 text-sm text-emerald-800 whitespace-pre-wrap leading-relaxed dark:bg-emerald-900/10 dark:text-emerald-400">
+                    {selectedRfq.approval_note}
+                  </div>
+                </div>
+              )}
+
+              {selectedRfq.status === 'rejected' && selectedRfq.reject_reason && (
+                <div className="space-y-2">
+                  <h3 className="text-sm font-semibold text-rose-600 border-b border-border/50 pb-1.5">
+                    Lý do từ chối
+                  </h3>
+                  <div className="rounded-xl border border-rose-200/50 bg-rose-50/50 p-4 text-sm text-rose-800 whitespace-pre-wrap leading-relaxed dark:bg-rose-900/10 dark:text-rose-400">
+                    {selectedRfq.reject_reason}
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Modal Footer */}
-            <div className="flex justify-end border-t border-border/80 px-6 py-4 bg-muted/30">
+            <div className="flex justify-between items-center border-t border-border/80 px-6 py-4 bg-muted/30">
+              <div className="flex gap-2">
+                {selectedRfq.status === 'pending' && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActionModalType('approve');
+                        setActionNote('');
+                        setActionError(null);
+                      }}
+                      className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-all shadow-sm"
+                    >
+                      Duyệt
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActionModalType('reject');
+                        setActionNote('');
+                        setActionError(null);
+                      }}
+                      className="rounded-xl bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700 transition-all shadow-sm"
+                    >
+                      Từ chối
+                    </button>
+                  </>
+                )}
+              </div>
               <button
                 type="button"
                 onClick={() => setSelectedRfq(null)}
@@ -711,6 +837,53 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                 Đóng
               </button>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Action Modal (Approve/Reject) */}
+      {actionModalType && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => !actionSubmitting && setActionModalType(null)} />
+          <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-border/80 bg-card shadow-xl animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-border/80 px-6 py-4 bg-muted/30">
+              <h2 className={cn("text-lg font-semibold", actionModalType === 'approve' ? 'text-emerald-600' : 'text-rose-600')}>
+                {actionModalType === 'approve' ? 'Xác nhận duyệt RFQ' : 'Xác nhận từ chối RFQ'}
+              </h2>
+              <button type="button" onClick={() => !actionSubmitting && setActionModalType(null)} className="rounded-lg p-1 text-muted-foreground hover:bg-muted transition-all">
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <form onSubmit={handleActionSubmit} className="p-6 space-y-4">
+              {actionError && (
+                <div className="rounded-xl border border-rose-100 bg-rose-50/50 p-3 text-xs text-rose-800 flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 text-rose-500 shrink-0" />
+                  <span>{actionError}</span>
+                </div>
+              )}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground block">
+                  {actionModalType === 'approve' ? 'Ghi chú duyệt (Không bắt buộc)' : 'Lý do từ chối (Bắt buộc) *'}
+                </label>
+                <textarea
+                  rows={3}
+                  required={actionModalType === 'reject'}
+                  value={actionNote}
+                  onChange={(e) => setActionNote(e.target.value)}
+                  placeholder={actionModalType === 'approve' ? 'Nhập ghi chú cho bộ phận liên quan...' : 'Nhập lý do chi tiết...'}
+                  className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand resize-none"
+                />
+              </div>
+              <div className="flex justify-end gap-3 pt-4">
+                <button type="button" onClick={() => setActionModalType(null)} disabled={actionSubmitting} className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-all">
+                  Hủy
+                </button>
+                <button type="submit" disabled={actionSubmitting} className={cn("inline-flex items-center gap-1.5 rounded-xl px-5 py-2 text-sm font-semibold text-white shadow transition-all", actionModalType === 'approve' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700')}>
+                  {actionSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                  {actionModalType === 'approve' ? 'Duyệt RFQ' : 'Từ chối RFQ'}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
@@ -1079,10 +1252,9 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
 
               {/* Section 4: Notes */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground block">Ghi chú / Yêu cầu thêm *</label>
+                <label className="text-xs font-medium text-muted-foreground block">Ghi chú / Yêu cầu thêm</label>
                 <textarea
                   rows={3}
-                  required
                   value={formMessage}
                   onChange={(e) => {
                     setFormMessage(e.target.value);
