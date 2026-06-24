@@ -177,16 +177,6 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                     }}
                   />
                 )}
-
-                {/* CTA */}
-                <div className="pt-2">
-                  <Link
-                    href={`/${locale}/quick-order`}
-                    className="flex items-center justify-center w-full h-11 rounded-xl border-2 border-primary text-primary font-semibold hover:bg-primary/5 transition-all text-sm"
-                  >
-                    {t('requestQuote')}
-                  </Link>
-                </div>
               </div>
             </div>
           </div>

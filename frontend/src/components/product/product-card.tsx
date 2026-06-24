@@ -91,10 +91,10 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
         {/* Action buttons */}
         <div className="mt-auto flex items-center gap-2 pt-4">
           <Link
-            href={`/${locale}/solutions/${product.slug}?rfq=1`}
+            href={`/${locale}/solutions/${product.slug}`}
             className="flex-1 inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Báo giá nhanh
+            Thêm vào giỏ hàng
           </Link>
           {tdsDoc ? (
             <a

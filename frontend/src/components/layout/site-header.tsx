@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { ChevronDown, Search, ShoppingCart, ArrowRight } from 'lucide-react';
+import { ChevronDown, Search, ShoppingCart } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
 import { MobileNav } from './mobile-nav';
@@ -68,14 +68,6 @@ export async function SiteHeader() {
           >
             <ShoppingCart className="h-5 w-5 sm:h-[22px] sm:w-[22px]" aria-hidden="true" />
             <CartBadge />
-          </Link>
-
-          <Link
-            href="/quick-order"
-            className="hidden h-[38px] items-center gap-2 rounded-lg border border-input bg-card px-4 text-[13px] text-foreground/70 transition-colors hover:border-brand hover:text-brand lg:inline-flex"
-          >
-            {t('quickOrder')}
-            <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
           </Link>
 
           <HeaderAuthButton />
