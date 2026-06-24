@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { Package, ShieldCheck, Clock, BoxesIcon, FileDown } from 'lucide-react';
 import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
 import { getTranslatedName } from '@/lib/i18n-content';
+import AddToCartButton from '@/components/product/add-to-cart-button';
 import type { Product } from '@/lib/directus';
 
 interface ProductCardProps {
@@ -90,12 +91,16 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
 
         {/* Action buttons */}
         <div className="mt-auto flex items-center gap-2 pt-4">
-          <Link
-            href={`/${locale}/solutions/${product.slug}`}
-            className="flex-1 inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
-          >
-            Thêm vào giỏ hàng
-          </Link>
+          {firstSkuCode ? (
+            <AddToCartButton skuCode={firstSkuCode} />
+          ) : (
+            <Link
+              href={`/${locale}/solutions/${product.slug}`}
+              className="flex-1 inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+            >
+              Xem chi tiết
+            </Link>
+          )}
           {tdsDoc ? (
             <a
               href={`${DIRECTUS_URL}/assets/${typeof tdsDoc.file === 'object' && tdsDoc.file ? tdsDoc.file.id : tdsDoc.file}?download`}
