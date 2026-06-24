@@ -61,24 +61,6 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
     .map((g) => (typeof g.directus_files_id === 'object' ? g.directus_files_id : null))
     .filter(Boolean) as DirectusFile[];
 
-  // Extract unique attribute keys/values across all SKUs
-  const attributeMap = new Map<string, Set<string>>();
-  for (const sku of skus) {
-    if (sku.attributes && typeof sku.attributes === 'object') {
-      for (const [key, val] of Object.entries(sku.attributes as Record<string, unknown>)) {
-        if (!attributeMap.has(key)) attributeMap.set(key, new Set());
-        attributeMap.get(key)!.add(String(val));
-      }
-    }
-  }
-
-  // Aggregate stock status
-  const stockSummary = {
-    inStock: skus.filter((s: ProductSku) => s.stock_status === 'in_stock').length,
-    lowStock: skus.filter((s: ProductSku) => s.stock_status === 'low_stock').length,
-    outOfStock: skus.filter((s: ProductSku) => s.stock_status === 'out_of_stock').length
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
       {/* Breadcrumb */}
@@ -177,51 +159,6 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                   <p className="text-muted-foreground leading-relaxed text-sm">{productDescription}</p>
                 )}
 
-                {/* Stock Status */}
-                {skus.length > 0 && (
-                  <div className="flex items-center gap-3 py-3 px-4 rounded-lg bg-background border">
-                    {stockSummary.inStock > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-green-500" />
-                        <span className="text-xs font-medium text-green-700">{stockSummary.inStock} {t('inStock')}</span>
-                      </div>
-                    )}
-                    {stockSummary.lowStock > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-yellow-500" />
-                        <span className="text-xs font-medium text-yellow-700">{stockSummary.lowStock} {t('lowStock')}</span>
-                      </div>
-                    )}
-                    {stockSummary.outOfStock > 0 && (
-                      <div className="flex items-center gap-1.5">
-                        <span className="w-2 h-2 rounded-full bg-red-500" />
-                        <span className="text-xs font-medium text-red-700">{stockSummary.outOfStock} {t('outOfStock')}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                {/* Quick Attributes Preview */}
-                {attributeMap.size > 0 && (
-                  <div className="space-y-3">
-                    {Array.from(attributeMap.entries()).map(([attrKey, values]) => (
-                      <div key={attrKey}>
-                        <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide mb-1.5">{attrKey}</p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {Array.from(values).map((val) => (
-                            <span
-                              key={val}
-                              className="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-medium border bg-background hover:border-primary hover:text-primary transition-colors cursor-default"
-                            >
-                              {val}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
                 {/* SKU Selector + Add to Cart */}
                 {skus.length > 0 && (
                   <SkuSelector
@@ -230,15 +167,10 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                       sku_code: s.sku_code,
                       unit: s.unit,
                       pack_size: s.pack_size,
-                      attributes: s.attributes as Record<string, string> | null,
-                      stock_status: s.stock_status
+                      attributes: s.attributes as Record<string, string> | null
                     }))}
                     labels={{
                       addToCart: t('addToCart'),
-                      inStock: t('inStock'),
-                      lowStock: t('lowStock'),
-                      outOfStock: t('outOfStock'),
-                      outOfStockTooltip: t('outOfStockTooltip'),
                       added: t('added'),
                       quantity: t('quantity'),
                       selectVariant: t('selectVariant')
@@ -298,7 +230,6 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                         <th className="px-6 py-3 text-left font-semibold text-xs uppercase tracking-wide text-muted-foreground">{t('skuCode')}</th>
                         <th className="px-6 py-3 text-left font-semibold text-xs uppercase tracking-wide text-muted-foreground">{t('unit')}</th>
                         <th className="px-6 py-3 text-left font-semibold text-xs uppercase tracking-wide text-muted-foreground">{t('packSize')}</th>
-                        <th className="px-6 py-3 text-left font-semibold text-xs uppercase tracking-wide text-muted-foreground">Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y">
@@ -307,24 +238,6 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                           <td className="px-6 py-3.5 font-mono text-xs font-medium">{sku.sku_code}</td>
                           <td className="px-6 py-3.5">{sku.unit ?? '—'}</td>
                           <td className="px-6 py-3.5">{sku.pack_size ?? '—'}</td>
-                          <td className="px-6 py-3.5">
-                            <span className={cn(
-                              'inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1 rounded-full',
-                              sku.stock_status === 'in_stock' && 'bg-green-50 text-green-700 ring-1 ring-green-200',
-                              sku.stock_status === 'low_stock' && 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-200',
-                              sku.stock_status === 'out_of_stock' && 'bg-red-50 text-red-700 ring-1 ring-red-200'
-                            )}>
-                              <span className={cn(
-                                'w-1.5 h-1.5 rounded-full',
-                                sku.stock_status === 'in_stock' && 'bg-green-500',
-                                sku.stock_status === 'low_stock' && 'bg-yellow-500',
-                                sku.stock_status === 'out_of_stock' && 'bg-red-500'
-                              )} />
-                              {sku.stock_status === 'in_stock' && t('inStock')}
-                              {sku.stock_status === 'low_stock' && t('lowStock')}
-                              {sku.stock_status === 'out_of_stock' && t('outOfStock')}
-                            </span>
-                          </td>
                         </tr>
                       ))}
                     </tbody>
