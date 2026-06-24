@@ -15,7 +15,6 @@ import {
   Briefcase,
   AlertCircle,
   Plus,
-  Trash2,
   CheckCircle2,
   Sparkles
 } from 'lucide-react';
@@ -86,7 +85,6 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
   const [formHub, setFormHub] = useState('');
   const [formIndustry, setFormIndustry] = useState('');
   const [formMessage, setFormMessage] = useState('');
-  const [formItems, setFormItems] = useState<Array<{ sku: string; qty: number }>>([{ sku: '', qty: 1 }]);
   const [formScheduled, setFormScheduled] = useState(false);
   const [formDeliveryDate, setFormDeliveryDate] = useState('');
   
@@ -138,7 +136,6 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
     setFormHub(customerMeta?.customer?.hub ? String(customerMeta.customer.hub) : '');
     setFormIndustry(customerMeta?.customer?.industry || '');
     setFormMessage('');
-    setFormItems([{ sku: '', qty: 1 }]);
     setFormScheduled(false);
     setFormDeliveryDate('');
     setFormError(null);
@@ -146,35 +143,12 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
     setIsCreateOpen(true);
   };
 
-  const handleSkuBlur = async (index: number, skuCode: string) => {
-    const cleanSku = skuCode.trim();
-    if (!cleanSku) return;
-
-    try {
-      const res = await fetch(`/api/sku/${encodeURIComponent(cleanSku)}`);
-      if (!res.ok) {
-        setFormFieldErrors((prev) => ({
-          ...prev,
-          [`sku-${index}`]: `Mã SKU "${cleanSku}" không tồn tại trên hệ thống.`
-        }));
-      } else {
-        setFormFieldErrors((prev) => {
-          const next = { ...prev };
-          delete next[`sku-${index}`];
-          return next;
-        });
-      }
-    } catch (err) {
-      console.error('Failed to verify SKU:', err);
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setFormError(null);
     const errors: Record<string, string> = {};
 
-    if (!formCompany.trim()) errors.company = 'Tên doanh nghiệp là bắt buộc.';
+    if (!formCompany.trim()) errors.company = 'Tên công ty là bắt buộc.';
     if (!formContact.trim()) errors.contact = 'Người liên hệ là bắt buộc.';
     if (!formEmail.trim()) {
       errors.email = 'Email là bắt buộc.';
@@ -183,8 +157,8 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
     }
     if (!formPhone.trim()) {
       errors.phone = 'Số điện thoại là bắt buộc.';
-    } else if (!/^[0-9+\s()-]+$/.test(formPhone.trim())) {
-      errors.phone = 'Số điện thoại không đúng định dạng.';
+    } else if (!/^[0-9+\s()-]{8,20}$/.test(formPhone.trim().replace(/\s/g, ''))) {
+      errors.phone = 'Số điện thoại phải có độ dài từ 8 đến 20 số.';
     }
     if (!formAddress.trim()) {
       errors.address = 'Địa chỉ là bắt buộc.';
@@ -210,16 +184,6 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
       }
     }
 
-    const validItems = formItems.filter((it) => it.sku.trim() !== '');
-    if (validItems.length === 0) {
-      errors.items = 'Bạn phải thêm ít nhất một sản phẩm với mã SKU hợp lệ.';
-    }
-
-    const hasSkuErrors = Object.keys(formFieldErrors).some((k) => k.startsWith('sku-'));
-    if (hasSkuErrors) {
-      setFormError('Vui lòng sửa các lỗi SKU sản phẩm trước khi gửi.');
-      return;
-    }
 
     if (Object.keys(errors).length > 0) {
       setFormFieldErrors(errors);
@@ -242,10 +206,6 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
           message: formMessage.trim(),
           scheduled_delivery: formScheduled,
           requested_delivery_date: formScheduled ? formDeliveryDate : undefined,
-          items: validItems.map((it) => ({
-            sku: it.sku.trim(),
-            qty: it.qty
-          })),
           source: 'portal'
         })
       });
@@ -278,6 +238,12 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
       setIsCreateOpen(false);
       setShowSuccessToast(true);
       setTimeout(() => setShowSuccessToast(false), 5000);
+      try {
+        localStorage.removeItem('rfq-cart');
+        window.dispatchEvent(new Event('rfq-cart-changed'));
+      } catch (e) {
+        console.error('Failed to clear rfq-cart', e);
+      }
       await fetchRfqs();
     } catch (err: any) {
       setFormError(err.message || 'Gửi yêu cầu báo giá thất bại.');
@@ -333,7 +299,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
   // Filter logic
   const filteredRfqs = useMemo(() => {
     return rfqs.filter((rfq) => {
-      // 1. Search filter (by ID)
+      // 1. Search filter (by ID or Customer Name / Company)
       if (searchQuery.trim()) {
         const query = searchQuery.trim().toLowerCase();
         const idStr = String(rfq.id || '');
@@ -341,8 +307,10 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
         
         const matchesRaw = idStr.includes(query);
         const matchesNumeric = !isNaN(parsedQuery) && rfq.id === parsedQuery;
+        const matchesCompany = (rfq.company || '').toLowerCase().includes(query);
+        const matchesContact = (rfq.contact_name || '').toLowerCase().includes(query);
         
-        if (!matchesRaw && !matchesNumeric) {
+        if (!matchesRaw && !matchesNumeric && !matchesCompany && !matchesContact) {
           return false;
         }
       }
@@ -444,7 +412,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
           <Search className="absolute left-3 top-2.5 h-4.5 w-4.5 text-muted-foreground" />
           <input
             type="text"
-            placeholder="Tìm kiếm theo mã RFQ..."
+            placeholder="Tìm kiếm theo mã RFQ, tên khách hàng..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="w-full rounded-xl border border-border/80 bg-background/50 py-2 pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-brand focus:ring-1 focus:ring-brand"
@@ -936,7 +904,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                 </h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Tên doanh nghiệp *</label>
+                    <label className="text-xs font-medium text-muted-foreground block">Tên công ty *</label>
                     <input
                       type="text"
                       required
@@ -974,7 +942,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                     )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Email liên hệ *</label>
+                    <label className="text-xs font-medium text-muted-foreground block">Email *</label>
                     <input
                       type="email"
                       required
@@ -1015,7 +983,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
 
                 {/* Address */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground block">Địa chỉ nhận hàng *</label>
+                  <label className="text-xs font-medium text-muted-foreground block">Địa chỉ *</label>
                   <input
                     type="text"
                     required
@@ -1155,104 +1123,11 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                 </div>
               </div>
 
-              {/* Section 3: Product List */}
-              <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-border/50 pb-1.5">
-                  <h3 className="text-sm font-semibold text-foreground flex items-center gap-1.5">
-                    <FileText className="h-4 w-4 text-brand" />
-                    Danh sách sản phẩm yêu cầu *
-                  </h3>
-                  <button
-                    type="button"
-                    onClick={() => setFormItems([...formItems, { sku: '', qty: 1 }])}
-                    className="inline-flex items-center gap-1 rounded-lg border border-brand/20 bg-brand/5 px-2.5 py-1 text-xs font-semibold text-brand hover:bg-brand/10 hover:border-brand/30 transition-all"
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    Thêm sản phẩm
-                  </button>
-                </div>
 
-                {formFieldErrors.items && (
-                  <span className="text-xs text-rose-500 block font-medium">{formFieldErrors.items}</span>
-                )}
-
-                <div className="space-y-3">
-                  {formItems.map((item, idx) => (
-                    <div key={idx} className="flex gap-3 items-start animate-in fade-in slide-in-from-top-1 duration-150">
-                      <div className="flex-1 space-y-1">
-                        <select
-                          required
-                          value={item.sku}
-                          onChange={(e) => {
-                            const updated = [...formItems];
-                            updated[idx].sku = e.target.value;
-                            setFormItems(updated);
-                            setFormFieldErrors((p) => {
-                              const next = { ...p };
-                              delete next[`sku-${idx}`];
-                              delete next.items;
-                              return next;
-                            });
-                          }}
-                          className={cn(
-                            "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand font-medium",
-                            formFieldErrors[`sku-${idx}`] ? "border-rose-500" : "border-border/80"
-                          )}
-                        >
-                          <option value="">
-                            {customerMeta ? '-- Chọn sản phẩm / SKU --' : 'Đang tải danh sách sản phẩm...'}
-                          </option>
-                          {customerMeta?.skus.map((sku) => (
-                            <option key={sku.sku_code} value={sku.sku_code}>
-                              {sku.sku_code} {sku.pack_size ? `(${sku.pack_size})` : ''}
-                            </option>
-                          ))}
-                        </select>
-                        {formFieldErrors[`sku-${idx}`] && (
-                          <span className="text-[10px] text-rose-500 block leading-tight font-medium">{formFieldErrors[`sku-${idx}`]}</span>
-                        )}
-                      </div>
-                      <div className="w-24 space-y-1">
-                        <input
-                          type="number"
-                          required
-                          min={1}
-                          placeholder="SL"
-                          value={item.qty || ''}
-                          onChange={(e) => {
-                            const updated = [...formItems];
-                            updated[idx].qty = parseInt(e.target.value) || 0;
-                            setFormItems(updated);
-                          }}
-                          className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand text-right font-medium"
-                        />
-                      </div>
-                      {formItems.length > 1 && (
-                        <button
-                          type="button"
-                          onClick={() => {
-                            const updated = formItems.filter((_, i) => i !== idx);
-                            setFormItems(updated);
-                            setFormFieldErrors((p) => {
-                              const next = { ...p };
-                              delete next[`sku-${idx}`];
-                              return next;
-                            });
-                          }}
-                          className="rounded-xl border border-border p-2 text-muted-foreground hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/20 hover:border-rose-200/50 transition-all shrink-0 mt-0.5"
-                          title="Xóa dòng"
-                        >
-                          <Trash2 className="h-4.5 w-4.5" />
-                        </button>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
 
               {/* Section 4: Notes */}
               <div className="space-y-2">
-                <label className="text-xs font-medium text-muted-foreground block">Ghi chú / Yêu cầu thêm</label>
+                <label className="text-xs font-medium text-muted-foreground block">Ghi chú</label>
                 <textarea
                   rows={3}
                   value={formMessage}

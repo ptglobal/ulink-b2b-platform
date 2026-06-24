@@ -586,7 +586,7 @@ export const COLLECTION_DEFS = [
       { field: 'address', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'industry', type: 'string', meta: { interface: 'input' } },
       { field: 'hub', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
-      { field: 'line_items', type: 'json', meta: { interface: 'json', required: true } },
+      { field: 'line_items', type: 'json', meta: { interface: 'json', hidden: true } },
       { field: 'message', type: 'text', meta: { interface: 'textarea' } },
       {
         field: 'status',

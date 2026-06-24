@@ -35,17 +35,24 @@ export function createEnsureHelpers(client) {
         const existingFields = fields.map((f) => f.field);
         for (const fieldDef of def.fields || []) {
           if (!existingFields.includes(fieldDef.field)) {
-            await client.request(
-              customEndpoint({
-                path: `/fields/${def.collection}`,
-                method: 'POST',
-                body: JSON.stringify(fieldDef),
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              })
-            );
-            console.log(`+  Field: ${def.collection}.${fieldDef.field} (created dynamically)`);
+                customEndpoint({
+                  path: `/fields/${def.collection}`,
+                  method: 'POST',
+                  body: JSON.stringify(fieldDef),
+                  headers: {
+                    'Content-Type': 'application/json'
+                  }
+                })
+              );
+              console.log(`+  Field: ${def.collection}.${fieldDef.field} (created dynamically)`);
+            } catch (fieldErr) {
+              const msg = fieldErr?.message || String(fieldErr);
+              if (msg.includes('already exists')) {
+                console.log(`=  Field: ${def.collection}.${fieldDef.field} (already exists / skipped)`);
+              } else {
+                console.error(`!  Field: ${def.collection}.${fieldDef.field} creation failed:`, msg);
+              }
+            }
           }
         }
       } catch (err) {

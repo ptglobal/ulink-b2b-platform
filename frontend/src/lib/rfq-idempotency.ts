@@ -5,7 +5,8 @@ function normalizeCompany(value: string): string {
   return value.trim().replace(/\s+/g, ' ').toLowerCase();
 }
 
-function normalizeItems(items: Array<{ sku: string; qty: number }>) {
+function normalizeItems(items?: Array<{ sku: string; qty: number }>) {
+  if (!items || items.length === 0) return [];
   return [...items]
     .map((item) => ({
       sku: item.sku.trim().toLowerCase(),
@@ -17,7 +18,7 @@ function normalizeItems(items: Array<{ sku: string; qty: number }>) {
 export function buildRfqIdempotencyKey(input: {
   company: string;
   email: string;
-  items: Array<{ sku: string; qty: number }>;
+  items?: Array<{ sku: string; qty: number }>;
 }): string {
   const payload = {
     company: normalizeCompany(input.company),

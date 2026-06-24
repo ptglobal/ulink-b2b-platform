@@ -17,7 +17,7 @@ export interface NormalizedRfqPayload {
   requested_delivery_date?: string;
   website?: string;
   source: 'web' | 'portal';
-  items: NormalizedRfqItem[];
+  items?: NormalizedRfqItem[];
   token?: string;
 }
 
@@ -123,6 +123,12 @@ function normalizePhone(value: unknown, state: ValidationState): string | undefi
   }
 
   if (!/^[0-9+\s()-]+$/.test(trimmed)) {
+    addInvalid(state, 'phone', 'INVALID_PHONE');
+    return undefined;
+  }
+
+  const rawLength = trimmed.replace(/\s/g, '').length;
+  if (rawLength < 8 || rawLength > 20) {
     addInvalid(state, 'phone', 'INVALID_PHONE');
     return undefined;
   }
@@ -265,7 +271,7 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
         code: 'UNPROCESSABLE_ENTITY',
         message: 'RFQ payload is invalid.',
         details: {
-          missingFields: ['company', 'contact', 'email', 'phone', 'hub', 'industry', 'message', 'items']
+          missingFields: ['company', 'contact', 'email', 'phone', 'hub', 'industry']
         }
       }
     };
@@ -292,13 +298,10 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
   }
 
   const hub = normalizeHub(record.hub, state);
-  const items = normalizeItems(record.items, state);
+  const items = Array.isArray(record.items) ? normalizeItems(record.items, state) : undefined;
   const industry = normalizeSlug(record.industry, state, 'industry');
   
   const message = cleanString(record.message);
-  if (!message) {
-    addMissing(state, 'message');
-  }
 
   const scheduledDelivery = normalizeScheduledDelivery(record.scheduled_delivery);
   const requestedDeliveryDate = normalizeDeliveryDate(record.requested_delivery_date, scheduledDelivery, state);
@@ -337,7 +340,7 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
       ...(requestedDeliveryDate ? { requested_delivery_date: requestedDeliveryDate } : {}),
       ...(website ? { website } : {}),
       source,
-      items: items as NormalizedRfqItem[]
+      ...(items && items.length > 0 ? { items } : {})
     }
   };
 }
