@@ -221,7 +221,7 @@ export function createEnsureHelpers(client) {
       return existing[0].id;
     }
     try {
-      const created = await client.request(createItem(collection, data));
+      const created = await client.request(createItem(collection, data, { fields: ['id'] }));
       console.log(`+  Seed Item in ${collection} [${data[uniqueField]}] (created)`);
       return created.id;
     } catch (err) {
