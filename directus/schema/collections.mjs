@@ -67,6 +67,7 @@ export const COLLECTION_DEFS = [
       { field: 'gallery', type: 'alias', meta: { interface: 'files', special: ['m2m'] } },
       { field: 'industries', type: 'alias', meta: { interface: 'list-m2m', special: ['m2m'] } },
       { field: 'standards', type: 'alias', meta: { interface: 'list-m2m', special: ['m2m'] } },
+      { field: 'regions', type: 'alias', meta: { interface: 'list-m2m', special: ['m2m'] } },
       { field: 'documents', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } },
       { field: 'skus', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } },
       { field: 'meta_title', type: 'string', meta: { interface: 'input' } },
@@ -698,6 +699,16 @@ export const COLLECTION_DEFS = [
       ID_FIELD,
       { field: 'products_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       { field: 'standards_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
+    ]
+  },
+  {
+    collection: 'products_regional_hubs',
+    meta: { hidden: true },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'products_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'regional_hubs_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
     ]
   },
   {

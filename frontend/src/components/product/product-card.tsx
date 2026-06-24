@@ -13,16 +13,17 @@ interface ProductCardProps {
 export default function ProductCard({ product, locale }: ProductCardProps) {
   const DIRECTUS_URL = getDirectusUrl();
 
-  // Derive stock status from SKUs
+  // Derive stock status from SKUs — show worst-case to alert buyers
   const stockStatus = (() => {
     if (!product.skus || product.skus.length === 0) return null;
-    if (product.skus.some((sku) => sku.stock_status === 'in_stock')) {
-      return { label: 'Sẵn sàng', className: 'bg-green-100 text-green-800 border-green-200' };
+    const allOut = product.skus.every((sku) => sku.stock_status === 'out_of_stock');
+    if (allOut) {
+      return { label: 'Hết hàng', className: 'bg-red-100 text-red-800 border-red-200' };
     }
     if (product.skus.some((sku) => sku.stock_status === 'low_stock')) {
       return { label: 'Sắp hết hàng', className: 'bg-yellow-100 text-yellow-800 border-yellow-200' };
     }
-    return { label: 'Hết hàng', className: 'bg-red-100 text-red-800 border-red-200' };
+    return { label: 'Sẵn sàng', className: 'bg-green-100 text-green-800 border-green-200' };
   })();
 
   const firstSku = product.skus?.[0];
@@ -117,7 +118,7 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
             href={`/${locale}/solutions/${product.slug}?rfq=1`}
             className="flex-1 inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            Thêm vào báo giá
+            Báo giá nhanh
           </Link>
           {tdsDoc ? (
             <a

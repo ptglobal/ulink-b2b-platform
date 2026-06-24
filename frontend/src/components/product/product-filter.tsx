@@ -19,11 +19,26 @@ export default function ProductFilter({ groups }: ProductFilterProps) {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
 
+  // Parse comma-separated values for multi-select
+  function getSelectedSlugs(key: string): string[] {
+    const raw = searchParams.get(key);
+    if (!raw) return [];
+    return raw.split(',').filter(Boolean);
+  }
+
   function handleChange(key: string, slug: string, checked: boolean) {
     const params = new URLSearchParams(searchParams.toString());
+    const current = getSelectedSlugs(key);
 
+    let next: string[];
     if (checked) {
-      params.set(key, slug);
+      next = [...current, slug];
+    } else {
+      next = current.filter((s) => s !== slug);
+    }
+
+    if (next.length > 0) {
+      params.set(key, next.join(','));
     } else {
       params.delete(key);
     }
@@ -44,7 +59,7 @@ export default function ProductFilter({ groups }: ProductFilterProps) {
           </h3>
           <div className="space-y-1">
             {group.options.map((option) => {
-              const isChecked = searchParams.get(group.key) === option.slug;
+              const isChecked = getSelectedSlugs(group.key).includes(option.slug);
 
               return (
                 <label

@@ -294,9 +294,9 @@ export function buildPermissionDefs() {
     }
   }
 
-  // Junction tables: products_industries, products_files & products_standards
-  // Visitor & Customer need read access for M2M queries (filter by industry/standard, load gallery)
-  for (const collection of ['products_industries', 'products_files', 'products_standards']) {
+  // Junction tables: products_industries, products_files, products_standards & products_regional_hubs
+  // Visitor & Customer need read access for M2M queries (filter by industry/standard/region, load gallery)
+  for (const collection of ['products_industries', 'products_files', 'products_standards', 'products_regional_hubs']) {
     for (const policy of [VISITOR_POLICY_ID, CUSTOMER_POLICY_ID]) {
       permissions.push({
         policy,

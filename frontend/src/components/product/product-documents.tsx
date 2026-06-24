@@ -19,6 +19,26 @@ function formatFileSize(bytes: number | null | undefined): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
 
+function getFileExtension(file: DirectusFile): string {
+  // Try type field first (e.g. "application/pdf" → "PDF")
+  if (file.type) {
+    const mimeMap: Record<string, string> = {
+      'application/pdf': 'PDF',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX',
+      'application/vnd.ms-excel': 'XLS',
+      'application/msword': 'DOC',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+    };
+    if (mimeMap[file.type]) return mimeMap[file.type];
+  }
+  // Fallback: extract from filename
+  if (file.filename_download) {
+    const ext = file.filename_download.split('.').pop()?.toUpperCase();
+    if (ext && ext.length <= 5) return ext;
+  }
+  return '';
+}
+
 const docTypeBadgeStyles: Record<string, string> = {
   tds: 'bg-blue-100 text-blue-800',
   msds: 'bg-orange-100 text-orange-800',
@@ -75,8 +95,16 @@ export default function ProductDocuments({ documents, labels }: ProductDocuments
                 </span>
               </div>
 
-              {/* Right: file size + actions */}
+              {/* Right: format + file size + actions */}
               <div className="flex items-center gap-3 shrink-0 ml-4">
+                {hasFile && (() => {
+                  const ext = getFileExtension(file);
+                  return ext ? (
+                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-gray-100 text-gray-600 ring-1 ring-gray-200">
+                      {ext}
+                    </span>
+                  ) : null;
+                })()}
                 {hasFile && file.filesize != null && (
                   <span className="text-sm text-gray-500">
                     {formatFileSize(file.filesize)}

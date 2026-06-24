@@ -628,6 +628,7 @@
     "searchPlaceholder": "Tìm kiếm sản phẩm...",
     "filterByIndustry": "Ngành nghề",
     "filterByStandard": "Tiêu chuẩn",
+    "filterByRegion": "Khu vực ưu tiên",
     "clearFilters": "Xóa bộ lọc",
     "noResults": "Không tìm thấy sản phẩm nào",
     "noResultsDesc": "Thử thay đổi từ khóa hoặc bộ lọc.",
@@ -654,6 +655,9 @@
     "requestQuote": "Yêu cầu báo giá",
     "skuCode": "Mã SKU",
     "unit": "Đơn vị",
-    "packSize": "Quy cách"
+    "packSize": "Quy cách",
+    "attributes": "Thuộc tính sản phẩm",
+    "reviews": "Đánh giá",
+    "reviewsComingSoon": "Tính năng đánh giá sẽ sớm ra mắt."
   }
 }

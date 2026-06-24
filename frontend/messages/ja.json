@@ -628,6 +628,7 @@
     "searchPlaceholder": "製品を検索...",
     "filterByIndustry": "業種",
     "filterByStandard": "規格",
+    "filterByRegion": "優先地域",
     "clearFilters": "フィルターをクリア",
     "noResults": "製品が見つかりません",
     "noResultsDesc": "検索キーワードまたはフィルターを変更してください。",
@@ -654,6 +655,9 @@
     "requestQuote": "見積依頼",
     "skuCode": "SKUコード",
     "unit": "単位",
-    "packSize": "梱包仕様"
+    "packSize": "梱包仕様",
+    "attributes": "製品属性",
+    "reviews": "レビュー",
+    "reviewsComingSoon": "レビュー機能は近日公開予定です。"
   }
 }

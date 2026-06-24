@@ -7,8 +7,10 @@ import {
   fetchProducts,
   fetchIndustries,
   fetchStandards,
+  fetchRegionalHubs,
   fetchIndustryProductCounts,
-  fetchStandardProductCounts
+  fetchStandardProductCounts,
+  fetchRegionProductCounts
 } from '@/lib/product-data';
 import type { Industry, Standard } from '@/lib/directus';
 
@@ -16,7 +18,7 @@ export const dynamic = 'force-dynamic';
 
 interface SolutionsPageProps {
   params: { locale: string };
-  searchParams: { search?: string; industry?: string; standard?: string; page?: string };
+  searchParams: { search?: string; industry?: string; standard?: string; region?: string; page?: string };
 }
 
 export async function generateMetadata({ params: { locale } }: SolutionsPageProps) {
@@ -30,18 +32,21 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
 
   const page = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1);
 
-  const [{ products, totalCount }, industries, standards, industryCounts, standardCounts] =
+  const [{ products, totalCount }, industries, standards, hubs, industryCounts, standardCounts, regionCounts] =
     await Promise.all([
       fetchProducts({
         search: searchParams.search,
         industry: searchParams.industry,
         standard: searchParams.standard,
+        region: searchParams.region,
         page
       }),
       fetchIndustries(),
       fetchStandards(),
+      fetchRegionalHubs(),
       fetchIndustryProductCounts(),
-      fetchStandardProductCounts()
+      fetchStandardProductCounts(),
+      fetchRegionProductCounts()
     ]);
 
   const totalPages = Math.ceil(totalCount / 12);
@@ -65,11 +70,20 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
         name: std.name,
         count: standardCounts[String(std.id)] ?? 0
       }))
+    },
+    {
+      key: 'region',
+      label: t('filterByRegion'),
+      options: hubs.map((hub) => ({
+        slug: hub.slug,
+        name: hub.name,
+        count: regionCounts[String(hub.id)] ?? 0
+      }))
     }
   ];
 
   // Active filters display
-  const hasFilters = !!(searchParams.search || searchParams.industry || searchParams.standard);
+  const hasFilters = !!(searchParams.search || searchParams.industry || searchParams.standard || searchParams.region);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -175,6 +189,7 @@ function PaginationLink({
   if (searchParams.search) params.set('search', searchParams.search);
   if (searchParams.industry) params.set('industry', searchParams.industry);
   if (searchParams.standard) params.set('standard', searchParams.standard);
+  if (searchParams.region) params.set('region', searchParams.region);
   if (page > 1) params.set('page', String(page));
   const qs = params.toString();
   const href = `/${locale}/solutions${qs ? `?${qs}` : ''}`;

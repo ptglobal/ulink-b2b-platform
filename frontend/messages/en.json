@@ -628,6 +628,7 @@
     "searchPlaceholder": "Search products...",
     "filterByIndustry": "Industry",
     "filterByStandard": "Standard",
+    "filterByRegion": "Priority Region",
     "clearFilters": "Clear filters",
     "noResults": "No products found",
     "noResultsDesc": "Try changing your search term or filters.",
@@ -654,6 +655,9 @@
     "requestQuote": "Request Quote",
     "skuCode": "SKU Code",
     "unit": "Unit",
-    "packSize": "Pack Size"
+    "packSize": "Pack Size",
+    "attributes": "Product Attributes",
+    "reviews": "Reviews",
+    "reviewsComingSoon": "Reviews feature coming soon."
   }
 }

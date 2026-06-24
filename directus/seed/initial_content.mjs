@@ -294,6 +294,23 @@ export async function seedInitialContent(helpers, client, geography) {
   });
   await seedTranslations('regional_hubs', bacThangLongId, 'bac_thang_long');
 
+  // Regional hub links (products available at specific hubs)
+  await helpers.ensureItem('products_regional_hubs', 'id', {
+    id: 1,
+    products_id: glovesProductId,
+    regional_hubs_id: dongVan4Id
+  });
+  await helpers.ensureItem('products_regional_hubs', 'id', {
+    id: 2,
+    products_id: glovesProductId,
+    regional_hubs_id: bacThangLongId
+  });
+  await helpers.ensureItem('products_regional_hubs', 'id', {
+    id: 3,
+    products_id: wipersProductId,
+    regional_hubs_id: bacThangLongId
+  });
+
   // Hub Industrial Zones
   await helpers.ensureItem('hub_industrial_zones', 'name', {
     name: 'KCN Đông Vân IV',
