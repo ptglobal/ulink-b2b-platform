@@ -21,6 +21,7 @@ import {
 import { cn } from '@/lib/utils';
 import type { RfqRequest } from '@/lib/directus';
 import type { AuthUser } from '@/lib/auth-helpers';
+import { Link } from '@/i18n/navigation';
 
 // Status labels & styles mapping
 type MappedStatus = 'pending' | 'approved' | 'rejected';
@@ -387,14 +388,13 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
       {/* Upper header action */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-border/40 pb-4">
         <h2 className="text-lg font-semibold text-foreground">Danh sách yêu cầu</h2>
-        <button
-          type="button"
-          onClick={openCreateModal}
+        <Link
+          href="/quick-order"
           className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-brand/90 hover:scale-[1.01] active:scale-[0.99] transition-all shrink-0"
         >
           <Plus className="h-4.5 w-4.5" />
           Tạo yêu cầu mới
-        </button>
+        </Link>
       </div>
 
       {/* Success Toast */}

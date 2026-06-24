@@ -6,11 +6,12 @@ export interface ProductListParams {
   industry?: string; // comma-separated slugs for multi-select
   standard?: string; // comma-separated slugs for multi-select
   region?: string;   // comma-separated hub slugs
+  category?: string; // comma-separated category slugs
   page?: number;
   limit?: number;
 }
 
-export interface ProductListResult {
+interface ProductListResult {
   products: Product[];
   totalCount: number;
 }
@@ -60,11 +61,33 @@ const PRODUCT_LIST_FIELDS = [
 ];
 
 export async function fetchProducts(params: ProductListParams = {}): Promise<ProductListResult> {
-  const { search, industry, standard, region, page = 1, limit = PAGE_SIZE } = params;
+  const { search, industry, standard, region, category, page = 1, limit = PAGE_SIZE } = params;
   const offset = (page - 1) * limit;
 
   // Build filter
   const filter: Record<string, unknown> = { status: { _eq: 'published' } };
+
+  // Category filter supporting direct matching and parent matching
+  if (category) {
+    const slugs = category.split(',').filter(Boolean);
+    if (slugs.length === 1) {
+      filter._and = filter._and || [];
+      (filter._and as Array<any>).push({
+        _or: [
+          { category: { slug: { _eq: slugs[0] } } },
+          { category: { parent: { slug: { _eq: slugs[0] } } } }
+        ]
+      });
+    } else {
+      filter._and = filter._and || [];
+      (filter._and as Array<any>).push({
+        _or: [
+          { category: { slug: { _in: slugs } } },
+          { category: { parent: { slug: { _in: slugs } } } }
+        ]
+      });
+    }
+  }
 
   // Multi-select: comma-separated slugs → _in filter
   if (industry) {
