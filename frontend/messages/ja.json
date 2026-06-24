@@ -659,6 +659,11 @@
     "packSize": "梱包仕様",
     "attributes": "製品属性",
     "reviews": "レビュー",
-    "reviewsComingSoon": "レビュー機能は近日公開予定です。"
+    "reviewsComingSoon": "レビュー機能は近日公開予定です。",
+    "addToCart": "カートに追加",
+    "outOfStockTooltip": "在庫切れです",
+    "added": "カートに追加しました",
+    "quantity": "数量",
+    "selectVariant": "バリエーションを選択"
   }
 }

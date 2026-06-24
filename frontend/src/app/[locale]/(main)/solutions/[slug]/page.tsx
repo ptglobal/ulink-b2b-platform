@@ -18,6 +18,7 @@ import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
 import { getTranslatedName, getTranslatedField, getTranslatedDescription } from '@/lib/i18n-content';
 import { fetchProductBySlug } from '@/lib/product-data';
 import ProductDocuments from '@/components/product/product-documents';
+import SkuSelector from '@/components/product/sku-selector';
 import type { Industry, Standard, ProductSku, DirectusFile } from '@/lib/directus';
 
 export const revalidate = 60;
@@ -221,11 +222,35 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                   </div>
                 )}
 
+                {/* SKU Selector + Add to Cart */}
+                {skus.length > 0 && (
+                  <SkuSelector
+                    skus={skus.map((s: ProductSku) => ({
+                      id: s.id,
+                      sku_code: s.sku_code,
+                      unit: s.unit,
+                      pack_size: s.pack_size,
+                      attributes: s.attributes as Record<string, string> | null,
+                      stock_status: s.stock_status
+                    }))}
+                    labels={{
+                      addToCart: t('addToCart'),
+                      inStock: t('inStock'),
+                      lowStock: t('lowStock'),
+                      outOfStock: t('outOfStock'),
+                      outOfStockTooltip: t('outOfStockTooltip'),
+                      added: t('added'),
+                      quantity: t('quantity'),
+                      selectVariant: t('selectVariant')
+                    }}
+                  />
+                )}
+
                 {/* CTA */}
-                <div className="pt-2 space-y-3">
+                <div className="pt-2">
                   <Link
                     href={`/${locale}/quick-order`}
-                    className="flex items-center justify-center w-full h-12 rounded-xl bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-all hover:shadow-lg hover:shadow-primary/20"
+                    className="flex items-center justify-center w-full h-11 rounded-xl border-2 border-primary text-primary font-semibold hover:bg-primary/5 transition-all text-sm"
                   >
                     {t('requestQuote')}
                   </Link>

@@ -659,6 +659,11 @@
     "packSize": "Quy cách",
     "attributes": "Thuộc tính sản phẩm",
     "reviews": "Đánh giá",
-    "reviewsComingSoon": "Tính năng đánh giá sẽ sớm ra mắt."
+    "reviewsComingSoon": "Tính năng đánh giá sẽ sớm ra mắt.",
+    "addToCart": "Thêm vào giỏ hàng",
+    "outOfStockTooltip": "Sản phẩm đã hết hàng",
+    "added": "Đã thêm vào giỏ",
+    "quantity": "Số lượng",
+    "selectVariant": "Chọn phiên bản"
   }
 }
