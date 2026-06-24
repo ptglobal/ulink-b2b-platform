@@ -7,12 +7,6 @@ import {
   AlertCircle,
   CheckCircle2,
   Building2,
-  User,
-  Mail,
-  Phone,
-  MapPin,
-  Briefcase,
-  Calendar,
   Loader2,
   ArrowRight,
   Info
@@ -46,7 +40,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
   // Cart state
   const [cart, setCart] = useState<Array<{ sku: string; qty: number }>>([]);
   const [meta, setMeta] = useState<MetaData | null>(null);
-  const [loadingMeta, setLoadingMeta] = useState(true);
 
   // Form states
   const [formCompany, setFormCompany] = useState('');
@@ -85,7 +78,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
     // Read metadata
     async function fetchMetadata() {
       try {
-        setLoadingMeta(true);
         const res = await fetch('/api/customer');
         if (res.ok) {
           const data: MetaData = await res.json();
@@ -108,8 +100,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
         }
       } catch (err) {
         console.error('Failed to load metadata', err);
-      } finally {
-        setLoadingMeta(false);
       }
     }
 
@@ -126,13 +116,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
   // Remove item from cart
   const handleRemoveItem = (skuToRemove: string) => {
     const updated = cart.filter((item) => item.sku !== skuToRemove);
-    saveCart(updated);
-  };
-
-  // Update item quantity directly
-  const handleUpdateQty = (sku: string, newQty: number) => {
-    const qty = Math.max(1, newQty);
-    const updated = cart.map((item) => (item.sku === sku ? { ...item, qty } : item));
     saveCart(updated);
   };
 
@@ -316,8 +299,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                   <thead className="bg-muted/40 text-muted-foreground text-xs uppercase font-semibold border-b border-border/60">
                     <tr>
                       <th className="px-4 py-3">Mã SKU</th>
-                      <th className="px-4 py-3 text-right" style={{ width: '120px' }}>Số lượng</th>
-                      <th className="px-4 py-3 text-right" style={{ width: '60px' }}>Hành động</th>
+                      <th className="px-4 py-3 text-right" style={{ width: '60px' }}></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/50">
@@ -332,15 +314,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                                 Đơn vị: {skuDetails.unit || '—'} {skuDetails.pack_size ? `| Quy cách: ${skuDetails.pack_size}` : ''}
                               </div>
                             )}
-                          </td>
-                          <td className="px-4 py-3 text-right">
-                            <input
-                              type="number"
-                              min={1}
-                              value={item.qty}
-                              onChange={(e) => handleUpdateQty(item.sku, parseInt(e.target.value) || 1)}
-                              className="w-20 rounded-lg border border-border/80 bg-background px-2 py-1 text-sm text-right font-medium focus:border-brand focus:ring-1 focus:ring-brand outline-none"
-                            />
                           </td>
                           <td className="px-4 py-3 text-right">
                             <button

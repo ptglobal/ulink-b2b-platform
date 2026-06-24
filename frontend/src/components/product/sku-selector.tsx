@@ -26,7 +26,6 @@ interface SkuSelectorProps {
 
 export default function SkuSelector({ skus, labels }: SkuSelectorProps) {
   const [selectedId, setSelectedId] = useState<number | null>(skus[0]?.id ?? null);
-  const [qty, setQty] = useState(1);
   const [added, setAdded] = useState(false);
 
   const selectedSku = skus.find((s) => s.id === selectedId) ?? null;
@@ -44,10 +43,8 @@ export default function SkuSelector({ skus, labels }: SkuSelectorProps) {
       const cart: Array<{ sku: string; qty: number }> = raw ? JSON.parse(raw) : [];
 
       const existing = cart.find((item) => item.sku === selectedSku.sku_code);
-      if (existing) {
-        existing.qty += qty;
-      } else {
-        cart.push({ sku: selectedSku.sku_code, qty });
+      if (!existing) {
+        cart.push({ sku: selectedSku.sku_code, qty: 1 });
       }
 
       localStorage.setItem('rfq-cart', JSON.stringify(cart));
@@ -57,7 +54,7 @@ export default function SkuSelector({ skus, labels }: SkuSelectorProps) {
     } catch (err) {
       console.error('Failed to add to cart:', err);
     }
-  }, [selectedSku, qty]);
+  }, [selectedSku]);
 
   // Determine display label for each SKU pill
   const getSkuLabel = (sku: SkuItem): string => {
@@ -105,61 +102,31 @@ export default function SkuSelector({ skus, labels }: SkuSelectorProps) {
         </div>
       )}
 
-      {/* Quantity + Add to Cart */}
-      <div className="flex items-center gap-3">
-        <div className="flex items-center">
-          <label htmlFor="sku-qty" className="sr-only">{labels.quantity}</label>
-          <button
-            type="button"
-            onClick={() => setQty((q) => Math.max(1, q - 1))}
-            className="h-10 w-10 rounded-l-lg border border-r-0 flex items-center justify-center text-lg font-medium hover:bg-muted transition-colors"
-            aria-label="Decrease quantity"
-          >
-            −
-          </button>
-          <input
-            id="sku-qty"
-            type="number"
-            min={1}
-            value={qty}
-            onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))}
-            className="h-10 w-14 border-y text-center text-sm font-medium [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-          />
-          <button
-            type="button"
-            onClick={() => setQty((q) => q + 1)}
-            className="h-10 w-10 rounded-r-lg border border-l-0 flex items-center justify-center text-lg font-medium hover:bg-muted transition-colors"
-            aria-label="Increase quantity"
-          >
-            +
-          </button>
-        </div>
-
-        <button
-          type="button"
-          onClick={handleAddToCart}
-          disabled={!selectedSku}
-          className={cn(
-            'flex-1 inline-flex items-center justify-center gap-2 h-10 rounded-lg font-semibold text-sm transition-all',
-            added
-              ? 'bg-green-600 text-white'
-              : 'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20',
-            !selectedSku && 'opacity-50 cursor-not-allowed'
-          )}
-        >
-          {added ? (
-            <>
-              <Check className="h-4 w-4" />
-              {labels.added}
-            </>
-          ) : (
-            <>
-              <ShoppingCart className="h-4 w-4" />
-              {labels.addToCart}
-            </>
-          )}
-        </button>
-      </div>
+      {/* Add to Cart */}
+      <button
+        type="button"
+        onClick={handleAddToCart}
+        disabled={!selectedSku}
+        className={cn(
+          'w-full inline-flex items-center justify-center gap-2 h-11 rounded-lg font-semibold text-sm transition-all',
+          added
+            ? 'bg-green-600 text-white'
+            : 'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20',
+          !selectedSku && 'opacity-50 cursor-not-allowed'
+        )}
+      >
+        {added ? (
+          <>
+            <Check className="h-4 w-4" />
+            {labels.added}
+          </>
+        ) : (
+          <>
+            <ShoppingCart className="h-4 w-4" />
+            {labels.addToCart}
+          </>
+        )}
+      </button>
     </div>
   );
 }
