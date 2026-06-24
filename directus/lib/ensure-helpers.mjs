@@ -35,6 +35,8 @@ export function createEnsureHelpers(client) {
         const existingFields = fields.map((f) => f.field);
         for (const fieldDef of def.fields || []) {
           if (!existingFields.includes(fieldDef.field)) {
+            try {
+              await client.request(
                 customEndpoint({
                   path: `/fields/${def.collection}`,
                   method: 'POST',
