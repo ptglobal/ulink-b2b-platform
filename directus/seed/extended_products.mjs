@@ -389,7 +389,7 @@ export async function seedExtendedProducts(helpers, client) {
   const hubSlugs = ['dong-van-4', 'bac-thang-long', 'binh-duong', 'hai-phong', 'long-thanh'];
   const hubRecords = {};
   for (const slug of hubSlugs) {
-    const found = await client.request(readItems('regional_hubs', { filter: { slug: { _eq: slug } }, limit: 1 }));
+    const found = await client.request(readItems('regional_hubs', { filter: { slug: { _eq: slug } }, fields: ['id'], limit: 1 }));
     if (found.length > 0) hubRecords[slug] = found[0].id;
   }
 

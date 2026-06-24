@@ -215,7 +215,7 @@ export function createEnsureHelpers(client) {
     const filter = {
       [uniqueField]: { _eq: data[uniqueField] }
     };
-    const existing = await client.request(readItems(collection, { filter }));
+    const existing = await client.request(readItems(collection, { filter, fields: ['id', uniqueField], limit: 1 }));
     if (existing.length > 0) {
       console.log(`=  Seed Item in ${collection} [${data[uniqueField]}] (exists, skipped)`);
       return existing[0].id;
@@ -227,7 +227,7 @@ export function createEnsureHelpers(client) {
     } catch (err) {
       const msg = err?.errors?.[0]?.message ?? err?.message ?? '';
       if (msg.includes('unique')) {
-        const all = await client.request(readItems(collection, { limit: -1 }));
+        const all = await client.request(readItems(collection, { fields: ['id', uniqueField], limit: -1 }));
         const match = all.find(item => item[uniqueField] === data[uniqueField]);
         if (match) {
           console.log(`=  Seed Item in ${collection} [${data[uniqueField]}] (exists, skipped)`);
