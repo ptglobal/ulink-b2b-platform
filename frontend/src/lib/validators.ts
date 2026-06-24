@@ -168,3 +168,23 @@ export const contactSchema = z.object({
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
+
+// ─── Sample Request ─────────────────────────────────────────────────────────
+
+export const sampleRequestSchema = z.object({
+  contact_name: z.string().min(1, 'required'),
+  email: z.string().min(1, 'required').email('invalid_email'),
+  company: z.string().min(1, 'required'),
+  phone: z
+    .string()
+    .min(1, 'required')
+    .regex(/^\d{10,11}$/, 'invalid_phone'),
+  province: z.string().min(1, 'required'),
+  district: z.string().min(1, 'required'),
+  address_detail: z.string().min(1, 'required'),
+  product_slug: z.string().min(1),
+  skus: z.array(z.string()).optional().default([]),
+  message: z.string().optional()
+});
+
+export type SampleRequestInput = z.infer<typeof sampleRequestSchema>;

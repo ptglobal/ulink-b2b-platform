@@ -19,6 +19,7 @@ import { getTranslatedName, getTranslatedField, getTranslatedDescription } from 
 import { fetchProductBySlug } from '@/lib/product-data';
 import ProductDocuments from '@/components/product/product-documents';
 import SkuSelector from '@/components/product/sku-selector';
+import RequestSampleButton from '@/components/sample-request/request-sample-button';
 import type { Industry, Standard, ProductSku, DirectusFile } from '@/lib/directus';
 
 export const revalidate = 60;
@@ -41,6 +42,7 @@ export async function generateMetadata({ params: { locale, slug } }: ProductDeta
 export default async function ProductDetailPage({ params: { locale, slug } }: ProductDetailPageProps) {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'solutions' });
+  const tSample = await getTranslations({ locale, namespace: 'sampleRequest' });
   const product = await fetchProductBySlug(slug);
 
   if (!product) notFound();
@@ -177,6 +179,38 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                     }}
                   />
                 )}
+
+                {/* Request Sample Button */}
+                <RequestSampleButton
+                  productSlug={product.slug}
+                  productName={productName}
+                  skuCodes={skus.map((s: ProductSku) => s.sku_code)}
+                  labels={{
+                    requestSampleBtn: tSample('requestSampleBtn'),
+                    modalTitle: tSample('modalTitle'),
+                    modalDesc: tSample('modalDesc'),
+                    contactName: tSample('contactName'),
+                    email: tSample('email'),
+                    company: tSample('company'),
+                    phone: tSample('phone'),
+                    province: tSample('province'),
+                    district: tSample('district'),
+                    addressDetail: tSample('addressDetail'),
+                    message: tSample('message'),
+                    messagePlaceholder: tSample('messagePlaceholder'),
+                    selectProvince: tSample('selectProvince'),
+                    selectDistrict: tSample('selectDistrict'),
+                    submit: tSample('submit'),
+                    submitting: tSample('submitting'),
+                    success: tSample('success'),
+                    error: tSample('error'),
+                    required: tSample('required'),
+                    invalidEmail: tSample('invalidEmail'),
+                    invalidPhone: tSample('invalidPhone'),
+                    product: tSample('product'),
+                    skus: tSample('skus')
+                  }}
+                />
               </div>
             </div>
           </div>

@@ -208,6 +208,25 @@ export interface NewsletterSubscriber {
   created_at?: string;
 }
 
+export interface SampleRequest {
+  id?: number | string;
+  contact_name: string;
+  email: string;
+  company: string;
+  phone: string;
+  province: string;
+  district: string;
+  address_detail: string;
+  product_slug: string;
+  skus?: string[];
+  message?: string | null;
+  status?: 'pending' | 'approved' | 'rejected';
+  user?: string | number | { id: string } | null;
+  approval_note?: string | null;
+  reject_reason?: string | null;
+  created_at?: string;
+}
+
 export interface Schema {
   products: Product[];
   product_categories: ProductCategory[];
@@ -228,6 +247,7 @@ export interface Schema {
   directus_notifications: DirectusNotification[];
   integration_events: IntegrationEvent[];
   newsletter_subscribers: NewsletterSubscriber[];
+  sample_requests: SampleRequest[];
 }
 
 const url = getDirectusUrl();
