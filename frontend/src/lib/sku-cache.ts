@@ -1,5 +1,3 @@
-import { readItems } from '@directus/sdk';
-
 import type { ProductSku } from './directus';
 
 export const SKU_CACHE_TTL_SECONDS = 3600;
@@ -14,6 +12,7 @@ export interface SkuCacheWebhookItem {
   unit?: string | null;
   pack_size?: string | null;
   attributes?: Record<string, unknown> | null;
+  stock_status?: ProductSku['stock_status'];
   status?: ProductSku['status'];
 }
 
@@ -67,10 +66,6 @@ function normalizeRecord(record: ProductSku): ProductSku {
         ? record.attributes
         : null
   };
-}
-
-function isPublishedStatus(status: ProductSku['status'] | undefined): boolean {
-  return status === 'published';
 }
 
 export function normalizeSkuCode(value: string): string {
@@ -175,6 +170,7 @@ export function planSkuCacheMutation(payload: SkuCacheWebhookPayload): SkuCacheP
       unit: item.unit ?? null,
       pack_size: item.pack_size ?? null,
       attributes: item.attributes ?? null,
+      stock_status: item.stock_status ?? 'in_stock',
       status: item.status ?? 'draft'
     });
 

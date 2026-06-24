@@ -2,13 +2,68 @@ import { createDirectus, rest, staticToken } from '@directus/sdk';
 import { getDirectusUrl, requireDirectusToken } from './directus-runtime.mjs';
 
 // Minimal schema typing - extend as collections are added (see directus/SCHEMA.md).
+export interface ProductCategory {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string | null;
+  parent?: number | ProductCategory | null;
+  status: 'published' | 'draft' | 'archived';
+}
+
+export interface Standard {
+  id: number;
+  name: string;
+  slug: string;
+  description?: string | null;
+  status: 'published' | 'draft' | 'archived';
+}
+
+export interface ProductDocument {
+  id: number;
+  title: string;
+  doc_type: 'tds' | 'msds' | 'certificate' | 'brochure';
+  product: number | Product;
+  file: string | DirectusFile | null;
+  language?: string | null;
+  status: 'published' | 'draft' | 'archived';
+}
+
+export interface DirectusFile {
+  id: string;
+  title?: string | null;
+  filename_download: string;
+  type?: string | null;
+  filesize?: number | null;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  slug: string;
+  brand?: string | null;
+  category?: number | ProductCategory | null;
+  short_description?: string | null;
+  specifications?: Record<string, string> | null;
+  hero?: string | null;
+  gallery?: Array<{ directus_files_id: string | DirectusFile }>;
+  industries?: Array<{ industries_id: number | Industry }>;
+  standards?: Array<{ standards_id: number | Standard }>;
+  documents?: ProductDocument[];
+  skus?: ProductSku[];
+  meta_title?: string | null;
+  meta_description?: string | null;
+  status: 'published' | 'draft' | 'archived';
+}
+
 export interface ProductSku {
   id: number;
   sku_code: string;
-  product: number | null;
+  product: number | Product | null;
   unit: string | null;
   pack_size: string | null;
   attributes: Record<string, unknown> | null;
+  stock_status: 'in_stock' | 'low_stock' | 'out_of_stock';
   status: 'published' | 'draft' | 'archived';
 }
 
@@ -154,8 +209,15 @@ export interface NewsletterSubscriber {
 }
 
 export interface Schema {
+  products: Product[];
+  product_categories: ProductCategory[];
   product_skus: ProductSku[];
   industries: Industry[];
+  standards: Standard[];
+  documents: ProductDocument[];
+  products_industries: Array<{ id: number; products_id: number; industries_id: number }>;
+  products_standards: Array<{ id: number; products_id: number; standards_id: number }>;
+  products_files: Array<{ id: number; products_id: number; directus_files_id: string }>;
   regional_hubs: RegionalHub[];
   hub_industrial_zones: HubIndustrialZone[];
   hub_team_members: HubTeamMember[];
@@ -170,8 +232,16 @@ export interface Schema {
 
 const url = getDirectusUrl();
 
+/**
+ * Custom fetch that disables Next.js aggressive caching.
+ * Next.js App Router patches global fetch() to cache GET responses by default;
+ * this wrapper forces `cache: 'no-store'` so Directus reads are always fresh.
+ */
+const noStoreFetch: typeof globalThis.fetch = (input, init) =>
+  globalThis.fetch(input, { ...init, cache: 'no-store' });
+
 // Public Directus client for published content reads.
-export const publicDirectus = createDirectus<Schema>(url).with(rest());
+export const publicDirectus = createDirectus<Schema>(url, { globals: { fetch: noStoreFetch } }).with(rest());
 
 // Server-side client for mutations that must not rely on anonymous Directus access.
 export function createWriteDirectusClient(token = requireDirectusToken()) {

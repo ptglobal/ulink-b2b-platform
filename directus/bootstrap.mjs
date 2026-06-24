@@ -31,6 +31,7 @@ import { seedGeography } from './seed/geography.mjs';
 import { seedInitialContent } from './seed/initial_content.mjs';
 import { seedDemoCommerce } from './seed/demo_commerce.mjs';
 import { seedAdditionalContent } from './seed/additional_content.mjs';
+import { seedExtendedProducts } from './seed/extended_products.mjs';
 // Import helper to apply relational database index enhancements
 import { applyDbIndexes } from './lib/db-indexes.mjs';
 // Import constant identifier representing the visitor role
@@ -126,6 +127,7 @@ async function main() {
   const ids = await seedInitialContent(helpers, client, geography);
   await seedDemoCommerce(helpers, ids);
   await seedAdditionalContent(helpers, ids, geography);
+  await seedExtendedProducts(helpers, client);
 
   // 11. Create a specialized API user mapping to serve the Next.js frontend
   const frontendToken = process.env.DIRECTUS_FRONTEND_TOKEN;

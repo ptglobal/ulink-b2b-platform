@@ -74,6 +74,7 @@ async function verify() {
     'rfq_assignment_rules',
     'products_industries',
     'products_files',
+    'products_regional_hubs',
     'hub_industrial_zones',
     'hub_team_members',
     ...TRANSLATION_COLLECTION_NAMES
@@ -173,6 +174,8 @@ async function verify() {
       'products_industries.industries_id',
       'products_files.products_id',
       'products_files.directus_files_id',
+      'products_regional_hubs.products_id',
+      'products_regional_hubs.regional_hubs_id',
       'hub_industrial_zones.hub',
       'hub_industrial_zones.image',
       'hub_team_members.hub',
