@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import {
   ShoppingCart,
-  Plus,
   Trash2,
   AlertCircle,
   CheckCircle2,
@@ -15,7 +14,6 @@ import {
   Briefcase,
   Calendar,
   Loader2,
-  FileSpreadsheet,
   ArrowRight,
   Info
 } from 'lucide-react';
@@ -61,14 +59,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
   const [formMessage, setFormMessage] = useState('');
   const [formScheduled, setFormScheduled] = useState(false);
   const [formDeliveryDate, setFormDeliveryDate] = useState('');
-
-  // SKU Selector state
-  const [selectedSku, setSelectedSku] = useState('');
-  const [selectedQty, setSelectedQty] = useState(1);
-
-  // Bulk import state
-  const [bulkInput, setBulkInput] = useState('');
-  const [bulkError, setBulkError] = useState<string | null>(null);
 
   // Status states
   const [submitting, setSubmitting] = useState(false);
@@ -131,88 +121,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
     setCart(newCart);
     localStorage.setItem('rfq-cart', JSON.stringify(newCart));
     window.dispatchEvent(new Event('rfq-cart-changed'));
-  };
-
-  // Add single item to cart
-  const handleAddSku = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!selectedSku) return;
-
-    const qty = Math.max(1, selectedQty);
-    const existingIndex = cart.findIndex((item) => item.sku.toLowerCase() === selectedSku.toLowerCase());
-
-    if (existingIndex >= 0) {
-      const updated = [...cart];
-      updated[existingIndex].qty += qty;
-      saveCart(updated);
-    } else {
-      saveCart([...cart, { sku: selectedSku, qty }]);
-    }
-
-    // Reset input
-    setSelectedSku('');
-    setSelectedQty(1);
-  };
-
-  // Handle bulk import
-  const handleBulkImport = (e: React.FormEvent) => {
-    e.preventDefault();
-    setBulkError(null);
-
-    if (!bulkInput.trim()) {
-      setBulkError('Vui lòng nhập danh sách sản phẩm.');
-      return;
-    }
-
-    const lines = bulkInput.split('\n');
-    const newItems: Array<{ sku: string; qty: number }> = [];
-    const invalidLines: string[] = [];
-
-    lines.forEach((line, index) => {
-      const trimmedLine = line.trim();
-      if (!trimmedLine) return; // skip empty lines
-
-      // Support formats: "SKU, Qty" or "SKU Qty" or "SKU"
-      const parts = trimmedLine.split(/[\s,]+/);
-      const sku = parts[0].trim();
-      let qty = 1;
-
-      if (parts.length > 1) {
-        const parsedQty = parseInt(parts[1].trim(), 10);
-        if (!isNaN(parsedQty) && parsedQty > 0) {
-          qty = parsedQty;
-        } else {
-          invalidLines.push(`Dòng ${index + 1}: "${trimmedLine}" (Số lượng không hợp lệ)`);
-          return;
-        }
-      }
-
-      if (!sku) {
-        invalidLines.push(`Dòng ${index + 1}: "${trimmedLine}" (Mã SKU trống)`);
-        return;
-      }
-
-      newItems.push({ sku, qty });
-    });
-
-    if (invalidLines.length > 0) {
-      setBulkError(invalidLines.join('\n'));
-      return;
-    }
-
-    // Merge into existing cart
-    const updated = [...cart];
-    newItems.forEach((newItem) => {
-      const existingIndex = updated.findIndex((item) => item.sku.toLowerCase() === newItem.sku.toLowerCase());
-      if (existingIndex >= 0) {
-        updated[existingIndex].qty += newItem.qty;
-      } else {
-        updated.push(newItem);
-      }
-    });
-
-    saveCart(updated);
-    setBulkInput('');
   };
 
   // Remove item from cart
@@ -378,88 +286,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
       <div className="grid gap-8 lg:grid-cols-12">
         {/* Left Column: Cart management */}
         <div className="lg:col-span-7 space-y-6">
-          {/* Add Item Panel */}
-          <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-6">
-            <h3 className="text-md font-semibold text-foreground flex items-center gap-2">
-              <Plus className="h-5 w-5 text-brand" />
-              Thêm sản phẩm vào giỏ hàng
-            </h3>
-
-            {/* Single SKU Add Form */}
-            <form onSubmit={handleAddSku} className="grid gap-4 sm:grid-cols-12 items-end">
-              <div className="sm:col-span-8 space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Chọn Sản phẩm / SKU</label>
-                <select
-                  value={selectedSku}
-                  onChange={(e) => setSelectedSku(e.target.value)}
-                  className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm outline-none focus:border-brand focus:ring-1 focus:ring-brand font-medium"
-                >
-                  <option value="">-- Chọn SKU sản phẩm --</option>
-                  {meta?.skus.map((sku) => (
-                    <option key={sku.sku_code} value={sku.sku_code}>
-                      {sku.sku_code} {sku.pack_size ? `(${sku.pack_size})` : ''}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="sm:col-span-2 space-y-1">
-                <label className="text-xs font-medium text-muted-foreground">Số lượng</label>
-                <input
-                  type="number"
-                  min={1}
-                  value={selectedQty}
-                  onChange={(e) => setSelectedQty(parseInt(e.target.value) || 1)}
-                  className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm outline-none focus:border-brand focus:ring-1 focus:ring-brand text-right font-medium"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={!selectedSku}
-                className="sm:col-span-2 inline-flex h-[38px] items-center justify-center gap-1 rounded-xl bg-brand text-white text-xs font-semibold hover:bg-brand/90 transition-all disabled:opacity-50"
-              >
-                <Plus className="h-4 w-4" />
-                Thêm
-              </button>
-            </form>
-
-            <div className="relative flex py-2 items-center">
-              <div className="flex-grow border-t border-border/60"></div>
-              <span className="flex-shrink mx-4 text-xs text-muted-foreground font-medium">HOẶC NHẬP HÀNG LOẠT</span>
-              <div className="flex-grow border-t border-border/60"></div>
-            </div>
-
-            {/* Bulk Import Form */}
-            <form onSubmit={handleBulkImport} className="space-y-3">
-              <div className="space-y-1">
-                <label className="text-xs font-medium text-muted-foreground block">
-                  Nhập mã SKU và số lượng (định dạng: <code className="font-mono bg-muted px-1 py-0.5 rounded">Mã_SKU, Số_lượng</code>, mỗi dòng một sản phẩm)
-                </label>
-                <textarea
-                  rows={4}
-                  value={bulkInput}
-                  onChange={(e) => setBulkInput(e.target.value)}
-                  placeholder="Ví dụ:&#10;sku-gloves-nitrile-s, 10&#10;sku-gloves-nitrile-m, 25"
-                  className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm font-mono outline-none focus:border-brand focus:ring-1 focus:ring-brand resize-none"
-                />
-              </div>
-
-              {bulkError && (
-                <div className="rounded-xl border border-rose-100 bg-rose-50/50 p-3 text-xs text-rose-800 flex items-start gap-2 whitespace-pre-line dark:bg-rose-950/10 dark:text-rose-400 dark:border-rose-900/30">
-                  <AlertCircle className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
-                  <span>{bulkError}</span>
-                </div>
-              )}
-
-              <button
-                type="submit"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-brand/20 bg-brand/5 px-4 py-2 text-xs font-semibold text-brand hover:bg-brand/10 transition-all"
-              >
-                <FileSpreadsheet className="h-4 w-4" />
-                Import hàng loạt
-              </button>
-            </form>
-          </div>
-
           {/* Cart Items List */}
           <div className="rounded-2xl border border-border bg-card p-6 shadow-sm space-y-4">
             <div className="flex items-center justify-between">
