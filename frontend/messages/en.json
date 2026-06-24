@@ -659,6 +659,11 @@
     "packSize": "Pack Size",
     "attributes": "Product Attributes",
     "reviews": "Reviews",
-    "reviewsComingSoon": "Reviews feature coming soon."
+    "reviewsComingSoon": "Reviews feature coming soon.",
+    "addToCart": "Add to Cart",
+    "outOfStockTooltip": "This product is out of stock",
+    "added": "Added to cart",
+    "quantity": "Quantity",
+    "selectVariant": "Select variant"
   }
 }
