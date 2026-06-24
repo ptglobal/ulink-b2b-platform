@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
+import { getTranslatedName, getTranslatedField, getTranslatedDescription } from '@/lib/i18n-content';
 import { fetchProductBySlug } from '@/lib/product-data';
 import ProductDocuments from '@/components/product/product-documents';
 import type { Industry, Standard, ProductSku, DirectusFile } from '@/lib/directus';
@@ -25,12 +26,14 @@ interface ProductDetailPageProps {
   params: { locale: string; slug: string };
 }
 
-export async function generateMetadata({ params: { slug } }: ProductDetailPageProps) {
+export async function generateMetadata({ params: { locale, slug } }: ProductDetailPageProps) {
   const product = await fetchProductBySlug(slug);
   if (!product) return { title: 'Not Found' };
+  const metaTitle = getTranslatedField(product, 'meta_title', locale) || getTranslatedName(product, locale);
+  const metaDesc = getTranslatedField(product, 'meta_description', locale) || getTranslatedField(product, 'short_description', locale) || undefined;
   return {
-    title: product.meta_title || product.name,
-    description: product.meta_description || product.short_description || undefined
+    title: metaTitle,
+    description: metaDesc
   };
 }
 
@@ -42,7 +45,10 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
   if (!product) notFound();
 
   const directusUrl = getDirectusUrl();
+  const productName = getTranslatedName(product, locale);
+  const productDescription = getTranslatedField(product, 'short_description', locale);
   const category = typeof product.category === 'object' && product.category ? product.category : null;
+  const categoryName = category ? getTranslatedName(category, locale) : null;
   const industries = (product.industries ?? [])
     .map((r) => (typeof r.industries_id === 'object' ? r.industries_id : null))
     .filter(Boolean) as Industry[];
@@ -83,11 +89,11 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
           {category && (
             <>
               <ChevronRight className="h-3.5 w-3.5" />
-              <Link href={`/${locale}/solutions?industry=`} className="hover:text-foreground transition-colors">{category.name}</Link>
+              <Link href={`/${locale}/solutions?industry=`} className="hover:text-foreground transition-colors">{categoryName}</Link>
             </>
           )}
           <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-foreground font-medium truncate max-w-[200px]">{product.name}</span>
+          <span className="text-foreground font-medium truncate max-w-[200px]">{productName}</span>
         </nav>
       </div>
 
@@ -101,7 +107,7 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                 {product.hero ? (
                   <Image
                     src={`${directusUrl}/assets/${product.hero}`}
-                    alt={product.name}
+                    alt={productName}
                     fill
                     className="object-contain p-6"
                     sizes="(max-width: 1024px) 100vw, 60vw"
@@ -122,7 +128,7 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                     <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden border-2 border-primary bg-muted/50">
                       <Image
                         src={`${directusUrl}/assets/${product.hero}`}
-                        alt={product.name}
+                        alt={productName}
                         fill
                         className="object-contain p-1"
                         sizes="80px"
@@ -149,10 +155,10 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
               <div className="space-y-5">
                 {/* Category + Brand */}
                 <div className="flex items-center gap-2 flex-wrap">
-                  {category && (
+                  {categoryName && (
                     <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">
                       <Tag className="h-3 w-3" />
-                      {category.name}
+                      {categoryName}
                     </span>
                   )}
                   {product.brand && (
@@ -163,11 +169,11 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                 </div>
 
                 {/* Product Name */}
-                <h1 className="text-2xl lg:text-3xl font-bold leading-tight">{product.name}</h1>
+                <h1 className="text-2xl lg:text-3xl font-bold leading-tight">{productName}</h1>
 
                 {/* Description */}
-                {product.short_description && (
-                  <p className="text-muted-foreground leading-relaxed text-sm">{product.short_description}</p>
+                {productDescription && (
+                  <p className="text-muted-foreground leading-relaxed text-sm">{productDescription}</p>
                 )}
 
                 {/* Stock Status */}
@@ -340,9 +346,9 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                         <ShieldCheck className="h-4 w-4 text-primary" />
                       </div>
                       <div className="min-w-0">
-                        <p className="font-medium text-sm leading-tight">{std.name}</p>
-                        {std.description && (
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{std.description}</p>
+                        <p className="font-medium text-sm leading-tight">{getTranslatedName(std, locale)}</p>
+                        {getTranslatedDescription(std, locale) && (
+                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{getTranslatedDescription(std, locale)}</p>
                         )}
                       </div>
                     </div>
@@ -367,7 +373,7 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                         className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border bg-background hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all"
                       >
                         <Factory className="h-3.5 w-3.5" />
-                        {ind.name}
+                        {getTranslatedName(ind, locale)}
                       </Link>
                     ))}
                   </div>
