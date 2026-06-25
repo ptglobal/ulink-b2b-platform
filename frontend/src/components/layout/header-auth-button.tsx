@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { UserRound, LogOut, ChevronDown, FileText } from 'lucide-react';
+import { UserRound, LogOut, ChevronDown, FileText, Package } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useAuth } from '@/lib/auth-context';
 
@@ -41,6 +41,13 @@ export function HeaderAuthButton() {
           >
             <FileText className="h-4 w-4" aria-hidden="true" />
             {t('rfqs')}
+          </Link>
+          <Link
+            href="/sample-requests"
+            className="flex items-center gap-2 px-4 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+          >
+            <Package className="h-4 w-4" aria-hidden="true" />
+            {t('sampleRequests')}
           </Link>
           <Link
             href="/settings"

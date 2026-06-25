@@ -36,6 +36,7 @@ export const RELATION_DEFS = [
   { collection: 'products_standards', field: 'standards_id', related_collection: 'standards' },
   { collection: 'products_regional_hubs', field: 'products_id', related_collection: 'products', meta: { one_field: 'regions', junction_field: 'regional_hubs_id' } },
   { collection: 'products_regional_hubs', field: 'regional_hubs_id', related_collection: 'regional_hubs', meta: { junction_field: 'products_id' } },
+  { collection: 'sample_requests', field: 'user', related_collection: 'directus_users' },
   { collection: 'media_retention', field: 'file', related_collection: 'directus_files' },
   { collection: 'media_retention', field: 'deleted_by', related_collection: 'directus_users' },
   { collection: 'media_retention', field: 'hard_deleted_by', related_collection: 'directus_users' },

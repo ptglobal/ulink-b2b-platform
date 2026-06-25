@@ -1,14 +1,15 @@
 import { NextResponse } from 'next/server';
-import { createItem, readItems } from '@directus/sdk';
 
-import { createWriteDirectusClient } from '@/lib/directus';
 import { getCurrentUser, proxyToDirectus, getRequestCookieHeader } from '@/lib/auth-helpers';
+import { createWriteDirectusClient } from '@/lib/directus';
+import { createItem } from '@directus/sdk';
 import { handleRoute, jsonCreated, jsonErrorRaw } from '@/lib/route-helpers';
 import { sampleRequestSchema, type SampleRequestInput } from '@/lib/validators';
 
 /**
  * POST /api/sample-request
  * Create a new sample request. Works for both visitors and authenticated users.
+ * Uses admin token to bypass permissions (visitors don't have Directus sessions).
  */
 export async function POST(req: Request) {
   return handleRoute<SampleRequestInput>(req, { schema: sampleRequestSchema }, async (data) => {
@@ -26,17 +27,17 @@ export async function POST(req: Request) {
           district: data.district,
           address_detail: data.address_detail,
           product_slug: data.product_slug,
-          skus: data.skus,
+          skus: data.skus ?? [],
           message: data.message ?? null,
           status: 'pending',
           user: user?.id ?? null
-        })
+        } as Record<string, unknown>)
       );
 
       return jsonCreated({ id: (created as { id: number | string }).id });
     } catch (err) {
       console.error('Sample request creation failed:', err);
-      return jsonErrorRaw(502, 'bad_gateway', 'Failed to create sample request.');
+      return jsonErrorRaw(502, 'bad_gateway', 'Failed to create sample request. Please ensure the collection exists in Directus.');
     }
   });
 }

@@ -6,19 +6,14 @@ import {
   ChevronRight,
   Package,
   ShieldCheck,
-  Factory,
-  Star,
-  MessageSquare,
-  FileText,
-  Layers,
-  Tag
+  FileDown,
+  Truck,
+  MapPin
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
 import { getTranslatedName, getTranslatedField, getTranslatedDescription } from '@/lib/i18n-content';
 import { fetchProductBySlug } from '@/lib/product-data';
-import ProductDocuments from '@/components/product/product-documents';
-import SkuSelector from '@/components/product/sku-selector';
+import ProductDetailClient from '@/components/product/product-detail-client';
 import RequestSampleButton from '@/components/sample-request/request-sample-button';
 import type { Industry, Standard, ProductSku, DirectusFile } from '@/lib/directus';
 
@@ -33,10 +28,7 @@ export async function generateMetadata({ params: { locale, slug } }: ProductDeta
   if (!product) return { title: 'Not Found' };
   const metaTitle = getTranslatedField(product, 'meta_title', locale) || getTranslatedName(product, locale);
   const metaDesc = getTranslatedField(product, 'meta_description', locale) || getTranslatedField(product, 'short_description', locale) || undefined;
-  return {
-    title: metaTitle,
-    description: metaDesc
-  };
+  return { title: metaTitle, description: metaDesc };
 }
 
 export default async function ProductDetailPage({ params: { locale, slug } }: ProductDetailPageProps) {
@@ -63,124 +55,213 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
     .map((g) => (typeof g.directus_files_id === 'object' ? g.directus_files_id : null))
     .filter(Boolean) as DirectusFile[];
 
+  // Build gallery images list (hero first, then gallery items)
+  const allImages: Array<{ id: string; alt: string }> = [];
+  if (product.hero) allImages.push({ id: product.hero, alt: productName });
+  gallery.forEach((file) => allImages.push({ id: file.id, alt: file.filename_download }));
+
+  // Get first SKU code for display
+  const firstSku = skus[0];
+  const skuCode = firstSku?.sku_code ?? '';
+
+  // Quick specs from specifications
+  const specs = product.specifications as Record<string, string> | null;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-muted/30 to-background">
+    <div className="min-h-screen bg-gray-50">
       {/* Breadcrumb */}
-      <div className="container mx-auto px-4 pt-6 pb-2">
-        <nav className="flex items-center gap-1.5 text-sm text-muted-foreground">
-          <Link href={`/${locale}`} className="hover:text-foreground transition-colors">{t('breadcrumbHome')}</Link>
-          <ChevronRight className="h-3.5 w-3.5" />
-          <Link href={`/${locale}/solutions`} className="hover:text-foreground transition-colors">{t('breadcrumbSolutions')}</Link>
-          {category && (
-            <>
-              <ChevronRight className="h-3.5 w-3.5" />
-              <Link href={`/${locale}/solutions?industry=`} className="hover:text-foreground transition-colors">{categoryName}</Link>
-            </>
-          )}
-          <ChevronRight className="h-3.5 w-3.5" />
-          <span className="text-foreground font-medium truncate max-w-[200px]">{productName}</span>
-        </nav>
+      <div className="bg-white border-b border-gray-100">
+        <div className="container mx-auto px-4 py-3">
+          <nav className="flex items-center gap-1.5 text-sm text-gray-500">
+            <Link href={`/${locale}`} className="hover:text-blue-600 transition-colors">
+              {t('breadcrumbHome')}
+            </Link>
+            <ChevronRight className="h-3.5 w-3.5" />
+            <Link href={`/${locale}/solutions`} className="hover:text-blue-600 transition-colors">
+              {t('breadcrumbSolutions')}
+            </Link>
+            {category && (
+              <>
+                <ChevronRight className="h-3.5 w-3.5" />
+                <Link href={`/${locale}/solutions?category=${category.slug}`} className="hover:text-blue-600 transition-colors">
+                  {categoryName}
+                </Link>
+              </>
+            )}
+            <ChevronRight className="h-3.5 w-3.5" />
+            <span className="text-gray-900 font-medium truncate max-w-[250px]">{productName}</span>
+          </nav>
+        </div>
       </div>
 
-      {/* Hero Section */}
-      <section className="container mx-auto px-4 py-6">
-        <div className="bg-white dark:bg-card rounded-2xl shadow-sm border overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-0">
-            {/* Image Column */}
-            <div className="lg:col-span-3 p-6 lg:p-8">
-              <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-muted/50">
-                {product.hero ? (
-                  <Image
-                    src={`${directusUrl}/assets/${product.hero}`}
-                    alt={productName}
-                    fill
-                    className="object-contain p-6"
-                    sizes="(max-width: 1024px) 100vw, 60vw"
-                    priority
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full">
-                    <Package className="h-32 w-32 text-muted-foreground/20" />
-                  </div>
-                )}
-              </div>
+      {/* Main Product Section */}
+      <div className="container mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
-              {/* Gallery thumbnails */}
-              {gallery.length > 0 && (
-                <div className="flex gap-3 mt-4 overflow-x-auto pb-2">
-                  {/* Hero as first thumbnail */}
-                  {product.hero && (
-                    <div className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden border-2 border-primary bg-muted/50">
+          {/* LEFT: Image Gallery */}
+          <div className="lg:col-span-5">
+            <div className="flex gap-3">
+              {/* Vertical thumbnails */}
+              {allImages.length > 1 && (
+                <div className="hidden sm:flex flex-col gap-2 w-20 shrink-0">
+                  {allImages.slice(0, 5).map((img, idx) => (
+                    <div
+                      key={img.id}
+                      className={`relative w-20 h-20 rounded-lg overflow-hidden border-2 bg-gray-50 cursor-pointer transition-colors ${idx === 0 ? 'border-blue-500' : 'border-gray-200 hover:border-blue-300'}`}
+                    >
                       <Image
-                        src={`${directusUrl}/assets/${product.hero}`}
-                        alt={productName}
+                        src={`${directusUrl}/assets/${img.id}`}
+                        alt={img.alt}
                         fill
                         className="object-contain p-1"
-                        sizes="80px"
-                      />
-                    </div>
-                  )}
-                  {gallery.slice(0, 5).map((file) => (
-                    <div key={file.id} className="relative w-20 h-20 shrink-0 rounded-lg overflow-hidden border border-border hover:border-primary transition-colors bg-muted/50">
-                      <Image
-                        src={`${directusUrl}/assets/${file.id}`}
-                        alt={file.filename_download}
-                        fill
-                        className="object-cover"
                         sizes="80px"
                       />
                     </div>
                   ))}
                 </div>
               )}
-            </div>
 
-            {/* Info Column */}
-            <div className="lg:col-span-2 p-6 lg:p-8 lg:border-l bg-muted/20">
-              <div className="space-y-5">
-                {/* Category + Brand */}
-                <div className="flex items-center gap-2 flex-wrap">
-                  {categoryName && (
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-wider text-primary bg-primary/10 px-2.5 py-1 rounded-full">
-                      <Tag className="h-3 w-3" />
-                      {categoryName}
-                    </span>
-                  )}
-                  {product.brand && (
-                    <span className="text-xs font-medium text-muted-foreground bg-muted px-2.5 py-1 rounded-full">
-                      {product.brand}
-                    </span>
-                  )}
-                </div>
-
-                {/* Product Name */}
-                <h1 className="text-2xl lg:text-3xl font-bold leading-tight">{productName}</h1>
-
-                {/* Description */}
-                {productDescription && (
-                  <p className="text-muted-foreground leading-relaxed text-sm">{productDescription}</p>
-                )}
-
-                {/* SKU Selector + Add to Cart */}
-                {skus.length > 0 && (
-                  <SkuSelector
-                    skus={skus.map((s: ProductSku) => ({
-                      id: s.id,
-                      sku_code: s.sku_code,
-                      unit: s.unit,
-                      pack_size: s.pack_size,
-                      attributes: s.attributes as Record<string, string> | null
-                    }))}
-                    labels={{
-                      addToCart: t('addToCart'),
-                      added: t('added'),
-                      quantity: t('quantity'),
-                      selectVariant: t('selectVariant')
-                    }}
+              {/* Main image */}
+              <div className="flex-1 relative aspect-square rounded-xl overflow-hidden bg-white border border-gray-200">
+                {product.hero ? (
+                  <Image
+                    src={`${directusUrl}/assets/${product.hero}`}
+                    alt={productName}
+                    fill
+                    className="object-contain p-8"
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    priority
                   />
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <Package className="h-24 w-24 text-gray-200" />
+                  </div>
                 )}
+                {product.brand && (
+                  <span className="absolute bottom-4 left-1/2 -translate-x-1/2 text-gray-300 font-bold text-lg tracking-wider">
+                    {product.brand}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
 
-                {/* Request Sample Button */}
+          {/* CENTER: Product Info */}
+          <div className="lg:col-span-4">
+            {categoryName && (
+              <div className="mb-3">
+                <span className="inline-block text-xs font-semibold uppercase tracking-wider text-blue-600 bg-blue-50 border border-blue-100 px-3 py-1 rounded">
+                  {categoryName}
+                </span>
+              </div>
+            )}
+
+            <h1 className="text-xl lg:text-2xl font-bold text-gray-900 leading-tight mb-2">
+              {productName}
+            </h1>
+
+            {skuCode && (
+              <p className="text-sm font-bold text-gray-600 mb-3">{skuCode}</p>
+            )}
+
+            {productDescription && (
+              <p className="text-sm text-gray-600 leading-relaxed mb-5">
+                {productDescription}
+              </p>
+            )}
+
+            {/* Feature Icons Row */}
+            {industries.length > 0 && (
+              <div className="flex flex-wrap gap-4 mb-5 pb-5 border-b border-gray-100">
+                {industries.slice(0, 5).map((ind) => (
+                  <div key={ind.id} className="flex flex-col items-center gap-1.5 w-16">
+                    <div className="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center">
+                      <ShieldCheck className="h-4 w-4 text-gray-600" />
+                    </div>
+                    <span className="text-[10px] text-gray-500 text-center leading-tight">
+                      {getTranslatedName(ind, locale)}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Quick Specs */}
+            {specs && Object.keys(specs).length > 0 && (
+              <div className="grid grid-cols-3 gap-4 mb-5 pb-5 border-b border-gray-100">
+                {Object.entries(specs).slice(0, 3).map(([key, value]) => (
+                  <div key={key} className="text-center">
+                    <p className="text-xs text-gray-400 mb-0.5">{key}</p>
+                    <p className="text-sm font-medium text-gray-700">{value}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Standards Row */}
+            {standards.length > 0 && (
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                <p className="text-xs text-gray-400 font-medium mb-3">
+                  {locale === 'vi' ? 'Tiêu chuẩn' : 'Standards'}
+                </p>
+                <div className="flex items-center gap-4 flex-wrap">
+                  {standards.map((std, idx) => (
+                    <div key={std.id} className="flex items-center gap-3">
+                      <div className="text-center">
+                        <p className="text-xs font-medium text-gray-700">{getTranslatedName(std, locale)}</p>
+                        {getTranslatedDescription(std, locale) && (
+                          <p className="text-[10px] text-gray-400">{getTranslatedDescription(std, locale)}</p>
+                        )}
+                      </div>
+                      {idx < standards.length - 1 && (
+                        <div className="w-px h-10 bg-gray-200" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT: Sidebar */}
+          <div className="lg:col-span-3">
+            <div className="bg-white border border-gray-200 rounded-xl p-5 sticky top-6 space-y-4">
+              {/* Size + Add to Cart */}
+              <ProductDetailClient
+                skus={skus.map((s: ProductSku) => ({
+                  id: s.id,
+                  sku_code: s.sku_code,
+                  unit: s.unit,
+                  pack_size: s.pack_size,
+                  attributes: s.attributes as Record<string, string> | null
+                }))}
+                labels={{
+                  addToCart: t('addToCart'),
+                  added: t('added'),
+                  selectVariant: t('selectVariant'),
+                  requestQuote: locale === 'vi' ? 'Yêu cầu báo giá' : 'Request Quote',
+                  size: locale === 'vi' ? 'Kích thước' : 'Size'
+                }}
+              />
+
+              {/* Delivery Info */}
+              <div className="pt-3 border-t border-gray-100 space-y-2.5">
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <Package className="h-3.5 w-3.5 text-gray-400" />
+                  <span>{locale === 'vi' ? 'Đặt tối thiểu: 50 đôi' : 'Min. order: 50 pairs'}</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <Truck className="h-3.5 w-3.5 text-gray-400" />
+                  <span>{locale === 'vi' ? 'Thời gian giao hàng: 2-3 ngày làm việc' : 'Delivery: 2-3 business days'}</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-gray-500">
+                  <MapPin className="h-3.5 w-3.5 text-gray-400" />
+                  <span>{locale === 'vi' ? 'Giao hàng toàn quốc' : 'Nationwide delivery'}</span>
+                </div>
+              </div>
+
+              {/* Request Sample */}
+              <div className="pt-3 border-t border-gray-100">
                 <RequestSampleButton
                   productSlug={product.slug}
                   productName={productName}
@@ -213,157 +294,108 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                 />
               </div>
             </div>
+
           </div>
         </div>
-      </section>
+      </div>
 
-      {/* Detail Sections */}
-      <section className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Main Content — 2/3 width */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Specifications */}
-            {product.specifications && Object.keys(product.specifications).length > 0 && (
-              <div className="bg-white dark:bg-card rounded-xl border shadow-sm overflow-hidden">
-                <div className="flex items-center gap-2 px-6 py-4 border-b bg-muted/30">
-                  <Layers className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">{t('specifications')}</h2>
-                </div>
-                <div className="divide-y">
-                  {Object.entries(product.specifications).map(([key, value], i) => (
-                    <div key={key} className={cn('flex items-center px-6 py-3.5', i % 2 === 0 && 'bg-muted/20')}>
-                      <span className="w-2/5 text-sm font-medium text-foreground">{key}</span>
-                      <span className="w-3/5 text-sm text-muted-foreground">{value}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+      {/* Tabs + Content Section */}
+      <div className="container mx-auto px-4 pb-10">
+          {/* Tab Navigation */}
+            <div className="border-b border-gray-200 mb-6">
+              <nav className="flex items-center gap-6 -mb-px">
+                <span className="text-sm font-bold text-gray-700 border-b-2 border-blue-600 pb-3 px-1">
+                  {locale === 'vi' ? 'Thông tin sản phẩm' : 'Product Info'}
+                </span>
+                <span className="text-sm text-gray-500 pb-3 px-1 cursor-pointer hover:text-gray-700">
+                  {t('specifications')}
+                </span>
+                <span className="text-sm text-gray-500 pb-3 px-1 cursor-pointer hover:text-gray-700">
+                  {t('standards')}
+                </span>
+                <span className="text-sm text-gray-500 pb-3 px-1 cursor-pointer hover:text-gray-700">
+                  {locale === 'vi' ? 'Ứng dụng' : 'Applications'}
+                </span>
+                <span className="text-sm text-gray-500 pb-3 px-1 cursor-pointer hover:text-gray-700">
+                  {locale === 'vi' ? 'Đánh giá' : 'Reviews'} (12)
+                </span>
+              </nav>
+            </div>
 
-            {/* SKU Variants */}
-            {skus.length > 0 && (
-              <div className="bg-white dark:bg-card rounded-xl border shadow-sm overflow-hidden">
-                <div className="flex items-center gap-2 px-6 py-4 border-b bg-muted/30">
-                  <Package className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">{t('skuVariants')}</h2>
-                </div>
-                <div className="overflow-x-auto">
-                  <table className="w-full text-sm">
-                    <thead>
-                      <tr className="border-b bg-muted/10">
-                        <th className="px-6 py-3 text-left font-semibold text-xs uppercase tracking-wide text-muted-foreground">{t('skuCode')}</th>
-                        <th className="px-6 py-3 text-left font-semibold text-xs uppercase tracking-wide text-muted-foreground">{t('unit')}</th>
-                        <th className="px-6 py-3 text-left font-semibold text-xs uppercase tracking-wide text-muted-foreground">{t('packSize')}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                      {skus.map((sku: ProductSku) => (
-                        <tr key={sku.id} className="hover:bg-muted/30 transition-colors">
-                          <td className="px-6 py-3.5 font-mono text-xs font-medium">{sku.sku_code}</td>
-                          <td className="px-6 py-3.5">{sku.unit ?? '—'}</td>
-                          <td className="px-6 py-3.5">{sku.pack_size ?? '—'}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-
-            {/* Documents */}
-            {(product.documents ?? []).length > 0 && (
-              <div className="bg-white dark:bg-card rounded-xl border shadow-sm overflow-hidden">
-                <div className="flex items-center gap-2 px-6 py-4 border-b bg-muted/30">
-                  <FileText className="h-5 w-5 text-primary" />
-                  <h2 className="text-lg font-semibold">{t('documents')}</h2>
-                </div>
+            {/* Tab Content: Product Info + Applications */}
+            <div className="bg-white border border-gray-200 rounded-xl overflow-hidden">
+              <div className="grid grid-cols-1 lg:grid-cols-2 divide-y lg:divide-y-0 lg:divide-x divide-gray-100">
+                {/* Product Info */}
                 <div className="p-6">
-                  <ProductDocuments
-                    documents={product.documents!}
-                    labels={{
-                      title: t('documents'),
-                      download: t('download'),
-                      preview: t('preview'),
-                      noDocuments: t('noDocuments')
-                    }}
-                  />
+                  <h3 className="text-sm font-semibold text-gray-700 mb-4">
+                    {locale === 'vi' ? 'Thông tin sản phẩm' : 'Product Info'}
+                  </h3>
+                  {productDescription && (
+                    <p className="text-xs text-gray-500 leading-relaxed mb-4">
+                      {productDescription}
+                    </p>
+                  )}
+                  {specs && Object.keys(specs).length > 0 && (
+                    <ul className="space-y-2.5">
+                      {Object.entries(specs).map(([key, value]) => (
+                        <li key={key} className="flex items-start gap-2 text-xs text-gray-600">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
+                          <span><span className="font-medium">{key}:</span> {value}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
-              </div>
-            )}
-          </div>
 
-          {/* Sidebar — 1/3 width */}
-          <div className="space-y-6">
-            {/* Standards */}
-            {standards.length > 0 && (
-              <div className="bg-white dark:bg-card rounded-xl border shadow-sm overflow-hidden">
-                <div className="flex items-center gap-2 px-5 py-4 border-b bg-muted/30">
-                  <ShieldCheck className="h-5 w-5 text-primary" />
-                  <h2 className="text-base font-semibold">{t('standards')}</h2>
-                </div>
-                <div className="p-4 space-y-3">
-                  {standards.map((std) => (
-                    <div key={std.id} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-                        <ShieldCheck className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="min-w-0">
-                        <p className="font-medium text-sm leading-tight">{getTranslatedName(std, locale)}</p>
-                        {getTranslatedDescription(std, locale) && (
-                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{getTranslatedDescription(std, locale)}</p>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Industries / Applications */}
-            {industries.length > 0 && (
-              <div className="bg-white dark:bg-card rounded-xl border shadow-sm overflow-hidden">
-                <div className="flex items-center gap-2 px-5 py-4 border-b bg-muted/30">
-                  <Factory className="h-5 w-5 text-primary" />
-                  <h2 className="text-base font-semibold">{t('industries')}</h2>
-                </div>
-                <div className="p-4">
-                  <div className="flex flex-wrap gap-2">
+                {/* Applications */}
+                <div className="p-6">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-4">
+                    {locale === 'vi' ? 'Ứng dụng' : 'Applications'}
+                  </h3>
+                  <div className="grid grid-cols-2 gap-3">
                     {industries.map((ind) => (
                       <Link
                         key={ind.id}
                         href={`/${locale}/solutions?industry=${ind.slug}`}
-                        className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium border bg-background hover:bg-primary/5 hover:border-primary/30 hover:text-primary transition-all"
+                        className="flex items-center gap-3 p-2.5 rounded-lg hover:bg-gray-50 transition-colors group"
                       >
-                        <Factory className="h-3.5 w-3.5" />
-                        {getTranslatedName(ind, locale)}
+                        <div className="w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center shrink-0 group-hover:bg-blue-50">
+                          <ShieldCheck className="h-4 w-4 text-gray-500 group-hover:text-blue-600" />
+                        </div>
+                        <span className="text-xs text-gray-600 group-hover:text-blue-600">
+                          {getTranslatedName(ind, locale)}
+                        </span>
                       </Link>
                     ))}
                   </div>
                 </div>
               </div>
-            )}
+            </div>
 
-            {/* Reviews */}
-            <div className="bg-white dark:bg-card rounded-xl border shadow-sm overflow-hidden">
-              <div className="flex items-center gap-2 px-5 py-4 border-b bg-muted/30">
-                <MessageSquare className="h-5 w-5 text-primary" />
-                <h2 className="text-base font-semibold">{t('reviews')}</h2>
-              </div>
-              <div className="p-8 text-center">
-                <div className="w-14 h-14 rounded-full bg-muted/50 flex items-center justify-center mx-auto mb-3">
-                  <Star className="h-7 w-7 text-muted-foreground/40" />
-                </div>
-                <p className="text-sm text-muted-foreground mb-3">{t('reviewsComingSoon')}</p>
-                <div className="flex items-center justify-center gap-0.5">
-                  {[1, 2, 3, 4, 5].map((star) => (
-                    <Star key={star} className="h-4 w-4 text-muted-foreground/20 fill-muted-foreground/10" />
+            {/* Documents section */}
+            {(product.documents ?? []).length > 0 && (
+              <div className="mt-6 bg-white border border-gray-200 rounded-xl p-6">
+                <h3 className="text-sm font-semibold text-gray-700 mb-4">{t('documents')}</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {product.documents!.map((doc) => (
+                    <a
+                      key={doc.id}
+                      href={`${directusUrl}/assets/${typeof doc.file === 'object' && doc.file ? doc.file.id : doc.file}?download`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-3 rounded-lg border border-gray-100 hover:border-blue-200 hover:bg-blue-50/50 transition-colors"
+                    >
+                      <FileDown className="h-4 w-4 text-blue-600 shrink-0" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-medium text-gray-700 truncate">{doc.title}</p>
+                        <p className="text-[10px] text-gray-400 uppercase">{doc.doc_type}</p>
+                      </div>
+                    </a>
                   ))}
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </section>
+            )}
+      </div>
     </div>
   );
 }

@@ -755,6 +755,79 @@ export const COLLECTION_DEFS = [
     ]
   },
   {
+    collection: 'sample_requests',
+    meta: { icon: 'science', note: 'Sample Requests' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'contact_name', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'email', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'company', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'phone', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'province', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'district', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'address_detail', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'product_slug', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'skus', type: 'json', meta: { interface: 'json' } },
+      { field: 'message', type: 'text', meta: { interface: 'textarea' } },
+      {
+        field: 'status',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          options: {
+            choices: [
+              { text: 'Pending (Đang chờ)', value: 'pending', color: '#fbbf24' },
+              { text: 'Approved (Duyệt)', value: 'approved', color: '#10b981' },
+              { text: 'Rejected (Từ chối)', value: 'rejected', color: '#ef4444' }
+            ]
+          }
+        },
+        schema: { default_value: 'pending' }
+      },
+      {
+        field: 'approval_note',
+        type: 'text',
+        meta: {
+          interface: 'textarea',
+          conditions: [
+            {
+              name: 'Hide if not approved',
+              rule: { status: { _neq: 'approved' } },
+              hidden: true
+            }
+          ]
+        }
+      },
+      {
+        field: 'reject_reason',
+        type: 'text',
+        meta: {
+          interface: 'textarea',
+          conditions: [
+            {
+              name: 'Require if rejected',
+              rule: { status: { _eq: 'rejected' } },
+              required: true
+            },
+            {
+              name: 'Hide if not rejected',
+              rule: { status: { _neq: 'rejected' } },
+              hidden: true
+            }
+          ]
+        }
+      },
+      { field: 'user', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      {
+        field: 'created_at',
+        type: 'timestamp',
+        meta: { interface: 'datetime', readonly: true },
+        schema: { default_value: 'CURRENT_TIMESTAMP' }
+      }
+    ]
+  },
+  {
     collection: 'newsletter_subscribers',
     meta: { icon: 'mail', note: 'Email Newsletter Subscribers' },
     schema: {},

@@ -1,5 +1,4 @@
 import { FileText, Download, ExternalLink } from 'lucide-react';
-import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
 import type { ProductDocument, DirectusFile } from '@/lib/directus';
 
 interface ProductDocumentsProps {
@@ -54,7 +53,6 @@ const docTypeLabels: Record<string, string> = {
 };
 
 export default function ProductDocuments({ documents, labels }: ProductDocumentsProps) {
-  const directusUrl = getDirectusUrl();
   const title = labels?.title ?? 'Tài liệu kỹ thuật';
   const downloadLabel = labels?.download ?? 'Tải xuống';
   const previewLabel = labels?.preview ?? 'Xem trước';
@@ -74,8 +72,10 @@ export default function ProductDocuments({ documents, labels }: ProductDocuments
       <h2 className="text-xl font-semibold mb-4">{title}</h2>
       <div className="divide-y border rounded-lg overflow-hidden">
         {documents.map((doc) => {
+          // file can be a string UUID or an object {id, ...}
           const file = typeof doc.file === 'object' ? (doc.file as DirectusFile | null) : null;
-          const hasFile = file !== null;
+          const fileId = typeof doc.file === 'string' ? doc.file : file?.id ?? null;
+          const hasFile = fileId !== null;
 
           return (
             <div
@@ -97,7 +97,7 @@ export default function ProductDocuments({ documents, labels }: ProductDocuments
 
               {/* Right: format + file size + actions */}
               <div className="flex items-center gap-3 shrink-0 ml-4">
-                {hasFile && (() => {
+                {hasFile && file && (() => {
                   const ext = getFileExtension(file);
                   return ext ? (
                     <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-gray-100 text-gray-600 ring-1 ring-gray-200">
@@ -105,7 +105,7 @@ export default function ProductDocuments({ documents, labels }: ProductDocuments
                     </span>
                   ) : null;
                 })()}
-                {hasFile && file.filesize != null && (
+                {hasFile && file && file.filesize != null && (
                   <span className="text-sm text-gray-500">
                     {formatFileSize(file.filesize)}
                   </span>
@@ -114,7 +114,7 @@ export default function ProductDocuments({ documents, labels }: ProductDocuments
                 {hasFile ? (
                   <>
                     <a
-                      href={`${directusUrl}/assets/${file.id}`}
+                      href={`/api/files/${fileId}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -124,7 +124,7 @@ export default function ProductDocuments({ documents, labels }: ProductDocuments
                       <span className="sr-only">{previewLabel}</span>
                     </a>
                     <a
-                      href={`${directusUrl}/assets/${file.id}?download`}
+                      href={`/api/files/${fileId}?download`}
                       download
                       className="inline-flex items-center gap-1 rounded px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
                       title={downloadLabel}

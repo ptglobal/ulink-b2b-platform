@@ -243,7 +243,7 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
               onChange={(e) => setActionNote(e.target.value)}
               rows={3}
               placeholder={actionModal === 'approve' ? t('approveNote') : t('rejectReason')}
-              className="form-input resize-none w-full mt-2"
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors resize-y mt-2"
             />
 
             {actionError && (

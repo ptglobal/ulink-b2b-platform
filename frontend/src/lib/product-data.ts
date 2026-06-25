@@ -7,6 +7,7 @@ export interface ProductListParams {
   standard?: string; // comma-separated slugs for multi-select
   region?: string;   // comma-separated hub slugs
   category?: string; // comma-separated category slugs
+  sort?: string;     // popular | newest | name_asc | name_desc
   page?: number;
   limit?: number;
 }
@@ -28,6 +29,7 @@ function buildProductsUrl(params: {
   fields: string[];
   limit: number;
   offset: number;
+  sort?: string;
 }): string {
   const base = getDirectusUrl();
   const url = new URL('/items/products', base);
@@ -38,6 +40,11 @@ function buildProductsUrl(params: {
   // Fields
   for (const f of params.fields) {
     url.searchParams.append('fields[]', f);
+  }
+
+  // Sort
+  if (params.sort) {
+    url.searchParams.set('sort', params.sort);
   }
 
   url.searchParams.set('limit', String(params.limit));
@@ -57,11 +64,11 @@ const PRODUCT_LIST_FIELDS = [
   'industries.industries_id.translations.languages_code', 'industries.industries_id.translations.name',
   'standards.standards_id.id', 'standards.standards_id.name', 'standards.standards_id.slug',
   'standards.standards_id.translations.languages_code', 'standards.standards_id.translations.name',
-  'documents.id', 'documents.title', 'documents.doc_type'
+  'documents.id', 'documents.title', 'documents.doc_type', 'documents.file.id'
 ];
 
 export async function fetchProducts(params: ProductListParams = {}): Promise<ProductListResult> {
-  const { search, industry, standard, region, category, page = 1, limit = PAGE_SIZE } = params;
+  const { search, industry, standard, region, category, sort, page = 1, limit = PAGE_SIZE } = params;
   const offset = (page - 1) * limit;
 
   // Build filter
@@ -126,7 +133,16 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pro
   }
 
   try {
-    const url = buildProductsUrl({ filter, fields: PRODUCT_LIST_FIELDS, limit, offset });
+    // Map sort param to Directus sort field
+    let sortField: string | undefined;
+    switch (sort) {
+      case 'newest': sortField = '-id'; break;
+      case 'name_asc': sortField = 'name'; break;
+      case 'name_desc': sortField = '-name'; break;
+      default: sortField = '-id'; break; // popular = newest by default (id correlates with creation order)
+    }
+
+    const url = buildProductsUrl({ filter, fields: PRODUCT_LIST_FIELDS, limit, offset, sort: sortField });
     const res = await fetch(url, { cache: 'no-store' });
 
     if (!res.ok) {

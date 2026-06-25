@@ -86,7 +86,7 @@ export function SampleRequestsClient({ locale }: SampleRequestsClientProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('searchPlaceholder')}
-            className="form-input pl-9"
+            className="w-full rounded-lg border border-gray-300 bg-white pl-9 pr-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
           />
         </div>
 
@@ -96,7 +96,7 @@ export function SampleRequestsClient({ locale }: SampleRequestsClientProps) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
-            className="form-input pl-9 pr-8 appearance-none"
+            className="w-full rounded-lg border border-gray-300 bg-white pl-9 pr-8 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors appearance-none"
           >
             <option value="all">{t('all')}</option>
             <option value="pending">{t('pending')}</option>

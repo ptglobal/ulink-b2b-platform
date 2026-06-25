@@ -75,14 +75,23 @@ export default function SampleRequestModal({
     const fetchCustomer = async () => {
       try {
         const res = await fetch('/api/customer');
-        if (!res.ok) return;
+        if (!res.ok) throw new Error('fetch failed');
         const payload = await res.json();
-        const c = payload.data ?? payload;
-        if (c.company_name && !company) setCompany(c.company_name);
-        if (c.email && !email) setEmail(c.email ?? user.email);
-        if (c.phone && !phone) setPhone(c.phone);
-        if (c.contact_name && !contactName) setContactName(c.contact_name);
+        const c = payload.customer;
+        if (c) {
+          if (c.company_name && !company) setCompany(c.company_name);
+          if (c.email && !email) setEmail(c.email);
+          if (c.phone && !phone) setPhone(c.phone);
+          if (c.contact_name && !contactName) setContactName(c.contact_name);
+        } else {
+          // Fallback to auth user info
+          if (!email && user.email) setEmail(user.email);
+          if (!contactName && user.first_name) {
+            setContactName([user.first_name, user.last_name].filter(Boolean).join(' '));
+          }
+        }
       } catch {
+        // Fallback to auth user info
         if (!email && user.email) setEmail(user.email);
         if (!contactName && user.first_name) {
           setContactName([user.first_name, user.last_name].filter(Boolean).join(' '));
@@ -264,7 +273,7 @@ export default function SampleRequestModal({
                     value={contactName}
                     onChange={(e) => setContactName(e.target.value)}
                     placeholder="Nguyễn Văn A"
-                    className="form-input"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
                   />
                 </Field>
 
@@ -274,7 +283,7 @@ export default function SampleRequestModal({
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="email@congty.com"
-                    className="form-input"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
                   />
                 </Field>
               </div>
@@ -287,17 +296,19 @@ export default function SampleRequestModal({
                     value={company}
                     onChange={(e) => setCompany(e.target.value)}
                     placeholder="Công ty TNHH ABC"
-                    className="form-input"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
                   />
                 </Field>
 
                 <Field label={labels.phone} error={errors.phone} required>
                   <input
                     type="tel"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
+                    onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))}
                     placeholder="0901234567"
-                    className="form-input"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
                   />
                 </Field>
               </div>
@@ -321,7 +332,7 @@ export default function SampleRequestModal({
                   <select
                     value={province}
                     onChange={(e) => setProvince(e.target.value)}
-                    className="form-input"
+                    className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
                   >
                     <option value="">{labels.selectProvince}</option>
                     {PROVINCES.map((p) => (
@@ -335,7 +346,7 @@ export default function SampleRequestModal({
                     <select
                       value={district}
                       onChange={(e) => setDistrict(e.target.value)}
-                      className="form-input"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
                     >
                       <option value="">{labels.selectDistrict}</option>
                       {districts.map((d) => (
@@ -348,7 +359,7 @@ export default function SampleRequestModal({
                       value={district}
                       onChange={(e) => setDistrict(e.target.value)}
                       placeholder={province ? 'Nhập quận/huyện' : labels.selectDistrict}
-                      className="form-input"
+                      className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors disabled:bg-gray-100 disabled:cursor-not-allowed"
                       disabled={!province}
                     />
                   )}
@@ -362,7 +373,7 @@ export default function SampleRequestModal({
                   value={addressDetail}
                   onChange={(e) => setAddressDetail(e.target.value)}
                   placeholder="Số nhà, tên đường, phường/xã..."
-                  className="form-input"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors"
                 />
               </Field>
             </fieldset>
@@ -385,7 +396,7 @@ export default function SampleRequestModal({
                   onChange={(e) => setMessage(e.target.value)}
                   rows={3}
                   placeholder={labels.messagePlaceholder}
-                  className="form-input resize-none"
+                  className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors resize-y"
                 />
               </Field>
             </fieldset>
