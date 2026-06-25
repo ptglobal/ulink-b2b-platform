@@ -98,7 +98,12 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pro
 
   // Multi-select: comma-separated slugs → _in filter
   if (industry) {
-    const slugs = industry.split(',').filter(Boolean);
+    const slugs = industry.split(',').filter(Boolean).map((s) => {
+      if (s === 'pharmaceutical' || s === 'cosmetics') {
+        return 'pharmaceutical-cosmetics';
+      }
+      return s;
+    });
     if (slugs.length === 1) {
       filter.industries = { industries_id: { slug: { _eq: slugs[0] } } };
     } else {

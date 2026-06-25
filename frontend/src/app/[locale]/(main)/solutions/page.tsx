@@ -13,9 +13,10 @@ import {
   fetchRegionalHubs,
   fetchIndustryProductCounts,
   fetchStandardProductCounts,
-  fetchRegionProductCounts
+  fetchRegionProductCounts,
+  fetchProductCategories
 } from '@/lib/product-data';
-import type { Industry, Standard } from '@/lib/directus';
+import type { Industry, Standard, ProductCategory } from '@/lib/directus';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,7 +37,7 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
   const page = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1);
   const limit = Math.min(48, Math.max(8, parseInt(searchParams.limit ?? '12', 10) || 12));
 
-  const [{ products, totalCount }, industries, standards, hubs, industryCounts, standardCounts, regionCounts] =
+  const [{ products, totalCount }, industries, standards, hubs, industryCounts, standardCounts, regionCounts, categories] =
     await Promise.all([
       fetchProducts({
         search: searchParams.search,
@@ -53,7 +54,8 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
       fetchRegionalHubs(),
       fetchIndustryProductCounts(),
       fetchStandardProductCounts(),
-      fetchRegionProductCounts()
+      fetchRegionProductCounts(),
+      fetchProductCategories()
     ]);
 
   const totalPages = Math.ceil(totalCount / limit);
@@ -65,11 +67,40 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
     {
       key: 'industry',
       label: t('filterByIndustry'),
-      options: industries.map((ind: Industry) => ({
-        slug: ind.slug,
-        name: getTranslatedName(ind, locale),
-        count: industryCounts[String(ind.id)] ?? 0
-      }))
+      options: (() => {
+        const industryOptions = [];
+        const electronicsDb = industries.find(ind => ind.slug === 'electronics');
+        const pharmaCosmeticsDb = industries.find(ind => ind.slug === 'pharmaceutical-cosmetics');
+        const foodBeverageDb = industries.find(ind => ind.slug === 'food-beverage');
+
+        if (electronicsDb) {
+          industryOptions.push({
+            slug: 'electronics',
+            name: locale === 'vi' ? 'Điện tử' : locale === 'ja' ? '電子' : 'Electronics',
+            count: industryCounts[String(electronicsDb.id)] ?? 0
+          });
+        }
+        if (pharmaCosmeticsDb) {
+          industryOptions.push({
+            slug: 'pharmaceutical',
+            name: locale === 'vi' ? 'Dược phẩm' : locale === 'ja' ? '製薬' : 'Pharmaceuticals',
+            count: industryCounts[String(pharmaCosmeticsDb.id)] ?? 0
+          });
+          industryOptions.push({
+            slug: 'cosmetics',
+            name: locale === 'vi' ? 'Mỹ phẩm' : locale === 'ja' ? '化粧品' : 'Cosmetics',
+            count: industryCounts[String(pharmaCosmeticsDb.id)] ?? 0
+          });
+        }
+        if (foodBeverageDb) {
+          industryOptions.push({
+            slug: 'food-beverage',
+            name: locale === 'vi' ? 'Thực phẩm' : locale === 'ja' ? '食品' : 'Food & Beverage',
+            count: industryCounts[String(foodBeverageDb.id)] ?? 0
+          });
+        }
+        return industryOptions;
+      })()
     },
     {
       key: 'standard',
@@ -88,6 +119,27 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
         name: getTranslatedName(hub, locale),
         count: regionCounts[String(hub.id)] ?? 0
       }))
+    },
+    {
+      key: 'category',
+      label: locale === 'vi' ? 'Danh mục' : locale === 'ja' ? 'カテゴリー' : 'Category',
+      options: (() => {
+        const categoryOptions = [];
+        const cleanroomDb = categories.find(cat => cat.slug === 'cleanroom-consumables');
+        const packagingDb = categories.find(cat => cat.slug === 'industrial-packaging');
+
+        categoryOptions.push({
+          slug: 'cleanroom-consumables',
+          name: cleanroomDb ? getTranslatedName(cleanroomDb, locale) : (locale === 'vi' ? 'Giải pháp phòng sạch' : locale === 'ja' ? 'クリーンルーム' : 'Cleanroom Solutions')
+        });
+
+        categoryOptions.push({
+          slug: 'industrial-packaging',
+          name: packagingDb ? getTranslatedName(packagingDb, locale) : (locale === 'vi' ? 'Giải pháp đóng gói' : locale === 'ja' ? '包装' : 'Packaging Solutions')
+        });
+
+        return categoryOptions;
+      })()
     }
   ];
 
