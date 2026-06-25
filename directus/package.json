@@ -16,6 +16,7 @@
     "media:verify": "node testing/verify_media_policy.mjs",
     "media:cleanup": "node scripts/media-cleanup.mjs",
     "rbac:seed": "node seed/rbac_seed.mjs",
+    "seed:sample-request": "node seed/sample_request_seed.mjs",
     "rbac:verify": "node testing/rbac_verify.mjs",
     "openapi:export": "node scripts/openapi_export.mjs",
     "ext:build": "node -e \"const fs = require('fs'); const path = require('path'); fs.readdirSync('extensions').forEach(d => { const src = path.join('extensions', d, 'src'); const dist = path.join('extensions', d, 'dist'); if (fs.existsSync(src)) { fs.mkdirSync(dist, { recursive: true }); fs.cpSync(src, dist, { recursive: true }); } })\""
