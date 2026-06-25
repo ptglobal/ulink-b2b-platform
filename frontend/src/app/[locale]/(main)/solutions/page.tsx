@@ -11,9 +11,10 @@ import {
   fetchRegionalHubs,
   fetchIndustryProductCounts,
   fetchStandardProductCounts,
-  fetchRegionProductCounts
+  fetchRegionProductCounts,
+  fetchProductCategories
 } from '@/lib/product-data';
-import type { Industry, Standard } from '@/lib/directus';
+import type { Industry, Standard, ProductCategory } from '@/lib/directus';
 
 export const dynamic = 'force-dynamic';
 
@@ -33,7 +34,7 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
 
   const page = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1);
 
-  const [{ products, totalCount }, industries, standards, hubs, industryCounts, standardCounts, regionCounts] =
+  const [{ products, totalCount }, industries, standards, hubs, industryCounts, standardCounts, regionCounts, categories] =
     await Promise.all([
       fetchProducts({
         search: searchParams.search,
@@ -48,7 +49,8 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
       fetchRegionalHubs(),
       fetchIndustryProductCounts(),
       fetchStandardProductCounts(),
-      fetchRegionProductCounts()
+      fetchRegionProductCounts(),
+      fetchProductCategories()
     ]);
 
   const totalPages = Math.ceil(totalCount / 12);
@@ -110,11 +112,32 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
         name: getTranslatedName(hub, locale),
         count: regionCounts[String(hub.id)] ?? 0
       }))
+    },
+    {
+      key: 'category',
+      label: locale === 'vi' ? 'Danh mục' : locale === 'ja' ? 'カテゴリー' : 'Category',
+      options: (() => {
+        const categoryOptions = [];
+        const cleanroomDb = categories.find(cat => cat.slug === 'cleanroom-consumables');
+        const packagingDb = categories.find(cat => cat.slug === 'industrial-packaging');
+
+        categoryOptions.push({
+          slug: 'cleanroom-consumables',
+          name: cleanroomDb ? getTranslatedName(cleanroomDb, locale) : (locale === 'vi' ? 'Giải pháp phòng sạch' : locale === 'ja' ? 'クリーンルーム' : 'Cleanroom Solutions')
+        });
+
+        categoryOptions.push({
+          slug: 'industrial-packaging',
+          name: packagingDb ? getTranslatedName(packagingDb, locale) : (locale === 'vi' ? 'Giải pháp đóng gói' : locale === 'ja' ? '包装' : 'Packaging Solutions')
+        });
+
+        return categoryOptions;
+      })()
     }
   ];
 
   // Active filters display
-  const hasFilters = !!(searchParams.search || searchParams.industry || searchParams.standard || searchParams.region);
+  const hasFilters = !!(searchParams.search || searchParams.industry || searchParams.standard || searchParams.region || searchParams.category);
 
   return (
     <div className="w-full px-4 sm:px-8 lg:px-16 py-8">

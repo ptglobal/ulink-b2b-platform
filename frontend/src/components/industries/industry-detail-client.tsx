@@ -67,6 +67,7 @@ interface IndustryDetailClientProps {
   industryData: IndustryData;
   products: Product[];
   locale: string;
+  currentSlug: string;
   translations: {
     home: string;
     resources: string;
@@ -102,6 +103,7 @@ export default function IndustryDetailClient({
   industryData,
   products,
   locale,
+  currentSlug,
   translations
 }: IndustryDetailClientProps) {
   const [activeTab, setActiveTab] = useState<string>('overview');
@@ -342,7 +344,7 @@ export default function IndustryDetailClient({
                 {industryData.cleanroomCategories.map((cat, idx) => (
                   <Link
                     key={idx}
-                    href={`/solutions?industry=${industryData.slug}&category=${cat.slug || 'cleanroom-consumables'}`}
+                    href={`/solutions?industry=${currentSlug}&category=${cat.slug || 'cleanroom-consumables'}`}
                     className="group flex flex-col items-center text-center"
                   >
                     <div className="relative aspect-square w-full bg-[#F8FAFC] overflow-hidden border border-slate-100 flex items-center justify-center p-1 group-hover:shadow-md transition-shadow">
@@ -362,7 +364,7 @@ export default function IndustryDetailClient({
 
               <div className="pt-2">
                 <Link
-                  href={`/solutions?industry=${industryData.slug}&category=cleanroom-consumables`}
+                  href={`/solutions?industry=${currentSlug}&category=cleanroom-consumables`}
                   className="w-full border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-[11px] font-extrabold inline-flex items-center gap-1.5 text-slate-700 transition-colors justify-center"
                 >
                   {industryData.cleanroomViewAll}
@@ -387,7 +389,7 @@ export default function IndustryDetailClient({
                 {industryData.packagingCategories.map((cat, idx) => (
                   <Link
                     key={idx}
-                    href={`/solutions?industry=${industryData.slug}&category=${cat.slug || 'industrial-packaging'}`}
+                    href={`/solutions?industry=${currentSlug}&category=${cat.slug || 'industrial-packaging'}`}
                     className="group flex flex-col items-center text-center"
                   >
                     <div className="relative aspect-square w-full bg-[#F8FAFC] overflow-hidden border border-slate-100 flex items-center justify-center p-1 group-hover:shadow-md transition-shadow">
@@ -407,7 +409,7 @@ export default function IndustryDetailClient({
 
               <div className="pt-2">
                 <Link
-                  href={`/solutions?industry=${industryData.slug}&category=industrial-packaging`}
+                  href={`/solutions?industry=${currentSlug}&category=industrial-packaging`}
                   className="w-full border border-slate-200 bg-white hover:bg-slate-50 px-4 py-2 text-[11px] font-extrabold inline-flex items-center gap-1.5 text-slate-700 transition-colors justify-center"
                 >
                   {industryData.packagingViewAll}
@@ -463,7 +465,7 @@ export default function IndustryDetailClient({
                 {translations.recommendedProducts}
               </h3>
               <Link
-                href={`/solutions?industry=${industryData.slug}`}
+                href={`/solutions?industry=${currentSlug}`}
                 className="text-xs font-bold text-[#1769E2] flex items-center gap-1 hover:underline"
               >
                 {translations.seeAll}

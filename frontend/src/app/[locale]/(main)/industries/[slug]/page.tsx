@@ -486,6 +486,7 @@ export default async function IndustryDetailPage({ params: { locale, slug } }: I
       industryData={industryData}
       products={products}
       locale={locale}
+      currentSlug={slug}
       translations={translations}
     />
   );
