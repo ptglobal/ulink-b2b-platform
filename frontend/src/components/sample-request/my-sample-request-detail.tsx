@@ -128,11 +128,11 @@ export function MySampleRequestDetail({ id, locale }: Props) {
                 <span>{t('detail')}</span>
                 <span className="text-indigo-300 font-mono text-lg">#{request.id}</span>
               </h1>
-              {request.created_at && (
+              {request.date_created && (
                 <div className="flex items-center gap-2 mt-2 text-sm text-indigo-200">
                   <Calendar className="h-3.5 w-3.5" />
                   <span>
-                    {new Date(request.created_at).toLocaleDateString('vi-VN', {
+                    {new Date(request.date_created).toLocaleDateString('vi-VN', {
                       day: '2-digit',
                       month: '2-digit',
                       year: 'numeric',
@@ -275,7 +275,7 @@ export function MySampleRequestDetail({ id, locale }: Props) {
                     <TimelineStep
                       icon={Package}
                       label={t('submitted')}
-                      date={request.created_at}
+                      date={request.date_created}
                       active
                     />
                     {/* Processing */}

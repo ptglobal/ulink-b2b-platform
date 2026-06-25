@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { Search, Loader2, Package, Filter, Clock, CheckCircle2, XCircle, Eye, ChevronRight, FileBox } from 'lucide-react';
+import { Search, Loader2, Package, Clock, CheckCircle2, XCircle, Eye, ChevronRight, FileBox } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -226,11 +226,11 @@ export function MySampleRequestsClient() {
                             <span>{req.company}</span>
                           </>
                         )}
-                        {req.created_at && (
+                        {req.date_created && (
                           <>
                             <span className="w-1 h-1 rounded-full bg-gray-300" />
                             <span>
-                              {new Date(req.created_at).toLocaleDateString('vi-VN', {
+                              {new Date(req.date_created).toLocaleDateString('vi-VN', {
                                 day: '2-digit',
                                 month: '2-digit',
                                 year: 'numeric'

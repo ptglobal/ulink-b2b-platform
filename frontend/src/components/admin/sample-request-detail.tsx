@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, CheckCircle, XCircle, Package, User, MapPin, Box } from 'lucide-react';
+import { ArrowLeft, Loader2, CheckCircle, XCircle, User, MapPin, Box } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import { PROVINCES, DISTRICTS } from '@/data/vietnam-provinces';
@@ -151,10 +151,10 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
             <InfoRow label="Email" value={request.email} />
             <InfoRow label={t('customerName').replace('Tên', 'Công ty')} value={request.company} />
             <InfoRow label="Phone" value={request.phone} />
-            {request.created_at && (
+            {request.date_created && (
               <InfoRow
                 label={t('createdAt')}
-                value={new Date(request.created_at).toLocaleString(locale)}
+                value={new Date(request.date_created).toLocaleString(locale)}
               />
             )}
           </dl>

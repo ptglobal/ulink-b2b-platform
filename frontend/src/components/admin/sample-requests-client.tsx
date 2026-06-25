@@ -146,8 +146,8 @@ export function SampleRequestsClient({ locale }: SampleRequestsClientProps) {
                       <div className="text-xs text-muted-foreground">{req.company}</div>
                     </td>
                     <td className="px-4 py-3 hidden sm:table-cell text-muted-foreground">
-                      {req.created_at
-                        ? new Date(req.created_at).toLocaleDateString(locale, {
+                      {req.date_created
+                        ? new Date(req.date_created).toLocaleDateString(locale, {
                             day: '2-digit',
                             month: '2-digit',
                             year: 'numeric'

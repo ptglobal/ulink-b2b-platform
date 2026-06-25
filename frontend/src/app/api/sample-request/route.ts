@@ -58,7 +58,7 @@ export async function GET(req: Request) {
 
     const cookieHeader = getRequestCookieHeader(req);
     const response = await proxyToDirectus(
-      '/items/sample_requests?fields=*&sort=-created_at,-id',
+      '/items/sample_requests?fields=*&sort=-date_created,-id',
       { method: 'GET', cookieHeader }
     );
 

@@ -224,7 +224,7 @@ export interface SampleRequest {
   user?: string | number | { id: string } | null;
   approval_note?: string | null;
   reject_reason?: string | null;
-  created_at?: string;
+  date_created?: string;
 }
 
 export interface Schema {

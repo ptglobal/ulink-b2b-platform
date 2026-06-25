@@ -17,13 +17,15 @@ export const ROLE_DEFS = [
     id: EDITOR_ROLE_ID,
     name: 'Editor',
     icon: 'edit',
-    description: 'Can CRUD content collections'
+    description: 'Can CRUD content collections',
+    app_access: true
   },
   {
     id: SALES_ROLE_ID,
     name: 'Sales',
     icon: 'business_center',
-    description: 'Can CRUD commerce data and read content'
+    description: 'Can CRUD commerce data and read content',
+    app_access: true
   },
   {
     id: CUSTOMER_ROLE_ID,

@@ -212,6 +212,20 @@ export function buildPermissionDefs() {
       action: 'read',
       permissions: { user: { _eq: '$CURRENT_USER' } },
       fields: ['*']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'sample_requests',
+      action: 'read',
+      permissions: { user: { _eq: '$CURRENT_USER' } },
+      fields: ['*']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'sample_requests',
+      action: 'create',
+      permissions: {},
+      fields: ['*']
     }
   );
 
@@ -225,7 +239,7 @@ export function buildPermissionDefs() {
     });
   }
 
-  for (const col of ['customers', 'orders', 'order_items', 'invoices', 'deliveries', 'rfq_requests']) {
+  for (const col of ['customers', 'orders', 'order_items', 'invoices', 'deliveries', 'rfq_requests', 'sample_requests']) {
     for (const action of ['create', 'read', 'update', 'delete']) {
       permissions.push({
         policy: SALES_POLICY_ID,
@@ -287,6 +301,17 @@ export function buildPermissionDefs() {
     });
   }
 
+  // Sales & Editor need to read directus_users to resolve relational fields (e.g. sample_requests.user)
+  for (const policy of [SALES_POLICY_ID, EDITOR_POLICY_ID]) {
+    permissions.push({
+      policy,
+      collection: 'directus_users',
+      action: 'read',
+      permissions: {},
+      fields: ['id', 'email', 'first_name', 'last_name', 'role', 'status']
+    });
+  }
+
   for (const collection of ['vn_provinces']) {
     permissions.push({
       policy: EDITOR_POLICY_ID,
@@ -319,6 +344,61 @@ export function buildPermissionDefs() {
     permissions: {},
     fields: ['*']
   });
+
+  // Admin panel system collections: presets, activity, revisions, notifications
+  // Required for app_access roles to save items and view revision history in admin UI
+  for (const policy of [EDITOR_POLICY_ID, SALES_POLICY_ID]) {
+    // Presets: admin panel saves layout/filter preferences per user
+    for (const action of ['create', 'read', 'update', 'delete']) {
+      permissions.push({
+        policy,
+        collection: 'directus_presets',
+        action,
+        permissions: { user: { _eq: '$CURRENT_USER' } },
+        fields: ['*']
+      });
+    }
+    // Activity & Revisions: revision sidebar in item detail view
+    permissions.push({
+      policy,
+      collection: 'directus_activity',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+    permissions.push({
+      policy,
+      collection: 'directus_revisions',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+    // Notifications: in-app notifications
+    for (const action of ['create', 'read', 'update']) {
+      permissions.push({
+        policy,
+        collection: 'directus_notifications',
+        action,
+        permissions: { recipient: { _eq: '$CURRENT_USER' } },
+        fields: ['*']
+      });
+    }
+    // Shares: required by admin panel when editing items
+    permissions.push({
+      policy,
+      collection: 'directus_shares',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+    permissions.push({
+      policy,
+      collection: 'directus_shares',
+      action: 'create',
+      permissions: {},
+      fields: ['*']
+    });
+  }
 
   // Editor & Sales have full CRUD access to newsletter subscriptions
   for (const policy of [EDITOR_POLICY_ID, SALES_POLICY_ID]) {
