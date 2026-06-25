@@ -67,23 +67,23 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
     bottomColumns: [
       {
         icon: '/images/icons/icon_support.png',
-        title: isVi ? 'Đội ngũ chuyên môn' : isJa ? '専門家チーム' : 'Đội ngũ chuyên môn',
-        desc: isVi ? 'Tư vấn giải pháp phù hợp theo từng ngành nghề.' : isJa ? '業界ごとに適したソリューションを提案します。' : 'Tư vấn giải pháp phù hợp theo từng ngành nghề.'
+        title: isVi ? 'Đội ngũ chuyên môn' : isJa ? '専門家チーム' : 'Expert Team',
+        desc: isVi ? 'Tư vấn giải pháp phù hợp theo từng ngành nghề.' : isJa ? '業界ごとに適したソリューションを提案します。' : 'Tailored solutions consulting for each industry.'
       },
       {
         icon: '/images/icons/icon_customization.png',
-        title: isVi ? 'Giải pháp tùy chỉnh' : isJa ? 'カスタムソリューション' : 'Giải pháp tùy chỉnh',
-        desc: isVi ? 'Thiết kế linh hoạt, đáp ứng yêu cầu đặc thù của khách hàng.' : isJa ? 'お客様の固有の要件に対応する柔軟な設計。' : 'Thiết kế linh hoạt, đáp ứng yêu cầu đặc thù của khách hàng.'
+        title: isVi ? 'Giải pháp tùy chỉnh' : isJa ? 'カスタムソリューション' : 'Custom Solutions',
+        desc: isVi ? 'Thiết kế linh hoạt, đáp ứng yêu cầu đặc thù của khách hàng.' : isJa ? 'お客様の固有の要件に対応する柔軟な設計。' : 'Flexible design meeting unique customer requirements.'
       },
       {
         icon: '/images/icons/icon_global.png',
-        title: isVi ? 'Chuỗi cung ứng toàn cầu' : isJa ? 'グローバルサプライチェーン' : 'Chuỗi cung ứng toàn cầu',
-        desc: isVi ? 'Sản phẩm chất lượng từ các đối tác uy tín trên toàn thế giới.' : isJa ? '世界中の信頼できるパートナーからの高品質製品。' : 'Sản phẩm chất lượng từ các đối tác uy tín trên toàn thế giới.'
+        title: isVi ? 'Chuỗi cung ứng toàn cầu' : isJa ? 'グローバルサプライチェーン' : 'Global Supply Chain',
+        desc: isVi ? 'Sản phẩm chất lượng từ các đối tác uy tín trên toàn thế giới.' : isJa ? '世界中の信頼できるパートナーからの高品質製品。' : 'Quality products from reliable global partners.'
       },
       {
         icon: '/images/icons/icon_standards.png',
-        title: isVi ? 'Chất lượng & tiêu chuẩn' : isJa ? '品質と基準' : 'Chất lượng & tiêu chuẩn',
-        desc: isVi ? 'Đáp ứng ISO, GMP, RoHS và các tiêu chuẩn quốc tế khác.' : isJa ? 'ISO、GMP、RoHS、およびその他の国際基準に準拠。' : 'Đáp ứng ISO, GMP, RoHS và các tiêu chuẩn quốc tế khác.'
+        title: isVi ? 'Chất lượng & tiêu chuẩn' : isJa ? '品質と基準' : 'Quality & Standards',
+        desc: isVi ? 'Đáp ứng ISO, GMP, RoHS và các tiêu chuẩn quốc tế khác.' : isJa ? 'ISO、GMP、RoHS、およびその他の国際基準に準拠。' : 'Meeting ISO, GMP, RoHS, and other international standards.'
       }
     ],
 
@@ -105,23 +105,7 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
           : ['Cleanroom & PPE', 'ESD Products', 'Cleanroom Consumables', 'Moisture & ESD Packaging']
       },
       {
-        slug: 'electronics',
-        name: isVi ? 'Bán dẫn' : isJa ? '半導体' : 'Semiconductors',
-        icon: '/images/icons/icon_semiconductor.png',
-        image: '/images/icons/semiconductor.png',
-        description: isVi 
-          ? 'Đáp ứng tiêu chuẩn siêu sạch, kiểm soát hạt siêu mịn và tạp chất.'
-          : isJa
-          ? '超クリーン基準を満たし、超微細粒子や不純物を制御します。'
-          : 'Meeting ultra-clean standards, controlling sub-micron particles and impurities.',
-        bullets: isVi 
-          ? ['Phòng sạch & PPE', 'Vật tư phòng sạch', 'Hóa chất & vật liệu chuyên dụng', 'Bao bì chân không & chống tĩnh điện']
-          : isJa
-          ? ['クリーンルーム＆PPE', 'クリーンルーム資材', '専用化学品＆材料', '真空・静電防止包装']
-          : ['Cleanroom & PPE', 'Cleanroom Consumables', 'Specialized Materials & Chemicals', 'Vacuum & ESD Packaging']
-      },
-      {
-        slug: 'pharmaceutical-cosmetics',
+        slug: 'pharmaceutical',
         name: isVi ? 'Dược phẩm' : isJa ? '製薬' : 'Pharmaceuticals',
         icon: '/images/icons/icon_pharmaceutical.png',
         image: '/images/icons/pharmaceuticals.png',
@@ -137,20 +121,20 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
           : ['Cleanroom & PPE', 'Consumable Supplies', 'Cleanroom Equipment', 'Pharmaceutical Packaging']
       },
       {
-        slug: 'pharmaceutical-cosmetics',
-        name: isVi ? 'Y tế' : isJa ? '医療' : 'Medical',
-        icon: '/images/icons/icon_medical.png',
+        slug: 'cosmetics',
+        name: isVi ? 'Mỹ phẩm' : isJa ? '化粧品' : 'Cosmetics',
+        icon: '/images/icons/icon_pharmaceutical.png',
         image: '/images/icons/medical.png',
         description: isVi 
-          ? 'Đảm bảo vô trùng, bảo vệ nhân viên và bệnh nhân khỏi nhiễm chéo.'
+          ? 'Kiểm soát ô nhiễm và vi sinh, bảo vệ sức khỏe và chất lượng sản phẩm.'
           : isJa
-          ? '無菌性を確保し、スタッフと患者を交差感染から保護します。'
-          : 'Ensuring sterility, protecting staff and patients from cross-contamination.',
+          ? '微生物と汚染を制御し、健康と製品の品質を保護します。'
+          : 'Microbial and contamination control, protecting health and product quality.',
         bullets: isVi 
-          ? ['Phòng sạch & PPE', 'Vật tư y tế dùng một lần', 'Dung dịch & hóa chất', 'Giải pháp khử khuẩn']
+          ? ['Phòng sạch & PPE', 'Khăn lau & chất làm sạch', 'Thiết bị đóng gói vô trùng', 'Bao bì màng nhôm bảo vệ']
           : isJa
-          ? ['クリーンルーム＆PPE', '使い捨て医療用資材', '薬液＆化学品', '消毒・滅菌ソリューション']
-          : ['Cleanroom & PPE', 'Disposable Medical Supplies', 'Solutions & Chemicals', 'Disinfection Solutions']
+          ? ['クリーンルーム＆PPE', 'ワイパー＆洗浄剤', '無菌包装設備', 'アルミ保護包装']
+          : ['Cleanroom & PPE', 'Wipers & Sanitizers', 'Sterile Packaging Equipment', 'Aluminum Barrier Packaging']
       },
       {
         slug: 'food-beverage',
@@ -167,22 +151,6 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
           : isJa
           ? ['クリーンルーム＆PPE', '消耗資材', '衛生化学品', '食品包装']
           : ['Cleanroom & PPE', 'Consumable Supplies', 'Sanitation Chemicals', 'Food Packaging']
-      },
-      {
-        slug: 'automotive',
-        name: isVi ? 'Cơ khí chế tạo' : isJa ? '精密機械' : 'Manufacturing',
-        icon: '/images/icons/icon_manufacturing.png',
-        image: '/images/icons/manufacturing.png',
-        description: isVi 
-          ? 'Bảo vệ sản phẩm và thiết bị, ổn định sản xuất và nâng cao chất lượng.'
-          : isJa
-          ? '製品と設備を保護し、生産を安定させて品質を向上させます。'
-          : 'Protecting products and equipment, stabilizing production and improving quality.',
-        bullets: isVi 
-          ? ['Phòng sạch & PPE', 'Vật tư phòng sạch', 'Dầu mỡ & hóa chất', 'Bao bì bảo vệ sản phẩm']
-          : isJa
-          ? ['クリーンルーム＆PPE', 'クリーンルーム資材', '潤滑油＆化学品', '製品保護包装']
-          : ['Cleanroom & PPE', 'Cleanroom Consumables', 'Lubricants & Chemicals', 'Product Protective Packaging']
       }
     ]
   };

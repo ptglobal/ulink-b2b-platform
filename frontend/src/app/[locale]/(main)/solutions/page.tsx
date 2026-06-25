@@ -58,11 +58,40 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
     {
       key: 'industry',
       label: t('filterByIndustry'),
-      options: industries.map((ind: Industry) => ({
-        slug: ind.slug,
-        name: getTranslatedName(ind, locale),
-        count: industryCounts[String(ind.id)] ?? 0
-      }))
+      options: (() => {
+        const industryOptions = [];
+        const electronicsDb = industries.find(ind => ind.slug === 'electronics');
+        const pharmaCosmeticsDb = industries.find(ind => ind.slug === 'pharmaceutical-cosmetics');
+        const foodBeverageDb = industries.find(ind => ind.slug === 'food-beverage');
+
+        if (electronicsDb) {
+          industryOptions.push({
+            slug: 'electronics',
+            name: locale === 'vi' ? 'Điện tử' : locale === 'ja' ? '電子' : 'Electronics',
+            count: industryCounts[String(electronicsDb.id)] ?? 0
+          });
+        }
+        if (pharmaCosmeticsDb) {
+          industryOptions.push({
+            slug: 'pharmaceutical',
+            name: locale === 'vi' ? 'Dược phẩm' : locale === 'ja' ? '製薬' : 'Pharmaceuticals',
+            count: industryCounts[String(pharmaCosmeticsDb.id)] ?? 0
+          });
+          industryOptions.push({
+            slug: 'cosmetics',
+            name: locale === 'vi' ? 'Mỹ phẩm' : locale === 'ja' ? '化粧品' : 'Cosmetics',
+            count: industryCounts[String(pharmaCosmeticsDb.id)] ?? 0
+          });
+        }
+        if (foodBeverageDb) {
+          industryOptions.push({
+            slug: 'food-beverage',
+            name: locale === 'vi' ? 'Thực phẩm' : locale === 'ja' ? '食品' : 'Food & Beverage',
+            count: industryCounts[String(foodBeverageDb.id)] ?? 0
+          });
+        }
+        return industryOptions;
+      })()
     },
     {
       key: 'standard',
@@ -88,7 +117,7 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
   const hasFilters = !!(searchParams.search || searchParams.industry || searchParams.standard || searchParams.region);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="w-full px-4 sm:px-8 lg:px-16 py-8">
       <h1 className="text-3xl font-bold mb-6">{t('title')}</h1>
 
       {/* Search bar */}
@@ -96,6 +125,7 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
         <ProductSearch
           defaultValue={searchParams.search ?? ''}
           placeholder={t('searchPlaceholder')}
+          roundedClass="rounded-none"
         />
       </div>
 
@@ -126,7 +156,7 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
           {products.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
               {products.map((product) => (
-                <ProductCard key={product.id} product={product} locale={locale} />
+                <ProductCard key={product.id} product={product} locale={locale} roundedClass="rounded-none" />
               ))}
             </div>
           ) : (
@@ -200,7 +230,7 @@ function PaginationLink({
   return (
     <a
       href={href}
-      className={`inline-flex items-center justify-center min-w-[36px] h-9 px-3 rounded-md text-sm font-medium transition-colors ${
+      className={`inline-flex items-center justify-center min-w-[36px] h-9 px-3 rounded-none text-sm font-medium transition-colors ${
         active
           ? 'bg-primary text-primary-foreground'
           : 'border border-input hover:bg-accent hover:text-accent-foreground'

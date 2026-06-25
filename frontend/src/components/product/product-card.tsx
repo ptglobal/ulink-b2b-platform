@@ -9,9 +9,10 @@ import type { Product } from '@/lib/directus';
 interface ProductCardProps {
   product: Product;
   locale: string;
+  roundedClass?: string;
 }
 
-export default function ProductCard({ product, locale }: ProductCardProps) {
+export default function ProductCard({ product, locale, roundedClass = 'rounded-lg' }: ProductCardProps) {
   const DIRECTUS_URL = getDirectusUrl();
   const productName = getTranslatedName(product, locale);
 
@@ -30,8 +31,10 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
   // Find TDS document
   const tdsDoc = product.documents?.find((doc) => doc.doc_type === 'tds');
 
+  const buttonRoundedClass = roundedClass === 'rounded-none' ? 'rounded-none' : 'rounded-md';
+
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border shadow-sm transition-shadow hover:shadow-md">
+    <div className={`flex flex-col overflow-hidden border shadow-sm transition-shadow hover:shadow-md ${roundedClass}`}>
       {/* Hero image */}
       <Link href={`/${locale}/solutions/${product.slug}`} className="relative aspect-[4/3] w-full bg-muted block">
         {product.hero ? (
@@ -92,11 +95,11 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
         {/* Action buttons */}
         <div className="mt-auto flex items-center gap-2 pt-4">
           {firstSkuCode ? (
-            <AddToCartButton skuCode={firstSkuCode} />
+            <AddToCartButton skuCode={firstSkuCode} className={buttonRoundedClass} />
           ) : (
             <Link
               href={`/${locale}/solutions/${product.slug}`}
-              className="flex-1 inline-flex items-center justify-center rounded-md bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors"
+              className={`flex-1 inline-flex items-center justify-center ${buttonRoundedClass} bg-primary px-3 py-2 text-xs font-medium text-primary-foreground hover:bg-primary/90 transition-colors`}
             >
               Xem chi tiết
             </Link>
@@ -106,14 +109,14 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
               href={`${DIRECTUS_URL}/assets/${typeof tdsDoc.file === 'object' && tdsDoc.file ? tdsDoc.file.id : tdsDoc.file}?download`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center rounded-md border border-input px-3 py-2 text-xs font-medium hover:bg-accent transition-colors"
+              className={`inline-flex items-center justify-center ${buttonRoundedClass} border border-input px-3 py-2 text-xs font-medium hover:bg-accent transition-colors`}
               title="Tải TDS"
             >
               <FileDown className="h-3.5 w-3.5 mr-1" />
               TDS
             </a>
           ) : (
-            <span className="inline-flex items-center justify-center rounded-md border border-input px-3 py-2 text-xs font-medium text-muted-foreground opacity-50 cursor-not-allowed">
+            <span className={`inline-flex items-center justify-center ${buttonRoundedClass} border border-input px-3 py-2 text-xs font-medium text-muted-foreground opacity-50 cursor-not-allowed`}>
               <FileDown className="h-3.5 w-3.5 mr-1" />
               TDS
             </span>

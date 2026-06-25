@@ -72,7 +72,7 @@ export default function ProductFilter({ groups }: ProductFilterProps) {
                     onChange={(e) =>
                       handleChange(group.key, option.slug, e.target.checked)
                     }
-                    className="accent-primary h-4 w-4 rounded"
+                    className="accent-primary h-4 w-4 rounded-none"
                   />
                   <span>
                     {option.name}
