@@ -306,6 +306,53 @@ export function ResourceDetail({
             ))}
           </div>
 
+          {/* Related Articles Widget */}
+          {relatedArticles.length > 0 && (
+            <div className="pt-8 border-t border-slate-100 space-y-4">
+              <div className="flex justify-between items-center pb-1">
+                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                  {labels.relatedTitle[locale]}
+                </h3>
+                <button
+                  onClick={onBack}
+                  className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-0.5"
+                >
+                  <span>{labels.seeAll[locale]}</span>
+                  <span>→</span>
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {relatedArticles.map((art) => (
+                  <div
+                    key={art.id}
+                    onClick={() => onSelectRelated(art)}
+                    className="flex gap-3 items-start cursor-pointer group p-3 border border-slate-100 hover:border-slate-300 transition-all bg-slate-50/30 hover:bg-white rounded-none"
+                  >
+                    <div className="relative h-14 w-14 shrink-0 bg-slate-100 overflow-hidden border border-slate-100 rounded-none">
+                      <Image
+                        src={art.image}
+                        alt={art.title[locale]}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
+
+                    <div className="space-y-1">
+                      <h4 className="text-xs font-semibold text-slate-700 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
+                        {art.title[locale]}
+                      </h4>
+                      <div className="text-[10px] text-slate-400 flex items-center gap-1 font-mono mt-1">
+                        <span>{art.date}</span>
+                        <span>•</span>
+                        <span>{art.readTime[locale]}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Column 3: Right Column (3/12) - AI Summary, Audio Player & Related Articles */}
@@ -430,53 +477,7 @@ export function ResourceDetail({
             </div>
           </div>
 
-          {/* Related Articles Widget */}
-          {relatedArticles.length > 0 && (
-            <div className="border border-slate-100 bg-white p-5 rounded-none space-y-4">
-              <div className="flex justify-between items-center pb-2 border-b border-slate-100">
-                <h3 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                  {labels.relatedTitle[locale]}
-                </h3>
-                <button
-                  onClick={onBack}
-                  className="text-[10px] font-bold text-blue-600 hover:underline flex items-center gap-0.5"
-                >
-                  <span>{labels.seeAll[locale]}</span>
-                  <span>→</span>
-                </button>
-              </div>
 
-              <div className="space-y-4">
-                {relatedArticles.map((art) => (
-                  <div
-                    key={art.id}
-                    onClick={() => onSelectRelated(art)}
-                    className="flex gap-3 items-start cursor-pointer group pb-3 last:pb-0 border-b last:border-b-0 border-slate-50"
-                  >
-                    <div className="relative h-12 w-12 shrink-0 bg-slate-50 overflow-hidden border border-slate-100 rounded-none">
-                      <Image
-                        src={art.image}
-                        alt={art.title[locale]}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform"
-                      />
-                    </div>
-
-                    <div className="space-y-1">
-                      <h4 className="text-[11px] font-semibold text-slate-700 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
-                        {art.title[locale]}
-                      </h4>
-                      <div className="text-[9px] text-slate-400 flex items-center gap-1 font-mono">
-                        <span>{art.date}</span>
-                        <span>•</span>
-                        <span>{art.readTime[locale]}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
 
           {/* Modal Footer Actions (Extra actions for details) */}
           <div className="flex flex-wrap items-center justify-between gap-3 border border-slate-100 px-5 py-4 bg-slate-50">

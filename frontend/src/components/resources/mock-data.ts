@@ -341,5 +341,233 @@ export const MOCK_RESOURCES: ResourceItem[] = [
         }
       ]
     }
+  },
+  {
+    id: 'ART-004',
+    category: 'standard',
+    badge: { vi: 'Tiêu chuẩn', en: 'Standard', ja: '規格' },
+    title: {
+      vi: 'Tiêu chuẩn phòng sạch GMP trong sản xuất Dược phẩm',
+      en: 'GMP Cleanroom Standards in Pharmaceutical Manufacturing',
+      ja: '医薬品製造におけるGMPクリーンルーム規格'
+    },
+    description: {
+      vi: 'Tìm hiểu các nguyên tắc thiết kế và vận hành phòng sạch đáp ứng tiêu chuẩn GMP WHO trong sản xuất dược phẩm.',
+      en: 'Learn about the design and operational principles of cleanrooms meeting GMP WHO standards in pharmaceutical manufacturing.',
+      ja: '医薬品製造におけるGMP WHO規格を満たすクリーンルームの設計および運用原則について説明します。'
+    },
+    date: '15/05/2026',
+    image: '/images/home/product-wipes.jpg',
+    industryId: 'pharmaceutical',
+    topicId: 'cleanroom',
+    contentType: 'certificate',
+    author: {
+      name: { vi: 'Trần Thị Lan', en: 'Lan Thi Tran', ja: 'チャン・ティ・ラン' },
+      role: { vi: 'Trưởng phòng Đảm bảo Chất lượng QA', en: 'QA Director', ja: '品質保証(QA)部長' },
+      avatar: '/images/about/op-team.png'
+    },
+    readTime: { vi: '7 phút đọc', en: '7 min read', ja: '7分で読める' },
+    audioDuration: '07:15',
+    audioSecs: 435,
+    size: '2.1 MB',
+    type: 'PDF',
+    downloadUrl: '/documents/ART-004.pdf',
+    sections: [
+      {
+        id: 'sec-1',
+        num: '1.',
+        title: { vi: 'Tiêu chuẩn GMP trong phòng sạch', en: 'GMP Standards in Cleanrooms', ja: 'クリーンルームにおけるGMP規格' },
+        content: {
+          vi: 'Hệ thống phòng sạch dược phẩm phải kiểm soát nghiêm ngặt cả nồng độ hạt bụi và số lượng vi sinh vật trong không khí nhằm loại bỏ hoàn toàn nguy cơ nhiễm chéo.',
+          en: 'Pharmaceutical cleanrooms must strictly control both particle concentrations and viable microorganisms to prevent cross-contamination.',
+          ja: '医薬品クリーンルームは、交差汚染を防止するために、粒子濃度と生存微生物の両方を厳密に制御する必要があります。'
+        }
+      }
+    ],
+    aiSummary: {
+      intro: {
+        vi: 'Hướng dẫn toàn diện về thiết kế và vận hành phòng sạch dược phẩm đáp ứng các cấp độ sạch A, B, C, D theo tiêu chuẩn GMP.',
+        en: 'Comprehensive guide to designing and operating pharmaceutical cleanrooms meeting cleanliness grades A, B, C, D under GMP.',
+        ja: 'GMPに基づく清浄度グレードA、B、C、Dを満たす医薬品クリーンルーム của 設計と運用の包括的なガイド。'
+      },
+      bullets: [
+        {
+          vi: 'Kiểm soát chặt chẽ vi sinh vật và tiểu phân bụi lơ lửng.',
+          en: 'Strict control of microorganisms and airborne particulates.',
+          ja: '微生物および空気中の粒子の厳格な制御。'
+        }
+      ]
+    }
+  },
+  {
+    id: 'ART-005',
+    category: 'case-study',
+    badge: { vi: 'Case Study', en: 'Case Study', ja: 'ケーススタディ' },
+    title: {
+      vi: 'Giải pháp tối ưu màng bọc chống tĩnh điện ESD cho tập đoàn linh kiện Hàn Quốc',
+      en: 'Optimizing ESD Shielding Packaging for a Korean Electronics Conglomerate',
+      ja: '韓国の電子部品グループ向けのESDシールドパッケージの最適化'
+    },
+    description: {
+      vi: 'Chi tiết dự án thiết kế bao bì chống tĩnh điện chuyên dụng giúp giảm tỷ lệ lỗi hỏng linh kiện trong quá trình vận chuyển xuống dưới 0.1%.',
+      en: 'Detailed project on custom ESD packaging design that helped reduce component defect rate during transport to below 0.1%.',
+      ja: '輸送中の部品欠陥率を0.1%未満に抑えるのに役立った、カスタムESDパッケージング設計に関する詳細なプロジェクト。'
+    },
+    date: '10/05/2026',
+    image: '/images/home/product-gloves.jpg',
+    industryId: 'electronics',
+    topicId: 'esd',
+    contentType: 'article',
+    author: {
+      name: { vi: 'Lee Sang Min', en: 'Sang Min Lee', ja: 'イ・サンミン' },
+      role: { vi: 'Chuyên gia Tư vấn Giải pháp – ULink Korea', en: 'Solutions Advisor – ULink Korea', ja: 'ソリューションアドバイザー – ULink Korea' },
+      avatar: '/images/about/op-team.png'
+    },
+    readTime: { vi: '9 phút đọc', en: '9 min read', ja: '9分で読める' },
+    audioDuration: '09:30',
+    audioSecs: 570,
+    size: '3.2 MB',
+    type: 'PDF',
+    downloadUrl: '/documents/ART-005.pdf',
+    sections: [
+      {
+        id: 'sec-1',
+        num: '1.',
+        title: { vi: 'Thách thức về phóng tĩnh điện', en: 'The Threat of Electrostatic Discharge', ja: '静電気放電の脅威' },
+        content: {
+          vi: 'Linh kiện bán dẫn rất nhạy cảm với phóng tĩnh điện (ESD). Một dòng điện cực nhỏ vài Volt cũng có thể phá hủy hoàn toàn cấu trúc mạch silic bên trong.',
+          en: 'Semiconductor components are highly sensitive to ESD. A tiny discharge of just a few Volts can destroy the internal silicon circuitry.',
+          ja: '半導体部品はESDに対して非常に敏感です。わずか数ボルトの小さな放電でも、内部のシリコン回路を破壊する可能性があります。'
+        }
+      }
+    ],
+    aiSummary: {
+      intro: {
+        vi: 'Nghiên cứu dự án ứng dụng túi chắn điện từ (Shielding Bags) và khay nhựa ESD của ULink giúp giảm thiểu rủi ro vận chuyển.',
+        en: 'Case study on applying ULink electromagnetic shielding bags and ESD plastic trays to minimize transport risks.',
+        ja: '輸送リスクを最小限に抑えるためのULink電磁シールドバッグおよびESDプラスチックトレイの適用に関するケーススタディ。'
+      },
+      bullets: [
+        {
+          vi: 'Giảm đáng kể tỷ lệ hư hỏng sản phẩm trong chuỗi cung ứng linh kiện bán dẫn.',
+          en: 'Significantly reduced product damage rates in the semiconductor supply chain.',
+          ja: '半導体サプライチェーンにおける製品損傷率の大幅な削減。'
+        }
+      ]
+    }
+  },
+  {
+    id: 'ART-006',
+    category: 'news',
+    badge: { vi: 'Tin tức', en: 'News', ja: 'ニュース' },
+    title: {
+      vi: 'ULink ra mắt dòng sản phẩm túi nhôm đóng gói phòng sạch chuẩn Class 100',
+      en: 'ULink Launches Class 100 Cleanroom Aluminum Packaging Bags',
+      ja: 'ULinkがクラス100クリーンルーム用アルミ包装袋の製品ラインを発売'
+    },
+    description: {
+      vi: 'Dòng sản phẩm túi nhôm thế hệ mới với khả năng chống ẩm vượt trội, không phát sinh xơ bụi bụi bẩn, chuyên dùng cho đóng gói dược phẩm và thực phẩm cao cấp.',
+      en: 'Next-generation aluminum bags with outstanding moisture barrier, zero lint, specialized for packaging pharmaceuticals and high-end food products.',
+      ja: '優れた防湿性、発塵ゼロを備え、医薬品や高級食品の包装に特化した次世代アルミ袋製品ライン。'
+    },
+    date: '05/05/2026',
+    image: '/images/home/product-wipes.jpg',
+    industryId: 'food',
+    topicId: 'packaging',
+    contentType: 'article',
+    author: {
+      name: { vi: 'Phạm Minh Tuấn', en: 'Minh Tuan Pham', ja: 'ファム・ミン・トゥアン' },
+      role: { vi: 'Giám đốc Phát triển Sản phẩm – ULink', en: 'Product Development Director – ULink', ja: '製品開発ディレクター – ULink' },
+      avatar: '/images/about/op-team.png'
+    },
+    readTime: { vi: '4 phút đọc', en: '4 min read', ja: '4分で読める' },
+    audioDuration: '04:10',
+    audioSecs: 250,
+    size: '1.0 MB',
+    type: 'PDF',
+    downloadUrl: '/documents/ART-006.pdf',
+    sections: [
+      {
+        id: 'sec-1',
+        num: '1.',
+        title: { vi: 'Độ sạch tối ưu cho bao bì thực phẩm & dược phẩm', en: 'Optimal Cleanliness for Food & Pharma Packaging', ja: '食品・医薬品包装における最適な清潔度' },
+        content: {
+          vi: 'Túi nhôm phòng sạch Class 100 được sản xuất trong môi trường vô trùng khép kín, được kiểm tra nghiêm ngặt về chỉ số bụi và độ ẩm trước khi xuất xưởng.',
+          en: 'Class 100 cleanroom aluminum bags are manufactured in a closed sterile environment, strictly checked for dust and moisture indices before shipping.',
+          ja: 'クラス100クリーンルーム用アルミ袋は、密閉された無菌環境で製造され、出荷前にほこりや湿度の指数が厳格にチェックされます。'
+        }
+      }
+    ],
+    aiSummary: {
+      intro: {
+        vi: 'ULink chính thức giới thiệu giải pháp bao bì bảo vệ toàn diện chống oxy hóa và ẩm mốc cho các ứng dụng công nghiệp nhạy cảm.',
+        en: 'ULink officially introduces a comprehensive packaging solution protecting against oxidation and moisture for sensitive industrial apps.',
+        ja: 'ULinkは、敏感な産業用アプリケーション向けに、酸化や湿気から保護する包括的なパッケージングソリューションを公式に導入します。'
+      },
+      bullets: [
+        {
+          vi: 'Khả năng ngăn ẩm, ngăn không khí và cản ánh sáng tối đa.',
+          en: 'Maximum moisture barrier, air barrier, and light blocking capability.',
+          ja: '最大の防湿、空気遮断、および遮光機能。'
+        }
+      ]
+    }
+  },
+  {
+    id: 'ART-007',
+    category: 'industry',
+    badge: { vi: 'Chuyên ngành', en: 'Industry', ja: '専門分野' },
+    title: {
+      vi: 'Quy chuẩn đóng gói phòng sạch trong ngành Mỹ phẩm cao cấp',
+      en: 'Cleanroom Packaging Standards in Premium Cosmetics Industry',
+      ja: '高級化粧品産業におけるクリーンルーム包装規格'
+    },
+    description: {
+      vi: 'Làm thế nào để duy trì độ vô trùng và hạn chế nhiễm khuẩn tối đa cho các sản phẩm mỹ phẩm organic thông qua bao bì phòng sạch chuyên dụng.',
+      en: 'How to maintain sterility and maximize bacterial control for organic cosmetics using dedicated cleanroom packaging.',
+      ja: '専用のクリーンルーム包装を使用して、オーガニック化粧品製品の無菌性を維持し、細菌管理を最大化する方法。'
+    },
+    date: '01/05/2026',
+    image: '/images/industries/electronics_hero.png',
+    industryId: 'cosmetics',
+    topicId: 'packaging',
+    contentType: 'tech-doc',
+    author: {
+      name: { vi: 'Nguyễn Thị Mai', en: 'Mai Thi Nguyen', ja: 'グエン・ティ・マイ' },
+      role: { vi: 'Chuyên gia phát triển công thức – ULink Beauty', en: 'Formulation Expert – ULink Beauty', ja: '処方専門家 – ULink Beauty' },
+      avatar: '/images/about/op-team.png'
+    },
+    readTime: { vi: '6 phút đọc', en: '6 min read', ja: '6分で読める' },
+    audioDuration: '06:40',
+    audioSecs: 400,
+    size: '1.5 MB',
+    type: 'PDF',
+    downloadUrl: '/documents/ART-007.pdf',
+    sections: [
+      {
+        id: 'sec-1',
+        num: '1.',
+        title: { vi: 'Yêu cầu kiểm soát nhiễm khuẩn', en: 'Bacterial Contamination Control Requirements', ja: '細菌汚染管理要件' },
+        content: {
+          vi: 'Các sản phẩm mỹ phẩm tự nhiên không chứa chất bảo quan nhân tạo rất dễ bị ô nhiễm vi sinh. Việc đóng gói trong phòng sạch chuẩn Class 1000 giúp giữ trọn vẹn chất lượng mỹ phẩm.',
+          en: 'Natural cosmetics without artificial preservatives are highly prone to microbial contamination. Packaging in Class 1000 cleanrooms keeps cosmetic quality intact.',
+          ja: '人工保存料を含まないナチュラル化粧品は、微生物汚染が発生しやすいです。クラス1000クリーンルームでの包装は、化粧品の品質をそのまま維持します。'
+        }
+      }
+    ],
+    aiSummary: {
+      intro: {
+        vi: 'Bài viết phân tích tầm quan trọng của bao bì phòng sạch vô trùng và kỹ thuật gowning của nhân sự đóng gói mỹ phẩm organic.',
+        en: 'The article analyzes the importance of sterile cleanroom packaging and gowning techniques of organic cosmetics packaging staff.',
+        ja: 'この記事では、無菌クリーンルーム包装の重要性と、オーガニック化粧品包装スタッフの更衣技術について分析しています。'
+      },
+      bullets: [
+        {
+          vi: 'Đóng gói trong môi trường vô trùng giúp kéo dài thời gian sử dụng tự nhiên của mỹ phẩm.',
+          en: 'Packaging in a sterile environment extends the natural shelf life of cosmetics.',
+          ja: '無菌環境での包装は、化粧品の自然な貯蔵寿命を延ばします。'
+        }
+      ]
+    }
   }
 ];
