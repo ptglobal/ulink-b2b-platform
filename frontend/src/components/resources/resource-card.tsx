@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Calendar } from 'lucide-react';
+import { Calendar, FileDown } from 'lucide-react';
 import Image from 'next/image';
 import { ResourceItem } from './types';
 
@@ -10,9 +10,10 @@ interface ResourceCardProps {
   locale: 'vi' | 'en' | 'ja';
   onClick: () => void;
   readDetailsLabel: string;
+  onDownload?: (resource: ResourceItem) => void;
 }
 
-export function ResourceCard({ resource, locale, onClick, readDetailsLabel }: ResourceCardProps) {
+export function ResourceCard({ resource, locale, onClick, readDetailsLabel, onDownload }: ResourceCardProps) {
   return (
     <motion.div
       layout
@@ -58,8 +59,25 @@ export function ResourceCard({ resource, locale, onClick, readDetailsLabel }: Re
         </div>
 
         {/* Read more link at bottom */}
-        <div className="text-[11px] text-blue-600 font-semibold hover:underline mt-4 pt-3 border-t border-slate-50 flex items-center gap-1">
-          {readDetailsLabel}
+        <div className="mt-4 pt-3 border-t border-slate-50 flex items-center justify-between">
+          <div className="text-[11px] text-blue-600 font-semibold hover:underline flex items-center gap-1">
+            {readDetailsLabel}
+          </div>
+          {resource.downloadUrl && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onDownload) {
+                  onDownload(resource);
+                }
+              }}
+              className="flex items-center gap-1 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 hover:text-blue-600 hover:border-blue-300 border border-slate-200 bg-slate-50 transition-colors rounded-none"
+              title={locale === 'vi' ? 'Tải tài liệu' : locale === 'ja' ? 'ダウンロード' : 'Download'}
+            >
+              <FileDown className="h-3.5 w-3.5 text-blue-600" />
+              {resource.size && <span className="font-mono text-[9px]">{resource.size}</span>}
+            </button>
+          )}
         </div>
       </div>
     </motion.div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useEffect } from 'react';
-import { Search, FileText, X, ChevronDown } from 'lucide-react';
+import { Search, FileText, X, ChevronDown, FileDown, AlertTriangle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { Link } from '@/i18n/navigation';
@@ -32,6 +32,60 @@ export function ResourcesClient() {
   const [sortBy, setSortBy] = useState('latest');
   const [selectedResource, setSelectedResource] = useState<ResourceItem | null>(null);
   const [emailInput, setEmailInput] = useState('');
+
+  // Toast error message state
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Auto-dismiss error message toast after 4 seconds
+  useEffect(() => {
+    if (errorMessage) {
+      const timer = setTimeout(() => {
+        setErrorMessage(null);
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [errorMessage]);
+
+  const handleDownload = async (resource: ResourceItem) => {
+    if (!resource.downloadUrl) return;
+    
+    try {
+      const response = await fetch(resource.downloadUrl);
+      
+      if (!response.ok) {
+        throw new Error(
+          locale === 'vi' 
+            ? `Không tìm thấy tài liệu hoặc máy chủ trả về mã lỗi: ${response.status}`
+            : locale === 'ja'
+            ? `ファイルが見つからないか、サーバーがエラーを返しました: ${response.status}`
+            : `File not found or server returned code: ${response.status}`
+        );
+      }
+      
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      
+      const tempLink = document.createElement('a');
+      tempLink.href = blobUrl;
+      const filename = resource.downloadUrl.split('/').pop() || `${resource.id}.pdf`;
+      tempLink.setAttribute('download', filename);
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      
+      document.body.removeChild(tempLink);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error: any) {
+      console.error('Download failed:', error);
+      
+      const errorPrefix = locale === 'vi' 
+        ? 'Tải tài liệu thất bại: ' 
+        : locale === 'ja'
+        ? 'ダウンロードに失敗しました: ' 
+        : 'Failed to download document: ';
+
+      setErrorMessage(`${errorPrefix}${error.message || 'Network error'}`);
+    }
+  };
 
   // Auto-fill selectedResource if matching URL query parameter
   useEffect(() => {
@@ -163,7 +217,8 @@ export function ResourcesClient() {
     shareArticle: { vi: 'Chia sẻ bài viết', en: 'Share article', ja: '記事を共有' },
     modalShare: { vi: 'Chia sẻ', en: 'Share', ja: '共有' },
     modalPrint: { vi: 'In trang', en: 'Print', ja: '印刷' },
-    modalClose: { vi: 'Đóng lại', en: 'Close', ja: '閉じる' }
+    modalClose: { vi: 'Đóng lại', en: 'Close', ja: '閉じる' },
+    modalDownload: { vi: 'Tải về máy', en: 'Tải về máy', ja: 'ダウンロード', default: 'Download' }
   };
 
   const handleShare = (resource: ResourceItem) => {
@@ -395,6 +450,7 @@ export function ResourcesClient() {
                             locale={locale}
                             onClick={() => setSelectedResource(resource)}
                             readDetailsLabel={L.readDetails[locale]}
+                            onDownload={handleDownload}
                           />
                         ))}
                       </motion.div>
@@ -463,7 +519,31 @@ export function ResourcesClient() {
             onSelectRelated={(item) => setSelectedResource(item)}
             labels={L}
             handleShare={handleShare}
+            onDownload={handleDownload}
           />
+        )}
+      </AnimatePresence>
+
+      {/* Toast Error Notification */}
+      <AnimatePresence>
+        {errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.95 }}
+            className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-red-600 text-white px-4 py-3 shadow-2xl border-l-4 border-red-800 rounded-none max-w-md"
+          >
+            <AlertTriangle className="h-5 w-5 shrink-0 text-white" />
+            <div className="flex-1 text-xs font-semibold">
+              {errorMessage}
+            </div>
+            <button
+              onClick={() => setErrorMessage(null)}
+              className="p-1 hover:bg-red-700 transition-colors rounded-none"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

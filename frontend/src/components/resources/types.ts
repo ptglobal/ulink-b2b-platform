@@ -40,4 +40,7 @@ export interface ResourceItem {
   aiSummary: AISummary;
   audioDuration: string;
   audioSecs: number;
+  size?: string;
+  type?: string;
+  downloadUrl?: string;
 }

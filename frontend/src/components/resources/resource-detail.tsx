@@ -33,6 +33,7 @@ interface ResourceDetailProps {
   onSelectRelated: (item: ResourceItem) => void;
   labels: any;
   handleShare: (resource: ResourceItem) => void;
+  onDownload?: (resource: ResourceItem) => void;
 }
 
 export function ResourceDetail({
@@ -42,7 +43,8 @@ export function ResourceDetail({
   relatedArticles,
   onSelectRelated,
   labels,
-  handleShare
+  handleShare,
+  onDownload
 }: ResourceDetailProps) {
   // Table of Contents Section States
   const [activeSectionId, setActiveSectionId] = useState('sec-1');
@@ -187,13 +189,15 @@ export function ResourceDetail({
           </div>
 
           {/* PDF Download Button */}
-          <button
-            onClick={() => alert(`Đang tải xuống tài liệu PDF cho bài viết: "${resource.title[locale]}"`)}
-            className="w-full flex items-center justify-center gap-2 h-11 border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors rounded-none mt-4"
-          >
-            <FileDown className="h-4 w-4 text-blue-600" />
-            <span>{labels.downloadPdf[locale]}</span>
-          </button>
+          {resource.downloadUrl && (
+            <button
+              onClick={() => onDownload && onDownload(resource)}
+              className="w-full flex items-center justify-center gap-2 h-11 border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors rounded-none mt-4"
+            >
+              <FileDown className="h-4 w-4 text-blue-600" />
+              <span>{labels.downloadPdf[locale]} {resource.size ? `(${resource.size})` : ''}</span>
+            </button>
+          )}
         </div>
 
         {/* Column 2: Center Content Column (7/12) - Main Article Content */}
@@ -491,6 +495,15 @@ export function ResourceDetail({
                 <Printer className="h-3.5 w-3.5 text-slate-500" />
                 {labels.modalPrint[locale]}
               </button>
+              {resource.downloadUrl && (
+                <button
+                  onClick={() => onDownload && onDownload(resource)}
+                  className="inline-flex items-center gap-1.5 border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors rounded-none"
+                >
+                  <FileDown className="h-3.5 w-3.5 text-blue-600" />
+                  {labels.modalDownload ? labels.modalDownload[locale] : (locale === 'vi' ? 'Tải về máy' : locale === 'ja' ? 'ダウンロード' : 'Download')}
+                </button>
+              )}
             </div>
             
             <button

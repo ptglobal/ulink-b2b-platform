@@ -105,7 +105,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     description: {
       vi: 'Tìm hiểu vai trò của phòng sạch trong việc kiểm soát ô nhiễm, đảm bảo độ tin cậy và nâng cao năng suất trong ngành bán dẫn.',
       en: 'Learn about the role of cleanrooms in contamination control, ensuring reliability, and improving yield in the semiconductor industry.',
-      ja: '半導体産業における汚染管理、信頼性確保、歩留まり向上におけるクリーンルームの役割について説明します。'
+      ja: '半導体産業における汚染管理、信頼性確保、歩留まり向上におけるクリーンルーム의 역할について説明します。'
     },
     date: '20/05/2026',
     image: '/images/industries/electronics_hero.png',
@@ -120,6 +120,9 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     readTime: { vi: '8 phút đọc', en: '8 min read', ja: '8分で読める' },
     audioDuration: '08:45',
     audioSecs: 525,
+    size: '1.8 MB',
+    type: 'PDF',
+    downloadUrl: '/documents/ART-001.pdf',
     sections: [
       {
         id: 'sec-1',
@@ -128,12 +131,12 @@ export const MOCK_RESOURCES: ResourceItem[] = [
         content: {
           vi: 'Phòng sạch (Cleanroom) là không gian được thiết kế đặc biệt để kiểm soát các hạt bụi, vi khuẩn, hơi hóa chất và các tác nhân gây ô nhiễm khác trong không khí. Mục tiêu là duy trì môi trường đạt tiêu chuẩn về độ sạch, nhiệt độ, độ ẩm và áp suất, phục vụ cho các quy trình sản xuất yêu cầu độ chính xác và độ tin cậy cao.',
           en: 'A cleanroom is a specially designed space controlled to limit airborne particles, bacteria, chemical vapors, and other contaminants. The goal is to maintain standards of cleanliness, temperature, humidity, and pressure for precision-demanding production.',
-          ja: 'クリーンルームとは、浮遊粒子、細菌、化学物質の蒸気、およびその他の汚染物質を制限するために制御された特別に設計された空間です。目的は、高精度な製造に必要な清浄度、温度、湿度、および圧力의 規格を維持することです。'
+          ja: 'クリーンルームとは、浮遊粒子、細菌、化学物質の蒸気、およびその他の汚染物質を制限するために制御された特別に設計された空間です。目的は、高精度な製造に必要な清浄 độ, 温度, 湿度, および圧力의 規格を維持することです。'
         },
         alertText: {
           vi: 'Trong ngành bán dẫn, chỉ một hạt bụi có kích thước nhỏ hơn 0.1µm cũng có thể gây lỗi cho chip, ảnh hưởng nghiêm trọng đến chất lượng sản phẩm.',
           en: 'In the semiconductor industry, a single particle smaller than 0.1µm can cause chip defects, severely impacting product quality.',
-          ja: '半導体産業では、0.1µm未満の単一の粒子であってもチップの欠陥を引き起こし、製品の品質に深刻な影響を与える可能性があります。'
+          ja: '半導体産業では、0.1µm未満의 단일의 粒子であってもチップの欠陥を引き起こし、製品の品質に深刻な影響を与える可能性があります。'
         }
       },
       {
@@ -232,12 +235,12 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     title: {
       vi: 'Hướng dẫn vệ sinh và khử trùng phòng sạch đúng cách',
       en: 'Guide to Proper Cleanroom Cleaning and Disinfection',
-      ja: '適切なクリーンルームの清` & 消毒のガイド'
+      ja: '適切なクリーンルームの清掃 & 消毒のガイド'
     },
     description: {
       vi: 'Quy trình vệ sinh phòng sạch chuẩn giúp duy trì môi trường kiểm soát và giảm thiểu rủi ro ô nhiễm chéo.',
       en: 'Standard cleanroom cleaning procedures help maintain controlled environments and minimize cross-contamination risks.',
-      ja: '標準的なクリーンルーム清掃手順は、管理された環境を維持し、交差汚染のリスクを最小限に抑えるのに役立ちます。'
+      ja: '標準的なクリーンルーム清掃手順は、管理された environment を維持し、交差汚染のリスクを最小限に抑えるのに役立ちます。'
     },
     date: '18/05/2026',
     image: '/images/home/product-wipes.jpg',
@@ -252,6 +255,9 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     readTime: { vi: '6 phút đọc', en: '6 min read', ja: '6分で読める' },
     audioDuration: '06:12',
     audioSecs: 372,
+    size: '2.4 MB',
+    type: 'PDF',
+    downloadUrl: '/documents/ART-002.pdf',
     sections: [
       {
         id: 'sec-1',
@@ -306,11 +312,14 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     readTime: { vi: '5 phút đọc', en: '5 min read', ja: '5分で読める' },
     audioDuration: '05:30',
     audioSecs: 330,
+    size: '1.2 MB',
+    type: 'PDF',
+    downloadUrl: '/documents/ART-003.pdf',
     sections: [
       {
         id: 'sec-1',
         num: '1.',
-        title: { vi: 'Tại sao chọn Nitrile?', en: 'Why Choose Nitrile?', ja: 'なぜニトリルを選ぶのか？' },
+        title: { vi: 'Tại sao chọn Nitrile?', en: 'Why Choose Nitrile?', ja: 'ngăn ngừa dị ứng nitrile?' },
         content: {
           vi: 'Nitrile có khả năng kháng đâm thủng tốt và không gây dị ứng da tay như cao su tự nhiên.',
           en: 'Nitrile offers great puncture resistance and avoids latex allergy risks.',
