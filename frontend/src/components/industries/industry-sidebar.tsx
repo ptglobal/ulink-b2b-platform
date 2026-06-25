@@ -1,0 +1,114 @@
+'use client';
+
+import React from 'react';
+import {
+  ShieldCheck,
+  CheckCircle2,
+  Factory,
+  FileDown,
+  Download,
+  X,
+  Activity,
+  Check
+} from 'lucide-react';
+import { IndustryData } from './types';
+
+// Map icon names for certifications
+const certIconMap: Record<string, React.ComponentType<any>> = {
+  X,
+  Activity,
+  Check
+};
+
+interface IndustrySidebarProps {
+  industryData: IndustryData;
+  locale: string;
+}
+
+export function IndustrySidebar({ industryData, locale }: IndustrySidebarProps) {
+  const certifications = [
+    { name: 'ISO 9001', detail: locale === 'vi' ? 'Quản lý chất lượng' : locale === 'ja' ? '品質管理' : 'Quality Management', type: 'icon', iconName: 'X' },
+    { name: 'ISO 14001', detail: locale === 'vi' ? 'Quản lý môi trường' : locale === 'ja' ? '環境管理' : 'Environmental Mgmt', type: 'icon', iconName: 'Activity' },
+    { name: 'RoHS', detail: locale === 'vi' ? 'Hạn chế chất nguy hại' : locale === 'ja' ? '有害物質制限' : 'Restricted Substances', type: 'text' },
+    { name: 'REACH', detail: locale === 'vi' ? 'Đánh giá hóa chất & an toàn' : locale === 'ja' ? '化学物質安全' : 'Chemical Safety', type: 'icon', iconName: 'Check' }
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="sticky top-[152px] space-y-6">
+        
+        {/* Sidebar Card: Vì sao chọn ULINK */}
+        <div className="bg-[#F8FAFC]/60 border border-slate-100 p-6 sm:p-8 shadow-sm space-y-5">
+          <h3 className="text-base sm:text-lg font-extrabold text-[#0F1E36] border-b pb-3 flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-[#1769E2]" />
+            {industryData.whyUsTitle}
+          </h3>
+          <ul className="space-y-3.5">
+            {industryData.whyUsList.map((item, idx) => (
+              <li key={idx} className="flex gap-2.5 items-start text-xs sm:text-sm text-slate-600 font-medium">
+                <CheckCircle2 className="h-4.5 w-4.5 text-emerald-500 shrink-0 mt-0.5" />
+                <span className="leading-snug">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Sidebar Card: Chứng nhận & tiêu chuẩn */}
+        <div className="bg-[#F8FAFC]/60 border border-slate-100 p-6 sm:p-8 shadow-sm space-y-5">
+          <h3 className="text-base sm:text-lg font-extrabold text-[#0F1E36] border-b pb-3 flex items-center gap-2">
+            <Factory className="h-5 w-5 text-emerald-600" />
+            {industryData.standardsTitle}
+          </h3>
+
+          <div className="grid grid-cols-4 gap-1">
+            {certifications.map((cert: any, idx: number) => {
+              const CertIcon = cert.type === 'icon' && cert.iconName ? certIconMap[cert.iconName] : null;
+              return (
+                <div key={idx} className="flex flex-col items-center text-center">
+                  <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border-2 border-[#1769E2] flex flex-col items-center justify-center text-[#1769E2] font-extrabold bg-white shadow-sm mb-2 select-none">
+                    {cert.type === 'text' ? (
+                      <span className="text-[9px] uppercase tracking-tighter">{cert.name}</span>
+                    ) : CertIcon ? (
+                      <CertIcon className="h-5 w-5 text-[#1769E2]" />
+                    ) : null}
+                  </div>
+                  <span className="text-[9px] sm:text-[10px] font-bold text-[#0F1E36] leading-tight block">
+                    {cert.name}
+                  </span>
+                  <span className="text-[8px] text-slate-400 font-semibold leading-tight mt-0.5 block max-w-[64px] mx-auto">
+                    {cert.detail}
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Sidebar Card: Tài liệu liên quan (Duplicate for high vis) */}
+        <div className="bg-[#F8FAFC]/60 border border-slate-100 p-6 sm:p-8 shadow-sm space-y-5">
+          <h3 className="text-base sm:text-lg font-extrabold text-[#0F1E36] border-b pb-3 flex items-center gap-2">
+            <FileDown className="h-5 w-5 text-[#1769E2]" />
+            {locale === 'vi' ? 'Tài liệu liên quan' : locale === 'ja' ? '関連資料' : 'Related Resources'}
+          </h3>
+          <a
+            href={industryData.catalogue.url}
+            className="flex items-center gap-4 p-4 bg-white border border-slate-100 shadow-sm hover:border-[#1769E2] transition-colors"
+          >
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center bg-blue-50 text-[#1769E2]">
+              <Download className="h-5.5 w-5.5" />
+            </div>
+            <div className="space-y-0.5">
+              <h4 className="text-xs sm:text-sm font-bold text-[#0F1E36] leading-snug">
+                {industryData.catalogue.title}
+              </h4>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                {industryData.catalogue.info}
+              </p>
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </div>
+  );
+}

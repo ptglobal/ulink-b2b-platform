@@ -1,0 +1,336 @@
+import {
+  FileText,
+  Star,
+  Package,
+  BookOpen,
+  ShieldCheck,
+  Briefcase,
+  Newspaper
+} from 'lucide-react';
+import { ResourceItem } from './types';
+
+// 7 Tabs configuration
+export const TABS = [
+  { id: 'all', label: { vi: 'Tất cả bài viết', en: 'All Articles', ja: 'すべての記事' }, icon: FileText },
+  { id: 'industry', label: { vi: 'Chuyên ngành', en: 'Industries', ja: '専門分野' }, icon: Star },
+  { id: 'product', label: { vi: 'Sản phẩm', en: 'Products', ja: '製品' }, icon: Package },
+  { id: 'guide', label: { vi: 'Hướng dẫn kĩ thuật', en: 'Technical Guides', ja: '技術ガイド' }, icon: BookOpen },
+  { id: 'standard', label: { vi: 'Tiêu chuẩn & Quy định', en: 'Standards & Regs', ja: '規格・規制' }, icon: ShieldCheck },
+  { id: 'case-study', label: { vi: 'Case Study', en: 'Case Studies', ja: 'ケーススタディ' }, icon: Briefcase },
+  { id: 'news', label: { vi: 'Tin tức', en: 'News', ja: 'ニュース' }, icon: Newspaper },
+];
+
+// Industry filter mapping (bilingual)
+export const INDUSTRIES = [
+  { id: 'electronics', name: { vi: 'Điện tử', en: 'Electronics', ja: '電子' } },
+  { id: 'pharmaceutical', name: { vi: 'Dược phẩm', en: 'Pharmaceuticals', ja: '医薬品' } },
+  { id: 'cosmetics', name: { vi: 'Mỹ phẩm', en: 'Cosmetics', ja: '化粧品' } },
+  { id: 'food', name: { vi: 'Thực phẩm', en: 'Food & Beverage', ja: '食品' } },
+];
+
+// Topic filter mapping (bilingual)
+export const TOPICS = [
+  { id: 'cleanroom', name: { vi: 'Phòng sạch', en: 'Cleanroom', ja: 'クリーンルーム' } },
+  { id: 'packaging', name: { vi: 'Đóng gói', en: 'Packaging', ja: '包装' } },
+  { id: 'esd', name: { vi: 'Chống tĩnh điện (ESD)', en: 'ESD Control', ja: '静電気対策' } },
+];
+
+// Content Type filter mapping (bilingual)
+export const CONTENT_TYPES = [
+  { id: 'article', name: { vi: 'Bài viết', en: 'Article', ja: '記事' } },
+  { id: 'tech-doc', name: { vi: 'Tài liệu kỹ thuật', en: 'Technical Doc', ja: '技術文書' } },
+  { id: 'certificate', name: { vi: 'Chứng chỉ', en: 'Certificate', ja: '認証' } },
+];
+
+// Popular Articles (Sidebar)
+export const POPULAR_ARTICLES = [
+  {
+    id: 'pop-1',
+    number: '01',
+    title: {
+      vi: 'ISO 14644-1:2015 – Tiêu chuẩn phòng sạch mới nhất',
+      en: 'ISO 14644-1:2015 – The Latest Cleanroom Standard',
+      ja: 'ISO 14644-1:2015 – 最新のクリーンルーム規格'
+    }
+  },
+  {
+    id: 'pop-2',
+    number: '02',
+    title: {
+      vi: 'Găng tay nitrile và latex: Loại nào phù hợp với bạn?',
+      en: 'Nitrile vs Latex Gloves: Which is Right for You?',
+      ja: 'ニトリル手袋対ラテックス手袋：どちらが適していますか？'
+    }
+  },
+  {
+    id: 'pop-3',
+    number: '03',
+    title: {
+      vi: '5 yếu tố ảnh hưởng đến hiệu quả của phòng sạch',
+      en: '5 Factors Affecting Cleanroom Efficiency',
+      ja: 'クリーンルームの効率に影響を与える5つの要因'
+    }
+  },
+  {
+    id: 'pop-4',
+    number: '04',
+    title: {
+      vi: 'Hướng dẫn lựa chọn vật liệu phòng sạch phù hợp',
+      en: 'Guide to Selecting the Right Cleanroom Materials',
+      ja: '適切なクリーンルーム資材の選択ガイド'
+    }
+  },
+  {
+    id: 'pop-5',
+    number: '05',
+    title: {
+      vi: 'Xu hướng công nghệ phòng sạch năm 2025',
+      en: 'Cleanroom Technology Trends in 2025',
+      ja: '2025年のクリーンルーム技術動向'
+    }
+  }
+];
+
+// Mock Articles matching the high-fidelity UI design
+export const MOCK_RESOURCES: ResourceItem[] = [
+  {
+    id: 'ART-001',
+    category: 'industry',
+    badge: { vi: 'Chuyên ngành', en: 'Industry', ja: '専門分野' },
+    title: {
+      vi: 'Tầm quan trọng của phòng sạch trong sản xuất bán dẫn hiện đại',
+      en: 'The Importance of Cleanrooms in Modern Semiconductor Manufacturing',
+      ja: '現代の半導体製造におけるクリーンルームの重要性'
+    },
+    description: {
+      vi: 'Tìm hiểu vai trò của phòng sạch trong việc kiểm soát ô nhiễm, đảm bảo độ tin cậy và nâng cao năng suất trong ngành bán dẫn.',
+      en: 'Learn about the role of cleanrooms in contamination control, ensuring reliability, and improving yield in the semiconductor industry.',
+      ja: '半導体産業における汚染管理、信頼性確保、歩留まり向上におけるクリーンルームの役割について説明します。'
+    },
+    date: '20/05/2026',
+    image: '/images/industries/electronics_hero.png',
+    industryId: 'electronics',
+    topicId: 'cleanroom',
+    contentType: 'article',
+    author: {
+      name: { vi: 'Nguyễn Minh Anh', en: 'Minh Anh Nguyen', ja: 'グエン・ミン・アイン' },
+      role: { vi: 'Chuyên gia kỹ thuật – ULink Industries', en: 'Technical Expert – ULink Industries', ja: '技術専門家 – ULink Industries' },
+      avatar: '/images/about/op-team.png'
+    },
+    readTime: { vi: '8 phút đọc', en: '8 min read', ja: '8分で読める' },
+    audioDuration: '08:45',
+    audioSecs: 525,
+    sections: [
+      {
+        id: 'sec-1',
+        num: '1.',
+        title: { vi: 'Phòng sạch là gì?', en: 'What is a Cleanroom?', ja: 'クリーンルームとは？' },
+        content: {
+          vi: 'Phòng sạch (Cleanroom) là không gian được thiết kế đặc biệt để kiểm soát các hạt bụi, vi khuẩn, hơi hóa chất và các tác nhân gây ô nhiễm khác trong không khí. Mục tiêu là duy trì môi trường đạt tiêu chuẩn về độ sạch, nhiệt độ, độ ẩm và áp suất, phục vụ cho các quy trình sản xuất yêu cầu độ chính xác và độ tin cậy cao.',
+          en: 'A cleanroom is a specially designed space controlled to limit airborne particles, bacteria, chemical vapors, and other contaminants. The goal is to maintain standards of cleanliness, temperature, humidity, and pressure for precision-demanding production.',
+          ja: 'クリーンルームとは、浮遊粒子、細菌、化学物質の蒸気、およびその他の汚染物質を制限するために制御された特別に設計された空間です。目的は、高精度な製造に必要な清浄度、温度、湿度、および圧力의 規格を維持することです。'
+        },
+        alertText: {
+          vi: 'Trong ngành bán dẫn, chỉ một hạt bụi có kích thước nhỏ hơn 0.1µm cũng có thể gây lỗi cho chip, ảnh hưởng nghiêm trọng đến chất lượng sản phẩm.',
+          en: 'In the semiconductor industry, a single particle smaller than 0.1µm can cause chip defects, severely impacting product quality.',
+          ja: '半導体産業では、0.1µm未満の単一の粒子であってもチップの欠陥を引き起こし、製品の品質に深刻な影響を与える可能性があります。'
+        }
+      },
+      {
+        id: 'sec-2',
+        num: '2.',
+        title: {
+          vi: 'Vai trò của phòng sạch trong sản xuất bán dẫn',
+          en: 'Role of Cleanrooms in Semiconductor Manufacturing',
+          ja: '半導体製造におけるクリーンルームの役割'
+        },
+        content: {
+          vi: 'Sản xuất bán dẫn là một quy trình cực kỳ nhạy cảm với môi trường. Phòng sạch đóng vai trò then chốt trong việc kiểm soát các hạt bụi siêu mịn bám dính trên bề mặt Silicon Wafer trong quá trình quang khắc. Bất kỳ sự ô nhiễm nào cũng có thể làm đứt gãy hoặc ngắn mạch các đường dẫn điện cực siêu vi mô, làm giảm tỷ lệ yield và tăng chi phí phế phẩm.',
+          en: 'Semiconductor manufacturing is extremely environment-sensitive. Cleanrooms play a key role in controlling ultra-fine dust on silicon wafer surfaces during photolithography. Any contamination can break or short-circuit microscale electrical lines, reducing yield and increasing scrap costs.',
+          ja: '半導体製造は環境に対して非常に敏感です。クリーンルームは、フォトリソグラフィー中のシリコンウェーハ表面の超微細な塵埃を制御する上で重要な役割を果たします。いかなる汚染も微細な電気配線の断線や短絡を引き起こし、歩留まりを低下させ、スクラップコストを増加させる可能性があります。'
+        }
+      },
+      {
+        id: 'sec-3',
+        num: '3.',
+        title: { vi: 'Các cấp độ phòng sạch phổ biến', en: 'Common Cleanroom Classifications', ja: '一般的なクリーンルームの分類' },
+        content: {
+          vi: 'Dựa trên tiêu chuẩn quốc tế ISO 14644-1, phòng sạch được phân cấp từ ISO Class 1 (sạch nhất) đến ISO Class 9. Trong công nghiệp bán dẫn, các công đoạn cốt lõi như sản xuất wafer đòi hỏi môi trường ISO Class 3 hoặc ISO Class 4. Công đoạn lắp ráp và đóng gói chip sau đó có thể được vận hành trong điều kiện phòng sạch ISO Class 5 hoặc ISO Class 6.',
+          en: 'Based on the ISO 14644-1 standard, cleanrooms are classified from ISO Class 1 (cleanest) to ISO Class 9. Core processes like wafer fabrication require ISO Class 3 or 4. Later chip assembly and packaging processes can operate within ISO Class 5 or 6 environments.',
+          ja: 'ISO 14644-1規格に基づいて、クリーンルームはISOクラス1（最も清潔）からISOクラス9に分類されます。ウェーハ製造などのコアプロセスにはISOクラス3または4が必要です。その後のチップ組み立ておよびパッケージングプロセスは、ISOクラス5または6の環境で動作できます。'
+        }
+      },
+      {
+        id: 'sec-4',
+        num: '4.',
+        title: { vi: 'Yếu tố ảnh hưởng đến hiệu quả phòng sạch', en: 'Factors Influencing Cleanroom Efficiency', ja: 'クリーンルームの効率に影響を与える要因' },
+        content: {
+          vi: 'Hiệu quả kiểm soát ô nhiễm của phòng sạch phụ thuộc vào ba trụ cột: hệ thống lọc không khí HEPA/ULPA hiệu suất cao, duy trì chênh lệch áp suất dương để chặn luồng khí bẩn bên ngoài, và đặc biệt là trang phục bảo hộ của nhân viên (ESD Coveralls, Găng tay nitrile sạch, Mũ trùm, Khẩu trang) cùng thói quen làm việc tuân thủ quy trình gowning.',
+          en: 'Cleanroom contamination control relies on three pillars: high-efficiency HEPA/ULPA air filters, positive differential pressure to block outside air, and personnel protective wear (ESD Coveralls, clean Nitrile gloves, Hoods, Masks) alongside strict gowning protocols.',
+          ja: 'クリーンルームの汚染管理は、3つの柱に基づいています：高効率のHEPA/ULPAエアフィルター、外部の空気を遮断するための陽圧差圧、および作業服（ESDカバーオール、清潔なニトリル手袋、フード、マスク）と厳格な更衣手順。'
+        }
+      },
+      {
+        id: 'sec-5',
+        num: '5.',
+        title: {
+          vi: 'Giải pháp tối ưu phòng sạch của ULink Industries',
+          en: 'ULink Industries Optimized Cleanroom Solutions',
+          ja: 'ULink Industriesの最適化されたクリーンルームソリューション'
+        },
+        content: {
+          vi: 'ULink Industries cung cấp dải giải pháp vật tư phòng sạch toàn diện, đáp ứng các tiêu chuẩn khắt khe nhất của ngành bán dẫn thế giới. Chúng tôi mang đến các sản phẩm khăn lau phòng sạch Polyester 100% không xơ, găng tay Nitrile siêu sạch Class 100, thảm dính bụi nhiều lớp và bộ trang phục chống tĩnh điện ESD Coverall chất lượng bền bỉ.',
+          en: 'ULink Industries provides a comprehensive range of cleanroom supplies meeting strict semiconductor standards. We offer 100% polyester lint-free wipers, Class 100 clean Nitrile gloves, multilayer sticky mats, and durable ESD Coveralls.',
+          ja: 'ULink Industriesは、厳格な半導体規格を満たすクリーンルーム用消耗品の包括的な製品群を提供しています。100%ポリエステル製の発塵のないワイパー、クラス100の清潔なニトリル手袋、多層粘着マット、および耐久性のあるESDカバーオールを提供しています。'
+        }
+      },
+      {
+        id: 'sec-6',
+        num: '6.',
+        title: { vi: 'Kết luận', en: 'Conclusion', ja: '結論' },
+        content: {
+          vi: 'Việc đầu tư thiết kế và duy trì vận hành phòng sạch chuẩn hóa chính là chìa khóa vàng giúp các nhà máy bán dẫn hiện đại nâng cao tỷ lệ yield sản xuất, giảm thiểu hao hụt tài chính và khẳng định vị thế uy tín trên chuỗi cung ứng toàn cầu.',
+          en: 'Investing in and maintaining standardized cleanrooms is the golden key for modern semiconductor factories to boost yield rates, minimize financial losses, and solidify their reputation in the global supply chain.',
+          ja: '標準化されたクリーンルームへの投資と維持は、現代の半導体工場が歩留まり率を向上させ、財務上の損失を最小限に抑え、グローバルサプライチェーンにおける信頼性を確固たるものにするための鍵です。'
+        }
+      }
+    ],
+    aiSummary: {
+      intro: {
+        vi: 'Phòng sạch đóng vai trò thiết yếu trong sản xuất bán dẫn bằng cách kiểm soát ô nhiễm hạt và vi sinh, đảm bảo độ tin cậy của chip và nâng cao hiệu suất sản xuất.',
+        en: 'Cleanrooms play a vital role in semiconductor manufacturing by controlling particulate and microbiological contamination, ensuring chip reliability, and boosting production performance.',
+        ja: 'クリーンルームは、粒子および微生物の汚染を制御し、チップの信頼性を確保し、製造パフォーマンスを向上させることにより、半導体製造において不可欠な役割を果たします。'
+      },
+      bullets: [
+        {
+          vi: 'Phòng sạch giúp loại bỏ hạt bụi và vi khuẩn – nguyên nhân chính gây lỗi sản phẩm.',
+          en: 'Cleanrooms help eliminate dust particles and bacteria - the main cause of product defects.',
+          ja: 'クリーンルームは、製品欠陥の主な原因である塵埃粒子や細菌の排除に役立ちます。'
+        },
+        {
+          vi: 'Các cấp độ phòng sạch (ISO 1 đến ISO 9) được thiết kế cho từng công đoạn sản xuất khác nhau.',
+          en: 'Cleanroom levels (ISO 1 to ISO 9) are designed for different production stages.',
+          ja: 'クリーンルームのレベル（ISO 1からISO 9）は、さまざまな製造段階向けに設計されています。'
+        },
+        {
+          vi: 'Kiểm soát hiệu quả các yếu tố như nhiệt độ, độ ẩm, áp suất và luồng khí là yếu tố quyết định.',
+          en: 'Effective control of elements like temperature, humidity, pressure, and airflow is crucial.',
+          ja: '温度、湿度、圧力、および気流などの要素の効果的な制御が重要です。'
+        },
+        {
+          vi: 'ULink Industries cung cấp giải pháp phòng sạch toàn diện, đáp ứng tiêu chuẩn quốc tế.',
+          en: 'ULink Industries provides comprehensive cleanroom solutions meeting international standards.',
+          ja: 'ULink Industriesは、国際規格を満たす包括的なクリーンルームソリューションを提供します。'
+        }
+      ]
+    }
+  },
+  {
+    id: 'ART-002',
+    category: 'guide',
+    badge: { vi: 'Hướng dẫn kỹ thuật', en: 'Technical Guide', ja: '技術ガイド' },
+    title: {
+      vi: 'Hướng dẫn vệ sinh và khử trùng phòng sạch đúng cách',
+      en: 'Guide to Proper Cleanroom Cleaning and Disinfection',
+      ja: '適切なクリーンルームの清` & 消毒のガイド'
+    },
+    description: {
+      vi: 'Quy trình vệ sinh phòng sạch chuẩn giúp duy trì môi trường kiểm soát và giảm thiểu rủi ro ô nhiễm chéo.',
+      en: 'Standard cleanroom cleaning procedures help maintain controlled environments and minimize cross-contamination risks.',
+      ja: '標準的なクリーンルーム清掃手順は、管理された環境を維持し、交差汚染のリスクを最小限に抑えるのに役立ちます。'
+    },
+    date: '18/05/2026',
+    image: '/images/home/product-wipes.jpg',
+    industryId: 'pharmaceutical',
+    topicId: 'cleanroom',
+    contentType: 'tech-doc',
+    author: {
+      name: { vi: 'TS. Nguyễn Văn An', en: 'Dr. An Nguyen', ja: 'グエン・バン・アン博士' },
+      role: { vi: 'Chuyên gia vi sinh học – ULink R&D', en: 'Microbiology Specialist – ULink R&D', ja: '微生物学専門家 – ULink R&D' },
+      avatar: '/images/about/op-team.png'
+    },
+    readTime: { vi: '6 phút đọc', en: '6 min read', ja: '6分で読める' },
+    audioDuration: '06:12',
+    audioSecs: 372,
+    sections: [
+      {
+        id: 'sec-1',
+        num: '1.',
+        title: { vi: 'Tầm quan trọng của việc vệ sinh', en: 'Importance of Cleaning', ja: '清掃の重要性' },
+        content: {
+          vi: 'Vệ sinh phòng sạch đòi hỏi các nguyên tắc ngặt nghèo để tránh nhiễm bẩn ngược lại.',
+          en: 'Cleanroom cleaning demands strict principles to avoid reverse contamination.',
+          ja: 'クリーンルームの清掃は、逆汚染を避けるために厳格な原則を要求します。'
+        }
+      }
+    ],
+    aiSummary: {
+      intro: {
+        vi: 'Hướng dẫn các bước thực tế và lựa chọn hóa chất tẩy rửa chuẩn để làm sạch không gian phòng sạch.',
+        en: 'Guides practical steps and standard chemical choices to clean cleanroom environments.',
+        ja: 'クリーンルーム環境を清掃するための実践的なステップと標準的な化学物質の選択を案内します。'
+      },
+      bullets: [
+        {
+          vi: 'Luôn lau một chiều từ trên xuống dưới, từ trong ra ngoài.',
+          en: 'Always wipe unidirectionally from top to bottom, inside to out.',
+          ja: '常に上から下、内から外へと一方向に拭きます。'
+        }
+      ]
+    }
+  },
+  {
+    id: 'ART-003',
+    category: 'product',
+    badge: { vi: 'Sản phẩm', en: 'Product', ja: '製品' },
+    title: {
+      vi: 'Găng tay nitrile phòng sạch: Tiêu chuẩn và ứng dụng',
+      en: 'Cleanroom Nitrile Gloves: Standards and Applications',
+      ja: 'クリーンルーム用ニトリル手袋：規格 và 用途'
+    },
+    description: {
+      vi: 'Khám phá các tiêu chí quan trọng và ứng dụng thực tế của găng tay nitrile trong nhiều ngành công nghiệp.',
+      en: 'Explore important criteria and practical applications of nitrile gloves across multiple industries.',
+      ja: '複数の産業におけるニトリル手袋の重要な基準と実用的な用途を探ります。'
+    },
+    date: '16/05/2026',
+    image: '/images/home/product-gloves.jpg',
+    industryId: 'electronics',
+    topicId: 'cleanroom',
+    contentType: 'article',
+    author: {
+      name: { vi: 'Phạm Văn Hùng', en: 'Hung Van Pham', ja: 'ファム・ヴァン・フン' },
+      role: { vi: 'Kỹ sư vật liệu – ULink R&D', en: 'Materials Engineer – ULink R&D', ja: '材料エンジニア – ULink R&D' },
+      avatar: '/images/about/op-team.png'
+    },
+    readTime: { vi: '5 phút đọc', en: '5 min read', ja: '5分で読める' },
+    audioDuration: '05:30',
+    audioSecs: 330,
+    sections: [
+      {
+        id: 'sec-1',
+        num: '1.',
+        title: { vi: 'Tại sao chọn Nitrile?', en: 'Why Choose Nitrile?', ja: 'なぜニトリルを選ぶのか？' },
+        content: {
+          vi: 'Nitrile có khả năng kháng đâm thủng tốt và không gây dị ứng da tay như cao su tự nhiên.',
+          en: 'Nitrile offers great puncture resistance and avoids latex allergy risks.',
+          ja: 'ニトリルは優れた穿刺耐性を提供し、ラテックスアレルギーのリスクを回避します。'
+        }
+      }
+    ],
+    aiSummary: {
+      intro: {
+        vi: 'Khám phá lý do găng tay nitrile được ưa chuộng rộng rãi trong công nghiệp bán dẫn.',
+        en: 'Explores why nitrile gloves are widely preferred in the semiconductor industry.',
+        ja: 'ニトリル手袋が半導体産業で広く好まれる理由を探ります。'
+      },
+      bullets: [
+        {
+          vi: 'Độ đàn hồi tốt và khả năng bám dính cao.',
+          en: 'Excellent elasticity and high grip performance.',
+          ja: '優れた弾力性と高いグリップ性能。'
+        }
+      ]
+    }
+  }
+];
