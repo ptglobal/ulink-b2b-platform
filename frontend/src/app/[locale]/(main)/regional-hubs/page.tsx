@@ -15,8 +15,8 @@ import {
 } from 'lucide-react';
 import { HeadsetMic } from '@/components/icons/headset-mic';
 import { VietnamMap, type ClusterMarker } from '@/components/vietnam-map';
-import { Link } from '@/i18n/navigation';
 import { fetchRegionalHubs, parseCoordinates, getHubName, getIndustrialZoneName } from '@/lib/regional-hub-data';
+import HubClusterList from '@/components/regional-hubs/hub-cluster-list';
 
 export default async function RegionalHubsPage({
   params: { locale }
@@ -103,46 +103,35 @@ export default async function RegionalHubsPage({
                 <VietnamMap className="h-full w-full" clusters={mapClusters} />
               </div>
 
-              {/* Cluster List — evenly spaced vertically */}
-              <div className="flex h-[540px] flex-col justify-between py-8">
-                {hubs.map((hub, index) => {
-                  const localizedName = getHubName(hub, locale);
-                  const isZonesStr = hub.industrial_zones && hub.industrial_zones.length > 0
+              {/* Cluster List — client component for RFQ modal interaction */}
+              <HubClusterList
+                hubs={hubs.map((hub) => ({
+                  id: hub.id,
+                  name: hub.name,
+                  slug: hub.slug,
+                  localizedName: getHubName(hub, locale),
+                  zonesStr: hub.industrial_zones && hub.industrial_zones.length > 0
                     ? hub.industrial_zones.map((z) => getIndustrialZoneName(z, locale)).join(', ')
-                    : '';
-                  return (
-                    <Link
-                      key={hub.id}
-                      href={`/regional-hubs/${hub.slug}`}
-                      className="group flex items-center gap-3 rounded-lg p-2 transition-all hover:bg-muted"
-                    >
-                      {/* Number badge — white text on Dark Navy bg */}
-                      <div className="flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-full bg-primary shadow-sm group-hover:bg-brand transition-colors">
-                        <span className="text-[11px] font-bold text-white">
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-                      </div>
-                      {/* Text */}
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[13px] font-bold leading-tight text-primary group-hover:text-brand transition-colors truncate">
-                          {localizedName}
-                        </p>
-                        {isZonesStr && (
-                          <p className="mt-0.5 max-w-[170px] text-[10px] leading-snug text-muted-foreground truncate">
-                            {isZonesStr}
-                          </p>
-                        )}
-                      </div>
-                      <ArrowRight className="h-3 w-3 text-muted-foreground opacity-0 group-hover:opacity-100 group-hover:text-brand transition-all" />
-                    </Link>
-                  );
-                })}
-                {hubs.length === 0 && (
-                  <p className="text-[12px] text-muted-foreground text-center py-4">
-                    No regional hubs available
-                  </p>
-                )}
-              </div>
+                    : ''
+                }))}
+                labels={{
+                  title: t('hubRfq.title'),
+                  hubLabel: t('hubRfq.hubLabel'),
+                  contactName: t('hubRfq.contactName'),
+                  company: t('hubRfq.company'),
+                  phone: t('hubRfq.phone'),
+                  email: t('hubRfq.email'),
+                  note: t('hubRfq.note'),
+                  notePlaceholder: t('hubRfq.notePlaceholder'),
+                  submit: t('hubRfq.submit'),
+                  submitting: t('hubRfq.submitting'),
+                  success: t('hubRfq.success'),
+                  error: t('hubRfq.error'),
+                  required: t('hubRfq.required'),
+                  invalidEmail: t('hubRfq.invalidEmail'),
+                  invalidPhone: t('hubRfq.invalidPhone')
+                }}
+              />
             </div>
 
             {/* === RIGHT COLUMN: Live Dashboard === */}

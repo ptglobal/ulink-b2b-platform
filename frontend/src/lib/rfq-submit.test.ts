@@ -17,7 +17,7 @@ test('submits only after validation, sku check, and anti-spam pass', async () =>
       address: '123 Test St',
       hub: '3',
       industry: 'Chemical',
-      items: [{ sku: 'CR-GLV-001', qty: 1 }],
+      items: [{ sku: 'CR-GLV-001', note: 'urgent' }],
       message: 'Need quote',
       token: 'good-token',
       website: ''
@@ -60,7 +60,7 @@ test('submits only after validation, sku check, and anti-spam pass', async () =>
   const idempotencyKey = buildRfqIdempotencyKey({
     company: 'ACME',
     email: 'a@acme.vn',
-    items: [{ sku: 'cr-glv-001', qty: 1 }]
+    items: [{ sku: 'cr-glv-001', note: 'urgent' }]
   });
   assert.deepEqual(submitted, {
     company: 'ACME',
@@ -73,7 +73,7 @@ test('submits only after validation, sku check, and anti-spam pass', async () =>
     message: 'Need quote',
     scheduled_delivery: false,
     requested_delivery_date: undefined,
-    line_items: [{ sku: 'CR-GLV-001', qty: 1 }],
+    line_items: [{ sku: 'CR-GLV-001', note: 'urgent' }],
     status: 'new',
     source: 'web'
   });
@@ -99,7 +99,7 @@ test('returns the existing RFQ id for an exact duplicate payload', async () => {
       address: '123 Test St',
       hub: '3',
       industry: 'Chemical',
-      items: [{ sku: 'CR-GLV-001', qty: 1 }],
+      items: [{ sku: 'CR-GLV-001' }],
       message: 'Need quote',
       token: 'good-token'
     },

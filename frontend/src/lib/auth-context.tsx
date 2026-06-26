@@ -114,6 +114,20 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
     refresh();
   }, [refresh, initialUser]);
 
+  // Restore user-specific cart when user becomes authenticated
+  useEffect(() => {
+    if (status !== 'authenticated' || !user?.id) return;
+    try {
+      const saved = localStorage.getItem(`rfq-cart-${user.id}`);
+      const current = localStorage.getItem('rfq-cart');
+      // Only restore if current cart is empty and user has a saved cart
+      if (saved && !current) {
+        localStorage.setItem('rfq-cart', saved);
+        window.dispatchEvent(new Event('rfq-cart-changed'));
+      }
+    } catch { /* ignore localStorage errors */ }
+  }, [status, user?.id]);
+
   // Set up cross-tab BroadcastChannel listener
   useEffect(() => {
     if (typeof BroadcastChannel === 'undefined') return;
@@ -123,10 +137,18 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
     channel.onmessage = (event) => {
       const msg = event.data as { type: string };
       if (msg.type === 'login') {
-        // Another tab logged in — refresh to pick up the session
+        // Another tab logged in — clear cart & refresh to pick up the session
+        try {
+          localStorage.removeItem('rfq-cart');
+          window.dispatchEvent(new Event('rfq-cart-changed'));
+        } catch { /* ignore */ }
         refresh().then(() => router.refresh());
       } else if (msg.type === 'logout') {
-        // Another tab logged out — clear state immediately
+        // Another tab logged out — clear state and cart immediately
+        try {
+          localStorage.removeItem('rfq-cart');
+          window.dispatchEvent(new Event('rfq-cart-changed'));
+        } catch { /* ignore */ }
         setUser(null);
         setStatus('unauthenticated');
         setError(null);
@@ -143,6 +165,12 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
   const login = useCallback<AuthContextValue['login']>(async (email, password) => {
     setError(null);
     try {
+      // Clear anonymous/previous-session cart before logging in (TH2 fix)
+      try {
+        localStorage.removeItem('rfq-cart');
+        window.dispatchEvent(new Event('rfq-cart-changed'));
+      } catch { /* ignore localStorage errors */ }
+
       await loginRequest(email, password);
       await refresh();
       // Notify other tabs that a login just happened
@@ -173,6 +201,18 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
     try {
       await logoutRequest();
     } finally {
+      // Save current cart to user-specific key before clearing
+      try {
+        if (user?.id) {
+          const cart = localStorage.getItem('rfq-cart');
+          if (cart) {
+            localStorage.setItem(`rfq-cart-${user.id}`, cart);
+          }
+        }
+        localStorage.removeItem('rfq-cart');
+        window.dispatchEvent(new Event('rfq-cart-changed'));
+      } catch { /* ignore localStorage errors */ }
+
       setUser(null);
       setStatus('unauthenticated');
       setError(null);
@@ -181,7 +221,7 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
       router.push(redirectTo);
       router.refresh();
     }
-  }, [router]);
+  }, [router, user]);
 
   const value = useMemo<AuthContextValue>(() => ({
     status,

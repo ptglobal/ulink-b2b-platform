@@ -22,13 +22,11 @@ export default function AddToCartButton({
   const handleClick = useCallback(() => {
     try {
       const raw = localStorage.getItem('rfq-cart');
-      const cart: Array<{ sku: string; qty: number }> = raw ? JSON.parse(raw) : [];
+      const cart: Array<{ sku: string; product_name: string; note: string }> = raw ? JSON.parse(raw) : [];
 
       const existing = cart.find((item) => item.sku === skuCode);
-      if (existing) {
-        existing.qty += 1;
-      } else {
-        cart.push({ sku: skuCode, qty: 1 });
+      if (!existing) {
+        cart.push({ sku: skuCode, product_name: '', note: '' });
       }
 
       localStorage.setItem('rfq-cart', JSON.stringify(cart));

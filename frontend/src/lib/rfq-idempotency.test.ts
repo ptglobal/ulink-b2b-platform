@@ -8,8 +8,8 @@ test('builds the same key for equivalent company, email, and item payloads', () 
     company: '  ACME  ',
     email: 'A@ACME.VN',
     items: [
-      { sku: 'CR-GLV-002', qty: 2 },
-      { sku: 'CR-GLV-001', qty: 1 }
+      { sku: 'CR-GLV-002', note: 'bulk' },
+      { sku: 'CR-GLV-001' }
     ]
   });
 
@@ -17,8 +17,8 @@ test('builds the same key for equivalent company, email, and item payloads', () 
     company: 'acme',
     email: 'a@acme.vn',
     items: [
-      { sku: 'cr-glv-001', qty: 1 },
-      { sku: 'cr-glv-002', qty: 2 }
+      { sku: 'cr-glv-001' },
+      { sku: 'cr-glv-002', note: 'bulk' }
     ]
   });
 
@@ -29,13 +29,13 @@ test('changes when the item list changes', () => {
   const keyA = buildRfqIdempotencyKey({
     company: 'ACME',
     email: 'a@acme.vn',
-    items: [{ sku: 'CR-GLV-001', qty: 1 }]
+    items: [{ sku: 'CR-GLV-001' }]
   });
 
   const keyB = buildRfqIdempotencyKey({
     company: 'ACME',
     email: 'a@acme.vn',
-    items: [{ sku: 'CR-GLV-002', qty: 1 }]
+    items: [{ sku: 'CR-GLV-002' }]
   });
 
   assert.notEqual(keyA, keyB);

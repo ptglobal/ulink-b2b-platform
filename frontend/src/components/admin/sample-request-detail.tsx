@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Loader2, CheckCircle, XCircle, User, MapPin, Box } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
-import { PROVINCES, DISTRICTS } from '@/data/vietnam-provinces';
+import { DISTRICTS, getProvinceName } from '@/data/vietnam-provinces';
 import type { SampleRequest } from '@/lib/directus';
 
 interface SampleRequestDetailProps {
@@ -84,7 +84,7 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
   }
 
   const provinceName = request?.province
-    ? PROVINCES.find((p) => p.code === request.province)?.name ?? request.province
+    ? getProvinceName(request.province) ?? request.province
     : '';
   const districtName = request?.district
     ? DISTRICTS.find((d) => d.code === request.district)?.name ?? request.district

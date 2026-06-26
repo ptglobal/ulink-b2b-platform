@@ -3,7 +3,7 @@ import { publicDirectus } from './directus';
 
 export interface RfqSkuItem {
   sku: string;
-  qty: number;
+  note?: string;
 }
 
 export type RfqSkuResult =
@@ -41,12 +41,12 @@ async function fetchPublishedSkus(skus: string[]) {
 }
 
 export async function assertRfqSkusExist(
-  items: Array<{ sku: string; qty: number }>,
+  items: Array<{ sku: string; note?: string }>,
   deps: RfqSkuDeps = {}
 ): Promise<RfqSkuResult> {
   const normalized = items.map((item) => ({
     sku: item.sku.trim(),
-    qty: item.qty
+    note: item.note
   }));
 
   const uniqueSkus = [...new Set(normalized.map((item) => item.sku))];

@@ -8,13 +8,14 @@ export async function GET(req: Request) {
     const user = await getCurrentUser();
     const cookieHeader = getRequestCookieHeader(req);
 
-    // 1. Fetch customer details (only if authenticated)
+    // 1. Fetch customer details for the current user (filter by user_id to avoid
+    //    returning another user's record when role permissions are broad, e.g. "sale")
     let customerData = [];
     if (user) {
-      const customerRes = await proxyToDirectus('/items/customers?fields=*', {
-        method: 'GET',
-        cookieHeader
-      });
+      const customerRes = await proxyToDirectus(
+        `/items/customers?fields=*&filter[user_id][_eq]=${encodeURIComponent(user.id)}`,
+        { method: 'GET', cookieHeader }
+      );
       const customerPayload = customerRes.ok ? await customerRes.json() : null;
       customerData = customerPayload?.data || [];
     }

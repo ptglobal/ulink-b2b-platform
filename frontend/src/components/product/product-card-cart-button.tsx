@@ -34,16 +34,14 @@ export default function ProductCardCartButton({ skus, productName, locale }: Pro
     return sku.sku_code;
   };
 
-  const addToCart = useCallback((skuCode: string, quantity: number) => {
+  const addToCart = useCallback((skuCode: string) => {
     try {
       const raw = localStorage.getItem('rfq-cart');
-      const cart: Array<{ sku: string; qty: number }> = raw ? JSON.parse(raw) : [];
+      const cart: Array<{ sku: string; product_name: string; note: string }> = raw ? JSON.parse(raw) : [];
 
       const existing = cart.find((item) => item.sku === skuCode);
-      if (existing) {
-        existing.qty += quantity;
-      } else {
-        cart.push({ sku: skuCode, qty: quantity });
+      if (!existing) {
+        cart.push({ sku: skuCode, product_name: productName, note: '' });
       }
 
       localStorage.setItem('rfq-cart', JSON.stringify(cart));
@@ -53,7 +51,7 @@ export default function ProductCardCartButton({ skus, productName, locale }: Pro
     } catch (err) {
       console.error('Failed to add to cart:', err);
     }
-  }, []);
+  }, [productName]);
 
   const handleClick = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
@@ -61,7 +59,7 @@ export default function ProductCardCartButton({ skus, productName, locale }: Pro
 
     if (hasSingleSku) {
       const sku = publishedSkus[0];
-      if (sku) addToCart(sku.sku_code, 1);
+      if (sku) addToCart(sku.sku_code);
     } else {
       setShowModal(true);
       setSelectedId(publishedSkus[0]?.id ?? null);
@@ -71,7 +69,7 @@ export default function ProductCardCartButton({ skus, productName, locale }: Pro
   const handleAddFromModal = useCallback(() => {
     const sku = publishedSkus.find(s => s.id === selectedId);
     if (sku) {
-      addToCart(sku.sku_code, 1);
+      addToCart(sku.sku_code);
       setShowModal(false);
     }
   }, [selectedId, publishedSkus, addToCart]);

@@ -5,20 +5,20 @@ function normalizeCompany(value: string): string {
   return value.trim().replace(/\s+/g, ' ').toLowerCase();
 }
 
-function normalizeItems(items?: Array<{ sku: string; qty: number }>) {
+function normalizeItems(items?: Array<{ sku: string; note?: string }>) {
   if (!items || items.length === 0) return [];
   return [...items]
     .map((item) => ({
       sku: item.sku.trim().toLowerCase(),
-      qty: item.qty
+      note: item.note || ''
     }))
-    .sort((a, b) => a.sku.localeCompare(b.sku) || a.qty - b.qty);
+    .sort((a, b) => a.sku.localeCompare(b.sku));
 }
 
 export function buildRfqIdempotencyKey(input: {
   company: string;
   email: string;
-  items?: Array<{ sku: string; qty: number }>;
+  items?: Array<{ sku: string; note?: string }>;
 }): string {
   const payload = {
     company: normalizeCompany(input.company),

@@ -1,4 +1,4 @@
-export type RfqLineItem = { sku: string; qty: number };
+export type RfqLineItem = { sku: string; note?: string };
 
 export type RfqHubRef = {
   id: number;
@@ -127,7 +127,7 @@ export function resolveRfqAssignment(input: ResolveRfqAssignmentInput): Resolved
 }
 
 function formatLineItems(items: RfqLineItem[]): string {
-  return items.map((item) => `- ${item.sku} x ${item.qty}`).join('\n');
+  return items.map((item) => `- ${item.sku}${item.note ? ` (${item.note})` : ''}`).join('\n');
 }
 
 function formatSalesName(owner: RfqSalesOwnerRef | null | undefined): string {

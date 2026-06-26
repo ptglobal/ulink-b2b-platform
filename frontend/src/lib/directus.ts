@@ -153,7 +153,7 @@ export interface RfqRequest {
   message?: string;
   scheduled_delivery?: boolean;
   requested_delivery_date?: string;
-  line_items?: Array<{ sku: string; qty: number }>;
+  line_items?: Array<{ sku: string; note?: string }>;
   status?: string;
   source?: 'web' | 'portal';
   user?: string | number | { id: string };
