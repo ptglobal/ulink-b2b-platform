@@ -52,12 +52,28 @@ export async function seedInitialContent(helpers, client, geography) {
   await seedTranslations('industries', electronicsId, 'electronics');
 
   const pharmaceuticalId = await helpers.ensureItem('industries', 'slug', {
-    name: 'Dược phẩm & Mỹ phẩm',
-    slug: 'pharmaceutical-cosmetics',
+    name: 'Dược phẩm',
+    slug: 'pharmaceutical',
     status: 'published',
     description: 'Vật tư đóng gói vô trùng và kiểm soát nhiễm bẩn cho phòng sạch cấp A/B.'
   });
   await seedTranslations('industries', pharmaceuticalId, 'pharmaceutical');
+
+  const cosmeticsId = await helpers.ensureItem('industries', 'slug', {
+    name: 'Mỹ phẩm',
+    slug: 'cosmetics',
+    status: 'published',
+    description: 'Giải pháp phòng sạch và đóng gói bảo vệ cho sản xuất mỹ phẩm và hóa mỹ phẩm.'
+  });
+  await seedTranslations('industries', cosmeticsId, 'cosmetics');
+
+  const foodId = await helpers.ensureItem('industries', 'slug', {
+    name: 'Thực phẩm',
+    slug: 'food',
+    status: 'published',
+    description: 'Vật tư vệ sinh, bao bì và kiểm soát nhiễm bẩn cho ngành chế biến thực phẩm.'
+  });
+  await seedTranslations('industries', foodId, 'food');
 
   const cleanroomId = await helpers.ensureItem('product_categories', 'slug', {
     name: 'Vật tư phòng sạch',
@@ -136,6 +152,16 @@ export async function seedInitialContent(helpers, client, geography) {
     id: 3,
     products_id: wipersProductId,
     industries_id: electronicsId
+  });
+  await helpers.ensureItem('products_industries', 'id', {
+    id: 4,
+    products_id: glovesProductId,
+    industries_id: cosmeticsId
+  });
+  await helpers.ensureItem('products_industries', 'id', {
+    id: 5,
+    products_id: glovesProductId,
+    industries_id: foodId
   });
 
   // Standards seed data
@@ -244,26 +270,32 @@ export async function seedInitialContent(helpers, client, geography) {
 
   const haNamProvince = getGeoEntry(geography?.provincesByAbbr, 'HNA', 'province');
   const dongVan4Id = await upsertRegionalHub(client, helpers, 'dong-van-4', {
-    name: 'Đông Vân 4',
+    name: 'HUB Hà Nam',
     province: haNamProvince.id,
-    detail_address: 'KCN Đông Vân IV, Kim Bảng, Hà Nam',
+    detail_address: 'CN05 KCN Đồng Văn IV, xã Đại Cương, huyện Kim Bảng, tỉnh Hà Nam',
     operating_status: 'active',
     coordinates: '20.5500,105.9100',
-    warehouse_total_area: 5000,
-    warehouse_utilized_area: 3200,
-    warehouse_available_area: 1800,
-    warehouse_storage_tons: 2000,
-    warehouse_pallets: 800,
-    standard_delivery_time: '24 giờ',
-    on_time_rate: 96.5,
-    on_time_rate_delta: '+2.1%',
-    orders_today: 45,
-    order_capacity_per_day: 100,
-    avg_delivery_time: '18 giờ',
-    person_in_charge_name: 'Nguyễn Văn Hùng',
-    person_in_charge_title: 'Giám đốc Hub',
-    person_in_charge_phone: '0912345678',
-    current_personnel_count: 25,
+    warehouse_total_area: 1000,
+    warehouse_utilized_area: 0,
+    warehouse_available_area: 1000,
+    warehouse_storage_tons: 0,
+    warehouse_pallets: 0,
+    standard_delivery_time: 'Theo Khu vực',
+    sla_details: {
+      "Khu vực 1": "T+1 _ 24h",
+      "Khu vực 2": "T+2",
+      "Khu vực 3 + 4": "T+3"
+    },
+    on_time_rate: 98.0,
+    on_time_rate_delta: '+1.5%',
+    orders_today: 0,
+    order_capacity_per_day: 500,
+    avg_delivery_time: '24 giờ',
+    avg_delivery_distance: 45.0,
+    person_in_charge_name: '',
+    person_in_charge_title: 'Quản lý đại diện',
+    person_in_charge_phone: '',
+    current_personnel_count: 5,
     status: 'published'
   });
   await seedTranslations('regional_hubs', dongVan4Id, 'dong_van_4');
@@ -312,46 +344,120 @@ export async function seedInitialContent(helpers, client, geography) {
   });
 
   // Hub Industrial Zones
-  const dongVanIvZoneId = await helpers.ensureItem('hub_industrial_zones', 'name', {
-    name: 'KCN Đông Vân IV',
-    hub: dongVan4Id
-  });
-  await seedTranslations('hub_industrial_zones', dongVanIvZoneId, 'dong_van_iv');
+  const zones = [
+    // Trục 1: Nội Vùng & Nam Sông Hồng
+    { name: 'KCN Đồng Văn I', corridor: 'Trục 1', hub: dongVan4Id },
+    { name: 'KCN Đồng Văn II', corridor: 'Trục 1', hub: dongVan4Id },
+    { name: 'KCN Đồng Văn III', corridor: 'Trục 1', hub: dongVan4Id },
+    { name: 'KCN Đồng Văn IV', corridor: 'Trục 1', hub: dongVan4Id },
+    { name: 'KCN Thanh Liêm', corridor: 'Trục 1', hub: dongVan4Id },
+    { name: 'KCN Mỹ Thuận', corridor: 'Trục 1', hub: dongVan4Id },
+    { name: 'KCN Bảo Minh', corridor: 'Trục 1', hub: dongVan4Id },
+    { name: 'KCN Gián Khẩu', corridor: 'Trục 1', hub: dongVan4Id },
+    { name: 'KCN Khánh Phú', corridor: 'Trục 1', hub: dongVan4Id },
+    // Trục 2: Hành Lang Đông Bắc & Cảng Biển
+    { name: 'KCN Phố Nối A', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN Phố Nối B', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN Thăng Long II', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN Đại An', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN Tân Trường', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN An Phát', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN VSIP Hải Phòng', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN Tràng Duệ', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN Nam Đình Vũ', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN Đông Mai', corridor: 'Trục 2', hub: dongVan4Id },
+    { name: 'KCN Amata Sông Khoai', corridor: 'Trục 2', hub: dongVan4Id },
+    // Trục 3: Hub Điện Tử & Công Nghệ Cao
+    { name: 'KCN Phú Nghĩa', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Bắc Thăng Long', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Quang Minh', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN VSIP Bắc Ninh', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Yên Phong I', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Yên Phong II', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Quế Võ I', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Quế Võ II', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Quế Võ III', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Quang Châu', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Vân Trung', corridor: 'Trục 3', hub: dongVan4Id },
+    { name: 'KCN Yên Lư', corridor: 'Trục 3', hub: dongVan4Id },
+    // Trục 4: Hành Lang Phía Tây
+    { name: 'KCN Khai Quang', corridor: 'Trục 4', hub: dongVan4Id },
+    { name: 'KCN Thăng Long Vĩnh Phúc', corridor: 'Trục 4', hub: dongVan4Id },
+    { name: 'KCN Thụy Vân', corridor: 'Trục 4', hub: dongVan4Id },
+    { name: 'KCN Phú Hà', corridor: 'Trục 4', hub: dongVan4Id },
+    // Của Hub Bắc Thăng Long
+    { name: 'KCN Bắc Thăng Long (Hub HN)', hub: bacThangLongId }
+  ];
 
-  const dongVanIiiZoneId = await helpers.ensureItem('hub_industrial_zones', 'name', {
-    name: 'KCN Đồng Văn III',
-    hub: dongVan4Id
-  });
-  await seedTranslations('hub_industrial_zones', dongVanIiiZoneId, 'dong_van_iii');
-
-  const bacThangLongZoneId = await helpers.ensureItem('hub_industrial_zones', 'name', {
-    name: 'KCN Bắc Thăng Long',
-    hub: bacThangLongId
-  });
-  await seedTranslations('hub_industrial_zones', bacThangLongZoneId, 'bac_thang_long');
+  for (const zone of zones) {
+    await helpers.ensureItem('hub_industrial_zones', 'name', zone);
+  }
 
   // Hub Team Members
-  await helpers.ensureItem('hub_team_members', 'name', {
-    name: 'Trần Minh Đức',
-    role: 'Kỹ sư phòng sạch',
-    years_experience: 8,
-    hub: dongVan4Id,
-    sort: 1
-  });
-  await helpers.ensureItem('hub_team_members', 'name', {
-    name: 'Lê Hoàng Nam',
-    role: 'Quản lý kho',
-    years_experience: 5,
-    hub: dongVan4Id,
-    sort: 2
-  });
-  await helpers.ensureItem('hub_team_members', 'name', {
-    name: 'Phạm Thị Hoa',
-    role: 'Kỹ sư QC',
-    years_experience: 6,
-    hub: bacThangLongId,
-    sort: 1
-  });
+  const teamMembers = [
+    // HUB Hà Nam
+    {
+      name: 'Nguyễn Văn Tiến',
+      role: 'Quản lý đại diện',
+      years_experience: 10,
+      hub: dongVan4Id,
+      sort: 1
+    },
+    {
+      name: 'Trần Văn Hoàng',
+      role: 'Senior Sales (Trục 1: Nội Vùng & Nam Sông Hồng)',
+      years_experience: 5,
+      hub: dongVan4Id,
+      sort: 2
+    },
+    {
+      name: 'Phạm Minh Hải',
+      role: 'Sales Địa Bàn (Trục 2: Hưng Yên - Hải Dương)',
+      years_experience: 3,
+      hub: dongVan4Id,
+      sort: 3
+    },
+    {
+      name: 'Lê Tuấn Anh',
+      role: 'Sales Địa Bàn (Trục 2: Hải Phòng - Quảng Ninh)',
+      years_experience: 4,
+      hub: dongVan4Id,
+      sort: 4
+    },
+    {
+      name: 'Nguyễn Trung Đức',
+      role: 'Senior Sales (Trục 3: Samsung, Foxconn, Luxshare)',
+      years_experience: 6,
+      hub: dongVan4Id,
+      sort: 5
+    },
+    {
+      name: 'Vũ Quốc Khánh',
+      role: 'Senior Sales (Trục 3: Samsung, Foxconn, Luxshare)',
+      years_experience: 7,
+      hub: dongVan4Id,
+      sort: 6
+    },
+    {
+      name: 'Đỗ Hữu Nghĩa',
+      role: 'Sales Địa Bàn (Trục 4: Vĩnh Phúc - Phú Thọ)',
+      years_experience: 3,
+      hub: dongVan4Id,
+      sort: 7
+    },
+    // HUB Bắc Thăng Long
+    {
+      name: 'Phạm Thị Hoa',
+      role: 'Kỹ sư QC',
+      years_experience: 6,
+      hub: bacThangLongId,
+      sort: 1
+    }
+  ];
+
+  for (const member of teamMembers) {
+    await helpers.ensureItem('hub_team_members', 'name', member);
+  }
 
   const blogPostId = await helpers.ensureItem('blog_posts', 'slug', {
     title: 'Tối ưu kiểm soát ESD trong phòng sạch điện tử',

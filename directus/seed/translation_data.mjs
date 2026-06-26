@@ -16,16 +16,44 @@ export const translations = {
     },
     pharmaceutical: {
       vi: {
-        name: 'Dược phẩm & Mỹ phẩm',
+        name: 'Dược phẩm',
         description: 'Vật tư đóng gói vô trùng và kiểm soát nhiễm bẩn cho phòng sạch cấp A/B.'
       },
       en: {
-        name: 'Pharmaceuticals & Cosmetics',
+        name: 'Pharmaceuticals',
         description: 'Sterile packaging and contamination control supplies for Class A/B cleanrooms.'
       },
       ja: {
-        name: '医薬品・化粧品',
+        name: '医薬品',
         description: 'クリーンルームクラスA/B向けの無菌包装および汚染制御資材。'
+      }
+    },
+    cosmetics: {
+      vi: {
+        name: 'Mỹ phẩm',
+        description: 'Giải pháp phòng sạch và đóng gói bảo vệ cho sản xuất mỹ phẩm và hóa mỹ phẩm.'
+      },
+      en: {
+        name: 'Cosmetics',
+        description: 'Cleanroom and protective packaging solutions for cosmetics manufacturing.'
+      },
+      ja: {
+        name: '化粧品',
+        description: '化粧品製造向けのクリーンルームおよび保護包装ソリューション。'
+      }
+    },
+    food: {
+      vi: {
+        name: 'Thực phẩm',
+        description: 'Vật tư vệ sinh, bao bì và kiểm soát nhiễm bẩn cho ngành chế biến thực phẩm.'
+      },
+      en: {
+        name: 'Food Processing',
+        description: 'Hygiene, packaging, and contamination control supplies for the food industry.'
+      },
+      ja: {
+        name: '食品加工',
+        description: '食品業界向けの衛生、包装、および汚染制御資材。'
       }
     }
   },
@@ -150,13 +178,13 @@ export const translations = {
   regional_hubs: {
     dong_van_4: {
       vi: {
-        name: 'Đông Vân 4'
+        name: 'HUB Hà Nam'
       },
       en: {
-        name: 'Dong Van 4'
+        name: 'Ha Nam Hub'
       },
       ja: {
-        name: 'ドンヴァン 4'
+        name: 'ハナムハブ'
       }
     },
     bac_thang_long: {

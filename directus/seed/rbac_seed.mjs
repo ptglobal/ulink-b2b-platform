@@ -256,7 +256,7 @@ async function main() {
     hub: hubId,
     line_items: [{ sku: 'RBAC-SKU-A', qty: 1 }],
     message: 'RBAC-RFQ-A-001',
-    status: 'new',
+    status: 'pending',
     assigned_sales: salesUserId,
     source: 'portal',
     user: customerAUserId
@@ -271,7 +271,7 @@ async function main() {
     hub: hubId,
     line_items: [{ sku: 'RBAC-SKU-B', qty: 2 }],
     message: 'RBAC-RFQ-B-001',
-    status: 'new',
+    status: 'pending',
     assigned_sales: salesUserId,
     source: 'portal',
     user: customerBUserId

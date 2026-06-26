@@ -70,8 +70,9 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
       options: (() => {
         const industryOptions = [];
         const electronicsDb = industries.find(ind => ind.slug === 'electronics');
-        const pharmaCosmeticsDb = industries.find(ind => ind.slug === 'pharmaceutical-cosmetics');
-        const foodBeverageDb = industries.find(ind => ind.slug === 'food-beverage');
+        const pharmaceuticalDb = industries.find(ind => ind.slug === 'pharmaceutical');
+        const cosmeticsDb = industries.find(ind => ind.slug === 'cosmetics');
+        const foodDb = industries.find(ind => ind.slug === 'food');
 
         if (electronicsDb) {
           industryOptions.push({
@@ -80,23 +81,25 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
             count: industryCounts[String(electronicsDb.id)] ?? 0
           });
         }
-        if (pharmaCosmeticsDb) {
+        if (pharmaceuticalDb) {
           industryOptions.push({
             slug: 'pharmaceutical',
             name: locale === 'vi' ? 'Dược phẩm' : locale === 'ja' ? '製薬' : 'Pharmaceuticals',
-            count: industryCounts[String(pharmaCosmeticsDb.id)] ?? 0
+            count: industryCounts[String(pharmaceuticalDb.id)] ?? 0
           });
+        }
+        if (cosmeticsDb) {
           industryOptions.push({
             slug: 'cosmetics',
             name: locale === 'vi' ? 'Mỹ phẩm' : locale === 'ja' ? '化粧品' : 'Cosmetics',
-            count: industryCounts[String(pharmaCosmeticsDb.id)] ?? 0
+            count: industryCounts[String(cosmeticsDb.id)] ?? 0
           });
         }
-        if (foodBeverageDb) {
+        if (foodDb) {
           industryOptions.push({
-            slug: 'food-beverage',
-            name: locale === 'vi' ? 'Thực phẩm' : locale === 'ja' ? '食品' : 'Food & Beverage',
-            count: industryCounts[String(foodBeverageDb.id)] ?? 0
+            slug: 'food',
+            name: locale === 'vi' ? 'Thực phẩm' : locale === 'ja' ? '食品' : 'Food Processing',
+            count: industryCounts[String(foodDb.id)] ?? 0
           });
         }
         return industryOptions;

@@ -239,7 +239,7 @@ export function buildPermissionDefs() {
     });
   }
 
-  for (const col of ['customers', 'orders', 'order_items', 'invoices', 'deliveries', 'rfq_requests', 'sample_requests']) {
+  for (const col of ['orders', 'order_items', 'invoices', 'deliveries', 'sample_requests']) {
     for (const action of ['create', 'read', 'update', 'delete']) {
       permissions.push({
         policy: SALES_POLICY_ID,
@@ -250,6 +250,80 @@ export function buildPermissionDefs() {
       });
     }
   }
+
+  // ─── Restricted Customer Permissions for Sales ──────────────────────
+  // Sales can read all customers (to check duplicate / existing accounts)
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'customers',
+    action: 'read',
+    permissions: {},
+    fields: ['*']
+  });
+
+  // Sales can create customers
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'customers',
+    action: 'create',
+    permissions: {},
+    fields: ['*']
+  });
+
+  // Sales can only update customers they own, and CANNOT change the sales_owner field
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'customers',
+    action: 'update',
+    permissions: { sales_owner: { _eq: '$CURRENT_USER' } },
+    fields: ['*', '!sales_owner']
+  });
+
+  // Sales can only delete customers they own
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'customers',
+    action: 'delete',
+    permissions: { sales_owner: { _eq: '$CURRENT_USER' } },
+    fields: ['*']
+  });
+
+  // ─── Restricted RFQ Permissions for Sales ───────────────────────────
+  // Sales can only read RFQs assigned to them
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'rfq_requests',
+    action: 'read',
+    permissions: { assigned_sales: { _eq: '$CURRENT_USER' } },
+    fields: ['*']
+  });
+
+  // Sales can create RFQs (on behalf of clients)
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'rfq_requests',
+    action: 'create',
+    permissions: {},
+    fields: ['*']
+  });
+
+  // Sales can only update RFQs assigned to them, and CANNOT change the assigned_sales field
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'rfq_requests',
+    action: 'update',
+    permissions: { assigned_sales: { _eq: '$CURRENT_USER' } },
+    fields: ['*', '!assigned_sales']
+  });
+
+  // Sales can only delete RFQs assigned to them
+  permissions.push({
+    policy: SALES_POLICY_ID,
+    collection: 'rfq_requests',
+    action: 'delete',
+    permissions: { assigned_sales: { _eq: '$CURRENT_USER' } },
+    fields: ['*']
+  });
 
   for (const action of ['create', 'read', 'update', 'delete']) {
     permissions.push({

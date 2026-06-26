@@ -98,11 +98,14 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pro
 
   // Multi-select: comma-separated slugs → _in filter
   if (industry) {
-    const slugs = industry.split(',').filter(Boolean).map((s) => {
-      if (s === 'pharmaceutical' || s === 'cosmetics') {
-        return 'pharmaceutical-cosmetics';
+    const slugs = industry.split(',').filter(Boolean).flatMap((s) => {
+      if (s === 'pharmaceutical-cosmetics') {
+        return ['pharmaceutical', 'cosmetics'];
       }
-      return s;
+      if (s === 'food-beverage') {
+        return ['food'];
+      }
+      return [s];
     });
     if (slugs.length === 1) {
       filter.industries = { industries_id: { slug: { _eq: slugs[0] } } };

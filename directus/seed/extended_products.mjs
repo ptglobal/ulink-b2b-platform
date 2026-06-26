@@ -12,31 +12,11 @@ async function getIdBySlug(client, collection, slug) {
 }
 
 export async function seedExtendedProducts(helpers, client) {
-  // ─── Additional Industries ────────────────────────────────────────
-  const foodBevId = await helpers.ensureItem('industries', 'slug', {
-    name: 'Thực phẩm & Đồ uống',
-    slug: 'food-beverage',
-    status: 'published',
-    description: 'Vật tư vệ sinh, bao bì và kiểm soát nhiễm bẩn cho ngành chế biến thực phẩm.'
-  });
-
-  const autoId = await helpers.ensureItem('industries', 'slug', {
-    name: 'Ô tô & Cơ khí',
-    slug: 'automotive',
-    status: 'published',
-    description: 'Giải pháp phòng sạch và bảo vệ bề mặt cho sản xuất linh kiện ô tô.'
-  });
-
-  const solarId = await helpers.ensureItem('industries', 'slug', {
-    name: 'Năng lượng mặt trời',
-    slug: 'solar-energy',
-    status: 'published',
-    description: 'Vật tư kiểm soát hạt bụi cho sản xuất tấm pin và cell quang điện.'
-  });
-
   // Get existing industry IDs
   const electronicsId = await getIdBySlug(client, 'industries', 'electronics');
-  const pharmaId = await getIdBySlug(client, 'industries', 'pharmaceutical-cosmetics');
+  const pharmaId = await getIdBySlug(client, 'industries', 'pharmaceutical');
+  const cosmeticsId = await getIdBySlug(client, 'industries', 'cosmetics');
+  const foodId = await getIdBySlug(client, 'industries', 'food');
 
   // ─── Additional Standards ─────────────────────────────────────────
   const iec61340Id = await helpers.ensureItem('standards', 'slug', {
@@ -355,14 +335,14 @@ export async function seedExtendedProducts(helpers, client) {
   // ─── Industry links ───────────────────────────────────────────────
   let piId = 10;
   const industryLinks = [
-    [coverallId, electronicsId], [coverallId, pharmaId], [coverallId, foodBevId],
-    [maskId, pharmaId], [maskId, foodBevId],
-    [esdStrapId, electronicsId], [esdStrapId, autoId],
-    [esdMatId, electronicsId], [esdMatId, solarId],
-    [ipaId, electronicsId], [ipaId, pharmaId], [ipaId, solarId],
-    [stickyMatId, electronicsId], [stickyMatId, pharmaId], [stickyMatId, foodBevId],
-    [esdBagId, electronicsId], [esdBagId, autoId], [esdBagId, solarId],
-    [latexGlovesId, pharmaId], [latexGlovesId, foodBevId],
+    [coverallId, electronicsId], [coverallId, pharmaId], [coverallId, cosmeticsId], [coverallId, foodId],
+    [maskId, pharmaId], [maskId, cosmeticsId], [maskId, foodId],
+    [esdStrapId, electronicsId],
+    [esdMatId, electronicsId],
+    [ipaId, electronicsId], [ipaId, pharmaId], [ipaId, cosmeticsId],
+    [stickyMatId, electronicsId], [stickyMatId, pharmaId], [stickyMatId, cosmeticsId], [stickyMatId, foodId],
+    [esdBagId, electronicsId],
+    [latexGlovesId, pharmaId], [latexGlovesId, cosmeticsId], [latexGlovesId, foodId],
   ];
   for (const [pid, iid] of industryLinks) {
     await helpers.ensureItem('products_industries', 'id', { id: piId++, products_id: pid, industries_id: iid });

@@ -73,8 +73,8 @@ test('submits only after validation, sku check, and anti-spam pass', async () =>
     message: 'Need quote',
     scheduled_delivery: false,
     requested_delivery_date: undefined,
-    line_items: [{ sku: 'CR-GLV-001', note: 'urgent' }],
-    status: 'new',
+    line_items: [{ sku: 'CR-GLV-001', qty: 1 }],
+    status: 'pending',
     source: 'web'
   });
   assert.deepEqual(calls, [
