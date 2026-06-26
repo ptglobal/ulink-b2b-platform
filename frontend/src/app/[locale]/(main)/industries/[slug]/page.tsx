@@ -17,6 +17,8 @@ function getIndustryDetails(slug: string, locale: string) {
   let actualSlug = slug;
   if (slug === 'pharmaceutical' || slug === 'cosmetics') {
     actualSlug = 'pharmaceutical-cosmetics';
+  } else if (slug === 'food') {
+    actualSlug = 'food-beverage';
   }
 
   const VALID_SLUGS = ['electronics', 'pharmaceutical-cosmetics', 'food-beverage'];
@@ -447,6 +449,8 @@ export default async function IndustryDetailPage({ params: { locale, slug } }: I
   let actualSlug = slug;
   if (slug === 'pharmaceutical' || slug === 'cosmetics') {
     actualSlug = 'pharmaceutical-cosmetics';
+  } else if (slug === 'food') {
+    actualSlug = 'food-beverage';
   }
   
   const industryData = getIndustryDetails(actualSlug, locale);

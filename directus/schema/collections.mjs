@@ -179,11 +179,13 @@ export const COLLECTION_DEFS = [
       // ── SLA Metrics ──
       { field: 'divider_sla', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'SLA Metrics' }, special: ['alias', 'no-data'] } },
       { field: 'standard_delivery_time', type: 'string', meta: { interface: 'input', width: 'half' } },
+      { field: 'sla_details', type: 'json', meta: { interface: 'list', width: 'full' } },
       { field: 'on_time_rate', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: '%' } } },
       { field: 'on_time_rate_delta', type: 'string', meta: { interface: 'input', width: 'half', options: { placeholder: 'e.g. +2.1%' } } },
       { field: 'orders_today', type: 'integer', meta: { interface: 'input', width: 'half' } },
       { field: 'order_capacity_per_day', type: 'integer', meta: { interface: 'input', width: 'half' } },
       { field: 'avg_delivery_time', type: 'string', meta: { interface: 'input', width: 'half' } },
+      { field: 'avg_delivery_distance', type: 'float', meta: { interface: 'input', width: 'half', options: { placeholder: 'km' } } },
       // ── Technical Team ──
       { field: 'divider_team', type: 'alias', meta: { interface: 'presentation-divider', options: { title: 'Technical Team' }, special: ['alias', 'no-data'] } },
       { field: 'person_in_charge_name', type: 'string', meta: { interface: 'input', width: 'half' } },
@@ -684,6 +686,21 @@ export const COLLECTION_DEFS = [
       createTranslationAliasField(),
       { field: 'name', type: 'string', meta: { interface: 'input', required: true } },
       { field: 'hub', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true } },
+      {
+        field: 'corridor',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          options: {
+            choices: [
+              { text: 'Trục 1: Nội Vùng & Nam Sông Hồng', value: 'Trục 1' },
+              { text: 'Trục 2: Hành Lang Đông Bắc & Cảng Biển', value: 'Trục 2' },
+              { text: 'Trục 3: Hub Điện Tử & Công Nghệ Cao', value: 'Trục 3' },
+              { text: 'Trục 4: Hành Lang Phía Tây', value: 'Trục 4' }
+            ]
+          }
+        }
+      },
       { field: 'image', type: 'uuid', meta: { interface: 'file-image', special: ['file'] } }
     ]
   },

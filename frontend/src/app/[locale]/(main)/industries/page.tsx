@@ -137,7 +137,7 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
           : ['Cleanroom & PPE', 'Wipers & Sanitizers', 'Sterile Packaging Equipment', 'Aluminum Barrier Packaging']
       },
       {
-        slug: 'food-beverage',
+        slug: 'food',
         name: isVi ? 'Thực phẩm' : isJa ? '食品' : 'Food',
         icon: '/images/icons/icon_food.png',
         image: '/images/icons/food_processing.png',
