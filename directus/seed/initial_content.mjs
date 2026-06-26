@@ -268,7 +268,7 @@ export async function seedInitialContent(helpers, client, geography) {
     status: 'published'
   });
 
-  const haNamProvince = getGeoEntry(geography?.provincesByAbbr, 'HNA', 'province');
+  const haNamProvince = getGeoEntry(geography?.provincesByAbbr, 'NB', 'province');
   const dongVan4Id = await upsertRegionalHub(client, helpers, 'dong-van-4', {
     name: 'HUB Hà Nam',
     province: haNamProvince.id,

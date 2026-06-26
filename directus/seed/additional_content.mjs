@@ -81,7 +81,7 @@ export async function seedAdditionalContent(helpers, ids, geography) {
   });
 
   // Additional regional hubs
-  const binhDuongProvince = getGeoEntry(geography?.provincesByAbbr, 'BD', 'province');
+  const binhDuongProvince = getGeoEntry(geography?.provincesByAbbr, 'HCM', 'province');
   const haiPhongProvince = getGeoEntry(geography?.provincesByAbbr, 'HP', 'province');
   const dongNaiProvince = getGeoEntry(geography?.provincesByAbbr, 'DN', 'province');
 

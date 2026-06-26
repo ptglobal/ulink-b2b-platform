@@ -1,65 +1,172 @@
 [
-  { "code": "vn-ha-noi", "abbr": "HN", "name": "Hà Nội" },
-  { "code": "vn-ho-chi-minh", "abbr": "HCM", "name": "TP. Hồ Chí Minh" },
-  { "code": "vn-hai-phong", "abbr": "HP", "name": "Hải Phòng" },
-  { "code": "vn-da-nang", "abbr": "DNG", "name": "Đà Nẵng" },
-  { "code": "vn-can-tho", "abbr": "CT", "name": "Cần Thơ" },
-  { "code": "vn-an-giang", "abbr": "AG", "name": "An Giang" },
-  { "code": "vn-ba-ria-vung-tau", "abbr": "VT", "name": "Bà Rịa - Vũng Tàu" },
-  { "code": "vn-bac-giang", "abbr": "BG", "name": "Bắc Giang" },
-  { "code": "vn-bac-kan", "abbr": "BK", "name": "Bắc Kạn" },
-  { "code": "vn-bac-lieu", "abbr": "BL", "name": "Bạc Liêu" },
-  { "code": "vn-bac-ninh", "abbr": "BN", "name": "Bắc Ninh" },
-  { "code": "vn-ben-tre", "abbr": "BT", "name": "Bến Tre" },
-  { "code": "vn-binh-duong", "abbr": "BD", "name": "Bình Dương" },
-  { "code": "vn-binh-dinh", "abbr": "BDI", "name": "Bình Định" },
-  { "code": "vn-binh-phuoc", "abbr": "BP", "name": "Bình Phước" },
-  { "code": "vn-binh-thuan", "abbr": "BTH", "name": "Bình Thuận" },
-  { "code": "vn-ca-mau", "abbr": "CM", "name": "Cà Mau" },
-  { "code": "vn-cao-bang", "abbr": "CB", "name": "Cao Bằng" },
-  { "code": "vn-dak-lak", "abbr": "DLK", "name": "Đắk Lắk" },
-  { "code": "vn-dak-nong", "abbr": "DKN", "name": "Đắk Nông" },
-  { "code": "vn-dien-bien", "abbr": "DB", "name": "Điện Biên" },
-  { "code": "vn-dong-nai", "abbr": "DN", "name": "Đồng Nai" },
-  { "code": "vn-dong-thap", "abbr": "DT", "name": "Đồng Tháp" },
-  { "code": "vn-gia-lai", "abbr": "GL", "name": "Gia Lai" },
-  { "code": "vn-ha-giang", "abbr": "HG", "name": "Hà Giang" },
-  { "code": "vn-ha-nam", "abbr": "HNA", "name": "Hà Nam" },
-  { "code": "vn-ha-tinh", "abbr": "HT", "name": "Hà Tĩnh" },
-  { "code": "vn-hai-duong", "abbr": "HD", "name": "Hải Dương" },
-  { "code": "vn-hau-giang", "abbr": "HGI", "name": "Hậu Giang" },
-  { "code": "vn-hoa-binh", "abbr": "HB", "name": "Hòa Bình" },
-  { "code": "vn-hung-yen", "abbr": "HY", "name": "Hưng Yên" },
-  { "code": "vn-khanh-hoa", "abbr": "KH", "name": "Khánh Hòa" },
-  { "code": "vn-kien-giang", "abbr": "KG", "name": "Kiên Giang" },
-  { "code": "vn-kon-tum", "abbr": "KT", "name": "Kon Tum" },
-  { "code": "vn-lai-chau", "abbr": "LC", "name": "Lai Châu" },
-  { "code": "vn-lam-dong", "abbr": "LD", "name": "Lâm Đồng" },
-  { "code": "vn-lang-son", "abbr": "LS", "name": "Lạng Sơn" },
-  { "code": "vn-lao-cai", "abbr": "LCA", "name": "Lào Cai" },
-  { "code": "vn-long-an", "abbr": "LA", "name": "Long An" },
-  { "code": "vn-nam-dinh", "abbr": "ND", "name": "Nam Định" },
-  { "code": "vn-nghe-an", "abbr": "NA", "name": "Nghệ An" },
-  { "code": "vn-ninh-binh", "abbr": "NB", "name": "Ninh Bình" },
-  { "code": "vn-ninh-thuan", "abbr": "NT", "name": "Ninh Thuận" },
-  { "code": "vn-phu-tho", "abbr": "PT", "name": "Phú Thọ" },
-  { "code": "vn-phu-yen", "abbr": "PY", "name": "Phú Yên" },
-  { "code": "vn-quang-binh", "abbr": "QB", "name": "Quảng Bình" },
-  { "code": "vn-quang-nam", "abbr": "QNA", "name": "Quảng Nam" },
-  { "code": "vn-quang-ngai", "abbr": "QNG", "name": "Quảng Ngãi" },
-  { "code": "vn-quang-ninh", "abbr": "QN", "name": "Quảng Ninh" },
-  { "code": "vn-quang-tri", "abbr": "QT", "name": "Quảng Trị" },
-  { "code": "vn-soc-trang", "abbr": "ST", "name": "Sóc Trăng" },
-  { "code": "vn-son-la", "abbr": "SL", "name": "Sơn La" },
-  { "code": "vn-tay-ninh", "abbr": "TN", "name": "Tây Ninh" },
-  { "code": "vn-thai-binh", "abbr": "TB", "name": "Thái Bình" },
-  { "code": "vn-thai-nguyen", "abbr": "TNG", "name": "Thái Nguyên" },
-  { "code": "vn-thanh-hoa", "abbr": "TH", "name": "Thanh Hóa" },
-  { "code": "vn-thua-thien-hue", "abbr": "TTH", "name": "Thừa Thiên Huế" },
-  { "code": "vn-tien-giang", "abbr": "TG", "name": "Tiền Giang" },
-  { "code": "vn-tra-vinh", "abbr": "TV", "name": "Trà Vinh" },
-  { "code": "vn-tuyen-quang", "abbr": "TQ", "name": "Tuyên Quang" },
-  { "code": "vn-vinh-long", "abbr": "VL", "name": "Vĩnh Long" },
-  { "code": "vn-vinh-phuc", "abbr": "VP", "name": "Vĩnh Phúc" },
-  { "code": "vn-yen-bai", "abbr": "YB", "name": "Yên Bái" }
+  {
+    "code": "vn-ha-noi",
+    "abbr": "HN",
+    "name": "Hà Nội"
+  },
+  {
+    "code": "vn-cao-bang",
+    "abbr": "CB",
+    "name": "Cao Bằng"
+  },
+  {
+    "code": "vn-tuyen-quang",
+    "abbr": "TQ",
+    "name": "Tuyên Quang"
+  },
+  {
+    "code": "vn-dien-bien",
+    "abbr": "DB",
+    "name": "Điện Biên"
+  },
+  {
+    "code": "vn-lai-chau",
+    "abbr": "LC",
+    "name": "Lai Châu"
+  },
+  {
+    "code": "vn-son-la",
+    "abbr": "SL",
+    "name": "Sơn La"
+  },
+  {
+    "code": "vn-lao-cai",
+    "abbr": "LCA",
+    "name": "Lào Cai"
+  },
+  {
+    "code": "vn-thai-nguyen",
+    "abbr": "TNG",
+    "name": "Thái Nguyên"
+  },
+  {
+    "code": "vn-lang-son",
+    "abbr": "LS",
+    "name": "Lạng Sơn"
+  },
+  {
+    "code": "vn-quang-ninh",
+    "abbr": "QN",
+    "name": "Quảng Ninh"
+  },
+  {
+    "code": "vn-bac-ninh",
+    "abbr": "BN",
+    "name": "Bắc Ninh"
+  },
+  {
+    "code": "vn-phu-tho",
+    "abbr": "PT",
+    "name": "Phú Thọ"
+  },
+  {
+    "code": "vn-hai-phong",
+    "abbr": "HP",
+    "name": "Hải Phòng"
+  },
+  {
+    "code": "vn-hung-yen",
+    "abbr": "HY",
+    "name": "Hưng Yên"
+  },
+  {
+    "code": "vn-ninh-binh",
+    "abbr": "NB",
+    "name": "Ninh Bình"
+  },
+  {
+    "code": "vn-thanh-hoa",
+    "abbr": "TH",
+    "name": "Thanh Hóa"
+  },
+  {
+    "code": "vn-nghe-an",
+    "abbr": "NA",
+    "name": "Nghệ An"
+  },
+  {
+    "code": "vn-ha-tinh",
+    "abbr": "HT",
+    "name": "Hà Tĩnh"
+  },
+  {
+    "code": "vn-quang-tri",
+    "abbr": "QT",
+    "name": "Quảng Trị"
+  },
+  {
+    "code": "vn-hue",
+    "abbr": "HUE",
+    "name": "Huế"
+  },
+  {
+    "code": "vn-da-nang",
+    "abbr": "DNG",
+    "name": "Đà Nẵng"
+  },
+  {
+    "code": "vn-quang-ngai",
+    "abbr": "QNG",
+    "name": "Quảng Ngãi"
+  },
+  {
+    "code": "vn-gia-lai",
+    "abbr": "GL",
+    "name": "Gia Lai"
+  },
+  {
+    "code": "vn-khanh-hoa",
+    "abbr": "KH",
+    "name": "Khánh Hòa"
+  },
+  {
+    "code": "vn-dak-lak",
+    "abbr": "DLK",
+    "name": "Đắk Lắk"
+  },
+  {
+    "code": "vn-lam-dong",
+    "abbr": "LD",
+    "name": "Lâm Đồng"
+  },
+  {
+    "code": "vn-dong-nai",
+    "abbr": "DN",
+    "name": "Đồng Nai"
+  },
+  {
+    "code": "vn-ho-chi-minh",
+    "abbr": "HCM",
+    "name": "TP. Hồ Chí Minh"
+  },
+  {
+    "code": "vn-tay-ninh",
+    "abbr": "TN",
+    "name": "Tây Ninh"
+  },
+  {
+    "code": "vn-dong-thap",
+    "abbr": "DT",
+    "name": "Đồng Tháp"
+  },
+  {
+    "code": "vn-vinh-long",
+    "abbr": "VL",
+    "name": "Vĩnh Long"
+  },
+  {
+    "code": "vn-an-giang",
+    "abbr": "AG",
+    "name": "An Giang"
+  },
+  {
+    "code": "vn-can-tho",
+    "abbr": "CT",
+    "name": "Cần Thơ"
+  },
+  {
+    "code": "vn-ca-mau",
+    "abbr": "CM",
+    "name": "Cà Mau"
+  }
 ]
