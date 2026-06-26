@@ -716,14 +716,14 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                       <thead className="bg-muted/40 text-muted-foreground border-b border-border/60">
                         <tr>
                           <th className="px-4 py-2.5 font-medium">Mã SKU</th>
-                          <th className="px-4 py-2.5 font-medium text-right">Số lượng</th>
+                          <th className="px-4 py-2.5 font-medium">Ghi chú</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-border/60">
                         {selectedRfq.line_items.map((item: any, idx: number) => (
                           <tr key={idx} className="hover:bg-muted/10">
                             <td className="px-4 py-2.5 font-mono text-foreground">{item.sku}</td>
-                            <td className="px-4 py-2.5 text-right font-medium text-foreground">{item.qty}</td>
+                            <td className="px-4 py-2.5 text-foreground">{item.note || '—'}</td>
                           </tr>
                         ))}
                       </tbody>

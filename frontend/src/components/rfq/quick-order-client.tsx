@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import {
   ShoppingCart,
   Trash2,
@@ -9,14 +9,19 @@ import {
   Building2,
   Loader2,
   ArrowRight,
-  Info
+  Info,
+  Upload,
+  FileSpreadsheet,
+  ClipboardPaste
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { AuthUser } from '@/lib/auth-helpers';
+import { type CartItem, readCart, persistCart, parseSkuText } from './cart-types';
 
 interface SkuItem {
   id: number;
   sku_code: string;
+  product_name?: string;
   unit: string;
   pack_size: string;
 }
@@ -38,8 +43,13 @@ interface MetaData {
 
 export function QuickOrderClient({ user }: { user: AuthUser | null }) {
   // Cart state
-  const [cart, setCart] = useState<Array<{ sku: string; qty: number }>>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [meta, setMeta] = useState<MetaData | null>(null);
+
+  // Bulk input states
+  const [showBulkTextarea, setShowBulkTextarea] = useState(false);
+  const [bulkText, setBulkText] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Form states
   const [formCompany, setFormCompany] = useState('');
@@ -62,18 +72,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
 
   // Load cart and metadata on mount
   useEffect(() => {
-    // Read cart
-    try {
-      const raw = localStorage.getItem('rfq-cart');
-      if (raw) {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          setCart(parsed);
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load cart from localStorage', e);
-    }
+    setCart(readCart());
 
     // Read metadata
     async function fetchMetadata() {
@@ -93,7 +92,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
             setFormHub(data.customer.hub ? String(data.customer.hub) : '');
             setFormIndustry(data.customer.industry || '');
           } else if (user) {
-            // Logged in user but no customer profile yet
             setFormContact(`${user.last_name ?? ''} ${user.first_name ?? ''}`.trim());
             setFormEmail(user.email);
           }
@@ -107,22 +105,76 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
   }, [user]);
 
   // Helper to save cart changes
-  const saveCart = (newCart: Array<{ sku: string; qty: number }>) => {
+  const saveCart = useCallback((newCart: CartItem[]) => {
     setCart(newCart);
-    localStorage.setItem('rfq-cart', JSON.stringify(newCart));
-    window.dispatchEvent(new Event('rfq-cart-changed'));
-  };
+    persistCart(newCart);
+  }, []);
 
   // Remove item from cart
-  const handleRemoveItem = (skuToRemove: string) => {
-    const updated = cart.filter((item) => item.sku !== skuToRemove);
-    saveCart(updated);
-  };
+  const handleRemoveItem = useCallback((sku: string) => {
+    setCart((prev) => {
+      const updated = prev.filter((item) => item.sku !== sku);
+      persistCart(updated);
+      return updated;
+    });
+  }, []);
+
+  // Update item note
+  const handleUpdateItem = useCallback((sku: string, field: 'note', value: string) => {
+    setCart((prev) => {
+      const updated = prev.map((item) =>
+        item.sku === sku ? { ...item, [field]: value } : item
+      );
+      persistCart(updated);
+      return updated;
+    });
+  }, []);
 
   // Clear cart
-  const handleClearCart = () => {
+  const handleClearCart = useCallback(() => {
     saveCart([]);
-  };
+  }, [saveCart]);
+
+  // Add SKUs in bulk (deduplicates against existing cart)
+  const addSkusBulk = useCallback((skuCodes: string[]) => {
+    setCart((prev) => {
+      const existing = new Set(prev.map((i) => i.sku.toLowerCase()));
+      const newItems: CartItem[] = skuCodes
+        .filter((code) => !existing.has(code.toLowerCase()))
+        .map((code) => ({ sku: code, product_name: '', note: '' }));
+      const updated = [...prev, ...newItems];
+      persistCart(updated);
+      return updated;
+    });
+  }, []);
+
+  // Handle bulk textarea submit
+  const handleBulkTextSubmit = useCallback(() => {
+    const codes = parseSkuText(bulkText);
+    if (codes.length > 0) {
+      addSkusBulk(codes);
+      setBulkText('');
+      setShowBulkTextarea(false);
+    }
+  }, [bulkText, addSkusBulk]);
+
+  // Handle CSV/Excel file upload
+  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const text = ev.target?.result as string;
+      if (!text) return;
+      const codes = parseSkuText(text);
+      if (codes.length > 0) addSkusBulk(codes);
+    };
+    reader.readAsText(file);
+
+    // Reset input so the same file can be re-selected
+    e.target.value = '';
+  }, [addSkusBulk]);
 
   // Handle RFQ Submit
   const handleSubmit = async (e: React.FormEvent) => {
@@ -195,7 +247,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
           requested_delivery_date: formScheduled ? formDeliveryDate : undefined,
           items: cart.map((item) => ({
             sku: item.sku.trim(),
-            qty: item.qty
+            note: item.note || undefined
           })),
           source: 'portal'
         })
@@ -294,26 +346,44 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                 <p className="text-xs text-muted-foreground/70 mt-1">Chọn hoặc nhập sản phẩm để tạo yêu cầu báo giá.</p>
               </div>
             ) : (
+              <>
               <div className="overflow-hidden rounded-xl border border-border/60">
                 <table className="w-full border-collapse text-left text-sm">
                   <thead className="bg-muted/40 text-muted-foreground text-xs uppercase font-semibold border-b border-border/60">
                     <tr>
-                      <th className="px-4 py-3">Mã SKU</th>
-                      <th className="px-4 py-3 text-right" style={{ width: '60px' }}></th>
+                      <th className="px-4 py-3">Sản phẩm / SKU</th>
+                      <th className="px-4 py-3" style={{ width: '200px' }}>Ghi chú</th>
+                      <th className="px-4 py-3 text-right" style={{ width: '50px' }}></th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-border/50">
                     {cart.map((item, idx) => {
                       const skuDetails = meta?.skus.find((s) => s.sku_code.toLowerCase() === item.sku.toLowerCase());
+                      const productName = item.product_name || skuDetails?.product_name || '';
                       return (
                         <tr key={idx} className="hover:bg-muted/10 transition-colors">
                           <td className="px-4 py-3">
-                            <div className="font-mono font-medium text-foreground">{item.sku}</div>
-                            {skuDetails && (
-                              <div className="text-xs text-muted-foreground mt-0.5">
-                                Đơn vị: {skuDetails.unit || '—'} {skuDetails.pack_size ? `| Quy cách: ${skuDetails.pack_size}` : ''}
-                              </div>
+                            {productName && (
+                              <div className="text-xs text-muted-foreground mb-0.5 truncate max-w-[200px]">{productName}</div>
                             )}
+                            <div className="font-mono font-medium text-foreground text-sm">{item.sku}</div>
+                            {skuDetails?.pack_size && (
+                              <div className="text-[11px] text-muted-foreground/70 mt-0.5">Quy cách: {skuDetails.pack_size}</div>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <textarea
+                              value={item.note}
+                              onChange={(e) => handleUpdateItem(item.sku, 'note', e.target.value)}
+                              onInput={(e) => {
+                                const target = e.target as HTMLTextAreaElement;
+                                target.style.height = 'auto';
+                                target.style.height = target.scrollHeight + 'px';
+                              }}
+                              placeholder="Ghi chú..."
+                              rows={1}
+                              className="w-full rounded-lg border border-border/80 bg-background px-2 py-1.5 text-xs outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all resize-none overflow-hidden"
+                            />
                           </td>
                           <td className="px-4 py-3 text-right">
                             <button
@@ -321,7 +391,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                               onClick={() => handleRemoveItem(item.sku)}
                               className="rounded-lg p-1.5 text-muted-foreground hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/20 transition-all"
                             >
-                              <Trash2 className="h-4.5 w-4.5" />
+                              <Trash2 className="h-4 w-4" />
                             </button>
                           </td>
                         </tr>
@@ -330,6 +400,62 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                   </tbody>
                 </table>
               </div>
+
+              {/* Bulk add tools */}
+              <div className="flex flex-wrap gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowBulkTextarea(!showBulkTextarea)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/40 hover:text-foreground transition-all"
+                >
+                  <ClipboardPaste className="h-3.5 w-3.5" />
+                  Dán mã SKU
+                </button>
+                <label className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/40 hover:text-foreground transition-all cursor-pointer">
+                  <Upload className="h-3.5 w-3.5" />
+                  Tải file CSV/TXT
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept=".csv,.txt,.tsv"
+                    onChange={handleFileUpload}
+                    className="hidden"
+                  />
+                </label>
+              </div>
+
+              {/* Bulk textarea */}
+              {showBulkTextarea && (
+                <div className="space-y-2 pt-2 border-t border-border/50">
+                  <p className="text-xs text-muted-foreground">Dán danh sách mã SKU (mỗi dòng một mã, hoặc ngăn cách bằng dấu phẩy):</p>
+                  <textarea
+                    value={bulkText}
+                    onChange={(e) => setBulkText(e.target.value)}
+                    rows={4}
+                    placeholder="VD: SKU-001&#10;SKU-002&#10;SKU-003"
+                    className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm font-mono outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all resize-none"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleBulkTextSubmit}
+                      disabled={!bulkText.trim()}
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-brand px-3 py-1.5 text-xs font-semibold text-white hover:bg-brand/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                    >
+                      <FileSpreadsheet className="h-3.5 w-3.5" />
+                      Thêm vào giỏ
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { setBulkText(''); setShowBulkTextarea(false); }}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-border/80 px-3 py-1.5 text-xs font-medium text-muted-foreground hover:bg-muted/40 transition-all"
+                    >
+                      Hủy
+                    </button>
+                  </div>
+                </div>
+              )}
+              </>
             )}
           </div>
         </div>

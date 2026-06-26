@@ -142,7 +142,7 @@ export type OtpVerifyInput = z.infer<typeof otpVerifySchema>;
 
 export const rfqLineItemSchema = z.object({
   sku: z.string().min(1),
-  qty: z.number().int().positive()
+  note: z.string().optional()
 });
 
 export const rfqSchema = z.object({
@@ -168,6 +168,22 @@ export const contactSchema = z.object({
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
+
+// ─── Hub RFQ (Báo giá theo cụm KCN) ────────────────────────────────────────
+
+export const hubRfqSchema = z.object({
+  hub_id: z.number().int().positive(),
+  contact_name: z.string().min(1, 'required'),
+  company: z.string().min(1, 'required'),
+  phone: z
+    .string()
+    .min(1, 'required')
+    .regex(/^\d{10,11}$/, 'invalid_phone'),
+  email: z.string().min(1, 'required').email('invalid_email'),
+  message: z.string().optional()
+});
+
+export type HubRfqInput = z.infer<typeof hubRfqSchema>;
 
 // ─── Sample Request ─────────────────────────────────────────────────────────
 

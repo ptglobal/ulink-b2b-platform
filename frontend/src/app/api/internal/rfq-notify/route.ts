@@ -96,7 +96,7 @@ function mapRfqRecord(value: unknown): RfqRecord {
         .filter(isObjectRecord)
         .map((item) => ({
           sku: typeof item.sku === 'string' ? item.sku : '',
-          qty: typeof item.qty === 'number' ? item.qty : 0
+          note: typeof item.note === 'string' ? item.note : undefined
         }))
         .filter((item) => item.sku)
     : [];

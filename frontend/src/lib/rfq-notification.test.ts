@@ -14,7 +14,7 @@ test('routes by exact hub and industry match first', () => {
       hub: { id: 3, name: 'South Hub', slug: 'south-hub' },
       industry: 'Chemical',
       message: 'Need quote',
-      line_items: [{ sku: 'cr-glv-001', qty: 1 }],
+      line_items: [{ sku: 'cr-glv-001', note: 'urgent' }],
       source: 'web'
     },
     rules: [
@@ -53,7 +53,7 @@ test('falls back to the sales inbox when no rule matches', () => {
       hub: null,
       industry: 'chemical',
       message: 'Need quote',
-      line_items: [{ sku: 'cr-glv-001', qty: 1 }],
+      line_items: [{ sku: 'cr-glv-001', note: 'urgent' }],
       source: 'web'
     },
     rules: [],
@@ -78,7 +78,7 @@ test('builds a summary email with the Directus admin link', () => {
     hubName: 'South Hub',
     industryName: 'Chemical',
     message: 'Need quote',
-    lineItems: [{ sku: 'cr-glv-001', qty: 1 }],
+    lineItems: [{ sku: 'cr-glv-001', note: 'urgent' }],
     assignedSales: {
       id: 'sales-a-id',
       email: 'sales-a@example.com',

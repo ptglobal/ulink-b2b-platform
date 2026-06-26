@@ -1,7 +1,7 @@
 
 export interface NormalizedRfqItem {
   sku: string;
-  qty: number;
+  note?: string;
 }
 
 export interface NormalizedRfqPayload {
@@ -178,7 +178,6 @@ function normalizeItems(value: unknown, state: ValidationState): NormalizedRfqIt
   }
 
   const items: NormalizedRfqItem[] = [];
-  let hasInvalidQty = false;
 
   for (const item of value) {
     if (!item || typeof item !== 'object') {
@@ -187,26 +186,17 @@ function normalizeItems(value: unknown, state: ValidationState): NormalizedRfqIt
     }
 
     const rawSku = cleanString((item as Record<string, unknown>).sku);
-    const rawQty = (item as Record<string, unknown>).qty;
+    const rawNote = cleanString((item as Record<string, unknown>).note);
 
     if (!rawSku) {
       addInvalid(state, 'items', 'INVALID_SKU');
       continue;
     }
 
-    if (typeof rawQty !== 'number' || !Number.isInteger(rawQty) || rawQty <= 0) {
-      hasInvalidQty = true;
-      continue;
-    }
-
     items.push({
       sku: rawSku.trim(),
-      qty: rawQty
+      ...(rawNote ? { note: rawNote } : {})
     });
-  }
-
-  if (hasInvalidQty) {
-    addInvalid(state, 'items', 'INVALID_QTY');
   }
 
   if (items.length === 0) {
