@@ -199,6 +199,7 @@
     "settings": "Cài đặt",
     "rfqs": "Yêu cầu báo giá (RFQs)",
     "sampleRequests": "Yêu cầu hàng mẫu",
+    "myRfqs": "Lịch sử báo giá",
     "logout": "Đăng xuất",
     "search": "Tìm kiếm",
     "cart": "Giỏ hàng"
@@ -792,6 +793,44 @@
       "message": "Ghi chú",
       "submitted": "Đã gửi yêu cầu",
       "processing": "Đang xử lý"
+    }
+  },
+  "myRfqs": {
+    "title": "Lịch sử yêu cầu báo giá",
+    "subtitle": "Theo dõi trạng thái các yêu cầu báo giá của bạn",
+    "searchPlaceholder": "Tìm theo ID, công ty, SKU...",
+    "all": "Tất cả",
+    "pending": "Đang chờ",
+    "quoted": "Đã báo giá",
+    "rejected": "Từ chối",
+    "noResults": "Chưa có yêu cầu nào",
+    "noResultsDesc": "Yêu cầu báo giá sẽ hiển thị tại đây sau khi bạn gửi",
+    "viewDetail": "Xem chi tiết",
+    "fetchError": "Không thể tải dữ liệu",
+    "detail": {
+      "title": "Chi tiết yêu cầu",
+      "contactInfo": "Thông tin liên hệ",
+      "company": "Công ty",
+      "contact": "Người liên hệ",
+      "email": "Email",
+      "phone": "Điện thoại",
+      "hub": "Cụm KCN",
+      "industry": "Ngành",
+      "message": "Ghi chú",
+      "lineItems": "Sản phẩm",
+      "sku": "Mã SKU",
+      "qty": "SL",
+      "delivery": "Giao hàng",
+      "scheduledYes": "Có lịch giao hàng",
+      "status": "Trạng thái",
+      "//quoted": "Đã báo giá",
+      "//rejected": "Từ chối",
+      "//pending": "Đang chờ",
+      "approvalNote": "Ghi chú duyệt",
+      "rejectReason": "Lý do từ chối",
+      "source": "Nguồn",
+      "createdAt": "Ngày tạo",
+      "close": "Đóng"
     }
   }
 }

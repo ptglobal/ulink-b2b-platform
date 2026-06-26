@@ -199,6 +199,7 @@
     "settings": "設定",
     "rfqs": "見積依頼 (RFQs)",
     "sampleRequests": "サンプル依頼",
+    "myRfqs": "見積履歴",
     "logout": "ログアウト",
     "search": "検索",
     "cart": "カート"
@@ -792,6 +793,44 @@
       "message": "備考",
       "submitted": "依頼送信済み",
       "processing": "処理中"
+    }
+  },
+  "myRfqs": {
+    "title": "見積依頼履歴",
+    "subtitle": "見積依頼のステータスを確認できます",
+    "searchPlaceholder": "ID、会社名、SKUで検索...",
+    "all": "すべて",
+    "pending": "保留中",
+    "quoted": "見積済み",
+    "rejected": "却下",
+    "noResults": "依頼がありません",
+    "noResultsDesc": "見積依頼を送信するとここに表示されます",
+    "viewDetail": "詳細を見る",
+    "fetchError": "データを読み込めません",
+    "detail": {
+      "title": "依頼詳細",
+      "contactInfo": "連絡先情報",
+      "company": "会社名",
+      "contact": "担当者",
+      "email": "メール",
+      "phone": "電話",
+      "hub": "工業団地",
+      "industry": "業種",
+      "message": "備考",
+      "lineItems": "製品",
+      "sku": "SKU",
+      "qty": "数量",
+      "delivery": "配送",
+      "scheduledYes": "配送予定あり",
+      "status": "ステータス",
+      "//quoted": "見積済み",
+      "//rejected": "却下",
+      "//pending": "保留中",
+      "approvalNote": "承認メモ",
+      "rejectReason": "却下理由",
+      "source": "ソース",
+      "createdAt": "作成日",
+      "close": "閉じる"
     }
   }
 }
