@@ -229,7 +229,7 @@ async function verifySales(salesToken, fixtures) {
     hub: fixtures.orderA.hub,
     line_items: [{ sku: 'RBAC-SALES', qty: 1 }],
     message: rfqMessage,
-    status: 'new',
+    status: 'pending',
     source: 'web'
   });
   const createRfqOk = assert(createRfq.ok, 'Sales can create RFQ records.');
@@ -344,7 +344,7 @@ async function verifyCustomer(customerToken, own, foreign) {
     hub: own.hubId,
     line_items: [{ sku: own.rfqSkuCode, qty: 1 }],
     message: `RBAC-CUSTOMER-RFQ-${own.label}-${Date.now()}`,
-    status: 'new',
+    status: 'pending',
     source: 'portal',
     user: own.userId
   });

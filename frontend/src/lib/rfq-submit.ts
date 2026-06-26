@@ -14,7 +14,7 @@ type CreateRfqInput = {
   scheduled_delivery?: boolean;
   requested_delivery_date?: string;
   line_items?: Array<{ sku: string; qty: number }>;
-  status: 'new';
+  status: 'pending';
   source: 'web' | 'portal';
 };
 
@@ -140,7 +140,7 @@ export async function submitRfq(body: unknown, deps: SubmitRfqDeps): Promise<Sub
       scheduled_delivery: validation.value.scheduled_delivery,
       requested_delivery_date: validation.value.requested_delivery_date,
       ...(validation.value.items && validation.value.items.length > 0 ? { line_items: validation.value.items } : {}),
-      status: 'new',
+      status: 'pending',
       source: validation.value.source === 'portal' ? 'portal' : 'web'
     });
 

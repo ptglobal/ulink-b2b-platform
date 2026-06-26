@@ -13,7 +13,7 @@ const internalToken = process.env.INTERNAL_API_TOKEN;
 const mailpitUrl = process.env.MAILPIT_URL ?? 'http://localhost:8025';
 const adminClient = createDirectusClient();
 const salesEmail = 'sales-rbac@example.com';
-const salesPassword = 'sales-password-123';
+const salesPassword = 'SalesPassword123!';
 const { POST: postRfqNotify } = await import(
   new URL('../../frontend/src/app/api/internal/rfq-notify/route.ts', import.meta.url)
 );
@@ -303,7 +303,7 @@ async function main() {
     hub: exactRule.hub.id,
     line_items: [{ sku: 'sku-gloves-nitrile-s', qty: 2 }],
     message: 'Exact routing smoke test',
-    status: 'new',
+    status: 'pending',
     source: 'web'
   });
 
@@ -343,7 +343,7 @@ async function main() {
     hub: exactRule.hub.id,
     line_items: [{ sku: 'sku-wipers-poly-9', qty: 1 }],
     message: 'Fallback routing smoke test',
-    status: 'new',
+    status: 'pending',
     source: 'web'
   });
 
