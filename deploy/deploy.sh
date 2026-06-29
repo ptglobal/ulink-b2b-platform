@@ -27,6 +27,28 @@ for i in $(seq 1 60); do
   sleep 5
 done
 
+# ── Fresh seed: drop + recreate DB when FRESH_SEED=true ──
+if [ "${FRESH_SEED:-false}" = "true" ]; then
+  echo ">> FRESH_SEED=true — dropping and recreating database..."
+  # Source .env to get POSTGRES_* variables
+  set -a; source .env; set +a
+  $COMPOSE exec -T postgres \
+    psql -U "$POSTGRES_USER" -d postgres \
+    -c "DROP DATABASE IF EXISTS \"$POSTGRES_DB\" WITH (FORCE);" \
+    -c "CREATE DATABASE \"$POSTGRES_DB\" OWNER \"$POSTGRES_USER\";"
+  echo "   Database recreated. Restarting Directus to apply migrations..."
+  $COMPOSE restart directus
+  # Wait for Directus health again after restart
+  for i in $(seq 1 60); do
+    code="$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8055/server/health || true)"
+    if [ "$code" = "200" ]; then echo "   healthy after restart ($((i * 5))s)"; break; fi
+    if [ "$i" -eq 60 ]; then
+      echo "!! Directus not healthy after DB reset" >&2; exit 1
+    fi
+    sleep 5
+  done
+fi
+
 echo ">> Running idempotent bootstrap (collections/roles/seed) over the internal network"
 $COMPOSE run --rm --no-deps -T directus-bootstrap \
   sh -lc 'npm install --no-audit --no-fund --loglevel=error && npm run bootstrap'

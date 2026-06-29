@@ -338,7 +338,7 @@ export async function seedInitialContent(helpers, client, geography) {
     title: 'Cleanroom Wipers Brochure',
     doc_type: 'brochure',
     product: wipersProductId,
-    file: '25917143-60f0-4539-8ff2-f437111ef68a',
+    file: '135cf49a-528d-468e-bf03-8ab05c12670f',
     language: 'vi',
     status: 'published'
   });
@@ -720,7 +720,7 @@ export async function seedInitialContent(helpers, client, geography) {
     number: 'QMS-SG-2026-991',
     issuer: 'SGS International',
     valid_until: '2029-06-01',
-    file: '35a85232-a01c-4a88-a06d-0d6277d3b812',
+    file: '22a340ce-b785-4543-b1ef-4cf3eec8e9aa',
     status: 'published'
   });
   await seedTranslations('iso_certifications', isoId, 'iso9001');
