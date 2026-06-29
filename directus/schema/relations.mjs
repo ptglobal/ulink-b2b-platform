@@ -4,6 +4,8 @@ export const RELATION_DEFS = [
   { collection: 'product_categories', field: 'parent', related_collection: 'product_categories' },
   { collection: 'products', field: 'category', related_collection: 'product_categories' },
   { collection: 'product_skus', field: 'product', related_collection: 'products', meta: { one_field: 'skus' } },
+  { collection: 'product_attributes', field: 'product', related_collection: 'products', meta: { one_field: 'product_attributes' } },
+  { collection: 'product_attribute_options', field: 'attribute', related_collection: 'product_attributes', meta: { one_field: 'options' } },
   { collection: 'documents', field: 'product', related_collection: 'products', meta: { one_field: 'documents' } },
   { collection: 'documents', field: 'file', related_collection: 'directus_files' },
   { collection: 'case_studies', field: 'industry', related_collection: 'industries' },

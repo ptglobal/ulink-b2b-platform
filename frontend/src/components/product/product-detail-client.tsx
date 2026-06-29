@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { ShoppingCart, Check, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -19,18 +19,69 @@ interface ProductDetailClientProps {
     added: string;
     selectVariant: string;
     requestQuote: string;
-    size: string;
   };
 }
 
+/**
+ * Extract unique attribute names and their possible values from all SKUs.
+ * Returns array of { name, values } maintaining insertion order.
+ */
+function extractAttributes(skus: SkuItem[]): { name: string; values: string[] }[] {
+  const attrMap = new Map<string, Set<string>>();
+
+  for (const sku of skus) {
+    if (!sku.attributes) continue;
+    for (const [key, val] of Object.entries(sku.attributes)) {
+      if (!attrMap.has(key)) attrMap.set(key, new Set());
+      attrMap.get(key)!.add(val);
+    }
+  }
+
+  return Array.from(attrMap.entries()).map(([name, valSet]) => ({
+    name,
+    values: Array.from(valSet)
+  }));
+}
+
+/**
+ * Find the SKU that matches all selected attribute values.
+ */
+function findMatchingSku(
+  skus: SkuItem[],
+  selections: Record<string, string>
+): SkuItem | null {
+  const selKeys = Object.keys(selections);
+  if (selKeys.length === 0) return skus[0] ?? null;
+
+  return (
+    skus.find((sku) => {
+      if (!sku.attributes) return false;
+      return selKeys.every((key) => sku.attributes![key] === selections[key]);
+    }) ?? null
+  );
+}
+
 export default function ProductDetailClient({ skus, labels }: ProductDetailClientProps) {
-  const [selectedId, setSelectedId] = useState<number | null>(skus[0]?.id ?? null);
+  const attributes = useMemo(() => extractAttributes(skus), [skus]);
+
+  // Initialize selections with first value of each attribute
+  const [selections, setSelections] = useState<Record<string, string>>(() => {
+    const init: Record<string, string> = {};
+    for (const attr of extractAttributes(skus)) {
+      if (attr.values.length > 0) init[attr.name] = attr.values[0];
+    }
+    return init;
+  });
+
   const [added, setAdded] = useState(false);
 
-  const selectedSku = skus.find((s) => s.id === selectedId) ?? null;
+  const selectedSku = useMemo(
+    () => findMatchingSku(skus, selections),
+    [skus, selections]
+  );
 
-  const handleSelect = useCallback((sku: SkuItem) => {
-    setSelectedId(sku.id);
+  const handleSelect = useCallback((attrName: string, value: string) => {
+    setSelections((prev) => ({ ...prev, [attrName]: value }));
     setAdded(false);
   }, []);
 
@@ -55,44 +106,70 @@ export default function ProductDetailClient({ skus, labels }: ProductDetailClien
     }
   }, [selectedSku]);
 
-  // Determine display label for each SKU pill
-  const getSkuLabel = (sku: SkuItem): string => {
-    if (sku.attributes && Object.keys(sku.attributes).length > 0) {
-      return Object.values(sku.attributes).join(' / ');
-    }
-    return sku.sku_code;
-  };
-
   if (skus.length === 0) return null;
+
+  // Fallback: if no attributes, show flat list by sku_code
+  const hasAttributes = attributes.length > 0;
 
   return (
     <div className="space-y-4">
-      {/* Size / Variant Selector */}
-      {skus.length > 1 && (
+      {/* Dynamic Attribute Selectors */}
+      {hasAttributes ? (
+        attributes.map((attr) => (
+          <div key={attr.name}>
+            <p className="text-xs font-medium text-gray-500 mb-2">{attr.name}</p>
+            <div className="flex flex-wrap gap-2">
+              {attr.values.map((val) => {
+                const isSelected = selections[attr.name] === val;
+                return (
+                  <button
+                    key={val}
+                    type="button"
+                    onClick={() => handleSelect(attr.name, val)}
+                    className={cn(
+                      'px-3.5 py-2 rounded-lg text-xs font-medium border transition-all',
+                      isSelected
+                        ? 'border-blue-600 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 text-gray-700 hover:border-blue-300'
+                    )}
+                  >
+                    {val}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ))
+      ) : skus.length > 1 ? (
+        /* Fallback: no structured attributes — show sku_code list */
         <div>
-          <p className="text-xs text-gray-500 mb-2">{labels.size}</p>
-          <div className="flex flex-col gap-2">
+          <p className="text-xs font-medium text-gray-500 mb-2">{labels.selectVariant}</p>
+          <div className="flex flex-wrap gap-2">
             {skus.map((sku) => {
-              const isSelected = sku.id === selectedId;
-              const label = getSkuLabel(sku);
+              const isSelected = selectedSku?.id === sku.id;
               return (
                 <button
                   key={sku.id}
                   type="button"
-                  onClick={() => handleSelect(sku)}
+                  onClick={() => setSelections({})}
                   className={cn(
-                    'px-3.5 py-2.5 rounded-lg text-xs font-medium text-left border transition-all',
+                    'px-3.5 py-2 rounded-lg text-xs font-medium border transition-all',
                     isSelected
                       ? 'border-blue-600 bg-blue-50 text-blue-700'
                       : 'border-gray-200 text-gray-700 hover:border-blue-300'
                   )}
                 >
-                  {label}
+                  {sku.pack_size || sku.sku_code}
                 </button>
               );
             })}
           </div>
         </div>
+      ) : null}
+
+      {/* Selected SKU info */}
+      {selectedSku && (
+        <p className="text-xs text-gray-400">SKU: {selectedSku.sku_code}</p>
       )}
 
       {/* Add to Cart Button */}

@@ -70,6 +70,7 @@ export const COLLECTION_DEFS = [
       { field: 'regions', type: 'alias', meta: { interface: 'list-m2m', special: ['m2m'] } },
       { field: 'documents', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } },
       { field: 'skus', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } },
+      { field: 'product_attributes', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'], options: { template: '{{name}}' } } },
       { field: 'meta_title', type: 'string', meta: { interface: 'input' } },
       { field: 'meta_description', type: 'text', meta: { interface: 'textarea' } }
     ]
@@ -103,6 +104,30 @@ export const COLLECTION_DEFS = [
       { field: 'unit', type: 'string', meta: { interface: 'input' } },
       { field: 'pack_size', type: 'string', meta: { interface: 'input' } },
       { field: 'attributes', type: 'json', meta: { interface: 'json' } }
+    ]
+  },
+  {
+    collection: 'product_attributes',
+    meta: { icon: 'tune', note: 'Product variant attributes (e.g. Size, Color)', sort_field: 'sort' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'product', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true, hidden: true } },
+      { field: 'name', type: 'string', meta: { interface: 'input', required: true, width: 'half', note: 'Attribute name (e.g. Size, Color)' } },
+      { field: 'sort', type: 'integer', meta: { interface: 'input', hidden: true } },
+      { field: 'options', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'], options: { template: '{{value}} ({{sku_suffix}})' } } }
+    ]
+  },
+  {
+    collection: 'product_attribute_options',
+    meta: { icon: 'label', note: 'Attribute option values', sort_field: 'sort' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'attribute', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true, hidden: true } },
+      { field: 'value', type: 'string', meta: { interface: 'input', required: true, width: 'half', note: 'Display value (e.g. Red, Large)' } },
+      { field: 'sku_suffix', type: 'string', meta: { interface: 'input', required: true, width: 'half', note: 'Code suffix for SKU (e.g. red, l)' } },
+      { field: 'sort', type: 'integer', meta: { interface: 'input', hidden: true } }
     ]
   },
   {

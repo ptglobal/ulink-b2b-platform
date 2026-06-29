@@ -13,7 +13,7 @@ export async function GET(req: Request) {
     let customerData = [];
     if (user) {
       const customerRes = await proxyToDirectus(
-        `/items/customers?fields=*&filter[user_id][_eq]=${encodeURIComponent(user.id)}`,
+        `/items/customers?fields=*&filter[user][_eq]=${encodeURIComponent(user.id)}`,
         { method: 'GET', cookieHeader }
       );
       const customerPayload = customerRes.ok ? await customerRes.json() : null;

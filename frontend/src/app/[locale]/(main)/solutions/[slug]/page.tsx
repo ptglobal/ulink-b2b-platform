@@ -239,8 +239,7 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                   addToCart: t('addToCart'),
                   added: t('added'),
                   selectVariant: t('selectVariant'),
-                  requestQuote: locale === 'vi' ? 'Yêu cầu báo giá' : 'Request Quote',
-                  size: locale === 'vi' ? 'Kích thước' : 'Size'
+                  requestQuote: locale === 'vi' ? 'Yêu cầu báo giá' : 'Request Quote'
                 }}
               />
 
