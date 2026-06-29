@@ -1,4 +1,4 @@
-import { ID_FIELD, STATUS_FIELD } from '../lib/constants.mjs';
+import { ID_FIELD, STATUS_FIELD, SALES_ROLE_ID } from '../lib/constants.mjs';
 import { HUB_OPERATING_STATUSES } from '../lib/hub-domain.mjs';
 import { LANGUAGE_COLLECTION_DEF, TRANSLATION_COLLECTION_DEFS, createTranslationAliasField } from '../lib/i18n.mjs';
 
@@ -638,7 +638,21 @@ export const COLLECTION_DEFS = [
           ]
         }
       },
-      { field: 'assigned_sales', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      {
+        field: 'assigned_sales',
+        type: 'uuid',
+        meta: {
+          interface: 'select-dropdown-m2o',
+          special: ['m2o'],
+          options: {
+            filter: {
+              role: {
+                _eq: SALES_ROLE_ID
+              }
+            }
+          }
+        }
+      },
       {
         field: 'source',
         type: 'string',
@@ -672,7 +686,21 @@ export const COLLECTION_DEFS = [
       ID_FIELD,
       { field: 'hub', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       { field: 'industry', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
-      { field: 'assigned_sales', type: 'uuid', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      {
+        field: 'assigned_sales',
+        type: 'uuid',
+        meta: {
+          interface: 'select-dropdown-m2o',
+          special: ['m2o'],
+          options: {
+            filter: {
+              role: {
+                _eq: SALES_ROLE_ID
+              }
+            }
+          }
+        }
+      },
       { field: 'priority', type: 'integer', meta: { interface: 'input' }, schema: { default_value: 0 } },
       { field: 'is_default', type: 'boolean', meta: { interface: 'boolean' }, schema: { default_value: false } }
     ]

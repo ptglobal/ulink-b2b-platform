@@ -58,7 +58,7 @@ async function main() {
   await loginAdmin(client);
   logInfo(`Authenticated as ${DIRECTUS_ADMIN_EMAIL} at ${DIRECTUS_URL}`);
 
-  const hubs = await client.request(readItems('regional_hubs', { limit: 1 }));
+  const hubs = await client.request(readItems('regional_hubs', { limit: 10 }));
   const skus = await client.request(readItems('product_skus', { limit: 2 }));
 
   if (hubs.length < 1) {
@@ -69,7 +69,12 @@ async function main() {
     throw new Error('Need at least 2 seeded product_skus records before RBAC seed.');
   }
 
-  const hubId = hubs[0].id;
+  const getHubIdBySlug = (slug) => hubs.find((h) => h.slug === slug)?.id || hubs[0].id;
+  const dongVan4Id = getHubIdBySlug('dong-van-4');
+  const bacThangLongId = getHubIdBySlug('bac-thang-long');
+  const vsipBinhDuongId = getHubIdBySlug('vsip-binh-duong');
+  const hubId = dongVan4Id;
+
   const skuA = skus[0].id;
   const skuB = skus[1].id;
   const electronics = await client.request(
@@ -96,8 +101,32 @@ async function main() {
   const salesUserId = await upsertUserByEmail('sales-rbac@example.com', {
     password: 'SalesPassword123!',
     role: SALES_ROLE_ID,
-    first_name: 'Sales',
-    last_name: 'User',
+    first_name: 'Default',
+    last_name: 'Sales',
+    status: 'active'
+  });
+
+  const salesHnId = await upsertUserByEmail('sales-hn@example.com', {
+    password: 'SalesHNPassword123!',
+    role: SALES_ROLE_ID,
+    first_name: 'Hà Nội',
+    last_name: 'Sales',
+    status: 'active'
+  });
+
+  const salesHcmId = await upsertUserByEmail('sales-hcm@example.com', {
+    password: 'SalesHCMPassword123!',
+    role: SALES_ROLE_ID,
+    first_name: 'Hồ Chí Minh',
+    last_name: 'Sales',
+    status: 'active'
+  });
+
+  const salesDnId = await upsertUserByEmail('sales-dn@example.com', {
+    password: 'SalesDNPassword123!',
+    role: SALES_ROLE_ID,
+    first_name: 'Đà Nẵng',
+    last_name: 'Sales',
     status: 'active'
   });
 
@@ -117,22 +146,44 @@ async function main() {
     status: 'active'
   });
 
+  // Rule 1: Route electronics RFQs at Bắc Thăng Long to Sales Hà Nội
   await upsertItemByField('rfq_assignment_rules', 'id', {
     id: 1,
-    hub: hubId,
+    hub: bacThangLongId,
     industry: electronicsId,
-    assigned_sales: salesUserId,
+    assigned_sales: salesHnId,
     priority: 10,
     is_default: false
   });
 
+  // Rule 2: Default fallback to Default Sales
   await upsertItemByField('rfq_assignment_rules', 'id', {
     id: 2,
     hub: null,
     industry: null,
-    assigned_sales: null,
+    assigned_sales: salesUserId,
     priority: 0,
     is_default: true
+  });
+
+  // Rule 3: Route electronics RFQs at VSIP Bình Dương to Sales HCM
+  await upsertItemByField('rfq_assignment_rules', 'id', {
+    id: 3,
+    hub: vsipBinhDuongId,
+    industry: electronicsId,
+    assigned_sales: salesHcmId,
+    priority: 10,
+    is_default: false
+  });
+
+  // Rule 4: Route electronics RFQs at Đồng Văn 4 to Sales Đà Nẵng
+  await upsertItemByField('rfq_assignment_rules', 'id', {
+    id: 4,
+    hub: dongVan4Id,
+    industry: electronicsId,
+    assigned_sales: salesDnId,
+    priority: 10,
+    is_default: false
   });
 
   const customerA = await upsertItemByField('customers', 'email', {

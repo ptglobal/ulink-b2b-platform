@@ -230,7 +230,8 @@ async function verifySales(salesToken, fixtures) {
     line_items: [{ sku: 'RBAC-SALES', qty: 1 }],
     message: rfqMessage,
     status: 'pending',
-    source: 'web'
+    source: 'web',
+    assigned_sales: fixtures.salesUser.id
   });
   const createRfqOk = assert(createRfq.ok, 'Sales can create RFQ records.');
 

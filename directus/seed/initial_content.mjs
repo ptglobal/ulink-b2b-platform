@@ -1,4 +1,4 @@
-import { readItems, updateItem } from '@directus/sdk';
+import { readItems, updateItem, deleteItems } from '@directus/sdk';
 import { DEFAULT_LOCALE } from '../lib/i18n.mjs';
 import { translations } from './translation_data.mjs';
 
@@ -28,6 +28,31 @@ async function upsertRegionalHub(client, helpers, slug, data) {
   return helpers.ensureItem('regional_hubs', 'slug', payload);
 }
 
+async function clearCollection(client, collection) {
+  try {
+    const items = await client.request(readItems(collection, { fields: ['id'], limit: -1 }));
+    if (items && items.length > 0) {
+      const ids = items.map(item => item.id);
+      await client.request(deleteItems(collection, ids));
+      console.log(`Cleared ${items.length} items from ${collection}`);
+    }
+  } catch (err) {
+    console.error(`Error clearing collection ${collection}:`, err.message);
+  }
+}
+
+async function seedHubTranslations(helpers, hubId, nameVi, nameEn, nameJa) {
+  await helpers.ensureTranslation('regional_hubs', hubId, 'vi', { name: nameVi });
+  await helpers.ensureTranslation('regional_hubs', hubId, 'en', { name: nameEn });
+  await helpers.ensureTranslation('regional_hubs', hubId, 'ja', { name: nameJa });
+}
+
+async function seedZoneTranslations(helpers, zoneId, nameVi, nameEn, nameJa) {
+  await helpers.ensureTranslation('hub_industrial_zones', zoneId, 'vi', { name: nameVi });
+  await helpers.ensureTranslation('hub_industrial_zones', zoneId, 'en', { name: nameEn });
+  await helpers.ensureTranslation('hub_industrial_zones', zoneId, 'ja', { name: nameJa });
+}
+
 export async function seedInitialContent(helpers, client, geography) {
   async function seedTranslations(collection, sourceId, key) {
     const data = translations[collection]?.[key];
@@ -42,6 +67,19 @@ export async function seedInitialContent(helpers, client, geography) {
       await helpers.ensureTranslation(collection, sourceId, 'ja', data.ja);
     }
   }
+
+  // 1. Clear old seed data related to regional hubs, zones, team members, and dependent commerce/rfq data
+  console.log('Cleaning up old regional hubs, industrial zones, team members, and dependent transactional/RFQ data...');
+  await clearCollection(client, 'products_regional_hubs');
+  await clearCollection(client, 'rfq_assignment_rules');
+  await clearCollection(client, 'hub_team_members');
+  await clearCollection(client, 'hub_industrial_zones');
+  await clearCollection(client, 'deliveries');
+  await clearCollection(client, 'order_items');
+  await clearCollection(client, 'invoices');
+  await clearCollection(client, 'orders');
+  await clearCollection(client, 'rfq_requests');
+  await clearCollection(client, 'regional_hubs');
 
   const electronicsId = await helpers.ensureItem('industries', 'slug', {
     name: 'Điện tử',
@@ -208,7 +246,7 @@ export async function seedInitialContent(helpers, client, geography) {
     standards_id: isoLaunderingId
   });
 
-  // Technical documents seed (Task 4-5: Product Detail & Downloads)
+  // Technical documents seed
   await helpers.ensureItem('documents', 'title', {
     title: 'Nitrile Gloves Technical Data Sheet',
     doc_type: 'tds',
@@ -268,191 +306,320 @@ export async function seedInitialContent(helpers, client, geography) {
     status: 'published'
   });
 
-  const haNamProvince = getGeoEntry(geography?.provincesByAbbr, 'NB', 'province');
-  const dongVan4Id = await upsertRegionalHub(client, helpers, 'dong-van-4', {
-    name: 'HUB Hà Nam',
-    province: haNamProvince.id,
-    detail_address: 'CN05 KCN Đồng Văn IV, xã Đại Cương, huyện Kim Bảng, tỉnh Hà Nam',
-    operating_status: 'active',
-    coordinates: '20.5500,105.9100',
-    warehouse_total_area: 1000,
-    warehouse_utilized_area: 0,
-    warehouse_available_area: 1000,
-    warehouse_storage_tons: 0,
-    warehouse_pallets: 0,
-    standard_delivery_time: 'Theo Khu vực',
-    sla_details: {
-      "Khu vực 1": "T+1 _ 24h",
-      "Khu vực 2": "T+2",
-      "Khu vực 3 + 4": "T+3"
-    },
-    on_time_rate: 98.0,
-    on_time_rate_delta: '+1.5%',
-    orders_today: 0,
-    order_capacity_per_day: 500,
-    avg_delivery_time: '24 giờ',
-    avg_delivery_distance: 45.0,
-    person_in_charge_name: '',
-    person_in_charge_title: 'Quản lý đại diện',
-    person_in_charge_phone: '',
-    current_personnel_count: 5,
-    status: 'published'
-  });
-  await seedTranslations('regional_hubs', dongVan4Id, 'dong_van_4');
-
+  // Resolve provinces using geography seeded data (with post-2025 mergers mapping)
+  const ninhBinhProvince = getGeoEntry(geography?.provincesByAbbr, 'NB', 'province');
+  const hungYenProvince = getGeoEntry(geography?.provincesByAbbr, 'HY', 'province');
+  const haiPhongProvince = getGeoEntry(geography?.provincesByAbbr, 'HP', 'province');
+  const quangNinhProvince = getGeoEntry(geography?.provincesByAbbr, 'QN', 'province');
   const haNoiProvince = getGeoEntry(geography?.provincesByAbbr, 'HN', 'province');
-  const bacThangLongId = await upsertRegionalHub(client, helpers, 'bac-thang-long', {
-    name: 'Bắc Thăng Long',
-    province: haNoiProvince.id,
-    detail_address: 'Đông Anh, Hà Nội',
-    operating_status: 'active',
-    coordinates: '21.1000,105.8500',
-    warehouse_total_area: 3500,
-    warehouse_utilized_area: 2800,
-    warehouse_available_area: 700,
-    warehouse_storage_tons: 1500,
-    warehouse_pallets: 600,
-    standard_delivery_time: '12 giờ',
-    on_time_rate: 98.2,
-    on_time_rate_delta: '+0.5%',
-    orders_today: 72,
-    order_capacity_per_day: 150,
-    avg_delivery_time: '8 giờ',
-    person_in_charge_name: 'Trần Thị Mai',
-    person_in_charge_title: 'Trưởng phòng vận hành',
-    person_in_charge_phone: '0987654321',
-    current_personnel_count: 35,
-    status: 'published'
-  });
-  await seedTranslations('regional_hubs', bacThangLongId, 'bac_thang_long');
+  const bacNinhProvince = getGeoEntry(geography?.provincesByAbbr, 'BN', 'province');
+  const phuThoProvince = getGeoEntry(geography?.provincesByAbbr, 'PT', 'province');
 
-  // Regional hub links (products available at specific hubs)
+  const hubsData = [
+    {
+      slug: 'ninh-binh',
+      name: 'HUB Ninh Bình',
+      nameEn: 'Ninh Binh Hub',
+      nameJa: 'ニンビンハブ',
+      province: ninhBinhProvince.id,
+      detail_address: 'KCN Gián Khẩu, huyện Gia Viễn, tỉnh Ninh Bình (Bao gồm Hà Nam, Nam Định)',
+      operating_status: 'active',
+      coordinates: '20.2500,105.9700',
+      warehouse_total_area: 3000,
+      warehouse_utilized_area: 0,
+      warehouse_available_area: 3000,
+      warehouse_storage_tons: 0,
+      warehouse_pallets: 0,
+      standard_delivery_time: '24 giờ',
+      sla_details: { "Ninh Bình": "12h", "Hà Nam": "24h", "Nam Định": "24h" },
+      on_time_rate: 98.2,
+      on_time_rate_delta: '+1.1%',
+      orders_today: 0,
+      order_capacity_per_day: 1000,
+      avg_delivery_time: '18 giờ',
+      avg_delivery_distance: 45.0,
+      person_in_charge_name: 'Nguyễn Văn Tiến',
+      person_in_charge_title: 'Trưởng Hub',
+      person_in_charge_phone: '0987654321',
+      current_personnel_count: 12,
+      status: 'published'
+    },
+    {
+      slug: 'hung-yen',
+      name: 'HUB Hưng Yên',
+      nameEn: 'Hung Yen Hub',
+      nameJa: 'フンイエンハブ',
+      province: hungYenProvince.id,
+      detail_address: 'KCN Phố Nối A, huyện Yên Mỹ, tỉnh Hưng Yên',
+      operating_status: 'active',
+      coordinates: '20.9100,106.0100',
+      warehouse_total_area: 2500,
+      warehouse_utilized_area: 0,
+      warehouse_available_area: 2500,
+      warehouse_storage_tons: 0,
+      warehouse_pallets: 0,
+      standard_delivery_time: '12 giờ',
+      sla_details: { "Nội tỉnh": "12h", "Lân cận": "24h" },
+      on_time_rate: 98.5,
+      on_time_rate_delta: '+1.2%',
+      orders_today: 0,
+      order_capacity_per_day: 600,
+      avg_delivery_time: '8 giờ',
+      avg_delivery_distance: 25.0,
+      person_in_charge_name: 'Lê Tuấn Anh',
+      person_in_charge_title: 'Quản lý vận hành',
+      person_in_charge_phone: '0934567890',
+      current_personnel_count: 8,
+      status: 'published'
+    },
+    {
+      slug: 'hai-phong',
+      name: 'HUB Hải Phòng',
+      nameEn: 'Hai Phong Hub',
+      nameJa: 'ハイフォンハブ',
+      province: haiPhongProvince.id,
+      detail_address: 'VSIP Hải Phòng, huyện Thủy Nguyên, Thành phố Hải Phòng (Bao gồm Hải Dương)',
+      operating_status: 'active',
+      coordinates: '20.9000,106.6800',
+      warehouse_total_area: 4800,
+      warehouse_utilized_area: 0,
+      warehouse_available_area: 4800,
+      warehouse_storage_tons: 0,
+      warehouse_pallets: 0,
+      standard_delivery_time: '12 giờ',
+      sla_details: { "Hải Phòng": "6h", "Hải Dương": "16h" },
+      on_time_rate: 98.5,
+      on_time_rate_delta: '+1.1%',
+      orders_today: 0,
+      order_capacity_per_day: 1200,
+      avg_delivery_time: '10 giờ',
+      avg_delivery_distance: 28.0,
+      person_in_charge_name: 'Vũ Quốc Khánh',
+      person_in_charge_title: 'Giám đốc Hub',
+      person_in_charge_phone: '0956789012',
+      current_personnel_count: 18,
+      status: 'published'
+    },
+    {
+      slug: 'quang-ninh',
+      name: 'HUB Quảng Ninh',
+      nameEn: 'Quang Ninh Hub',
+      nameJa: 'クアンニンハブ',
+      province: quangNinhProvince.id,
+      detail_address: 'KCN Đông Mai, thị xã Quảng Yên, tỉnh Quảng Ninh',
+      operating_status: 'active',
+      coordinates: '20.9500,107.0800',
+      warehouse_total_area: 1100,
+      warehouse_utilized_area: 0,
+      warehouse_available_area: 1100,
+      warehouse_storage_tons: 0,
+      warehouse_pallets: 0,
+      standard_delivery_time: '24 giờ',
+      sla_details: { "KCN": "12h", "Huyện đảo": "48h" },
+      on_time_rate: 96.8,
+      on_time_rate_delta: '+0.2%',
+      orders_today: 0,
+      order_capacity_per_day: 250,
+      avg_delivery_time: '20 giờ',
+      avg_delivery_distance: 45.0,
+      person_in_charge_name: 'Đỗ Hữu Nghĩa',
+      person_in_charge_title: 'Trưởng Hub',
+      person_in_charge_phone: '0967890123',
+      current_personnel_count: 5,
+      status: 'published'
+    },
+    {
+      slug: 'ha-noi',
+      name: 'HUB Hà Nội',
+      nameEn: 'Ha Noi Hub',
+      nameJa: 'ハノイハブ',
+      province: haNoiProvince.id,
+      detail_address: 'KCN Bắc Thăng Long, huyện Đông Anh, Thành phố Hà Nội',
+      operating_status: 'active',
+      coordinates: '21.1000,105.8500',
+      warehouse_total_area: 4000,
+      warehouse_utilized_area: 0,
+      warehouse_available_area: 4000,
+      warehouse_storage_tons: 0,
+      warehouse_pallets: 0,
+      standard_delivery_time: '12 giờ',
+      sla_details: { "Express": "4h", "Standard": "12h" },
+      on_time_rate: 98.8,
+      on_time_rate_delta: '+0.9%',
+      orders_today: 0,
+      order_capacity_per_day: 1000,
+      avg_delivery_time: '8 giờ',
+      avg_delivery_distance: 15.0,
+      person_in_charge_name: 'Trần Thị Mai',
+      person_in_charge_title: 'Trưởng phòng vận hành',
+      person_in_charge_phone: '0987654321',
+      current_personnel_count: 20,
+      status: 'published'
+    },
+    {
+      slug: 'bac-ninh',
+      name: 'HUB Bắc Ninh',
+      nameEn: 'Bac Ninh Hub',
+      nameJa: 'バクニンハブ',
+      province: bacNinhProvince.id,
+      detail_address: 'VSIP Bắc Ninh, thị xã Từ Sơn, tỉnh Bắc Ninh (Bao gồm Bắc Giang)',
+      operating_status: 'active',
+      coordinates: '21.1800,106.0700',
+      warehouse_total_area: 5500,
+      warehouse_utilized_area: 0,
+      warehouse_available_area: 5500,
+      warehouse_storage_tons: 0,
+      warehouse_pallets: 0,
+      standard_delivery_time: '12 giờ',
+      sla_details: { "Bắc Ninh": "8h", "Bắc Giang": "12h" },
+      on_time_rate: 98.8,
+      on_time_rate_delta: '+1.3%',
+      orders_today: 0,
+      order_capacity_per_day: 1400,
+      avg_delivery_time: '8 giờ',
+      avg_delivery_distance: 22.0,
+      person_in_charge_name: 'Phạm Thị Hoa',
+      person_in_charge_title: 'Trưởng Hub',
+      person_in_charge_phone: '0978901234',
+      current_personnel_count: 23,
+      status: 'published'
+    },
+    {
+      slug: 'phu-tho',
+      name: 'HUB Phú Thọ',
+      nameEn: 'Phu Tho Hub',
+      nameJa: 'フートハブ',
+      province: phuThoProvince.id,
+      detail_address: 'KCN Thụy Vân, Thành phố Việt Trì, tỉnh Phú Thọ (Bao gồm Vĩnh Phúc)',
+      operating_status: 'active',
+      coordinates: '21.3200,105.3900',
+      warehouse_total_area: 2500,
+      warehouse_utilized_area: 0,
+      warehouse_available_area: 2500,
+      warehouse_storage_tons: 0,
+      warehouse_pallets: 0,
+      standard_delivery_time: '24 giờ',
+      sla_details: { "Phú Thọ": "18h", "Vĩnh Phúc": "24h" },
+      on_time_rate: 97.4,
+      on_time_rate_delta: '+0.3%',
+      orders_today: 0,
+      order_capacity_per_day: 550,
+      avg_delivery_time: '16 giờ',
+      avg_delivery_distance: 48.0,
+      person_in_charge_name: 'Trịnh Minh Tuấn',
+      person_in_charge_title: 'Trưởng Hub',
+      person_in_charge_phone: '0901234567',
+      current_personnel_count: 10,
+      status: 'published'
+    }
+  ];
+
+  const hubIds = {};
+  for (const item of hubsData) {
+    const { nameEn, nameJa, ...hubPayload } = item;
+    const hubId = await upsertRegionalHub(client, helpers, item.slug, hubPayload);
+    await seedHubTranslations(helpers, hubId, item.name, nameEn, nameJa);
+    hubIds[item.slug] = hubId;
+  }
+
+  // Use Ninh Binh Hub as the primary key reference ID (since Ha Nam is merged into it)
+  const primaryHubId = hubIds['ninh-binh'];
+
+  // Link products to regional hubs
   await helpers.ensureItem('products_regional_hubs', 'id', {
     id: 1,
     products_id: glovesProductId,
-    regional_hubs_id: dongVan4Id
+    regional_hubs_id: hubIds['ninh-binh']
   });
   await helpers.ensureItem('products_regional_hubs', 'id', {
     id: 2,
     products_id: glovesProductId,
-    regional_hubs_id: bacThangLongId
+    regional_hubs_id: hubIds['ha-noi']
   });
   await helpers.ensureItem('products_regional_hubs', 'id', {
     id: 3,
     products_id: wipersProductId,
-    regional_hubs_id: bacThangLongId
+    regional_hubs_id: hubIds['bac-ninh']
   });
 
-  // Hub Industrial Zones
-  const zones = [
-    // Trục 1: Nội Vùng & Nam Sông Hồng
-    { name: 'KCN Đồng Văn I', corridor: 'Trục 1', hub: dongVan4Id },
-    { name: 'KCN Đồng Văn II', corridor: 'Trục 1', hub: dongVan4Id },
-    { name: 'KCN Đồng Văn III', corridor: 'Trục 1', hub: dongVan4Id },
-    { name: 'KCN Đồng Văn IV', corridor: 'Trục 1', hub: dongVan4Id },
-    { name: 'KCN Thanh Liêm', corridor: 'Trục 1', hub: dongVan4Id },
-    { name: 'KCN Mỹ Thuận', corridor: 'Trục 1', hub: dongVan4Id },
-    { name: 'KCN Bảo Minh', corridor: 'Trục 1', hub: dongVan4Id },
-    { name: 'KCN Gián Khẩu', corridor: 'Trục 1', hub: dongVan4Id },
-    { name: 'KCN Khánh Phú', corridor: 'Trục 1', hub: dongVan4Id },
-    // Trục 2: Hành Lang Đông Bắc & Cảng Biển
-    { name: 'KCN Phố Nối A', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN Phố Nối B', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN Thăng Long II', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN Đại An', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN Tân Trường', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN An Phát', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN VSIP Hải Phòng', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN Tràng Duệ', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN Nam Đình Vũ', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN Đông Mai', corridor: 'Trục 2', hub: dongVan4Id },
-    { name: 'KCN Amata Sông Khoai', corridor: 'Trục 2', hub: dongVan4Id },
-    // Trục 3: Hub Điện Tử & Công Nghệ Cao
-    { name: 'KCN Phú Nghĩa', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Bắc Thăng Long', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Quang Minh', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN VSIP Bắc Ninh', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Yên Phong I', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Yên Phong II', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Quế Võ I', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Quế Võ II', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Quế Võ III', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Quang Châu', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Vân Trung', corridor: 'Trục 3', hub: dongVan4Id },
-    { name: 'KCN Yên Lư', corridor: 'Trục 3', hub: dongVan4Id },
-    // Trục 4: Hành Lang Phía Tây
-    { name: 'KCN Khai Quang', corridor: 'Trục 4', hub: dongVan4Id },
-    { name: 'KCN Thăng Long Vĩnh Phúc', corridor: 'Trục 4', hub: dongVan4Id },
-    { name: 'KCN Thụy Vân', corridor: 'Trục 4', hub: dongVan4Id },
-    { name: 'KCN Phú Hà', corridor: 'Trục 4', hub: dongVan4Id },
-    // Của Hub Bắc Thăng Long
-    { name: 'KCN Bắc Thăng Long (Hub HN)', hub: bacThangLongId }
+  const zonesData = [
+    // Ninh Bình (merged with Hà Nam, Nam Định)
+    { name: 'KCN Đồng Văn I', nameEn: 'Dong Van I IP', nameJa: 'ドンヴァンI工業団地', hub: hubIds['ninh-binh'] },
+    { name: 'KCN Đồng Văn II', nameEn: 'Dong Van II IP', nameJa: 'ドンヴァンII工業団地', hub: hubIds['ninh-binh'] },
+    { name: 'KCN Đồng Văn III', nameEn: 'Dong Van III IP', nameJa: 'ドンヴァンIII工業団地', hub: hubIds['ninh-binh'] },
+    { name: 'KCN Đồng Văn IV', nameEn: 'Dong Van IV IP', nameJa: 'ドンヴァンIV工業団地', hub: hubIds['ninh-binh'] },
+    { name: 'KCN Thanh Liêm', nameEn: 'Thanh Liem IP', nameJa: 'タンリエム工業団地', hub: hubIds['ninh-binh'] },
+    { name: 'KCN Mỹ Thuận', nameEn: 'My Thuan IP', nameJa: 'ミートゥアン工業団地', hub: hubIds['ninh-binh'] },
+    { name: 'KCN Bảo Minh', nameEn: 'Bao Minh IP', nameJa: 'バオミン工業団地', hub: hubIds['ninh-binh'] },
+    { name: 'KCN Gián Khẩu', nameEn: 'Gian Khau IP', nameJa: 'ザンカウ工業団地', hub: hubIds['ninh-binh'] },
+    { name: 'KCN Khánh Phú', nameEn: 'Khanh Phu IP', nameJa: 'カインフー工業団地', hub: hubIds['ninh-binh'] },
+
+    // Hưng Yên
+    { name: 'KCN Phố Nối A', nameEn: 'Pho Noi A IP', nameJa: 'フォノイA工業団地', hub: hubIds['hung-yen'] },
+    { name: 'KCN Phố Nối B', nameEn: 'Pho Noi B IP', nameJa: 'フォノイB工業団地', hub: hubIds['hung-yen'] },
+    { name: 'KCN Thăng Long II', nameEn: 'Thang Long II IP', nameJa: 'タンロンII工業団地', hub: hubIds['hung-yen'] },
+
+    // Hải Phòng (merged with Hải Dương)
+    { name: 'KCN Đại An', nameEn: 'Dai An IP', nameJa: 'ダイアン工業団地', hub: hubIds['hai-phong'] },
+    { name: 'KCN Tân Trường', nameEn: 'Tan Truong IP', nameJa: 'タントゥオン工業団地', hub: hubIds['hai-phong'] },
+    { name: 'KCN An Phát', nameEn: 'An Phat IP', nameJa: 'アンファット工業団地', hub: hubIds['hai-phong'] },
+    { name: 'KCN VSIP Hải Phòng', nameEn: 'VSIP Hai Phong IP', nameJa: 'VSIPハイフォン工業団地', hub: hubIds['hai-phong'] },
+    { name: 'KCN Tràng Duệ', nameEn: 'Trang Due IP', nameJa: 'チャンドゥエ工業団地', hub: hubIds['hai-phong'] },
+    { name: 'KCN Nam Đình Vũ', nameEn: 'Nam Dinh Vu IP', nameJa: 'ナムディンヴー工業団地', hub: hubIds['hai-phong'] },
+
+    // Quảng Ninh
+    { name: 'KCN Đông Mai', nameEn: 'Dong Mai IP', nameJa: 'ドンマイ工業団地', hub: hubIds['quang-ninh'] },
+    { name: 'KCN Amata Sông Khoai', nameEn: 'Amata Song Khoai IP', nameJa: 'アマタソンコアイ工業団地', hub: hubIds['quang-ninh'] },
+
+    // Hà Nội
+    { name: 'KCN Phú Nghĩa', nameEn: 'Phu Nghia IP', nameJa: 'フーギア工業団地', hub: hubIds['ha-noi'] },
+    { name: 'KCN Bắc Thăng Long', nameEn: 'Bac Thang Long IP', nameJa: 'バクタンロン工業団地', hub: hubIds['ha-noi'] },
+    { name: 'KCN Quang Minh', nameEn: 'Quang Minh IP', nameJa: 'クアンミン工業団地', hub: hubIds['ha-noi'] },
+
+    // Bắc Ninh (merged with Bắc Giang)
+    { name: 'KCN VSIP Bắc Ninh', nameEn: 'VSIP Bac Ninh IP', nameJa: 'VSIPバクニン工業団地', hub: hubIds['bac-ninh'] },
+    { name: 'KCN Yên Phong I', nameEn: 'Yen Phong I IP', nameJa: 'エンフォンI工業団地', hub: hubIds['bac-ninh'] },
+    { name: 'KCN Yên Phong II', nameEn: 'Yen Phong II IP', nameJa: 'エンフォンII工業団地', hub: hubIds['bac-ninh'] },
+    { name: 'KCN Quế Võ I', nameEn: 'Que Vo I IP', nameJa: 'クエヴォI工業団地', hub: hubIds['bac-ninh'] },
+    { name: 'KCN Quế Võ II', nameEn: 'Que Vo II IP', nameJa: 'クエヴォII工業団地', hub: hubIds['bac-ninh'] },
+    { name: 'KCN Quế Võ III', nameEn: 'Que Vo III IP', nameJa: 'クeヴォIII工業団地', hub: hubIds['bac-ninh'] },
+    { name: 'KCN Quang Châu', nameEn: 'Quang Chau IP', nameJa: 'クアンチャウ工業団地', hub: hubIds['bac-ninh'] },
+    { name: 'KCN Vân Trung', nameEn: 'Van Trung IP', nameJa: 'ヴァントゥン工業団地', hub: hubIds['bac-ninh'] },
+    { name: 'KCN Yên Lư', nameEn: 'Yen Lu IP', nameJa: 'イェンルー工業団地', hub: hubIds['bac-ninh'] },
+
+    // Phú Thọ (merged with Vĩnh Phúc)
+    { name: 'KCN Khai Quang', nameEn: 'Khai Quang IP', nameJa: 'カイクアン工業団地', hub: hubIds['phu-tho'] },
+    { name: 'KCN Thăng Long Vĩnh Phúc', nameEn: 'Thang Long Vinh Phuc IP', nameJa: 'タンロンビンフック工業団地', hub: hubIds['phu-tho'] },
+    { name: 'KCN Thụy Vân', nameEn: 'Thuy Van IP', nameJa: 'トゥイヴァン工業団地', hub: hubIds['phu-tho'] },
+    { name: 'KCN Phú Hà', nameEn: 'Phu Ha IP', nameJa: 'フーハ工業団地', hub: hubIds['phu-tho'] }
   ];
 
-  for (const zone of zones) {
-    await helpers.ensureItem('hub_industrial_zones', 'name', zone);
+  for (const zone of zonesData) {
+    const { nameEn, nameJa, ...zonePayload } = zone;
+    const zoneId = await helpers.ensureItem('hub_industrial_zones', 'name', zonePayload);
+    await seedZoneTranslations(helpers, zoneId, zone.name, nameEn, nameJa);
   }
 
-  // Hub Team Members
   const teamMembers = [
-    // HUB Hà Nam
-    {
-      name: 'Nguyễn Văn Tiến',
-      role: 'Quản lý đại diện',
-      years_experience: 10,
-      hub: dongVan4Id,
-      sort: 1
-    },
-    {
-      name: 'Trần Văn Hoàng',
-      role: 'Senior Sales (Trục 1: Nội Vùng & Nam Sông Hồng)',
-      years_experience: 5,
-      hub: dongVan4Id,
-      sort: 2
-    },
-    {
-      name: 'Phạm Minh Hải',
-      role: 'Sales Địa Bàn (Trục 2: Hưng Yên - Hải Dương)',
-      years_experience: 3,
-      hub: dongVan4Id,
-      sort: 3
-    },
-    {
-      name: 'Lê Tuấn Anh',
-      role: 'Sales Địa Bàn (Trục 2: Hải Phòng - Quảng Ninh)',
-      years_experience: 4,
-      hub: dongVan4Id,
-      sort: 4
-    },
-    {
-      name: 'Nguyễn Trung Đức',
-      role: 'Senior Sales (Trục 3: Samsung, Foxconn, Luxshare)',
-      years_experience: 6,
-      hub: dongVan4Id,
-      sort: 5
-    },
-    {
-      name: 'Vũ Quốc Khánh',
-      role: 'Senior Sales (Trục 3: Samsung, Foxconn, Luxshare)',
-      years_experience: 7,
-      hub: dongVan4Id,
-      sort: 6
-    },
-    {
-      name: 'Đỗ Hữu Nghĩa',
-      role: 'Sales Địa Bàn (Trục 4: Vĩnh Phúc - Phú Thọ)',
-      years_experience: 3,
-      hub: dongVan4Id,
-      sort: 7
-    },
-    // HUB Bắc Thăng Long
-    {
-      name: 'Phạm Thị Hoa',
-      role: 'Kỹ sư QC',
-      years_experience: 6,
-      hub: bacThangLongId,
-      sort: 1
-    }
+    // Ninh Bình
+    { name: 'Nguyễn Văn Tiến', role: 'Quản lý đại diện', years_experience: 10, hub: hubIds['ninh-binh'], sort: 1 },
+    { name: 'Trần Văn Hoàng', role: 'Senior Sales (Nam Định)', years_experience: 5, hub: hubIds['ninh-binh'], sort: 2 },
+    { name: 'Phạm Minh Hải', role: 'Sales Địa Bàn (Ninh Bình)', years_experience: 3, hub: hubIds['ninh-binh'], sort: 3 },
+    // Hưng Yên
+    { name: 'Lê Tuấn Anh', role: 'Sales Địa Bàn', years_experience: 4, hub: hubIds['hung-yen'], sort: 1 },
+    // Hải Phòng
+    { name: 'Nguyễn Trung Đức', role: 'Senior Sales (Hải Dương)', years_experience: 6, hub: hubIds['hai-phong'], sort: 1 },
+    { name: 'Vũ Quốc Khánh', role: 'Giám đốc Hub', years_experience: 7, hub: hubIds['hai-phong'], sort: 2 },
+    // Quảng Ninh
+    { name: 'Đỗ Hữu Nghĩa', role: 'Trưởng Hub', years_experience: 3, hub: hubIds['quang-ninh'], sort: 1 },
+    // Hà Nội
+    { name: 'Trần Thị Mai', role: 'Trưởng phòng vận hành', years_experience: 12, hub: hubIds['ha-noi'], sort: 1 },
+    // Bắc Ninh
+    { name: 'Phạm Thị Hoa', role: 'Trưởng Hub', years_experience: 6, hub: hubIds['bac-ninh'], sort: 1 },
+    { name: 'Nguyễn Văn Sơn', role: 'Senior Sales (Bắc Giang)', years_experience: 8, hub: hubIds['bac-ninh'], sort: 2 },
+    // Phú Thọ
+    { name: 'Đỗ Văn Bình', role: 'Senior Sales (Vĩnh Phúc)', years_experience: 6, hub: hubIds['phu-tho'], sort: 1 },
+    { name: 'Trịnh Minh Tuấn', role: 'Trưởng Hub', years_experience: 4, hub: hubIds['phu-tho'], sort: 2 }
   ];
 
   for (const member of teamMembers) {
@@ -520,7 +687,7 @@ export async function seedInitialContent(helpers, client, geography) {
   await seedTranslations('homepage', homepageId, 'home');
 
   return {
-    hubId: dongVan4Id,
+    hubId: primaryHubId,
     sku1Id,
     sku2Id,
     sku3Id,
