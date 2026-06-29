@@ -144,6 +144,45 @@ async function main() {
     console.log(`Frontend API token provisioned for frontend-api@ulink.vn`);
   }
 
+  // Seed multiple sales users into the system for RFQ assignment and testing
+  console.log('Seeding multiple Sales users...');
+  await helpers.ensureUser({
+    email: 'sales-rbac@example.com',
+    password: 'SalesPassword123!',
+    role: SALES_ROLE_ID,
+    first_name: 'Default',
+    last_name: 'Sales',
+    status: 'active'
+  });
+
+  await helpers.ensureUser({
+    email: 'sales-hn@example.com',
+    password: 'SalesHNPassword123!',
+    role: SALES_ROLE_ID,
+    first_name: 'Hà Nội',
+    last_name: 'Sales',
+    status: 'active'
+  });
+
+  await helpers.ensureUser({
+    email: 'sales-hcm@example.com',
+    password: 'SalesHCMPassword123!',
+    role: SALES_ROLE_ID,
+    first_name: 'Hồ Chí Minh',
+    last_name: 'Sales',
+    status: 'active'
+  });
+
+  await helpers.ensureUser({
+    email: 'sales-dn@example.com',
+    password: 'SalesDNPassword123!',
+    role: SALES_ROLE_ID,
+    first_name: 'Đà Nẵng',
+    last_name: 'Sales',
+    status: 'active'
+  });
+  console.log('Multiple Sales users seeded successfully.');
+
   // 12. Run post-migration raw SQL statements setting up query optimizations
   await applyDbIndexes();
 
