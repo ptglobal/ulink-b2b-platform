@@ -226,6 +226,13 @@ export function buildPermissionDefs() {
       action: 'create',
       permissions: {},
       fields: ['*']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'directus_files',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
     }
   );
 
