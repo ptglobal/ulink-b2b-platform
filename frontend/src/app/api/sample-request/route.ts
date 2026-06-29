@@ -36,8 +36,10 @@ export async function POST(req: Request) {
 
       return jsonCreated({ id: (created as { id: number | string }).id });
     } catch (err) {
-      console.error('Sample request creation failed:', err);
-      return jsonErrorRaw(502, 'bad_gateway', 'Failed to create sample request. Please ensure the collection exists in Directus.');
+      const errMsg = err instanceof Error ? err.message : String(err);
+      const errDetail = (err as Record<string, unknown>)?.errors ?? (err as Record<string, unknown>)?.response ?? '';
+      console.error('Sample request creation failed:', errMsg, JSON.stringify(errDetail, null, 2));
+      return jsonErrorRaw(502, 'bad_gateway', `Failed to create sample request: ${errMsg}`);
     }
   });
 }

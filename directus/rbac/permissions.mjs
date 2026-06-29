@@ -140,6 +140,34 @@ export function buildPermissionDefs() {
       action: 'read',
       permissions: {},
       fields: ['id', 'email', 'first_name', 'last_name']
+    },
+    // sample_requests: frontend-api creates sample requests on behalf of visitors/customers
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'sample_requests',
+      action: 'create',
+      permissions: {},
+      fields: [
+        'contact_name',
+        'email',
+        'company',
+        'phone',
+        'province',
+        'district',
+        'address_detail',
+        'product_slug',
+        'skus',
+        'message',
+        'status',
+        'user'
+      ]
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'sample_requests',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
     }
   );
 
