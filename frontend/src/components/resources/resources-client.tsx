@@ -63,13 +63,23 @@ export function ResourcesClient({
       const response = await fetch(url);
       
       if (!response.ok) {
-        throw new Error(
-          locale === 'vi' 
-            ? `Không tìm thấy tài liệu hoặc máy chủ trả về mã lỗi: ${response.status}`
-            : locale === 'ja'
-            ? `ファイルが見つからないか、サーバーがエラーを返しました: ${response.status}`
-            : `File not found or server returned code: ${response.status}`
-        );
+        if (response.status === 404 || response.status === 403) {
+          throw new Error(
+            locale === 'vi'
+              ? 'Tài liệu này hiện chưa khả dụng hoặc đã bị gỡ bỏ.'
+              : locale === 'ja'
+              ? 'このドキュメントは現在ご利用いただけないか、削除された可能性があります。'
+              : 'This document is currently unavailable or may have been removed.'
+          );
+        } else {
+          throw new Error(
+            locale === 'vi'
+              ? 'Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.'
+              : locale === 'ja'
+              ? '接続エラーが発生しました。後ほどもう一度お試しください。'
+              : 'A connection error occurred. Please try again later.'
+          );
+        }
       }
       
       const blob = await response.blob();
@@ -77,8 +87,12 @@ export function ResourcesClient({
       
       const tempLink = document.createElement('a');
       tempLink.href = blobUrl;
-      const filename = resource.downloadUrl ? resource.downloadUrl.split('/').pop() : `${resource.id}.pdf`;
-      tempLink.setAttribute('download', filename as string);
+      
+      // Use localized title as the filename, sanitizing invalid OS filename characters
+      let filename = `${resource.title[locale]}.pdf`;
+      filename = filename.replace(/[\\/:*?"<>|]/g, '_');
+      
+      tempLink.setAttribute('download', filename);
       document.body.appendChild(tempLink);
       tempLink.click();
       
