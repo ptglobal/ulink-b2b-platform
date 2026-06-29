@@ -4,7 +4,7 @@ import { getFolderNameById, getUploadActor, validateMediaUpload } from './rules.
 import { getModuleKeyForFolderName } from '../../../lib/media-policy.mjs';
 import { ADMIN_ROLE_ID, EDITOR_ROLE_ID } from '../../../lib/constants.mjs';
 
-export default ({ filter, action }, extensionContext) => {
+export default ({ action }, extensionContext) => {
   action('files.upload', async (meta, context) => {
     if (meta.collection !== 'directus_files') {
       return;
@@ -23,14 +23,13 @@ export default ({ filter, action }, extensionContext) => {
         services: extensionContext.services,
         getSchema: extensionContext.getSchema
       };
-      
+
       const { folderIndex, schema } = await createMediaServices(fullContext);
-      const { FilesService } = fullContext.services;
+      const { FilesService, NotificationsService } = fullContext.services;
       const filesService = new FilesService({ schema, accountability: null });
 
       // Fetch the full file record from the database
       const file = await filesService.readOne(fileId);
-      console.log(`[media-policy-hook] Retrieved file:`, JSON.stringify(file, null, 2));
       if (!file) {
         console.warn(`[media-policy-hook] File with ID ${fileId} not found in database.`);
         return;
@@ -60,36 +59,62 @@ export default ({ filter, action }, extensionContext) => {
       if (!validation.allowed) {
         console.warn(`[media-policy-hook] File upload rejected for file ID ${fileId}: ${validation.reason}`);
 
-        // Write upload_rejected event
-        await writeMediaAuditEvent(fullContext.services, schema, {
-          ...buildMediaAuditRecord({
-            file: fileSnapshot,
-            actor: actorId,
-            eventType: 'upload_rejected',
-            action: 'upload',
-            module: validation.module ?? 'unknown',
-            reason: validation.reason,
-            source: 'directus-hook',
-            ipAddress: context.accountability?.ip ?? null,
-            userAgent: context.accountability?.userAgent ?? null
-          }),
-          reason: validation.reason
-        });
+        // 1. Write upload_rejected audit event
+        try {
+          await writeMediaAuditEvent(fullContext.services, schema, {
+            ...buildMediaAuditRecord({
+              file: fileSnapshot,
+              actor: actorId,
+              eventType: 'upload_rejected',
+              action: 'upload',
+              module: validation.module ?? 'unknown',
+              reason: validation.reason,
+              source: 'directus-hook',
+              ipAddress: context.accountability?.ip ?? null,
+              userAgent: context.accountability?.userAgent ?? null
+            }),
+            reason: validation.reason
+          });
+        } catch (auditErr) {
+          console.warn(`[media-policy-hook] Failed to write rejected audit log:`, auditErr.message);
+        }
 
-        // Delete file from both database and disk
-        await filesService.deleteOne(fileId);
+        // 2. Delete the invalid file from DB + disk
+        try {
+          await filesService.deleteOne(fileId);
+          console.log(`[media-policy-hook] Deleted invalid file ${fileId} from database and disk.`);
+        } catch (deleteErr) {
+          console.error(`[media-policy-hook] Failed to delete invalid file ${fileId}:`, deleteErr.message);
+        }
 
-        // Throw error to reject client request
-        throw new Error(validation.reason);
+        // 3. Send notification to the uploading user
+        if (actorId) {
+          try {
+            const notificationsService = new NotificationsService({
+              schema,
+              accountability: null
+            });
+            await notificationsService.createOne({
+              recipient: actorId,
+              subject: `⛔ Upload bị từ chối`,
+              message: `File "${fileSnapshot.filename_download}" đã bị xóa.\n\nLý do: ${validation.reason}`,
+              status: 'inbox'
+            });
+            console.log(`[media-policy-hook] Notification sent to user ${actorId}.`);
+          } catch (notifErr) {
+            console.warn(`[media-policy-hook] Failed to send notification:`, notifErr.message);
+          }
+        }
+
+        return;
       }
 
-      // If allowed, determine module name
+      // If allowed, determine module name and write accepted audit log
       const folderName = getFolderNameById(folderIndex, folderId);
       const moduleName = getModuleKeyForFolderName(folderName) ?? 'unknown';
 
       console.log(`[media-policy-hook] File upload accepted for file ID ${fileId} in module: ${moduleName}`);
 
-      // Write upload_accepted event
       await writeMediaAuditEvent(fullContext.services, schema, {
         ...buildMediaAuditRecord({
           file: fileSnapshot,
@@ -107,7 +132,6 @@ export default ({ filter, action }, extensionContext) => {
 
     } catch (error) {
       console.error(`[media-policy-hook] Error processing files.upload action hook:`, error.message || error);
-      throw error;
     }
   });
 };
