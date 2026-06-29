@@ -254,6 +254,13 @@ export function buildPermissionDefs() {
       action: 'create',
       permissions: {},
       fields: ['*']
+    },
+    {
+      policy: CUSTOMER_POLICY_ID,
+      collection: 'directus_files',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
     }
   );
 
@@ -383,7 +390,7 @@ export function buildPermissionDefs() {
     fields: ['*']
   });
 
-  for (const action of ['create', 'read', 'update']) {
+  for (const action of ['create', 'read', 'update', 'delete']) {
     permissions.push({
       policy: EDITOR_POLICY_ID,
       collection: 'directus_files',
@@ -431,13 +438,15 @@ export function buildPermissionDefs() {
     });
   }
 
-  permissions.push({
-    policy: EDITOR_POLICY_ID,
-    collection: 'directus_folders',
-    action: 'read',
-    permissions: {},
-    fields: ['*']
-  });
+  for (const action of ['create', 'read', 'update', 'delete']) {
+    permissions.push({
+      policy: EDITOR_POLICY_ID,
+      collection: 'directus_folders',
+      action,
+      permissions: {},
+      fields: ['*']
+    });
+  }
 
   permissions.push({
     policy: SALES_POLICY_ID,
@@ -538,6 +547,28 @@ export function buildPermissionDefs() {
       });
       permissions.push({
         policy: SALES_POLICY_ID,
+        collection,
+        action,
+        permissions: {},
+        fields: ['*']
+      });
+    }
+  }
+
+  // Product attributes & options: read for visitors/customers, full CRUD for editors
+  for (const collection of ['product_attributes', 'product_attribute_options']) {
+    for (const policy of [VISITOR_POLICY_ID, CUSTOMER_POLICY_ID]) {
+      permissions.push({
+        policy,
+        collection,
+        action: 'read',
+        permissions: {},
+        fields: ['*']
+      });
+    }
+    for (const action of ['create', 'read', 'update', 'delete']) {
+      permissions.push({
+        policy: EDITOR_POLICY_ID,
         collection,
         action,
         permissions: {},

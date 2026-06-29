@@ -51,6 +51,7 @@ export interface Product {
   standards?: Array<{ standards_id: number | Standard }>;
   documents?: ProductDocument[];
   skus?: ProductSku[];
+  product_attributes?: ProductAttribute[];
   meta_title?: string | null;
   meta_description?: string | null;
   status: 'published' | 'draft' | 'archived';
@@ -65,6 +66,22 @@ export interface ProductSku {
   attributes: Record<string, unknown> | null;
   stock_status: 'in_stock' | 'low_stock' | 'out_of_stock';
   status: 'published' | 'draft' | 'archived';
+}
+
+export interface ProductAttribute {
+  id: number;
+  product: number | Product;
+  name: string;
+  sort: number;
+  options?: ProductAttributeOption[];
+}
+
+export interface ProductAttributeOption {
+  id: number;
+  attribute: number | ProductAttribute;
+  value: string;
+  sku_suffix: string;
+  sort: number;
 }
 
 export interface Industry {
