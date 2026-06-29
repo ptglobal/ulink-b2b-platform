@@ -8,7 +8,7 @@ export default ({ init, action }, extensionContext) => {
   // Intercept the final JSON response before it is sent to the client
   // This allows us to cleanly format DB trigger errors and return HTTP 400.
   init('middlewares.before', ({ app }) => {
-    app.use((req, res, next) => {
+    app.use('/files', (req, res, next) => {
       const originalJson = res.json;
 
       res.json = function (body) {
