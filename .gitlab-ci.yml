@@ -18,7 +18,7 @@ stages:
 variables:
   DEPLOY_DIR: '/opt/ulink'
   # Set to "true" in the GitLab UI to drop + recreate DB before bootstrap
-  FRESH_SEED: 'true'
+  FRESH_SEED: 'false'
 
 deploy:
   stage: deploy

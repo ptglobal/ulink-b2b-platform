@@ -545,13 +545,19 @@ export function buildPermissionDefs() {
   return permissions;
 }
 
-export async function ensurePermissions(helpers) {
-  const desiredPermissions = buildPermissionDefs();
+export async function ensurePermissions(helpers, publicPolicyId) {
+  const visitorPolicyId = publicPolicyId || VISITOR_POLICY_ID;
+  const desiredPermissions = buildPermissionDefs().map((p) => {
+    if (p.policy === VISITOR_POLICY_ID) {
+      return { ...p, policy: visitorPolicyId };
+    }
+    return p;
+  });
   const desiredKeys = new Set(
     desiredPermissions.map((permission) => `${permission.policy}:${permission.collection}:${permission.action}`)
   );
   const managedPolicies = new Set([
-    VISITOR_POLICY_ID,
+    visitorPolicyId,
     EDITOR_POLICY_ID,
     SALES_POLICY_ID,
     CUSTOMER_POLICY_ID,

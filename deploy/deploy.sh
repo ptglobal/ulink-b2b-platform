@@ -43,6 +43,13 @@ if [ "${FRESH_SEED:-false}" = "true" ]; then
   $COMPOSE exec -T directus sh -c 'rm -rf /directus/uploads/* 2>/dev/null || true'
   echo "   Uploads cleared."
 
+  # Copy seed PDFs to uploads directory with UUID names on the host
+  mkdir -p directus/uploads
+  cp "pdf/file _1.pdf" "directus/uploads/135cf49a-528d-468e-bf03-8ab05c12670f.pdf"
+  cp "pdf/file _2.pdf" "directus/uploads/17e93170-4d2b-4a45-b18f-a4c3f8ab2f48.pdf"
+  cp "pdf/file _3.pdf" "directus/uploads/22a340ce-b785-4543-b1ef-4cf3eec8e9aa.pdf"
+  echo "   Seed files copied to uploads."
+
   # 3. Flush Redis cache
   $COMPOSE exec -T redis redis-cli FLUSHALL
   echo "   Redis flushed."
