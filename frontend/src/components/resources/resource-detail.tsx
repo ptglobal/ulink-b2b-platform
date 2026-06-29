@@ -189,7 +189,7 @@ export function ResourceDetail({
           </div>
 
           {/* PDF Download Button */}
-          {resource.downloadUrl && (
+          {(resource.downloadUrl || resource.fileId) && (
             <button
               onClick={() => onDownload && onDownload(resource)}
               className="w-full flex items-center justify-center gap-2 h-11 border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-colors rounded-none mt-4"
@@ -496,7 +496,7 @@ export function ResourceDetail({
                 <Printer className="h-3.5 w-3.5 text-slate-500" />
                 {labels.modalPrint[locale]}
               </button>
-              {resource.downloadUrl && (
+              {(resource.downloadUrl || resource.fileId) && (
                 <button
                   onClick={() => onDownload && onDownload(resource)}
                   className="inline-flex items-center gap-1.5 border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 transition-colors rounded-none"

@@ -1,6 +1,7 @@
 import { readItems, updateItem, deleteItems } from '@directus/sdk';
 import { DEFAULT_LOCALE } from '../lib/i18n.mjs';
 import { translations } from './translation_data.mjs';
+import { withDbClient } from '../lib/folder-db.mjs';
 
 function getGeoEntry(map, key, label) {
   const entry = map?.get(key);
@@ -80,6 +81,68 @@ export async function seedInitialContent(helpers, client, geography) {
   await clearCollection(client, 'orders');
   await clearCollection(client, 'rfq_requests');
   await clearCollection(client, 'regional_hubs');
+  await clearCollection(client, 'iso_certifications_translations');
+  await clearCollection(client, 'iso_certifications');
+  await clearCollection(client, 'documents');
+
+  // Seed files into directus_files via postgres client
+  let documentsFolderId = null;
+  await withDbClient(async (dbClient) => {
+    // Get folder ID for "documents"
+    const folderRes = await dbClient.query("SELECT id FROM directus_folders WHERE name = 'documents' LIMIT 1");
+    documentsFolderId = folderRes.rows[0]?.id || null;
+
+    const filesToSeed = [
+      {
+        id: '135cf49a-528d-468e-bf03-8ab05c12670f',
+        storage: 'local',
+        filename_disk: '135cf49a-528d-468e-bf03-8ab05c12670f.pdf',
+        filename_download: 'file _1.pdf',
+        title: 'Document File 1',
+        type: 'application/pdf',
+        filesize: 10732,
+        folder: documentsFolderId
+      },
+      {
+        id: '17e93170-4d2b-4a45-b18f-a4c3f8ab2f48',
+        storage: 'local',
+        filename_disk: '17e93170-4d2b-4a45-b18f-a4c3f8ab2f48.pdf',
+        filename_download: 'file _2.pdf',
+        title: 'Document File 2',
+        type: 'application/pdf',
+        filesize: 11086,
+        folder: documentsFolderId
+      },
+      {
+        id: '22a340ce-b785-4543-b1ef-4cf3eec8e9aa',
+        storage: 'local',
+        filename_disk: '22a340ce-b785-4543-b1ef-4cf3eec8e9aa.pdf',
+        filename_download: 'file _3.pdf',
+        title: 'Document File 3',
+        type: 'application/pdf',
+        filesize: 11053,
+        folder: documentsFolderId
+      }
+    ];
+
+    for (const file of filesToSeed) {
+      const existing = await dbClient.query("SELECT id FROM directus_files WHERE id = $1", [file.id]);
+      if (existing.rows.length === 0) {
+        await dbClient.query(
+          `INSERT INTO directus_files (id, storage, filename_disk, filename_download, title, type, filesize, folder)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+          [file.id, file.storage, file.filename_disk, file.filename_download, file.title, file.type, file.filesize, file.folder]
+        );
+        console.log(`+ Seeded directus_files entry: ${file.filename_download}`);
+      } else {
+        await dbClient.query(
+          `UPDATE directus_files SET filesize = $1, folder = $2 WHERE id = $3`,
+          [file.filesize, file.folder, file.id]
+        );
+        console.log(`= Updated directus_files entry: ${file.filename_download}`);
+      }
+    }
+  });
 
   const electronicsId = await helpers.ensureItem('industries', 'slug', {
     name: 'Điện tử',
@@ -251,6 +314,7 @@ export async function seedInitialContent(helpers, client, geography) {
     title: 'Nitrile Gloves Technical Data Sheet',
     doc_type: 'tds',
     product: glovesProductId,
+    file: '135cf49a-528d-468e-bf03-8ab05c12670f',
     language: 'en',
     status: 'published'
   });
@@ -258,6 +322,7 @@ export async function seedInitialContent(helpers, client, geography) {
     title: 'Nitrile Gloves Material Safety Data Sheet',
     doc_type: 'msds',
     product: glovesProductId,
+    file: '17e93170-4d2b-4a45-b18f-a4c3f8ab2f48',
     language: 'en',
     status: 'published'
   });
@@ -265,6 +330,7 @@ export async function seedInitialContent(helpers, client, geography) {
     title: 'Polyester Wipers Technical Data Sheet',
     doc_type: 'tds',
     product: wipersProductId,
+    file: '22a340ce-b785-4543-b1ef-4cf3eec8e9aa',
     language: 'en',
     status: 'published'
   });
@@ -272,6 +338,7 @@ export async function seedInitialContent(helpers, client, geography) {
     title: 'Cleanroom Wipers Brochure',
     doc_type: 'brochure',
     product: wipersProductId,
+    file: '25917143-60f0-4539-8ff2-f437111ef68a',
     language: 'vi',
     status: 'published'
   });
@@ -653,6 +720,7 @@ export async function seedInitialContent(helpers, client, geography) {
     number: 'QMS-SG-2026-991',
     issuer: 'SGS International',
     valid_until: '2029-06-01',
+    file: '35a85232-a01c-4a88-a06d-0d6277d3b812',
     status: 'published'
   });
   await seedTranslations('iso_certifications', isoId, 'iso9001');

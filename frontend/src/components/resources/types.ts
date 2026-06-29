@@ -43,4 +43,6 @@ export interface ResourceItem {
   size?: string;
   type?: string;
   downloadUrl?: string;
+  isDirectDownloadOnly?: boolean;
+  fileId?: string;
 }

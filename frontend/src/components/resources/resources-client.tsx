@@ -20,7 +20,13 @@ import {
 import { ResourceCard } from './resource-card';
 import { ResourceDetail } from './resource-detail';
 
-export function ResourcesClient() {
+export function ResourcesClient({ 
+  initialResources = MOCK_RESOURCES, 
+  directusUrl = '' 
+}: { 
+  initialResources?: ResourceItem[]; 
+  directusUrl?: string; 
+} = {}) {
   const locale = useLocale() as 'vi' | 'en' | 'ja';
   
   // States
@@ -47,10 +53,14 @@ export function ResourcesClient() {
   }, [errorMessage]);
 
   const handleDownload = async (resource: ResourceItem) => {
-    if (!resource.downloadUrl) return;
+    let url = resource.downloadUrl;
+    if (resource.fileId) {
+      url = `${directusUrl}/assets/${resource.fileId}?download=true`;
+    }
+    if (!url) return;
     
     try {
-      const response = await fetch(resource.downloadUrl);
+      const response = await fetch(url);
       
       if (!response.ok) {
         throw new Error(
@@ -67,8 +77,8 @@ export function ResourcesClient() {
       
       const tempLink = document.createElement('a');
       tempLink.href = blobUrl;
-      const filename = resource.downloadUrl.split('/').pop() || `${resource.id}.pdf`;
-      tempLink.setAttribute('download', filename);
+      const filename = resource.downloadUrl ? resource.downloadUrl.split('/').pop() : `${resource.id}.pdf`;
+      tempLink.setAttribute('download', filename as string);
       document.body.appendChild(tempLink);
       tempLink.click();
       
@@ -93,7 +103,7 @@ export function ResourcesClient() {
       const searchParams = new URLSearchParams(window.location.search);
       const articleId = searchParams.get('id');
       if (articleId) {
-        const found = MOCK_RESOURCES.find((item) => item.id === articleId);
+        const found = initialResources.find((item) => item.id === articleId);
         if (found) {
           setSelectedResource(found);
         }
@@ -123,7 +133,7 @@ export function ResourcesClient() {
 
   // Filter & Search & Sort Logic
   const filteredResources = useMemo(() => {
-    let result = [...MOCK_RESOURCES];
+    let result = [...initialResources];
 
     // Filter by Tab
     if (activeTab !== 'all') {
@@ -169,10 +179,10 @@ export function ResourcesClient() {
   // Related articles (filtered to same category, max 2)
   const relatedArticles = useMemo(() => {
     if (!selectedResource) return [];
-    return MOCK_RESOURCES.filter(
+    return initialResources.filter(
       (item) => item.id !== selectedResource.id && item.category === selectedResource.category
     ).slice(0, 2);
-  }, [selectedResource]);
+  }, [selectedResource, initialResources]);
 
   // Labels based on locale
   const L = {
