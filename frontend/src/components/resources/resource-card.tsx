@@ -63,7 +63,7 @@ export function ResourceCard({ resource, locale, onClick, readDetailsLabel, onDo
           <div className="text-[11px] text-blue-600 font-semibold hover:underline flex items-center gap-1">
             {readDetailsLabel}
           </div>
-          {resource.downloadUrl && (
+          {(resource.downloadUrl || resource.fileId) && (
             <button
               onClick={(e) => {
                 e.stopPropagation();

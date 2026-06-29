@@ -37,15 +37,21 @@ export async function applyDbIndexes() {
     for (const fileName of sqlFiles) {
       const sqlFilePath = path.join(migrationDir, fileName);
       const sqlContent = fs.readFileSync(sqlFilePath, 'utf8');
-      const statements = sqlContent
-        .split(';')
-        .map((stmt) => stmt.trim())
-        .filter((stmt) => stmt.length > 0);
 
-      console.log(`Applying ${fileName}: ${statements.length} statement(s).`);
-      for (const statement of statements) {
-        console.log(`Executing: ${statement}`);
-        await pgClient.query(statement);
+      if (sqlContent.includes('CREATE FUNCTION') || sqlContent.includes('CREATE OR REPLACE FUNCTION')) {
+        console.log(`Applying function migration ${fileName} as a single batch.`);
+        await pgClient.query(sqlContent);
+      } else {
+        const statements = sqlContent
+          .split(';')
+          .map((stmt) => stmt.trim())
+          .filter((stmt) => stmt.length > 0);
+
+        console.log(`Applying ${fileName}: ${statements.length} statement(s).`);
+        for (const statement of statements) {
+          console.log(`Executing: ${statement}`);
+          await pgClient.query(statement);
+        }
       }
     }
 

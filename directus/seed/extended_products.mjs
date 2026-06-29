@@ -430,8 +430,17 @@ export async function seedExtendedProducts(helpers, client) {
     { title: 'Sterile Latex Gloves MSDS', doc_type: 'msds', product: latexGlovesId, language: 'en' },
     { title: 'Latex Gloves Sterility Certificate', doc_type: 'certificate', product: latexGlovesId, language: 'en' },
   ];
+  const seedFileIds = [
+    '135cf49a-528d-468e-bf03-8ab05c12670f',
+    '17e93170-4d2b-4a45-b18f-a4c3f8ab2f48',
+    '22a340ce-b785-4543-b1ef-4cf3eec8e9aa'
+  ];
+
+  let docIndex = 0;
   for (const doc of docs) {
-    await helpers.ensureItem('documents', 'title', { ...doc, status: 'published' });
+    const fileId = seedFileIds[docIndex % seedFileIds.length];
+    docIndex++;
+    await helpers.ensureItem('documents', 'title', { ...doc, file: fileId, status: 'published' });
   }
 
   console.log('  Extended documents & links created');

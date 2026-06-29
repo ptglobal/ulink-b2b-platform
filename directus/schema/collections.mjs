@@ -154,7 +154,17 @@ export const COLLECTION_DEFS = [
         }
       },
       { field: 'product', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
-      { field: 'file', type: 'uuid', meta: { interface: 'file', special: ['file'] } },
+      {
+        field: 'file',
+        type: 'uuid',
+        meta: {
+          interface: 'file',
+          special: ['file'],
+          options: {
+            sources: ['library']
+          }
+        }
+      },
       { field: 'language', type: 'string', meta: { interface: 'input' } }
     ]
   },
@@ -268,7 +278,17 @@ export const COLLECTION_DEFS = [
       { field: 'number', type: 'string', meta: { interface: 'input' } },
       { field: 'issuer', type: 'string', meta: { interface: 'input' } },
       { field: 'valid_until', type: 'date', meta: { interface: 'datetime' } },
-      { field: 'file', type: 'uuid', meta: { interface: 'file', special: ['file'] } }
+      {
+        field: 'file',
+        type: 'uuid',
+        meta: {
+          interface: 'file',
+          special: ['file'],
+          options: {
+            sources: ['library']
+          }
+        }
+      }
     ]
   },
   {

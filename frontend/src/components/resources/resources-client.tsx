@@ -20,7 +20,13 @@ import {
 import { ResourceCard } from './resource-card';
 import { ResourceDetail } from './resource-detail';
 
-export function ResourcesClient() {
+export function ResourcesClient({ 
+  initialResources = MOCK_RESOURCES, 
+  directusUrl = '' 
+}: { 
+  initialResources?: ResourceItem[]; 
+  directusUrl?: string; 
+} = {}) {
   const locale = useLocale() as 'vi' | 'en' | 'ja';
   
   // States
@@ -47,19 +53,33 @@ export function ResourcesClient() {
   }, [errorMessage]);
 
   const handleDownload = async (resource: ResourceItem) => {
-    if (!resource.downloadUrl) return;
+    let url = resource.downloadUrl;
+    if (resource.fileId) {
+      url = `${directusUrl}/assets/${resource.fileId}?download=true`;
+    }
+    if (!url) return;
     
     try {
-      const response = await fetch(resource.downloadUrl);
+      const response = await fetch(url);
       
       if (!response.ok) {
-        throw new Error(
-          locale === 'vi' 
-            ? `Không tìm thấy tài liệu hoặc máy chủ trả về mã lỗi: ${response.status}`
-            : locale === 'ja'
-            ? `ファイルが見つからないか、サーバーがエラーを返しました: ${response.status}`
-            : `File not found or server returned code: ${response.status}`
-        );
+        if (response.status === 404 || response.status === 403) {
+          throw new Error(
+            locale === 'vi'
+              ? 'Tài liệu này hiện chưa khả dụng hoặc đã bị gỡ bỏ.'
+              : locale === 'ja'
+              ? 'このドキュメントは現在ご利用いただけないか、削除された可能性があります。'
+              : 'This document is currently unavailable or may have been removed.'
+          );
+        } else {
+          throw new Error(
+            locale === 'vi'
+              ? 'Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.'
+              : locale === 'ja'
+              ? '接続エラーが発生しました。後ほどもう一度お試しください。'
+              : 'A connection error occurred. Please try again later.'
+          );
+        }
       }
       
       const blob = await response.blob();
@@ -67,7 +87,11 @@ export function ResourcesClient() {
       
       const tempLink = document.createElement('a');
       tempLink.href = blobUrl;
-      const filename = resource.downloadUrl.split('/').pop() || `${resource.id}.pdf`;
+      
+      // Use localized title as the filename, sanitizing invalid OS filename characters
+      let filename = `${resource.title[locale]}.pdf`;
+      filename = filename.replace(/[\\/:*?"<>|]/g, '_');
+      
       tempLink.setAttribute('download', filename);
       document.body.appendChild(tempLink);
       tempLink.click();
@@ -93,7 +117,7 @@ export function ResourcesClient() {
       const searchParams = new URLSearchParams(window.location.search);
       const articleId = searchParams.get('id');
       if (articleId) {
-        const found = MOCK_RESOURCES.find((item) => item.id === articleId);
+        const found = initialResources.find((item) => item.id === articleId);
         if (found) {
           setSelectedResource(found);
         }
@@ -123,7 +147,7 @@ export function ResourcesClient() {
 
   // Filter & Search & Sort Logic
   const filteredResources = useMemo(() => {
-    let result = [...MOCK_RESOURCES];
+    let result = [...initialResources];
 
     // Filter by Tab
     if (activeTab !== 'all') {
@@ -169,10 +193,10 @@ export function ResourcesClient() {
   // Related articles (filtered to same category, max 2)
   const relatedArticles = useMemo(() => {
     if (!selectedResource) return [];
-    return MOCK_RESOURCES.filter(
+    return initialResources.filter(
       (item) => item.id !== selectedResource.id && item.category === selectedResource.category
     ).slice(0, 2);
-  }, [selectedResource]);
+  }, [selectedResource, initialResources]);
 
   // Labels based on locale
   const L = {

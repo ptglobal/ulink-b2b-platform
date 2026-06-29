@@ -78,6 +78,13 @@ export function validateMediaUpload(payload, folderIndex, trustedSvgRole) {
     };
   }
 
+  if (folderName === 'documents' && candidate.extension !== 'pdf') {
+    return {
+      allowed: false,
+      reason: 'Only PDF documents (.pdf) are allowed in the documents folder.'
+    };
+  }
+
   if (candidate.extension === 'svg') {
     const trustedSvg = Boolean(trustedSvgRole) && TRUSTED_SVG_FOLDERS.has(folderName);
     if (!trustedSvg) {

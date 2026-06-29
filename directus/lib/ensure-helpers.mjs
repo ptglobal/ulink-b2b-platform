@@ -55,6 +55,27 @@ export function createEnsureHelpers(client) {
                 console.error(`!  Field: ${def.collection}.${fieldDef.field} creation failed:`, msg);
               }
             }
+          } else {
+            // Dynamically update field meta/options if they already exist
+            try {
+              if (fieldDef.meta) {
+                await client.request(
+                  customEndpoint({
+                    path: `/fields/${def.collection}/${fieldDef.field}`,
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                      meta: fieldDef.meta
+                    }),
+                    headers: {
+                      'Content-Type': 'application/json'
+                    }
+                  })
+                );
+                console.log(`~  Field: ${def.collection}.${fieldDef.field} (metadata updated)`);
+              }
+            } catch (updateErr) {
+              console.error(`!  Field: ${def.collection}.${fieldDef.field} update failed:`, updateErr?.message || updateErr);
+            }
           }
         }
       } catch (err) {
@@ -68,7 +89,24 @@ export function createEnsureHelpers(client) {
       await client.request(createRelation(def));
       console.log(`+  Relation: ${def.collection}.${def.field} (created)`);
     } catch {
-      console.log(`=  Relation: ${def.collection}.${def.field} (already exists / skipped)`);
+      // If relation already exists, update its schema (on_delete behaviour) dynamically
+      try {
+        await client.request(
+          customEndpoint({
+            path: `/relations/${def.collection}/${def.field}`,
+            method: 'PATCH',
+            body: JSON.stringify({
+              schema: def.schema || {}
+            }),
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          })
+        );
+        console.log(`~  Relation: ${def.collection}.${def.field} (schema updated)`);
+      } catch (err) {
+        console.error(`!  Relation: ${def.collection}.${def.field} update failed:`, err?.message || err);
+      }
     }
   }
 

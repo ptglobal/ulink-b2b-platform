@@ -140,6 +140,34 @@ export function buildPermissionDefs() {
       action: 'read',
       permissions: {},
       fields: ['id', 'email', 'first_name', 'last_name']
+    },
+    // sample_requests: frontend-api creates sample requests on behalf of visitors/customers
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'sample_requests',
+      action: 'create',
+      permissions: {},
+      fields: [
+        'contact_name',
+        'email',
+        'company',
+        'phone',
+        'province',
+        'district',
+        'address_detail',
+        'product_slug',
+        'skus',
+        'message',
+        'status',
+        'user'
+      ]
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'sample_requests',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
     }
   );
 
@@ -576,13 +604,19 @@ export function buildPermissionDefs() {
   return permissions;
 }
 
-export async function ensurePermissions(helpers) {
-  const desiredPermissions = buildPermissionDefs();
+export async function ensurePermissions(helpers, publicPolicyId) {
+  const visitorPolicyId = publicPolicyId || VISITOR_POLICY_ID;
+  const desiredPermissions = buildPermissionDefs().map((p) => {
+    if (p.policy === VISITOR_POLICY_ID) {
+      return { ...p, policy: visitorPolicyId };
+    }
+    return p;
+  });
   const desiredKeys = new Set(
     desiredPermissions.map((permission) => `${permission.policy}:${permission.collection}:${permission.action}`)
   );
   const managedPolicies = new Set([
-    VISITOR_POLICY_ID,
+    visitorPolicyId,
     EDITOR_POLICY_ID,
     SALES_POLICY_ID,
     CUSTOMER_POLICY_ID,
