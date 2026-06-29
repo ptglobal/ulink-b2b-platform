@@ -27,18 +27,29 @@ for i in $(seq 1 60); do
   sleep 5
 done
 
-# ── Fresh seed: drop + recreate DB when FRESH_SEED=true ──
+# ── Fresh seed: nuke everything when FRESH_SEED=true ──
 if [ "${FRESH_SEED:-false}" = "true" ]; then
-  echo ">> FRESH_SEED=true — dropping and recreating database..."
-  # Source .env to get POSTGRES_* variables
+  echo ">> FRESH_SEED=true — wiping database, uploads, and cache..."
+
+  # 1. Drop + recreate database
   set -a; source .env; set +a
   $COMPOSE exec -T postgres \
     psql -U "$POSTGRES_USER" -d postgres \
     -c "DROP DATABASE IF EXISTS \"$POSTGRES_DB\" WITH (FORCE);" \
     -c "CREATE DATABASE \"$POSTGRES_DB\" OWNER \"$POSTGRES_USER\";"
-  echo "   Database recreated. Restarting Directus to apply migrations..."
+  echo "   Database recreated."
+
+  # 2. Wipe all uploaded files
+  $COMPOSE exec -T directus sh -c 'rm -rf /directus/uploads/* 2>/dev/null || true'
+  echo "   Uploads cleared."
+
+  # 3. Flush Redis cache
+  $COMPOSE exec -T redis redis-cli FLUSHALL
+  echo "   Redis flushed."
+
+  # 4. Restart Directus so it runs migrations on the empty DB
+  echo "   Restarting Directus to apply migrations..."
   $COMPOSE restart directus
-  # Wait for Directus health again after restart
   for i in $(seq 1 60); do
     code="$(curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:8055/server/health || true)"
     if [ "$code" = "200" ]; then echo "   healthy after restart ($((i * 5))s)"; break; fi
