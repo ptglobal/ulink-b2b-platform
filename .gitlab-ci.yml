@@ -8,18 +8,42 @@
 # token stored on disk), hard-resets /opt/ulink to it, rebuilds + recreates the stack
 # with the production port overlay, then runs the idempotent bootstrap.
 #
-# Trigger is MANUAL on `dev` so an ordinary push never redeploys the live box by
-# surprise — press "play" on the deploy job to ship. Flip `when: manual` to `when: on_success`
-# later if you want auto-deploy on every dev push.
+# Two manual jobs on `dev`:
+#   - deploy:    Build + bootstrap (incremental, safe to run anytime)
+#   - reset-db:  Wipe DB/uploads/cache → rebuild → bootstrap from scratch
+# Press "play" on the desired job in the GitLab UI.
 
 stages:
+  - ops
   - deploy
 
 variables:
   DEPLOY_DIR: '/opt/ulink'
-  # Set to "true" in the GitLab UI to drop + recreate DB before bootstrap
-  FRESH_SEED: 'false'
 
+# ── Reset Database (manual, dangerous) ────────────────────────────────────────
+# Drops the DB, wipes uploads & Redis, restarts Directus, then runs bootstrap.
+# Use when you need a completely fresh environment (schema changes, corrupted data, etc.).
+reset-db:
+  stage: ops
+  tags:
+    - ulink-deploy
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "dev"'
+      when: manual
+      allow_failure: true
+  environment:
+    name: production
+    url: http://103.164.35.132:8055
+  script:
+    - cd "$DEPLOY_DIR"
+    - git fetch "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.pathtech.net/${CI_PROJECT_PATH}.git" "$CI_COMMIT_BRANCH"
+    - git reset --hard FETCH_HEAD
+    - git log -1 --oneline
+    - export FRESH_SEED="true"
+    - bash deploy/deploy.sh
+
+# ── Deploy (manual, safe) ─────────────────────────────────────────────────────
+# Incremental deploy: build containers, run idempotent bootstrap. No data loss.
 deploy:
   stage: deploy
   tags:
@@ -36,5 +60,5 @@ deploy:
     - git fetch "https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.pathtech.net/${CI_PROJECT_PATH}.git" "$CI_COMMIT_BRANCH"
     - git reset --hard FETCH_HEAD
     - git log -1 --oneline
-    - export FRESH_SEED="$FRESH_SEED"
     - bash deploy/deploy.sh
+
