@@ -33,9 +33,8 @@ export async function generateMetadata({ params: { locale } }: SolutionsPageProp
 export default async function SolutionsPage({ params: { locale }, searchParams }: SolutionsPageProps) {
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'solutions' });
-
-  const page = Math.max(1, parseInt(searchParams.page ?? '1', 10) || 1);
-  const limit = Math.min(48, Math.max(8, parseInt(searchParams.limit ?? '12', 10) || 12));
+  const page = 1;
+  const limit = -1;
 
   const [{ products, totalCount }, industries, standards, hubs, industryCounts, standardCounts, regionCounts, categories] =
     await Promise.all([
@@ -46,8 +45,8 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
         region: searchParams.region,
         category: searchParams.category,
         sort: searchParams.sort,
-        page,
-        limit
+        page: 1,
+        limit: -1
       }),
       fetchIndustries(),
       fetchStandards(),
@@ -58,9 +57,9 @@ export default async function SolutionsPage({ params: { locale }, searchParams }
       fetchProductCategories()
     ]);
 
-  const totalPages = Math.ceil(totalCount / limit);
-  const from = totalCount === 0 ? 0 : (page - 1) * limit + 1;
-  const to = Math.min(page * limit, totalCount);
+  const totalPages = 1;
+  const from = totalCount === 0 ? 0 : 1;
+  const to = totalCount;
 
   // Build filter groups
   const filterGroups = [

@@ -4,7 +4,6 @@ import { publicDirectus } from '@/lib/directus';
 import { readItems } from '@directus/sdk';
 import { ResourceItem } from '@/components/resources/types';
 import { ResourcesClient } from '@/components/resources/resources-client';
-import { MOCK_RESOURCES } from '@/components/resources/mock-data';
 
 type Props = { params: { locale: string } };
 
@@ -90,8 +89,7 @@ export default async function ResourcesPage({
     console.error('Error fetching resources from Directus:', err);
   }
 
-  // Combine real docs with mock articles
-  const allResources = [...directusDocs, ...directusIsos, ...MOCK_RESOURCES];
+  const allResources = [...directusDocs, ...directusIsos];
   const directusUrl = process.env.DIRECTUS_URL || 'http://localhost:8055';
 
   return (

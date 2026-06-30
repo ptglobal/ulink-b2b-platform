@@ -27,8 +27,14 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
   // Get pack size from first SKU
   const packSize = firstSku?.pack_size;
 
-  // Find TDS document
-  const tdsDoc = product.documents?.find((doc) => doc.doc_type === 'tds');
+  // Show TDS download only when published document exists.
+  const tdsDoc = product.documents?.find((doc) => doc.doc_type === 'tds' && doc.status === 'published');
+  const tdsFileId =
+    typeof tdsDoc?.file === 'string'
+      ? tdsDoc.file
+      : typeof tdsDoc?.file === 'object'
+        ? tdsDoc.file?.id ?? null
+        : null;
 
   return (
     <div className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg hover:border-blue-200">
@@ -122,24 +128,17 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
             productName={productName}
             locale={locale}
           />
-          <a
-            href={(() => {
-              if (!tdsDoc) return '/docs/sample-tds.pdf';
-              // file can be a string UUID or an object {id: "..."}
-              const fileId = typeof tdsDoc.file === 'string'
-                ? tdsDoc.file
-                : (typeof tdsDoc.file === 'object' && tdsDoc.file?.id)
-                  ? tdsDoc.file.id
-                  : null;
-              return fileId ? `/api/files/${fileId}?download` : '/docs/sample-tds.pdf';
-            })()}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center justify-center rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-            title="Download TDS"
-          >
-            <FileDown className="h-3.5 w-3.5" />
-          </a>
+          {tdsFileId ? (
+            <a
+              href={`/api/files/${tdsFileId}?download`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center rounded-lg border border-gray-200 px-3 py-2 text-xs font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+              title="Download TDS"
+            >
+              <FileDown className="h-3.5 w-3.5" />
+            </a>
+          ) : null}
         </div>
       </div>
     </div>

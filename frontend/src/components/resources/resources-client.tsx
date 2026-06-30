@@ -14,14 +14,13 @@ import {
   INDUSTRIES,
   TOPICS,
   CONTENT_TYPES,
-  POPULAR_ARTICLES,
-  MOCK_RESOURCES
+  POPULAR_ARTICLES
 } from './mock-data';
 import { ResourceCard } from './resource-card';
 import { ResourceDetail } from './resource-detail';
 
 export function ResourcesClient({ 
-  initialResources = MOCK_RESOURCES, 
+  initialResources = [], 
   directusUrl = '' 
 }: { 
   initialResources?: ResourceItem[]; 

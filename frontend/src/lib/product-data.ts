@@ -48,7 +48,9 @@ function buildProductsUrl(params: {
   }
 
   url.searchParams.set('limit', String(params.limit));
-  url.searchParams.set('offset', String(params.offset));
+  if (params.limit >= 0) {
+    url.searchParams.set('offset', String(params.offset));
+  }
   url.searchParams.set('meta', 'filter_count');
 
   return url.toString();
@@ -64,7 +66,7 @@ const PRODUCT_LIST_FIELDS = [
   'industries.industries_id.translations.languages_code', 'industries.industries_id.translations.name',
   'standards.standards_id.id', 'standards.standards_id.name', 'standards.standards_id.slug',
   'standards.standards_id.translations.languages_code', 'standards.standards_id.translations.name',
-  'documents.id', 'documents.title', 'documents.doc_type', 'documents.file.id'
+  'documents.id', 'documents.title', 'documents.doc_type', 'documents.status', 'documents.file.id'
 ];
 
 export async function fetchProducts(params: ProductListParams = {}): Promise<ProductListResult> {
@@ -150,7 +152,13 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pro
       default: sortField = '-id'; break; // popular = newest by default (id correlates with creation order)
     }
 
-    const url = buildProductsUrl({ filter, fields: PRODUCT_LIST_FIELDS, limit, offset, sort: sortField });
+    const url = new URL(buildProductsUrl({ filter, fields: PRODUCT_LIST_FIELDS, limit, offset, sort: sortField }));
+    url.searchParams.set(
+      'deep',
+      JSON.stringify({
+        documents: { _filter: { status: { _eq: 'published' } } }
+      })
+    );
     const res = await fetch(url, { cache: 'no-store' });
 
     if (!res.ok) {
