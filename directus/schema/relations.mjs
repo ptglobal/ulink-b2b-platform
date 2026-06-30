@@ -8,6 +8,7 @@ export const RELATION_DEFS = [
   { collection: 'product_attribute_options', field: 'attribute', related_collection: 'product_attributes', meta: { one_field: 'options' } },
   { collection: 'documents', field: 'product', related_collection: 'products', meta: { one_field: 'documents' } },
   { collection: 'documents', field: 'file', related_collection: 'directus_files', schema: { on_delete: 'SET NULL' } },
+  { collection: 'iso_certifications', field: 'file', related_collection: 'directus_files', schema: { on_delete: 'SET NULL' } },
   { collection: 'case_studies', field: 'industry', related_collection: 'industries' },
   { collection: 'customers', field: 'user', related_collection: 'directus_users' },
   { collection: 'customers', field: 'sales_owner', related_collection: 'directus_users' },

@@ -189,7 +189,13 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
     ];
     const url = new URL('/items/products', base);
     url.searchParams.set('filter', JSON.stringify({ slug: { _eq: slug }, status: { _eq: 'published' } }));
-    url.searchParams.set('deep', JSON.stringify({ skus: { _filter: { status: { _neq: 'archived' } } } }));
+    url.searchParams.set(
+      'deep',
+      JSON.stringify({
+        skus: { _filter: { status: { _neq: 'archived' } } },
+        documents: { _filter: { status: { _eq: 'published' } } }
+      })
+    );
     for (const f of fields) url.searchParams.append('fields[]', f);
     url.searchParams.set('limit', '1');
 
