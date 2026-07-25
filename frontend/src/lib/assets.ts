@@ -15,23 +15,33 @@ export const ASSETS = {
   },
   /** Ảnh trang chủ — chỉ giữ lại những ảnh đang được sử dụng. */
   home: {
-    hero: '/images/home/hero-gloves.png',
-    productGlovesBox: '/images/home/product-gloves-box.png',
-    productTapeRolls: '/images/home/product-tape-rolls.png',
-    productWiper2: '/images/home/product-wiper-2.png',
-    productPackaging: '/images/home/product-packaging.png',
-    /** Ảnh sản phẩm chất lượng cao */
-    productGloves: '/images/home/product-gloves.jpg',
-    productWipes: '/images/home/product-wipes.jpg',
-    productTape: '/images/home/product-tape.jpg',
-    productPkg: '/images/home/product-packaging.jpg',
-    news1: '/images/home/news-1.png',
-    news2: '/images/home/news-2.png',
-    news3: '/images/home/news-3.png',
-    /** Ảnh giải pháp */
-    solutionCleanroom: '/images/home/solution-cleanroom.jpg',
-    solutionPackaging: '/images/home/solution-packaging.jpg',
-    /** Ảnh nhà máy dưới khối About — placeholder, thay bằng ảnh thật sau. */
+    /** Section 1: Hero & Feature Bar */
+    hero: '/images/home/section1/HomeBanner.png',
+    iconNation: '/images/home/section1/nation.png',
+    iconAdapter: '/images/home/section1/adapter.png',
+    iconFile: '/images/home/section1/file.png',
+    iconSecurity: '/images/home/section1/security.png',
+    iconSend: '/images/home/section1/send.png',
+    /** Section 2: Product Categories & Solutions */
+    solutionCleanroom: '/images/home/section2/solution-cleanroom.png',
+    solutionPackaging: '/images/home/section2/solution-packaging.png',
+    productCutGloves: '/images/home/section2/product-cut-gloves.png',
+    productHvacTape: '/images/home/section2/product-hvac-tape.png',
+    productCustomPkg: '/images/home/section2/product-custom-pkg.png',
+    /** Section 3: Industry Solutions */
+    indElectronics: '/images/home/section3/chip.png',
+    indFood: '/images/home/section3/Icon_Thực phẩm.png',
+    indLogistics: '/images/home/section3/iocn_logistics 2 [Vectorized].png',
+    indPharma: '/images/home/section3/iocn_Pharmacity 1 [Vectorized].png',
+    indFurniture: '/images/home/section3/funiture.png',
+    indConstruction: '/images/home/section3/iocn_Xây dựng 1 [Vectorized].png',
+    /** Section 4: Về chúng tôi (About Us) */
+    companyFactory: '/images/home/section4/companyu.png',
+    iconSlack: '/images/home/section4/slack.png',
+    iconShield: '/images/home/section4/shield.png',
+    iconTag: '/images/home/section4/tag.png',
+    iconTruck: '/images/home/section4/truck.png',
+    /** Placeholder */
     factory: '/images/banners/login-hero.png'
   },
   /** Logo đối tác (SVG) */

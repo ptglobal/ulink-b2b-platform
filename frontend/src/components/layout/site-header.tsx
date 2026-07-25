@@ -43,10 +43,9 @@ export async function SiteHeader() {
             <Link
               key={it.href}
               href={it.href}
-              className="flex items-center gap-1 whitespace-nowrap text-[13px] text-primary transition-colors hover:text-brand"
+              className="whitespace-nowrap text-[13px] font-semibold text-foreground transition-colors hover:text-brand"
             >
               {it.label}
-              <ChevronDown className="h-3.5 w-3.5 text-primary/60" aria-hidden="true" />
             </Link>
           ))}
         </nav>
@@ -56,7 +55,7 @@ export async function SiteHeader() {
           <button
             type="button"
             aria-label={t('search')}
-            className="flex h-9 w-9 items-center justify-center text-primary transition-colors hover:bg-muted sm:h-10 sm:w-10"
+            className="flex h-9 w-9 items-center justify-center text-brand transition-colors hover:bg-muted sm:h-10 sm:w-10"
           >
             <Search className="h-5 w-5 sm:h-[22px] sm:w-[22px]" aria-hidden="true" />
           </button>
@@ -64,10 +63,16 @@ export async function SiteHeader() {
           <Link
             href="/quick-order"
             aria-label={t('cart')}
-            className="relative flex h-9 w-9 items-center justify-center text-primary transition-colors hover:bg-muted sm:h-10 sm:w-10"
+            className="flex h-9 w-9 items-center justify-center text-brand transition-colors hover:bg-muted sm:h-10 sm:w-10"
           >
             <ShoppingCart className="h-5 w-5 sm:h-[22px] sm:w-[22px]" aria-hidden="true" />
-            <CartBadge />
+          </Link>
+
+          <Link
+            href="/quick-order"
+            className="hidden h-[38px] items-center rounded-md bg-brand px-4 text-[13px] font-medium text-brand-foreground transition-colors hover:bg-brand-strong lg:inline-flex"
+          >
+            {t('quickOrder')}
           </Link>
 
           <HeaderAuthButton />
