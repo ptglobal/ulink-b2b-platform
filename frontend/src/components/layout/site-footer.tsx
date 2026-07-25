@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
-import { MapPin, Phone, Mail, ChevronRight, Linkedin, Facebook, Youtube } from 'lucide-react';
+import { MapPin, Phone, Mail, ChevronRight } from 'lucide-react';
 import { ASSETS } from '@/lib/assets';
 import { FooterLocaleSwitcher } from './footer-locale-switcher';
 
@@ -24,10 +24,10 @@ export async function SiteFooter() {
               className="h-[96px] w-[230px] object-contain"
             />
             <p className="mt-6 text-[13px] leading-relaxed text-slate-600 sm:text-[14px]">
-              ULink Industries cung cấp các giải pháp và sản phẩm đạt chuẩn chất lượng theo yêu cầu và tiêu chuẩn ISO 9001, đáp ứng nhu cầu sản xuất của Doanh nghiệp
+              {t('descLine1')}
             </p>
             <p className="mt-4 text-[12px] leading-relaxed text-slate-500 sm:text-[13px]">
-              Giấy chứng nhận ĐKKD số: 0110286665 do Sở Kế hoạch và Đầu tư thành phố Hà Nội cấp ngày 2/8/2026.
+              {t('descLine2')}
             </p>
           </div>
 
@@ -37,33 +37,33 @@ export async function SiteFooter() {
               href="/about"
               className="group inline-flex items-center gap-1 text-[15px] font-bold uppercase tracking-wide text-slate-900 transition-colors hover:text-brand sm:text-[16px]"
             >
-              VỀ CHÚNG TÔI
+              {t('aboutTitle')}
               <ChevronRight className="h-4 w-4 text-slate-900 transition-transform group-hover:translate-x-1" />
             </Link>
             <ul className="mt-4 space-y-2.5">
               <li>
                 <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Trung tâm phân phối Hà Nam
+                  {t('aboutHub')}
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Chất lượng & Tiêu chuẩn
+                  {t('aboutQuality')}
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Phát triển bền vững
+                  {t('aboutSustainability')}
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Năng lực cung ứng
+                  {t('aboutSupply')}
                 </Link>
               </li>
               <li>
                 <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Cơ hội nghề nghiệp
+                  {t('aboutCareers')}
                 </Link>
               </li>
             </ul>
@@ -75,33 +75,33 @@ export async function SiteFooter() {
               href="/industries"
               className="group inline-flex items-center gap-1 text-[15px] font-bold uppercase tracking-wide text-slate-900 transition-colors hover:text-brand sm:text-[16px]"
             >
-              NGÀNH NGHỀ
+              {t('industriesTitle')}
               <ChevronRight className="h-4 w-4 text-slate-900 transition-transform group-hover:translate-x-1" />
             </Link>
             <ul className="mt-4 space-y-2.5">
               <li>
                 <Link href="/industries/electronics" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Điện tử & Bán dẫn
+                  {t('indElectronics')}
                 </Link>
               </li>
               <li>
                 <Link href="/industries/pharma" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Dược phẩm & Y tế
+                  {t('indPharma')}
                 </Link>
               </li>
               <li>
                 <Link href="/industries/food" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Thực phẩm & Đồ uống
+                  {t('indFood')}
                 </Link>
               </li>
               <li>
                 <Link href="/industries/machinery" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Cơ khí & Khuôn mẫu
+                  {t('indMachinery')}
                 </Link>
               </li>
               <li>
                 <Link href="/industries/lab" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  QA/QC & Lab
+                  {t('indLab')}
                 </Link>
               </li>
             </ul>
@@ -113,23 +113,23 @@ export async function SiteFooter() {
               href="/products"
               className="group inline-flex items-center gap-1 text-[15px] font-bold uppercase tracking-wide text-slate-900 transition-colors hover:text-brand sm:text-[16px]"
             >
-              SẢN PHẨM
+              {t('productsTitle')}
               <ChevronRight className="h-4 w-4 text-slate-900 transition-transform group-hover:translate-x-1" />
             </Link>
             <ul className="mt-4 space-y-2.5">
               <li>
                 <Link href="/products/cleanroom" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Phòng sạch
+                  {t('prodCleanroom')}
                 </Link>
               </li>
               <li>
                 <Link href="/products/packaging" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Đóng gói & Bao bì
+                  {t('prodPackaging')}
                 </Link>
               </li>
               <li>
                 <Link href="/products/hvac" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
-                  Công nghiệp & HVAC
+                  {t('prodHvac')}
                 </Link>
               </li>
             </ul>
@@ -144,9 +144,9 @@ export async function SiteFooter() {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 shrink-0 text-slate-800 mt-0.5" />
                 <div>
-                  <p className="text-[14px] font-bold text-slate-900 sm:text-[15px]">HUB Hà Nam</p>
+                  <p className="text-[14px] font-bold text-slate-900 sm:text-[15px]">{t('hubTitle')}</p>
                   <p className="mt-1 text-[13px] text-slate-600 sm:text-[14px]">
-                    Lô CN05 KCN Đồng Văn IV, xã Đại Cường, huyện Kim Bảng, tỉnh Hà Nam
+                    {t('hubAddress')}
                   </p>
                 </div>
               </div>
@@ -160,7 +160,7 @@ export async function SiteFooter() {
 
               <div className="pt-4">
                 <p className="text-[13px] font-bold text-slate-900 sm:text-[14px]">
-                  Kết nối với Chúng tôi trên
+                  {t('connectSocials')}
                 </p>
                 <div className="mt-3 flex items-center gap-4">
                   {/* LinkedIn */}
@@ -238,7 +238,7 @@ export async function SiteFooter() {
             <div className="lg:col-span-3 space-y-6 lg:pl-4">
               <div>
                 <p className="text-[14px] font-bold text-slate-900 sm:text-[15px]">
-                  Trở thành Nhà phân phối
+                  {t('becomeDistributor')}
                 </p>
                 <div className="mt-2 flex items-center gap-3 text-slate-800">
                   <Phone className="h-5 w-5 shrink-0 text-slate-800" />
@@ -264,7 +264,7 @@ export async function SiteFooter() {
             <div className="lg:col-span-3">
               <div className="inline-flex flex-col items-center rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                 <p className="text-[13px] font-bold text-slate-800 sm:text-[14px]">
-                  Tải ứng dụng ULINK
+                  {t('downloadApp')}
                 </p>
                 <div className="mt-3 relative h-28 w-28 overflow-hidden rounded">
                   <Image
@@ -287,7 +287,7 @@ export async function SiteFooter() {
         {/* ── BOTTOM COPYRIGHT BAR ── */}
         <div className="mt-12 border-t border-slate-200 pt-8 text-center">
           <p className="text-[13px] font-medium text-slate-600 sm:text-[14px]">
-            Copyright ULink Industries. Tất cả các quyền được bảo vệ
+            {t('copyright')}
           </p>
         </div>
       </div>
