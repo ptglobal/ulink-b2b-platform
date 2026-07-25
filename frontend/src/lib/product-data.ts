@@ -159,7 +159,7 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pro
         documents: { _filter: { status: { _eq: 'published' } } }
       })
     );
-    const res = await fetch(url, { cache: 'no-store' });
+    const res = await fetch(url, { next: { revalidate: 3600 } });
 
     if (!res.ok) {
       console.error('[product-data] fetchProducts HTTP error:', res.status);
@@ -207,7 +207,7 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
     for (const f of fields) url.searchParams.append('fields[]', f);
     url.searchParams.set('limit', '1');
 
-    const res = await fetch(url.toString(), { cache: 'no-store' });
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return null;
     const json = await res.json() as { data: Product[] };
     return json.data?.[0] ?? null;
@@ -226,7 +226,7 @@ export async function fetchIndustries(): Promise<Industry[]> {
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
-    const res = await fetch(url.toString(), { cache: 'no-store' });
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const json = await res.json() as { data: Industry[] };
     return json.data ?? [];
@@ -245,7 +245,7 @@ export async function fetchStandards(): Promise<Standard[]> {
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
-    const res = await fetch(url.toString(), { cache: 'no-store' });
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const json = await res.json() as { data: Standard[] };
     return json.data ?? [];
@@ -264,7 +264,7 @@ export async function fetchProductCategories(): Promise<ProductCategory[]> {
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
-    const res = await fetch(url.toString(), { cache: 'no-store' });
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const json = await res.json() as { data: ProductCategory[] };
     return json.data ?? [];
@@ -281,7 +281,7 @@ export async function fetchIndustryProductCounts(): Promise<Record<string, numbe
     url.searchParams.set('aggregate[count]', 'id');
     url.searchParams.set('groupBy[]', 'industries_id');
 
-    const res = await fetch(url.toString(), { cache: 'no-store' });
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return {};
     const json = await res.json() as { data: Array<{ industries_id: number; count: { id: number } }> };
     const counts: Record<string, number> = {};
@@ -301,7 +301,7 @@ export async function fetchStandardProductCounts(): Promise<Record<string, numbe
     url.searchParams.set('aggregate[count]', 'id');
     url.searchParams.set('groupBy[]', 'standards_id');
 
-    const res = await fetch(url.toString(), { cache: 'no-store' });
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return {};
     const json = await res.json() as { data: Array<{ standards_id: number; count: { id: number } }> };
     const counts: Record<string, number> = {};
@@ -321,7 +321,7 @@ export async function fetchRegionProductCounts(): Promise<Record<string, number>
     url.searchParams.set('aggregate[count]', 'id');
     url.searchParams.set('groupBy[]', 'regional_hubs_id');
 
-    const res = await fetch(url.toString(), { cache: 'no-store' });
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return {};
     const json = await res.json() as { data: Array<{ regional_hubs_id: number; count: { id: number } }> };
     const counts: Record<string, number> = {};
@@ -349,7 +349,7 @@ export async function fetchRegionalHubs(): Promise<RegionalHub[]> {
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
-    const res = await fetch(url.toString(), { cache: 'no-store' });
+    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return [];
     const json = await res.json() as { data: RegionalHub[] };
     return json.data ?? [];

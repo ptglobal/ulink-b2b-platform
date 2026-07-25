@@ -108,14 +108,14 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       ja: '半導体産業における汚染管理、信頼性確保、歩留まり向上におけるクリーンルーム의 역할について説明します。'
     },
     date: '20/05/2026',
-    image: '/images/industries/electronics_hero.png',
+    image: '/images/industries/electronics_hero.webp',
     industryId: 'electronics',
     topicId: 'cleanroom',
     contentType: 'article',
     author: {
       name: { vi: 'Nguyễn Minh Anh', en: 'Minh Anh Nguyen', ja: 'グエン・ミン・アイン' },
       role: { vi: 'Chuyên gia kỹ thuật – ULink Industries', en: 'Technical Expert – ULink Industries', ja: '技術専門家 – ULink Industries' },
-      avatar: '/images/about/op-team.png'
+      avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '8 phút đọc', en: '8 min read', ja: '8分で読める' },
     audioDuration: '08:45',
@@ -250,7 +250,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     author: {
       name: { vi: 'TS. Nguyễn Văn An', en: 'Dr. An Nguyen', ja: 'グエン・バン・アン博士' },
       role: { vi: 'Chuyên gia vi sinh học – ULink R&D', en: 'Microbiology Specialist – ULink R&D', ja: '微生物学専門家 – ULink R&D' },
-      avatar: '/images/about/op-team.png'
+      avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '6 phút đọc', en: '6 min read', ja: '6分で読める' },
     audioDuration: '06:12',
@@ -307,7 +307,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     author: {
       name: { vi: 'Phạm Văn Hùng', en: 'Hung Van Pham', ja: 'ファム・ヴァン・フン' },
       role: { vi: 'Kỹ sư vật liệu – ULink R&D', en: 'Materials Engineer – ULink R&D', ja: '材料エンジニア – ULink R&D' },
-      avatar: '/images/about/op-team.png'
+      avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '5 phút đọc', en: '5 min read', ja: '5分で読める' },
     audioDuration: '05:30',
@@ -364,7 +364,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     author: {
       name: { vi: 'Trần Thị Lan', en: 'Lan Thi Tran', ja: 'チャン・ティ・ラン' },
       role: { vi: 'Trưởng phòng Đảm bảo Chất lượng QA', en: 'QA Director', ja: '品質保証(QA)部長' },
-      avatar: '/images/about/op-team.png'
+      avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '7 phút đọc', en: '7 min read', ja: '7分で読める' },
     audioDuration: '07:15',
@@ -421,7 +421,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     author: {
       name: { vi: 'Lee Sang Min', en: 'Sang Min Lee', ja: 'イ・サンミン' },
       role: { vi: 'Chuyên gia Tư vấn Giải pháp – ULink Korea', en: 'Solutions Advisor – ULink Korea', ja: 'ソリューションアドバイザー – ULink Korea' },
-      avatar: '/images/about/op-team.png'
+      avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '9 phút đọc', en: '9 min read', ja: '9分で読める' },
     audioDuration: '09:30',
@@ -478,7 +478,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     author: {
       name: { vi: 'Phạm Minh Tuấn', en: 'Minh Tuan Pham', ja: 'ファム・ミン・トゥアン' },
       role: { vi: 'Giám đốc Phát triển Sản phẩm – ULink', en: 'Product Development Director – ULink', ja: '製品開発ディレクター – ULink' },
-      avatar: '/images/about/op-team.png'
+      avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '4 phút đọc', en: '4 min read', ja: '4分で読める' },
     audioDuration: '04:10',
@@ -528,14 +528,14 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       ja: '専用のクリーンルーム包装を使用して、オーガニック化粧品製品の無菌性を維持し、細菌管理を最大化する方法。'
     },
     date: '01/05/2026',
-    image: '/images/industries/electronics_hero.png',
+    image: '/images/industries/electronics_hero.webp',
     industryId: 'cosmetics',
     topicId: 'packaging',
     contentType: 'tech-doc',
     author: {
       name: { vi: 'Nguyễn Thị Mai', en: 'Mai Thi Nguyen', ja: 'グエン・ティ・マイ' },
       role: { vi: 'Chuyên gia phát triển công thức – ULink Beauty', en: 'Formulation Expert – ULink Beauty', ja: '処方専門家 – ULink Beauty' },
-      avatar: '/images/about/op-team.png'
+      avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '6 phút đọc', en: '6 min read', ja: '6分で読める' },
     audioDuration: '06:40',

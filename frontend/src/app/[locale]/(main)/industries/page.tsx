@@ -66,22 +66,22 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
     
     bottomColumns: [
       {
-        icon: '/images/icons/icon_support.png',
+        icon: '/images/icons/icon_support.webp',
         title: isVi ? 'Đội ngũ chuyên môn' : isJa ? '専門家チーム' : 'Expert Team',
         desc: isVi ? 'Tư vấn giải pháp phù hợp theo từng ngành nghề.' : isJa ? '業界ごとに適したソリューションを提案します。' : 'Tailored solutions consulting for each industry.'
       },
       {
-        icon: '/images/icons/icon_customization.png',
+        icon: '/images/icons/icon_customization.webp',
         title: isVi ? 'Giải pháp tùy chỉnh' : isJa ? 'カスタムソリューション' : 'Custom Solutions',
         desc: isVi ? 'Thiết kế linh hoạt, đáp ứng yêu cầu đặc thù của khách hàng.' : isJa ? 'お客様の固有の要件に対応する柔軟な設計。' : 'Flexible design meeting unique customer requirements.'
       },
       {
-        icon: '/images/icons/icon_global.png',
+        icon: '/images/icons/icon_global.webp',
         title: isVi ? 'Chuỗi cung ứng toàn cầu' : isJa ? 'グローバルサプライチェーン' : 'Global Supply Chain',
         desc: isVi ? 'Sản phẩm chất lượng từ các đối tác uy tín trên toàn thế giới.' : isJa ? '世界中の信頼できるパートナーからの高品質製品。' : 'Quality products from reliable global partners.'
       },
       {
-        icon: '/images/icons/icon_standards.png',
+        icon: '/images/icons/icon_standards.webp',
         title: isVi ? 'Chất lượng & tiêu chuẩn' : isJa ? '品質と基準' : 'Quality & Standards',
         desc: isVi ? 'Đáp ứng ISO, GMP, RoHS và các tiêu chuẩn quốc tế khác.' : isJa ? 'ISO、GMP、RoHS、およびその他の国際基準に準拠。' : 'Meeting ISO, GMP, RoHS, and other international standards.'
       }
@@ -91,8 +91,8 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
       {
         slug: 'electronics',
         name: isVi ? 'Điện tử' : isJa ? '電子' : 'Electronics',
-        icon: '/images/icons/icon_electronics.png',
-        image: '/images/icons/electronics.png',
+        icon: '/images/icons/icon_electronics.webp',
+        image: '/images/icons/electronics.webp',
         description: isVi 
           ? 'Kiểm soát tĩnh điện và hạt bụi, bảo vệ linh kiện và đảm bảo độ tin cậy.'
           : isJa
@@ -107,8 +107,8 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
       {
         slug: 'pharmaceutical',
         name: isVi ? 'Dược phẩm' : isJa ? '製薬' : 'Pharmaceuticals',
-        icon: '/images/icons/icon_pharmaceutical.png',
-        image: '/images/icons/pharmaceuticals.png',
+        icon: '/images/icons/icon_pharmaceutical.webp',
+        image: '/images/icons/pharmaceuticals.webp',
         description: isVi 
           ? 'Tuân thủ GMP, đảm bảo vô trùng và an toàn trong sản xuất.'
           : isJa
@@ -123,8 +123,8 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
       {
         slug: 'cosmetics',
         name: isVi ? 'Mỹ phẩm' : isJa ? '化粧品' : 'Cosmetics',
-        icon: '/images/icons/icon_pharmaceutical.png',
-        image: '/images/icons/medical.png',
+        icon: '/images/icons/icon_pharmaceutical.webp',
+        image: '/images/icons/medical.webp',
         description: isVi 
           ? 'Kiểm soát ô nhiễm và vi sinh, bảo vệ sức khỏe và chất lượng sản phẩm.'
           : isJa
@@ -139,8 +139,8 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
       {
         slug: 'food',
         name: isVi ? 'Thực phẩm' : isJa ? '食品' : 'Food',
-        icon: '/images/icons/icon_food.png',
-        image: '/images/icons/food_processing.png',
+        icon: '/images/icons/icon_food.webp',
+        image: '/images/icons/food_processing.webp',
         description: isVi 
           ? 'Kiểm soát vi sinh và dị vật, đảm bảo an toàn thực phẩm.'
           : isJa
@@ -187,14 +187,14 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
                 href={`/solutions?category=cleanroom-consumables`}
                 className="inline-flex h-11 items-center justify-center rounded-lg bg-[#0F1E36] px-6 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-[#1A2D49] transition-all hover:scale-[1.01] active:scale-[0.99]"
               >
-                <img src="/images/icons/icon_standards.png" className="h-4.5 w-4.5 mr-2 brightness-0 invert" alt="" />
+                <img src="/images/icons/icon_standards.webp" className="h-4.5 w-4.5 mr-2 brightness-0 invert" alt="" />
                 {content.btnCleanroom}
               </Link>
               <Link
                 href={`/solutions?category=industrial-packaging`}
                 className="inline-flex h-11 items-center justify-center rounded-lg border-2 border-[#0F1E36] bg-white px-6 text-xs sm:text-sm font-semibold text-[#0F1E36] hover:bg-slate-50 transition-all hover:scale-[1.01] active:scale-[0.99]"
               >
-                <img src="/images/icons/icon_packaging.png" className="h-4.5 w-4.5 mr-2" alt="" />
+                <img src="/images/icons/icon_packaging.webp" className="h-4.5 w-4.5 mr-2" alt="" />
                 {content.btnPackaging}
               </Link>
             </div>
@@ -203,7 +203,7 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
           {/* Right Cleanroom Background Image */}
           <div className="hidden md:block absolute right-0 top-0 bottom-0 w-[45%] lg:w-[50%] z-0">
             <img
-              src="/images/icons/food_processing.png"
+              src="/images/icons/food_processing.webp"
               className="w-full h-full object-cover"
               alt="ULink Cleanroom Solutions"
             />

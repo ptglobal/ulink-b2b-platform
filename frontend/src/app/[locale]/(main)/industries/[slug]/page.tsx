@@ -42,7 +42,7 @@ function getIndustryDetails(slug: string, locale: string) {
         : 'Optimize contamination control and packaging processes to ensure the quality and reliability of electronic components.',
       iconName: 'Cpu',
       gradient: 'from-blue-600 to-indigo-900',
-      bannerImage: '/images/industries/electronics_hero.png',
+      bannerImage: '/images/industries/electronics_hero.webp',
       valueProps: [
         {
           title: isVi ? 'Đảm bảo chất lượng cao' : isJa ? '高品質の保証' : 'High Quality Assurance',
@@ -114,7 +114,7 @@ function getIndustryDetails(slug: string, locale: string) {
       cleanroomCategories: [
         {
           name: isVi ? 'Quần áo phòng sạch & phụ kiện' : isJa ? 'クリーンルームウェア＆用品' : 'Cleanroom Wear & Accessories',
-          image: '/images/industries/cleanroom_suit.png',
+          image: '/images/industries/cleanroom_suit.webp',
           slug: 'cleanroom-consumables'
         },
         {
@@ -124,12 +124,12 @@ function getIndustryDetails(slug: string, locale: string) {
         },
         {
           name: isVi ? 'Khẩu trang phòng sạch' : isJa ? 'クリーンルームマスク' : 'Cleanroom Masks',
-          image: '/images/industries/cleanroom_mask.png',
+          image: '/images/industries/cleanroom_mask.webp',
           slug: 'cleanroom-consumables'
         },
         {
           name: isVi ? 'Thảm dính bụi' : isJa ? '粘着マット' : 'Sticky Mats',
-          image: '/images/industries/sticky_mat.png',
+          image: '/images/industries/sticky_mat.webp',
           slug: 'cleanroom-consumables'
         },
         {
@@ -147,22 +147,22 @@ function getIndustryDetails(slug: string, locale: string) {
       packagingCategories: [
         {
           name: isVi ? 'Màng PE (LLDPE)' : isJa ? 'PEストレッチフィルム' : 'PE Stretch Film (LLDPE)',
-          image: '/images/industries/pe_film.png',
+          image: '/images/industries/pe_film.webp',
           slug: 'industrial-packaging'
         },
         {
           name: isVi ? 'Túi chống tĩnh điện & màng chống tĩnh điện' : isJa ? '帯電防止袋＆フィルム' : 'ESD Shielding Bags & Film',
-          image: '/images/industries/shielding_bag.png',
+          image: '/images/industries/shielding_bag.webp',
           slug: 'industrial-packaging'
         },
         {
           name: isVi ? 'Khay nhựa (ESD)' : isJa ? 'ESDプラスチックトレイ' : 'ESD Plastic Trays',
-          image: '/images/industries/esd_tray.png',
+          image: '/images/industries/esd_tray.webp',
           slug: 'industrial-packaging'
         },
         {
           name: isVi ? 'Túi nhôm chống ẩm' : isJa ? '防湿アルミ袋' : 'Moisture Barrier Aluminum Bags',
-          image: '/images/industries/shielding_bag.png',
+          image: '/images/industries/shielding_bag.webp',
           slug: 'industrial-packaging'
         }
       ],
@@ -180,7 +180,7 @@ function getIndustryDetails(slug: string, locale: string) {
             : isJa
             ? 'Class 100クリーンルームでの一貫した塵埃と静電気管理プロセスにより、製品不具合率を1.8%から1.2%に低減。'
             : 'Reduced product defect rate from 1.8% to 1.2% through synchronized dust and static control processes in a Class 100 cleanroom.',
-          image: '/images/industries/case_cleanroom.png',
+          image: '/images/industries/case_cleanroom.webp',
           badge: isVi ? 'Giảm 32% lỗi' : isJa ? '不良率32%低減' : '32% Defect Reduction'
         },
         {
@@ -194,7 +194,7 @@ function getIndustryDetails(slug: string, locale: string) {
             : isJa
             ? 'ESDプラスチックトレイとシールドアルミ袋への変更により、都市間輸送中の静電気放電リスクを完全に排除。'
             : 'Completely eliminated electrostatic discharge risks during inter-provincial transit by switching to ESD plastic trays and shielding aluminum bags.',
-          image: '/images/industries/case_packaging.png',
+          image: '/images/industries/case_packaging.webp',
           badge: isVi ? 'Giảm 45% hư hỏng' : isJa ? '破損45%削減' : '45% Damage Reduction'
         },
         {
@@ -208,7 +208,7 @@ function getIndustryDetails(slug: string, locale: string) {
             : isJa
             ? 'カスタム設計のPEフィルムロールの導入により、最終包装効率が28%向上し、注文処理の迅速化と15%の資材コスト削減を実現。'
             : 'Increased final packaging efficiency by 28%, accelerated order processing, and saved 15% in materials cost through custom PE film roll designs.',
-          image: '/images/industries/case_supplier.png',
+          image: '/images/industries/case_supplier.webp',
           badge: isVi ? 'Tăng 28% hiệu suất' : isJa ? '効率28%向上' : '28% Efficiency Increase'
         }
       ],
@@ -286,7 +286,7 @@ function getIndustryDetails(slug: string, locale: string) {
 
   const iconName = actualSlug === 'pharmaceutical-cosmetics' ? 'Activity' : actualSlug === 'food-beverage' ? 'Utensils' : actualSlug === 'automotive' ? 'Car' : actualSlug === 'solar-energy' ? 'Sun' : 'Shield';
   const gradient = actualSlug === 'pharmaceutical-cosmetics' ? 'from-emerald-600 to-teal-900' : actualSlug === 'food-beverage' ? 'from-amber-500 to-orange-800' : actualSlug === 'automotive' ? 'from-violet-600 to-purple-900' : actualSlug === 'solar-energy' ? 'from-orange-500 to-red-800' : 'from-slate-600 to-slate-900';
-  const bannerImage = actualSlug === 'pharmaceutical-cosmetics' ? '/images/icons/pharmaceuticals.png' : actualSlug === 'food-beverage' ? '/images/icons/food_processing.png' : actualSlug === 'automotive' ? '/images/icons/manufacturing.png' : actualSlug === 'solar-energy' ? '/images/icons/semiconductor.png' : '/images/home/solution-cleanroom.jpg';
+  const bannerImage = actualSlug === 'pharmaceutical-cosmetics' ? '/images/icons/pharmaceuticals.webp' : actualSlug === 'food-beverage' ? '/images/icons/food_processing.webp' : actualSlug === 'automotive' ? '/images/icons/manufacturing.webp' : actualSlug === 'solar-energy' ? '/images/icons/semiconductor.webp' : '/images/home/solution-cleanroom.jpg';
 
   const challengesList = actualSlug === 'pharmaceutical-cosmetics'
     ? [

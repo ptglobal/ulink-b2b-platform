@@ -308,7 +308,7 @@ export function ResourcesClient({
                 {/* Right Image Column (Fading effect) */}
                 <div className="relative h-[250px] md:h-[300px] w-full hidden lg:block overflow-hidden rounded-none">
                   <Image
-                    src="/images/about/quality-hero-bg.png"
+                    src="/images/about/quality-hero-bg.webp"
                     alt="ULink Cleanroom Production"
                     fill
                     className="object-cover"

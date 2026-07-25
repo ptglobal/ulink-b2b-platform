@@ -270,15 +270,24 @@ export interface Schema {
 const url = getDirectusUrl();
 
 /**
- * Custom fetch that disables Next.js aggressive caching.
- * Next.js App Router patches global fetch() to cache GET responses by default;
- * this wrapper forces `cache: 'no-store'` so Directus reads are always fresh.
+ * ISR-aware fetch for published content reads.
+ * Next.js App Router caches GET responses according to `next.revalidate`,
+ * so Directus reads are served from cache and refreshed every hour.
+ */
+const isrFetch: typeof globalThis.fetch = (input, init) =>
+  globalThis.fetch(input, { ...init, next: { revalidate: 3600 } });
+
+/**
+ * Uncached fetch for auth, mutations, and data that must always be fresh.
  */
 const noStoreFetch: typeof globalThis.fetch = (input, init) =>
   globalThis.fetch(input, { ...init, cache: 'no-store' });
 
-// Public Directus client for published content reads.
-export const publicDirectus = createDirectus<Schema>(url, { globals: { fetch: noStoreFetch } }).with(rest());
+// Public Directus client for published content reads (ISR-cached).
+export const publicDirectus = createDirectus<Schema>(url, { globals: { fetch: isrFetch } }).with(rest());
+
+// Uncached Directus client for data that must always be fresh (e.g. auth checks, real-time counts).
+export const freshDirectus = createDirectus<Schema>(url, { globals: { fetch: noStoreFetch } }).with(rest());
 
 // Server-side client for mutations that must not rely on anonymous Directus access.
 export function createWriteDirectusClient(token = requireDirectusToken()) {
