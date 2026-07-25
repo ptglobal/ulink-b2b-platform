@@ -23,7 +23,18 @@ import {
   Send,
   Building2,
   Factory,
-  Check
+  Check,
+  Package,
+  FileCheck,
+  UserCheck,
+  Settings,
+  Download,
+  Shield,
+  Zap,
+  CheckSquare,
+  TrendingUp,
+  PhoneCall,
+  Mail
 } from 'lucide-react';
 import { HeadsetMic } from '@/components/icons/headset-mic';
 import { Link } from '@/i18n/navigation';
@@ -269,7 +280,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
               <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">
                 {t('categories.cleanroomDesc')}
               </p>
-              
+
               {/* 6 Sub-features grid */}
               <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {[
@@ -316,7 +327,7 @@ export default async function HomePage({ params: { locale } }: { params: { local
               <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">
                 {t('categories.packagingDesc')}
               </p>
-              
+
               {/* 6 Sub-features grid */}
               <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 {[
@@ -774,6 +785,628 @@ export default async function HomePage({ params: { locale } }: { params: { local
                 {t('targetSegments.viewDetail')}
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 6 — ĐỐI TÁC TIÊU BIỂU & CHỨNG NHẬN ISO
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="mx-auto w-full max-w-[1800px] px-4 py-12 lg:py-16">
+        {/* ── SECTION HEADER BAR ── */}
+        <div className="flex items-start gap-3">
+          {/* 3 dots cyan accent indicator */}
+          <div className="mt-1.5 flex flex-col gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-brand" />
+            <span className="h-2 w-2 rounded-full bg-brand/60" />
+            <span className="h-2 w-2 rounded-full bg-brand/30" />
+          </div>
+          <div>
+            <h2 className="text-[24px] font-extrabold tracking-tight text-primary sm:text-[28px] lg:text-[32px]">
+              {t('partners.sectionTitle')}
+            </h2>
+            <p className="mt-1 text-[13px] text-muted-foreground sm:text-[14px]">
+              {t('partners.sectionSubTitle')}
+            </p>
+          </div>
+        </div>
+
+        {/* ── PARTNERS LOGO GRID (6 COLS x 2 ROWS) ── */}
+        <div className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 lg:gap-12">
+          {/* 1. Samsung */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerSamsung}
+              alt="Samsung"
+              width={260}
+              height={120}
+              className="h-20 w-auto max-h-[96px] object-contain sm:h-24 lg:max-h-[110px]"
+            />
+          </div>
+          {/* 2. Canon */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerCanon}
+              alt="Canon"
+              width={260}
+              height={120}
+              className="h-20 w-auto max-h-[90px] object-contain sm:h-24 lg:max-h-[105px]"
+            />
+          </div>
+          {/* 3. Panasonic */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerPanasonic}
+              alt="Panasonic"
+              width={260}
+              height={120}
+              className="h-20 w-auto max-h-[96px] object-contain sm:h-24 lg:max-h-[110px]"
+            />
+          </div>
+          {/* 4. IBM */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerIbm}
+              alt="IBM"
+              width={240}
+              height={120}
+              className="h-20 w-auto max-h-[90px] object-contain sm:h-24 lg:max-h-[105px]"
+            />
+          </div>
+          {/* 5. Traphaco */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerTraphaco}
+              alt="Traphaco"
+              width={260}
+              height={120}
+              className="h-20 w-auto max-h-[96px] object-contain sm:h-24 lg:max-h-[110px]"
+            />
+          </div>
+          {/* 6. Coca-Cola */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerCocaCola}
+              alt="Coca-Cola"
+              width={260}
+              height={120}
+              className="h-20 w-auto max-h-[96px] object-contain sm:h-24 lg:max-h-[110px]"
+            />
+          </div>
+
+          {/* 7. VinFast */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerVinfast}
+              alt="VinFast"
+              width={260}
+              height={120}
+              className="h-22 w-auto max-h-[105px] object-contain sm:h-26 lg:max-h-[120px]"
+            />
+          </div>
+          {/* 8. LG */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerLg}
+              alt="LG"
+              width={240}
+              height={120}
+              className="h-20 w-auto max-h-[96px] object-contain sm:h-24 lg:max-h-[110px]"
+            />
+          </div>
+          {/* 9. Amkor */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerAmkor}
+              alt="Amkor Technology"
+              width={260}
+              height={120}
+              className="h-20 w-auto max-h-[96px] object-contain sm:h-24 lg:max-h-[110px]"
+            />
+          </div>
+          {/* 10. Vinamilk */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerVinamilk}
+              alt="Vinamilk"
+              width={260}
+              height={120}
+              className="h-20 w-auto max-h-[96px] object-contain sm:h-24 lg:max-h-[110px]"
+            />
+          </div>
+          {/* 11. 3M */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partner3m}
+              alt="3M"
+              width={240}
+              height={120}
+              className="h-20 w-auto max-h-[96px] object-contain sm:h-24 lg:max-h-[110px]"
+            />
+          </div>
+          {/* 12. BYD */}
+          <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
+            <Image
+              src={ASSETS.home.partnerByd}
+              alt="BYD"
+              width={240}
+              height={120}
+              className="h-16 w-auto max-h-[80px] object-contain sm:h-20 lg:max-h-[96px]"
+            />
+          </div>
+        </div>
+
+        {/* ── CERTIFICATIONS & ISO STANDARDS ROW (5 COLUMNS) ── */}
+        <div className="mt-16  border-border pt-12">
+          <div className="grid grid-cols-1 gap-8 items-center sm:grid-cols-2 lg:grid-cols-5">
+            {/* Col 1: Title & Desc */}
+            <div className="flex flex-col justify-center pr-4">
+              <h3 className="text-[18px] font-bold text-primary sm:text-[20px]">
+                {t('partners.isoTitle')}
+              </h3>
+              <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">
+                {t('partners.isoDesc')}
+              </p>
+            </div>
+
+            {/* Col 2: ISO 9001:2015 / QUACERT / JAS-ANZ */}
+            <div className="flex h-36 items-center justify-center p-2 sm:h-40">
+              <Image
+                src={ASSETS.home.certIso9001}
+                alt="ISO 9001:2015 QUACERT JAS-ANZ"
+                width={320}
+                height={140}
+                className="h-28 w-auto max-h-[128px] object-contain sm:h-32"
+              />
+            </div>
+
+            {/* Col 3: SGS */}
+            <div className="flex h-36 items-center justify-center p-2 sm:h-40">
+              <Image
+                src={ASSETS.home.certSgs}
+                alt="SGS Certification"
+                width={300}
+                height={140}
+                className="h-26 w-auto max-h-[116px] object-contain sm:h-30"
+              />
+            </div>
+
+            {/* Col 4: RoHS compliant */}
+            <div className="flex h-36 items-center justify-center p-2 sm:h-40">
+              <Image
+                src={ASSETS.home.certRohs}
+                alt="RoHS Compliant"
+                width={320}
+                height={140}
+                className="h-28 w-auto max-h-[128px] object-contain sm:h-32"
+              />
+            </div>
+
+            {/* Col 5: MSDS Material Safety Data Sheet */}
+            <div className="flex h-36 items-center justify-center p-2 sm:h-40">
+              <Image
+                src={ASSETS.home.certMsds}
+                alt="MSDS Material Safety Data Sheet"
+                width={340}
+                height={160}
+                className="h-30 w-auto max-h-[136px] object-contain sm:h-34"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 7 — CASE STUDY (CÂU CHUYỆN TRIỂN KHAI THỰC TẾ)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="mx-auto w-full max-w-[1800px] px-4 py-12 lg:py-16">
+        {/* ── SECTION HEADER BAR ── */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex items-start gap-3">
+            {/* 3 dots cyan accent indicator */}
+            <div className="mt-1.5 flex flex-col gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-brand" />
+              <span className="h-2 w-2 rounded-full bg-brand/60" />
+              <span className="h-2 w-2 rounded-full bg-brand/30" />
+            </div>
+            <div>
+              <h2 className="text-[24px] font-extrabold tracking-tight text-primary sm:text-[28px] lg:text-[32px]">
+                {t('caseStudy.sectionTitle')}
+              </h2>
+              <p className="mt-1 text-[13px] text-muted-foreground sm:text-[14px]">
+                {t('caseStudy.sectionSubTitle')}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/resources"
+            className="inline-flex items-center gap-2 text-[14px] font-semibold text-brand transition-colors hover:text-brand-strong"
+          >
+            {t('caseStudy.viewAll')}
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+
+        {/* ── 3 CASE STUDY CARDS GRID ── */}
+        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
+          {[1, 2, 3].map((num) => (
+            <Link
+              key={num}
+              href={`/resources/case-study-${num}`}
+              className="group flex flex-col overflow-hidden rounded-xl border border-border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+            >
+              {/* Top Banner Image with ULINK Logo Watermark */}
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
+                <Image
+                  src={ASSETS.home.solutionPackaging}
+                  alt="Case Study Production Line"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* ULINK Watermark Badge Top Right */}
+                <div className="absolute right-3 top-3 flex items-center gap-1 rounded bg-black/40 px-2 py-1 text-[11px] font-bold text-white backdrop-blur-sm">
+                  <span className="h-2 w-2 rounded-full bg-brand" />
+                  ULINK
+                </div>
+              </div>
+
+              {/* Middle Text Area */}
+              <div className="flex flex-1 flex-col p-6">
+                <p className="text-[13px] font-bold text-[#4A6FA5] sm:text-[14px]">
+                  {t(`caseStudy.card${num}Category` as any)}
+                </p>
+                <h3 className="mt-3 text-[14px] font-bold leading-relaxed text-slate-800 sm:text-[15px]">
+                  {t(`caseStudy.card${num}Title` as any)}
+                </h3>
+              </div>
+
+              {/* Card Footer Bar */}
+              <div className="mt-auto flex items-center justify-between border-t border-border px-6 py-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
+                    <Package className="h-5 w-5" aria-hidden="true" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-primary sm:text-[14px]">
+                      {t(`caseStudy.card${num}Metric` as any)}
+                    </p>
+                    <p className="text-[11px] text-muted-foreground sm:text-[12px]">
+                      {t(`caseStudy.card${num}Tag` as any)}
+                    </p>
+                  </div>
+                </div>
+                <ArrowRight className="h-6 w-6 text-brand transition-transform group-hover:translate-x-1" aria-hidden="true" />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 8 — QUY TRÌNH LÀM VIỆC (WORKING PROCESS — 4 BƯỚC)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="mx-auto w-full max-w-[1800px] px-4 py-12 lg:py-16">
+        {/* ── SECTION HEADER BAR ── */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex items-start gap-3">
+            {/* 3 dots cyan accent indicator */}
+            <div className="mt-1.5 flex flex-col gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-brand" />
+              <span className="h-2 w-2 rounded-full bg-brand/60" />
+              <span className="h-2 w-2 rounded-full bg-brand/30" />
+            </div>
+            <div>
+              <h2 className="text-[24px] font-extrabold tracking-tight text-primary sm:text-[28px] lg:text-[32px]">
+                {t('workingProcess.sectionTitle')}
+              </h2>
+              <p className="mt-1 text-[13px] text-muted-foreground sm:text-[14px]">
+                {t('workingProcess.sectionSubTitle')}
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/about"
+            className="inline-flex items-center gap-2 text-[14px] font-semibold text-brand transition-colors hover:text-brand-strong"
+          >
+            {t('workingProcess.viewDetail')}
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+
+        {/* ── 4 STEP CARDS GRID ── */}
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { step: 1, icon: FileCheck },
+            { step: 2, icon: UserCheck },
+            { step: 3, icon: Settings },
+            { step: 4, icon: Truck }
+          ].map(({ step, icon: IconComponent }) => (
+            <div
+              key={step}
+              className="flex flex-col rounded-xl border border-border bg-white p-6 shadow-sm transition-all hover:shadow-md"
+            >
+              {/* Tầng 1: Icon & Dashed Line Connector */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center justify-center text-brand">
+                  <IconComponent className="h-8 w-8 sm:h-9 sm:w-9" aria-hidden="true" />
+                </div>
+                {/* Dashed connector line */}
+                <div className="ml-4 h-0 w-full border-b border-dashed border-slate-300" />
+              </div>
+
+              {/* Tầng 2: Nội dung chính */}
+              <div className="mt-6 border-t border-border pt-4">
+                <p className="text-[14px] font-bold text-muted-foreground sm:text-[15px]">
+                  {t(`workingProcess.step${step}Number` as any)}
+                </p>
+                <h3 className="mt-1 text-[18px] font-extrabold text-primary sm:text-[20px] lg:text-[22px]">
+                  {t(`workingProcess.step${step}Title` as any)}
+                </h3>
+                <p className="mt-3 text-[14px] leading-relaxed text-slate-600 sm:text-[15px]">
+                  {t(`workingProcess.step${step}Desc` as any)}
+                </p>
+              </div>
+
+              {/* Tầng 3: Footer KPI */}
+              <div className="mt-6 mt-auto flex items-center justify-between border-t border-border pt-4">
+                <span className="text-[13px] font-semibold text-muted-foreground sm:text-[14px]">
+                  {t(`workingProcess.step${step}KpiLabel` as any)}
+                </span>
+                <span className="text-[16px] font-extrabold text-brand sm:text-[18px]">
+                  {t(`workingProcess.step${step}KpiValue` as any)}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 9 — TÀI NGUYÊN & TIN TỨC MỚI NHẤT
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="mx-auto w-full max-w-[1800px] px-4 py-12 lg:py-16">
+        {/* ── 1. MASTER SECTION HEADER BAR ── */}
+        <div className="flex items-start gap-3">
+          {/* 3 dots cyan accent indicator */}
+          <div className="mt-1.5 flex flex-col gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-brand" />
+            <span className="h-2 w-2 rounded-full bg-brand/60" />
+            <span className="h-2 w-2 rounded-full bg-brand/30" />
+          </div>
+          <div>
+            <h2 className="text-[24px] font-extrabold tracking-tight text-primary sm:text-[28px] lg:text-[32px]">
+              {t('resourcesSection.sectionTitle')}
+            </h2>
+            <p className="mt-1 text-[13px] text-muted-foreground sm:text-[14px]">
+              {t('resourcesSection.sectionSubTitle')}
+            </p>
+          </div>
+        </div>
+
+        {/* ── 2. SUB-SECTION HEADER BAR (TIN TỨC MỚI NHẤT) ── */}
+        <div className="mt-10 flex flex-col gap-4 border-t border-border pt-8 sm:mt-12 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex items-center gap-3">
+            <div className="h-5 w-1 rounded bg-brand" />
+            <h3 className="text-[18px] font-bold text-primary sm:text-[20px] lg:text-[22px]">
+              {t('resourcesSection.newsSectionTitle')}
+            </h3>
+          </div>
+          <Link
+            href="/resources"
+            className="inline-flex items-center gap-2 text-[14px] font-semibold text-brand transition-colors hover:text-brand-strong sm:text-[15px]"
+          >
+            {t('resourcesSection.viewAllNews')}
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+
+        {/* ── 3. 3 NEWS CARDS GRID ── */}
+        <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
+          {[1, 2, 3].map((num) => (
+            <Link
+              key={num}
+              href={`/resources/news-${num}`}
+              className="group flex flex-col transition-all"
+            >
+              {/* Top Article Image */}
+              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-slate-100">
+                <Image
+                  src={ASSETS.about.qualityLab}
+                  alt="News Article Production Lab"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+              </div>
+
+              {/* Publish Date */}
+              <p className="mt-4 text-[13px] font-bold text-brand sm:text-[14px]">
+                {t(`resourcesSection.card${num}Date` as any)}
+              </p>
+
+              {/* News Article Title */}
+              <h4 className="mt-2 text-[14px] font-bold leading-relaxed text-[#4A6FA5] transition-colors group-hover:text-brand sm:text-[15px] lg:text-[16px]">
+                {t(`resourcesSection.card${num}Title` as any)}
+              </h4>
+
+              {/* Card Footer "Read More" */}
+              <div className="mt-6 mt-auto flex items-center justify-between border-t border-slate-200/80 pt-4">
+                <span className="text-[14px] font-semibold text-brand transition-colors group-hover:text-brand-strong sm:text-[15px]">
+                  {t('resourcesSection.readMore')}
+                </span>
+                <ArrowRight className="h-5 w-5 text-brand transition-transform group-hover:translate-x-1" aria-hidden="true" />
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* ── 4. SUB-SECTION HEADER BAR (TÀI LIỆU & CATALOGUE) ── */}
+        <div className="mt-12 flex items-center gap-3 border-t border-border pt-8 sm:mt-16">
+          <div className="h-5 w-1 rounded bg-brand" />
+          <h3 className="text-[18px] font-bold text-primary sm:text-[20px] lg:text-[22px]">
+            {t('resourcesSection.docsTitle')}
+          </h3>
+        </div>
+
+        {/* ── 4 DOCUMENT CARDS GRID ── */}
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { num: 1, icon: Download },
+            { num: 2, icon: FileText },
+            { num: 3, icon: Settings },
+            { num: 4, icon: FileCheck }
+          ].map(({ num, icon: IconComp }) => (
+            <Link
+              key={num}
+              href={`/resources/docs-${num}`}
+              className="group flex flex-col rounded-xl border border-border bg-white p-6 shadow-sm transition-all hover:shadow-md"
+            >
+              {/* Tầng 1: Icon & Top Right ArrowUpRight */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center justify-center text-brand">
+                  <IconComp className="h-8 w-8" aria-hidden="true" />
+                </div>
+                <ArrowUpRight className="h-6 w-6 text-brand transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" aria-hidden="true" />
+              </div>
+
+              {/* Tầng 2: Nội dung chính */}
+              <div className="mt-6 border-t border-border pt-4">
+                <p className="text-[13px] font-medium text-slate-500 sm:text-[14px]">
+                  {t(`resourcesSection.doc${num}Category` as any)}
+                </p>
+                <h4 className="mt-2 text-[15px] font-bold text-slate-800 transition-colors group-hover:text-brand sm:text-[16px]">
+                  {t(`resourcesSection.doc${num}Title` as any)}
+                </h4>
+              </div>
+
+              {/* Tầng 3: Footer Metadata */}
+              <div className="mt-6 mt-auto border-t border-border pt-4">
+                <p className="text-[12px] font-medium text-slate-500 sm:text-[13px]">
+                  {t(`resourcesSection.doc${num}Meta` as any)}
+                </p>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        {/* ── 5. SUB-SECTION HEADER BAR (TƯ VẤN & HỖ TRỢ) ── */}
+        <div className="mt-12 flex items-center gap-3 border-t border-border pt-8 sm:mt-16">
+          <div className="h-5 w-1 rounded bg-brand" />
+          <h3 className="text-[18px] font-bold text-primary sm:text-[20px] lg:text-[22px]">
+            {t('resourcesSection.supportTitle')}
+          </h3>
+        </div>
+
+        {/* ── 4 SUPPORT CARDS GRID ── */}
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { num: 1, icon: CheckSquare },
+            { num: 2, icon: Shield },
+            { num: 3, icon: TrendingUp },
+            { num: 4, icon: Zap }
+          ].map(({ num, icon: IconComp }) => (
+            <div
+              key={num}
+              className="flex flex-col rounded-xl border border-border bg-white p-6 shadow-sm transition-all hover:shadow-md"
+            >
+              <div className="flex items-center justify-start text-brand">
+                <IconComp className="h-9 w-9" aria-hidden="true" />
+              </div>
+              <h4 className="mt-6 text-[16px] font-bold text-slate-800 sm:text-[18px]">
+                {t(`resourcesSection.supp${num}Title` as any)}
+              </h4>
+              <p className="mt-2 text-[13px] leading-relaxed text-slate-600 sm:text-[14px]">
+                {t(`resourcesSection.supp${num}Desc` as any)}
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════════
+          SECTION 10 — CTA BANNER (BÁO GIÁ NHANH TRONG 24H & LIÊN HỆ TRỰC TIẾP)
+          ═══════════════════════════════════════════════════════════════ */}
+      <section className="w-full bg-[#3B82F6] text-white">
+        <div className="mx-auto w-full max-w-[1800px] px-6 py-16 lg:py-20">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+            {/* ── CỘT BÊN TRÁI: BÁO GIÁ NHANH 24H (7/12 COLS) ── */}
+            <div className="flex flex-col justify-center lg:col-span-7">
+              <p className="text-[14px] font-medium text-white/80 sm:text-[15px]">
+                {tCta('eyebrow')}
+              </p>
+              <h2 className="mt-4 text-[32px] font-extrabold tracking-tight text-white sm:text-[44px] lg:text-[52px] leading-tight">
+                {tCta('title')}
+              </h2>
+              <p className="mt-6 text-[14px] leading-relaxed text-white/90 sm:text-[16px] max-w-[720px]">
+                {tCta('description')}
+              </p>
+
+              {/* Action Buttons Row */}
+              <div className="mt-10 flex flex-wrap items-center gap-6">
+                <Link
+                  href="/rfq"
+                  className="inline-flex items-center gap-3 rounded-lg bg-white px-8 py-3.5 text-[15px] font-bold text-brand shadow-lg transition-transform hover:scale-102 hover:bg-slate-50"
+                >
+                  {tCta('ctaRfq')}
+                  <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                </Link>
+                <Link
+                  href="/resources"
+                  className="inline-flex items-center gap-3 text-[15px] font-bold text-white transition-opacity hover:opacity-80"
+                >
+                  {tCta('ctaCatalogue')}
+                  <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
+
+            {/* ── CỘT BÊN PHẢI: LIÊN HỆ TRỰC TIẾP (5/12 COLS WITH VERTICAL BORDER) ── */}
+            <div className="flex flex-col justify-center lg:col-span-5 lg:border-l lg:border-white/30 lg:pl-16">
+              <h3 className="text-[18px] font-bold text-white sm:text-[20px]">
+                {tCta('directContactTitle')}
+              </h3>
+
+              {/* 3 Contact Info Items */}
+              <div className="mt-8 flex flex-col gap-6">
+                {/* Item 1: Phone */}
+                <div className="flex items-start gap-4 border-b border-white/20 pb-5">
+                  <PhoneCall className="h-6 w-6 shrink-0 text-white mt-1" aria-hidden="true" />
+                  <div>
+                    <p className="text-[18px] font-extrabold text-white sm:text-[20px]">
+                      {tCta('phone')}
+                    </p>
+                    <p className="mt-1 text-[13px] text-white/75 sm:text-[14px]">
+                      {tCta('phoneHours')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Item 2: Email */}
+                <div className="flex items-start gap-4 border-b border-white/20 pb-5">
+                  <Mail className="h-6 w-6 shrink-0 text-white mt-1" aria-hidden="true" />
+                  <div>
+                    <p className="text-[18px] font-extrabold text-white sm:text-[20px]">
+                      {tCta('email')}
+                    </p>
+                    <p className="mt-1 text-[13px] text-white/75 sm:text-[14px]">
+                      {tCta('emailSla')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Item 3: IZ Connection */}
+                <div className="flex items-start gap-4">
+                  <Send className="h-6 w-6 shrink-0 text-white mt-1" aria-hidden="true" />
+                  <div>
+                    <p className="text-[18px] font-extrabold text-white sm:text-[20px]">
+                      {tCta('izConnect')}
+                    </p>
+                    <p className="mt-1 text-[13px] text-white/75 sm:text-[14px]">
+                      {tCta('izList')}
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>

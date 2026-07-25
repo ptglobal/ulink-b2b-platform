@@ -7,7 +7,7 @@ export const ASSETS = {
     full: '/images/logo/ulink_logo.png',
     mark: '/images/logo/ulink-mark.svg',
     white: '/images/logo/ulink_logo.png',
-    main: '/images/logo/ulink_logo.png'
+    main: '/images/home/logo.png'
   },
   banners: {
     /** Ảnh nền trang đăng nhập — KHÔNG kèm chữ. */
@@ -41,8 +41,35 @@ export const ASSETS = {
     iconShield: '/images/home/section4/shield.png',
     iconTag: '/images/home/section4/tag.png',
     iconTruck: '/images/home/section4/truck.png',
+    /** Section 5: Đối tác tiêu biểu & Chứng nhận ISO */
+    partnerSamsung: '/images/home/section5/Samsung-Logo-Blue.png',
+    partnerCanon: '/images/home/section5/logo canon.png',
+    partnerPanasonic: '/images/home/section5/panasonic-logo-.png',
+    partnerIbm: '/images/home/section5/logo-ibm-vector-06.png',
+    partnerTraphaco: '/images/home/section5/9383_Traphaco.png',
+    partnerCocaCola: '/images/home/section5/coca-cola-logo.png',
+    partnerVinfast: '/images/home/section5/logo-vinfast-vector-thumbnail.png',
+    partnerLg: '/images/home/section5/logo-lg-vector-inkythuatso-01-30-13-53-58.png',
+    partnerAmkor: '/images/home/section5/Amkor.png',
+    partnerVinamilk: '/images/home/section5/logo-vinamilk-vector-01.png',
+    partner3m: '/images/home/section5/3m-logo-png_seeklogo-806.png',
+    partnerByd: '/images/home/section5/BYD.png',
+    /** Chứng nhận ISO & Tiêu chuẩn */
+    certIso9001: '/images/home/section5/mc-iso-9001-2015.png',
+    certSgs: '/images/home/section5/sgs.png',
+    certRohs: '/images/home/section5/RoHS-Logo.png',
+    certMsds: '/images/home/section5/mdsss.png',
     /** Placeholder */
     factory: '/images/banners/login-hero.png'
+  },
+  /** Footer assets */
+  footer: {
+    boCongThuong: '/images/home/section6/Logo - Đã Thông Báo.png',
+    qrCode: '/images/footer/qr-code.svg',
+    facebook: '/images/home/section6/fb.png',
+    linkedin: '/images/home/section6/linked.png',
+    tiktok: '/images/home/section6/tik.png',
+    youtube: '/images/home/section6/youtube.png'
   },
   /** Logo đối tác (SVG) */
   partners: {

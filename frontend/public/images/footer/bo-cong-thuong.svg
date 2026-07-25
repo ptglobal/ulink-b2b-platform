@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="60" viewBox="0 0 180 60">
+  <rect x="2" y="2" width="176" height="56" rx="28" fill="#0072BC" stroke="#005691" stroke-width="2"/>
+  <circle cx="28" cy="30" r="18" fill="#FFFFFF"/>
+  <!-- Check emblem -->
+  <path d="M 20 30 L 26 36 L 36 24" fill="none" stroke="#0072BC" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Text -->
+  <text x="50" y="28" font-family="'Inter', sans-serif" font-size="12" font-weight="900" fill="#FFFFFF">ĐÃ THÔNG BÁO</text>
+  <text x="50" y="44" font-family="'Inter', sans-serif" font-size="11" font-weight="800" fill="#FFFFFF" letter-spacing="1">BỘ CÔNG THƯƠNG</text>
+</svg>

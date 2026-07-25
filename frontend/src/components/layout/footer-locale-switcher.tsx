@@ -44,7 +44,7 @@ const locales: { code: Locale; flag: React.ComponentType<{ className?: string }>
   { code: 'ja', flag: FlagJP, label: '日本語' },
 ];
 
-/** Footer dropdown locale switcher — shows "🇻🇳 Tiếng Việt" style. */
+/** Footer dropdown locale switcher — styled matching light-theme footer */
 export function FooterLocaleSwitcher() {
   const locale = useLocale() as Locale;
   const pathname = usePathname();
@@ -74,12 +74,12 @@ export function FooterLocaleSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-1.5 rounded-lg border border-white/20 bg-white/5 px-2.5 py-1 text-[11px] text-white/70 transition-colors hover:border-white/40 hover:text-white"
+        className="flex items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-[14px] font-semibold text-slate-800 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 sm:text-[15px]"
       >
-        <current.flag className="h-3.5 w-5 object-cover" />
+        <current.flag className="h-4 w-6 rounded-sm object-cover shadow-xs" />
         <span>{current.label}</span>
         <ChevronDown
-          className={`h-3 w-3 transition-transform ${open ? 'rotate-180' : ''}`}
+          className={`h-4 w-4 text-slate-600 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           aria-hidden="true"
         />
       </button>
@@ -87,18 +87,20 @@ export function FooterLocaleSwitcher() {
       {open && (
         <ul
           role="listbox"
-          className="absolute bottom-full right-0 z-50 mb-1 w-36 overflow-hidden rounded-lg border border-white/20 bg-primary py-1 shadow-lg"
+          className="absolute bottom-full right-0 z-50 mb-2 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl transition-all"
         >
           {locales.map(({ code, flag: Flag, label }) => (
             <li key={code} role="option" aria-selected={code === locale}>
               <button
                 type="button"
                 onClick={() => switchLocale(code)}
-                className={`flex w-full items-center gap-2 px-3 py-1.5 text-left text-[11px] transition-colors hover:bg-white/10 ${
-                  code === locale ? 'text-white font-medium' : 'text-white/60'
+                className={`flex w-full items-center gap-3 px-4 py-2 text-left text-[14px] transition-colors ${
+                  code === locale
+                    ? 'bg-brand/10 font-bold text-brand'
+                    : 'text-slate-700 hover:bg-slate-100'
                 }`}
               >
-                <Flag className="h-3.5 w-5" />
+                <Flag className="h-4 w-6 rounded-sm object-cover shadow-xs" />
                 <span>{label}</span>
               </button>
             </li>
