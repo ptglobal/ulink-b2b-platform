@@ -385,6 +385,7 @@ export async function seedInitialContent(helpers, client, geography) {
   const hubsData = [
     {
       slug: 'ninh-binh',
+      hub_code: 'HUB-NB-001',
       name: 'HUB Ninh Bình',
       nameEn: 'Ninh Binh Hub',
       nameJa: 'ニンビンハブ',
@@ -413,6 +414,7 @@ export async function seedInitialContent(helpers, client, geography) {
     },
     {
       slug: 'hung-yen',
+      hub_code: 'HUB-HY-001',
       name: 'HUB Hưng Yên',
       nameEn: 'Hung Yen Hub',
       nameJa: 'フンイエンハブ',
@@ -441,6 +443,7 @@ export async function seedInitialContent(helpers, client, geography) {
     },
     {
       slug: 'hai-phong',
+      hub_code: 'HUB-HP-001',
       name: 'HUB Hải Phòng',
       nameEn: 'Hai Phong Hub',
       nameJa: 'ハイフォンハブ',
@@ -469,6 +472,7 @@ export async function seedInitialContent(helpers, client, geography) {
     },
     {
       slug: 'quang-ninh',
+      hub_code: 'HUB-QN-001',
       name: 'HUB Quảng Ninh',
       nameEn: 'Quang Ninh Hub',
       nameJa: 'クアンニンハブ',
@@ -497,6 +501,7 @@ export async function seedInitialContent(helpers, client, geography) {
     },
     {
       slug: 'ha-noi',
+      hub_code: 'HUB-HN-001',
       name: 'HUB Hà Nội',
       nameEn: 'Ha Noi Hub',
       nameJa: 'ハノイハブ',
@@ -525,6 +530,7 @@ export async function seedInitialContent(helpers, client, geography) {
     },
     {
       slug: 'bac-ninh',
+      hub_code: 'HUB-BN-001',
       name: 'HUB Bắc Ninh',
       nameEn: 'Bac Ninh Hub',
       nameJa: 'バクニンハブ',
@@ -553,6 +559,7 @@ export async function seedInitialContent(helpers, client, geography) {
     },
     {
       slug: 'phu-tho',
+      hub_code: 'HUB-PT-001',
       name: 'HUB Phú Thọ',
       nameEn: 'Phu Tho Hub',
       nameJa: 'フートハブ',

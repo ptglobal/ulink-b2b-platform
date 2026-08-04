@@ -18,7 +18,9 @@ import {
   User,
   Layers,
   FolderTree,
-  Sliders
+  Sliders,
+  MapPin,
+  Mail
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -70,19 +72,19 @@ export function AdminSidebar() {
       icon: FileCheck
     },
     {
-      href: '/admin/clients',
-      label: 'Doanh nghiệp B2B',
+      href: '/admin/users',
+      label: 'Tài khoản User',
       icon: Users
     },
     {
-      href: '/admin/leads',
-      label: 'Lượt tải TDS',
-      icon: BarChart3
+      href: '/admin/hubs',
+      label: 'Chi nhánh / Hubs',
+      icon: MapPin
     },
     {
-      href: '/admin/import',
-      label: 'Nhập dữ liệu',
-      icon: Upload
+      href: '/admin/subscribers',
+      label: 'Đăng ký bản tin',
+      icon: Mail
     }
   ];
 

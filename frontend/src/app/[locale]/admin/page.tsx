@@ -2,16 +2,15 @@ import React from 'react';
 import { setRequestLocale } from 'next-intl/server';
 import { getCurrentUser } from '@/lib/auth-helpers';
 import { createWriteDirectusClient } from '@/lib/directus';
-import { readItems } from '@directus/sdk';
+import { readItems, readUsers } from '@directus/sdk';
 import { Link } from '@/i18n/navigation';
 import {
   FileSpreadsheet,
   FileCheck,
   Package,
-  BarChart3,
   PlusCircle,
   FileText,
-  UserCheck,
+  Users,
   TrendingUp,
   ArrowRight
 } from 'lucide-react';
@@ -29,19 +28,21 @@ export default async function AdminDashboardPage({ params: { locale } }: Props) 
     rfqs: 12,
     sampleRequests: 4,
     products: 48,
-    leads: 156
+    users: 5
   };
 
   try {
     const client = createWriteDirectusClient();
-    const [rfqRes, sampleRes, productRes] = await Promise.all([
+    const [rfqRes, sampleRes, productRes, usersRes] = await Promise.all([
       client.request(readItems('rfq_requests', { fields: ['id'] })),
       client.request(readItems('sample_requests', { fields: ['id'] })),
-      client.request(readItems('products', { fields: ['id'] }))
+      client.request(readItems('products', { fields: ['id'] })),
+      client.request(readUsers({ fields: ['id'] }))
     ]);
     if (rfqRes) stats.rfqs = rfqRes.length;
     if (sampleRes) stats.sampleRequests = sampleRes.length;
     if (productRes) stats.products = productRes.length;
+    if (usersRes) stats.users = usersRes.length;
   } catch (err) {
     console.warn('Directus stats fetch failed, using fallback numbers:', err);
   }
@@ -72,12 +73,12 @@ export default async function AdminDashboardPage({ params: { locale } }: Props) 
       href: '/admin/products'
     },
     {
-      label: 'Khách hàng Leads',
-      value: stats.leads,
-      desc: 'Doanh nghiệp tải tài liệu TDS',
-      icon: BarChart3,
+      label: 'Tài khoản User',
+      value: stats.users,
+      desc: 'Tài khoản đăng nhập hệ thống',
+      icon: Users,
       color: 'bg-purple-500/10 text-purple-600 border-purple-100',
-      href: '/admin/leads'
+      href: '/admin/users'
     }
   ];
 
@@ -154,12 +155,12 @@ export default async function AdminDashboardPage({ params: { locale } }: Props) 
               <ArrowRight className="h-4 w-4" />
             </Link>
             <Link
-              href="/admin/clients"
+              href="/admin/users"
               className="flex items-center justify-between p-3.5 rounded-lg border border-slate-50 hover:bg-slate-50 text-slate-700 hover:text-[#0F1E36] text-xs sm:text-sm font-bold transition-colors"
             >
               <div className="flex items-center gap-3">
-                <UserCheck className="h-4.5 w-4.5 text-blue-600" />
-                <span>Duyệt doanh nghiệp B2B</span>
+                <Users className="h-4.5 w-4.5 text-blue-600" />
+                <span>Quản lý tài khoản User</span>
               </div>
               <ArrowRight className="h-4 w-4" />
             </Link>
