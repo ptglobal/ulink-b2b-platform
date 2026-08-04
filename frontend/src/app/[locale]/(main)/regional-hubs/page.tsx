@@ -11,12 +11,29 @@ import {
   Globe,
   ShieldCheck,
   TrendingDown,
-  FileText
+  FileText,
+  Layers,
+  Eye,
+  Settings,
+  Ruler,
+  Thermometer,
+  Paperclip,
+  Sparkles,
+  Download,
+  ShieldAlert,
+  Activity,
+  Bookmark,
+  Factory,
+  Award
 } from 'lucide-react';
 import { HeadsetMic } from '@/components/icons/headset-mic';
 import { VietnamMap, type ClusterMarker } from '@/components/vietnam-map';
 import { fetchRegionalHubs, parseCoordinates, getHubName, getIndustrialZoneName } from '@/lib/regional-hub-data';
 import HubClusterList from '@/components/regional-hubs/hub-cluster-list';
+import SolutionCarousel from '@/components/regional-hubs/solution-carousel';
+import TestimonialCarousel from '@/components/regional-hubs/testimonial-carousel';
+import WorkingProcess from '@/components/regional-hubs/working-process';
+import { ResourcesNews, CtaBanner } from '@/components/home';
 
 export default async function RegionalHubsPage({
   params: { locale }
@@ -36,164 +53,204 @@ export default async function RegionalHubsPage({
       return { id: String(hub.id), lat: coords.lat, lon: coords.lon };
     })
     .filter((c): c is ClusterMarker => c !== null);
+  const carouselSlides = [
+    {
+      eyebrow: t('carousel.slide1.eyebrow'),
+      title: t('carousel.slide1.title'),
+      feat1: t('carousel.slide1.feat1'),
+      feat2: t('carousel.slide1.feat2'),
+      image: '/images/home/section2/solution-packaging.webp',
+      alt: 'Pallet Wrap'
+    },
+    {
+      eyebrow: t('carousel.slide2.eyebrow'),
+      title: t('carousel.slide2.title'),
+      feat1: t('carousel.slide2.feat1'),
+      feat2: t('carousel.slide2.feat2'),
+      image: '/images/home/section2/product-cut-gloves.webp',
+      alt: 'Industrial Gloves'
+    },
+    {
+      eyebrow: t('carousel.slide3.eyebrow'),
+      title: t('carousel.slide3.title'),
+      feat1: t('carousel.slide3.feat1'),
+      feat2: t('carousel.slide3.feat2'),
+      image: '/images/home/section2/product-hvac-tape.webp',
+      alt: 'Aluminum Foil Tape'
+    },
+    {
+      eyebrow: t('carousel.slide4.eyebrow'),
+      title: t('carousel.slide4.title'),
+      feat1: t('carousel.slide4.feat1'),
+      feat2: t('carousel.slide4.feat2'),
+      image: '/images/home/section2/solution-cleanroom.webp',
+      alt: 'Cleanroom Wiper'
+    },
+    {
+      eyebrow: t('carousel.slide5.eyebrow'),
+      title: t('carousel.slide5.title'),
+      feat1: t('carousel.slide5.feat1'),
+      feat2: t('carousel.slide5.feat2'),
+      image: '/images/home/section2/product-custom-pkg.webp',
+      alt: 'PE Shrink Film'
+    }
+  ];
+
+  const carouselLabels = {
+    rfqButton: t('carousel.rfqButton'),
+    learnMore: t('carousel.learnMore')
+  };
+
+  const testimonialLabels = {
+    eyebrow: t('testimonials.eyebrow'),
+    title: t('testimonials.title'),
+    subtitle: t('testimonials.subtitle'),
+    company1: t('testimonials.company1'),
+    quote1: t('testimonials.quote1'),
+    name1: t('testimonials.name1'),
+    role1: t('testimonials.role1'),
+    company2: t('testimonials.company2'),
+    quote2: t('testimonials.quote2'),
+    name2: t('testimonials.name2'),
+    role2: t('testimonials.role2')
+  };
 
   return (
     <>
-      <section className="relative w-full overflow-hidden bg-background">
+      <section
+        className="relative w-full bg-[#1E72EC] text-[#F5F5F5]"
+        style={{
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.07) 1px, transparent 1px)',
+          backgroundSize: '100px 100px'
+        }}
+      >
         <div className="mx-auto w-full max-w-[1440px] px-4 py-10 sm:px-8 sm:py-14 lg:px-16 lg:py-16">
           {/* Eyebrow */}
           <div className="mb-5 flex items-center gap-1.5">
-            <span className="text-[13px] text-muted-foreground">{t('eyebrow')}</span>
-            <ArrowRight className="h-3 w-3 text-muted-foreground" />
+            <span className="text-[13px] text-blue-300/60">{t('eyebrow')}</span>
+            <ArrowRight className="h-3 w-3 text-blue-300/40" />
           </div>
 
-          {/* Main layout: left info + center (map + clusters) + right dashboard */}
-          <div className="grid grid-cols-1 items-stretch gap-6 lg:grid-cols-[360px_1fr_280px] xl:grid-cols-[400px_1fr_290px]">
+          {/* Main layout: left info + center-right visualization */}
+          <div className="grid grid-cols-1 items-stretch gap-10 lg:grid-cols-[340px_1fr] xl:grid-cols-[360px_1fr]">
 
             {/* === LEFT COLUMN: Title + Description + Stats === */}
-            <div className="flex flex-col">
-              {/* Title */}
-              <h1 className="text-[26px] font-bold leading-[1.37] text-primary sm:text-[30px] lg:text-[32px]">
-                {t('title')}
-              </h1>
+            <div className="flex flex-col justify-between">
+              <div>
+                {/* Title */}
+                <h1 className="text-[30px] font-bold leading-[1.3] text-white sm:text-[34px] lg:text-[38px]">
+                  {t('title')}
+                </h1>
 
-              {/* Description */}
-              <p className="mt-5 max-w-[500px] text-[12px] leading-[1.85] text-muted-foreground">
-                {t('description')}
-              </p>
+                {/* Description */}
+                <p className="mt-5 max-w-[500px] text-[13px] leading-[1.8] text-blue-100/75">
+                  {t('description')}
+                </p>
+              </div>
 
-              {/* Stats Card */}
-              <div className="mt-8 w-full max-w-[292px] rounded-[0.25rem] bg-[#F5F5F5] p-5 shadow-sm ring-1 ring-[#B8C0CC]">
+              {/* Stats Cards Stack */}
+              <div className="mt-8 flex flex-col gap-4 w-full max-w-[340px]">
                 {/* Stat 1: Distance */}
-                <StatRow
-                  icon={<Route className="h-[18px] w-[18px] text-brand" />}
-                  label={t('stats.distanceLabel')}
-                  value={t('stats.distanceValue')}
-                  unit={t('stats.distanceUnit')}
-                  note={t('stats.distanceNote')}
-                />
-
-                <Divider />
+                <div className="w-full bg-white rounded-md border-l-[4px] border-[#1769E2] p-5 shadow-sm">
+                  <StatRow
+                    icon={<Route className="h-[22px] w-[22px] text-[#1769E2]" />}
+                    label={t('stats.distanceLabel')}
+                    value={t('stats.distanceValue')}
+                    unit={t('stats.distanceUnit')}
+                    note={t('stats.distanceNote')}
+                  />
+                </div>
 
                 {/* Stat 2: Time */}
-                <StatRow
-                  icon={<Clock className="h-[18px] w-[18px] text-brand" />}
-                  label={t('stats.timeLabel')}
-                  value={t('stats.timeValue')}
-                  unit={t('stats.timeUnit')}
-                  note={t('stats.timeNote')}
-                />
-
-                <Divider />
+                <div className="w-full bg-white rounded-md border-l-[4px] border-[#1769E2] p-5 shadow-sm">
+                  <StatRow
+                    icon={<Clock className="h-[22px] w-[22px] text-[#1769E2]" />}
+                    label={t('stats.timeLabel')}
+                    value={t('stats.timeValue')}
+                    unit={t('stats.timeUnit')}
+                    note={t('stats.timeNote')}
+                  />
+                </div>
 
                 {/* Stat 3: Partners */}
-                <StatRow
-                  icon={<Users className="h-[18px] w-[18px] text-brand" />}
-                  label={t('stats.partnersLabel')}
-                  value={t('stats.partnersValue')}
-                  note={t('stats.partnersNote')}
-                />
+                <div className="w-full bg-white rounded-md border-l-[4px] border-[#1769E2] p-5 shadow-sm">
+                  <StatRow
+                    icon={<Users className="h-[22px] w-[22px] text-[#1769E2]" />}
+                    label={t('stats.partnersLabel')}
+                    value={t('stats.partnersValue')}
+                    note={t('stats.partnersNote')}
+                  />
+                </div>
               </div>
             </div>
 
-            {/* === CENTER COLUMN: Map + Cluster List aligned === */}
-            <div className="relative flex items-start gap-0">
-              {/* Map */}
-              <div className="relative hidden h-[540px] w-[354px] shrink-0 lg:block">
+            {/* === CENTER-RIGHT COLUMN: Map & Hub List Side-by-Side (Seamless connections) === */}
+            <div className="relative flex items-center justify-between gap-0">
+              {/* Map container - left side of this section with cyber-tech borders */}
+              <div className="relative hidden h-[640px] w-[420px] shrink-0 lg:block border border-blue-400/20  rounded-sm">
+                {/* L-shaped corner notches */}
+                <div className="absolute -top-[2px] -left-[2px] h-4 w-4 border-t-2 border-l-2 border-blue-400" />
+                <div className="absolute -top-[2px] -right-[2px] h-4 w-4 border-t-2 border-r-2 border-blue-400" />
+                <div className="absolute -bottom-[2px] -left-[2px] h-4 w-4 border-b-2 border-l-2 border-blue-400" />
+                <div className="absolute -bottom-[2px] -right-[2px] h-4 w-4 border-b-2 border-r-2 border-blue-400" />
+
+                {/* Tech dots inside the corners */}
+                <div className="absolute top-1.5 left-1.5 h-1.5 w-1.5 rounded-full bg-white" />
+                <div className="absolute bottom-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-white" />
+
+                {/* Center horizontal segments */}
+                <div className="absolute -top-[2px] left-1/2 -translate-x-1/2 h-[2px] w-12 bg-blue-400/70" />
+                <div className="absolute -bottom-[2px] left-1/2 -translate-x-1/2 h-[2px] w-12 bg-blue-400/70" />
+
                 <VietnamMap className="h-full w-full" clusters={mapClusters} />
               </div>
 
-              {/* Cluster List — client component for RFQ modal interaction */}
-              <HubClusterList
-                hubs={hubs.map((hub) => ({
-                  id: hub.id,
-                  name: hub.name,
-                  slug: hub.slug,
-                  localizedName: getHubName(hub, locale),
-                  zonesStr: hub.industrial_zones && hub.industrial_zones.length > 0
-                    ? hub.industrial_zones.map((z) => getIndustrialZoneName(z, locale)).join(', ')
-                    : ''
-                }))}
-                labels={{
-                  title: t('hubRfq.title'),
-                  hubLabel: t('hubRfq.hubLabel'),
-                  contactName: t('hubRfq.contactName'),
-                  company: t('hubRfq.company'),
-                  phone: t('hubRfq.phone'),
-                  email: t('hubRfq.email'),
-                  note: t('hubRfq.note'),
-                  notePlaceholder: t('hubRfq.notePlaceholder'),
-                  submit: t('hubRfq.submit'),
-                  submitting: t('hubRfq.submitting'),
-                  success: t('hubRfq.success'),
-                  error: t('hubRfq.error'),
-                  required: t('hubRfq.required'),
-                  invalidEmail: t('hubRfq.invalidEmail'),
-                  invalidPhone: t('hubRfq.invalidPhone')
-                }}
-              />
-            </div>
-
-            {/* === RIGHT COLUMN: Live Dashboard === */}
-            <div className="flex flex-col">
-              <div className="flex h-full w-full flex-col overflow-hidden rounded-[0.25rem] shadow-sm ring-1 ring-[#B8C0CC]">
-                {/* Dark header */}
-                <div className="bg-primary px-4 py-3.5">
-                  <p className="text-[11px] font-semibold text-primary-foreground/80">
-                    {t('dashboard.headerTitle')}
-                  </p>
-                  <div className="mt-1.5 flex items-center gap-1.5">
-                    <span className="h-[6px] w-[6px] rounded-full bg-emerald-400" />
-                    <span className="text-[10px] text-primary-foreground/50">{t('dashboard.headerTime')}</span>
+              {/* Hub List & Status Header - right side of this section */}
+              <div className="flex flex-1 flex-col justify-start max-w-[340px] pl-6 z-10">
+                {/* Network Status Header */}
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] text-blue-300/40 font-mono tracking-wider font-semibold">NETWORK STATUS</span>
+                  <div className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 text-[9px] font-bold text-emerald-400 uppercase tracking-wider">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    Network Online
                   </div>
                 </div>
 
-                {/* Metrics body */}
-                <div className="flex flex-1 flex-col justify-between divide-y divide-[#B8C0CC] bg-[#F5F5F5] px-4 py-5">
-                  {/* Orders */}
-                  <div className="py-3 first:pt-0 last:pb-0">
-                    <DashboardMetric
-                      icon={<Package className="h-4 w-4 text-brand" />}
-                      label={t('dashboard.ordersLabel')}
-                      value={t('dashboard.ordersValue')}
-                      unit={t('dashboard.ordersUnit')}
-                      change={t('dashboard.ordersChange')}
-                      note={t('dashboard.ordersNote')}
-                    />
-                  </div>
+                {/* Cluster List — client component for RFQ modal interaction */}
+                <HubClusterList
+                  hubs={hubs.map((hub) => ({
+                    id: hub.id,
+                    name: hub.name,
+                    slug: hub.slug,
+                    localizedName: getHubName(hub, locale),
+                    zonesStr: hub.industrial_zones && hub.industrial_zones.length > 0
+                      ? hub.industrial_zones.map((z) => getIndustrialZoneName(z, locale)).join(', ')
+                      : ''
+                  }))}
+                  labels={{
+                    title: t('hubRfq.title'),
+                    hubLabel: t('hubRfq.hubLabel'),
+                    contactName: t('hubRfq.contactName'),
+                    company: t('hubRfq.company'),
+                    phone: t('hubRfq.phone'),
+                    email: t('hubRfq.email'),
+                    note: t('hubRfq.note'),
+                    notePlaceholder: t('hubRfq.notePlaceholder'),
+                    submit: t('hubRfq.submit'),
+                    submitting: t('hubRfq.submitting'),
+                    success: t('hubRfq.success'),
+                    error: t('hubRfq.error'),
+                    required: t('hubRfq.required'),
+                    invalidEmail: t('hubRfq.invalidEmail'),
+                    invalidPhone: t('hubRfq.invalidPhone')
+                  }}
+                />
 
-                  {/* Delivery rate */}
-                  <div className="py-3 first:pt-0 last:pb-0">
-                    <DashboardMetric
-                      icon={<CheckCircle className="h-4 w-4 text-brand" />}
-                      label={t('dashboard.deliveryLabel')}
-                      value={t('dashboard.deliveryValue')}
-                      change={t('dashboard.deliveryChange')}
-                      note={t('dashboard.deliveryNote')}
-                    />
-                  </div>
-
-                  {/* Vehicles */}
-                  <div className="py-3 first:pt-0 last:pb-0">
-                    <DashboardMetric
-                      icon={<Truck className="h-4 w-4 text-brand" />}
-                      label={t('dashboard.vehiclesLabel')}
-                      value={t('dashboard.vehiclesValue')}
-                      unit={t('dashboard.vehiclesUnit')}
-                      note={t('dashboard.vehiclesNote')}
-                    />
-                  </div>
-
-                  {/* Warehouse */}
-                  <div className="py-3 first:pt-0 last:pb-0">
-                    <DashboardMetric
-                      icon={<Warehouse className="h-4 w-4 text-brand" />}
-                      label={t('dashboard.warehouseLabel')}
-                      value={t('dashboard.warehouseValue')}
-                      unit={t('dashboard.warehouseUnit')}
-                      note={t('dashboard.warehouseNote')}
-                    />
-                  </div>
+                {/* Technical Live Data Footer */}
+                <div className="mt-2 text-right">
+                  <p className="text-[9px] font-mono tracking-widest text-blue-300/30 uppercase">
+                    ULINK INDUSTRIAL NETWORK // LIVE DATA • 04 HUBS
+                  </p>
                 </div>
               </div>
             </div>
@@ -201,11 +258,532 @@ export default async function RegionalHubsPage({
         </div>
       </section>
 
-      {/* === Why Choose ULINK === */}
-      <WhyChooseSection />
+      {/* === SECTION 2: Real-time Live Data Bar === */}
+      <section className="w-full bg-[#F8FAFC] py-8 border-b border-slate-200/60">
+        <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+            <div className="inline-block rounded-md border border-dashed border-[#1769E2]/30 bg-[#1769E2]/5 px-4 py-2">
+              <span className="text-[12px] font-bold text-[#1769E2] uppercase tracking-wider">
+                {t('dashboard.headerTitle')}
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-mono">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+              {t('dashboard.headerTime')}
+            </div>
+          </div>
 
-      {/* === CTA Banner === */}
-      <CtaBanner />
+          {/* Metrics Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 rounded-xl border border-slate-200/60 bg-white shadow-sm divide-y md:divide-y-0 lg:divide-x divide-slate-100">
+            {/* Metric 1: Orders */}
+            <div className="p-6 flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#1769E2]/8">
+                <FileText className="h-[22px] w-[22px] text-[#1769E2]" />
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t('dashboard.ordersLabel')}</p>
+                <div className="mt-1 flex items-baseline gap-1">
+                  <span className="text-[20px] font-bold text-slate-900">{t('dashboard.ordersValue')}</span>
+                  <span className="text-[13px] font-semibold text-slate-500">{t('dashboard.ordersUnit')}</span>
+                </div>
+                <div className="mt-1.5 flex items-center gap-1 text-[11px] font-bold text-emerald-500">
+                  <span>▲</span>
+                  <span>{t('dashboard.ordersChange')}</span>
+                  <span className="text-slate-400 font-normal ml-0.5">{t('dashboard.ordersNote')}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Metric 2: Delivery */}
+            <div className="p-6 flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#1769E2]/8">
+                <CheckCircle className="h-[22px] w-[22px] text-[#1769E2]" />
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t('dashboard.deliveryLabel')}</p>
+                <div className="mt-1 flex items-baseline gap-1">
+                  <span className="text-[20px] font-bold text-slate-900">{t('dashboard.deliveryValue')}</span>
+                </div>
+                <div className="mt-1.5 flex items-center gap-1 text-[11px] font-bold text-emerald-500">
+                  <span>▲</span>
+                  <span>{t('dashboard.deliveryChange')}</span>
+                  <span className="text-slate-400 font-normal ml-0.5">{t('dashboard.deliveryNote')}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Metric 3: Vehicles */}
+            <div className="p-6 flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#1769E2]/8">
+                <Truck className="h-[22px] w-[22px] text-[#1769E2]" />
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t('dashboard.vehiclesLabel')}</p>
+                <div className="mt-1 flex items-baseline gap-1">
+                  <span className="text-[20px] font-bold text-slate-900">{t('dashboard.vehiclesValue')}</span>
+                  <span className="text-[13px] font-semibold text-slate-500">{t('dashboard.vehiclesUnit')}</span>
+                </div>
+                <p className="mt-1.5 text-[11px] text-slate-400 font-medium">{t('dashboard.vehiclesNote')}</p>
+              </div>
+            </div>
+
+            {/* Metric 4: Warehouse */}
+            <div className="p-6 flex items-start gap-4">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#1769E2]/8">
+                <Warehouse className="h-[22px] w-[22px] text-[#1769E2]" />
+              </div>
+              <div>
+                <p className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider">{t('dashboard.warehouseLabel')}</p>
+                <div className="mt-1 flex items-baseline gap-1">
+                  <span className="text-[20px] font-bold text-slate-900">{t('dashboard.warehouseValue')}</span>
+                  <span className="text-[13px] font-semibold text-slate-500">{t('dashboard.warehouseUnit')}</span>
+                </div>
+                <p className="mt-1.5 text-[11px] text-slate-400 font-medium">{t('dashboard.warehouseNote')}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* === SECTION 3: Featured Products === */}
+      <section className="w-full bg-white py-14">
+        <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16">
+          {/* Header */}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+            <div className="flex items-start gap-3">
+              <div className="flex flex-col gap-1.5 mt-1.5">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#1769E2]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#1769E2]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#1769E2]" />
+              </div>
+              <div>
+                <h2 className="text-[22px] font-bold text-slate-900 leading-tight">
+                  {t('featuredProducts.title')}
+                </h2>
+                <p className="mt-2 text-[12px] text-slate-500 max-w-[600px]">
+                  {t('featuredProducts.subtitle')}
+                </p>
+              </div>
+            </div>
+            <a
+              href="/solutions"
+              className="group text-[13px] font-semibold text-[#1769E2] flex items-center gap-1 transition-colors hover:text-[#1257bd] shrink-0"
+            >
+              {t('featuredProducts.viewAll')}
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+            </a>
+          </div>
+
+          {/* Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Card 1: Glove */}
+            <div className="group flex flex-col bg-white rounded-xl border border-slate-100 hover:border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+              {/* Product Image */}
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/home/section2/product-cut-gloves.webp"
+                  alt="Găng tay công nghiệp"
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+                  <span className="text-[16px] font-bold text-white tracking-wide uppercase">PROTECH GLOVE</span>
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-5 flex flex-1 flex-col justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-[#1769E2] tracking-wider uppercase block mb-1">
+                    {t('featuredProducts.glove.category')}
+                  </span>
+                  <h3 className="text-[15px] font-bold text-slate-900 leading-snug mb-1">
+                    {t('featuredProducts.glove.title')}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
+                    {t('featuredProducts.glove.desc')}
+                  </p>
+
+                  {/* Specifications Grid */}
+                  <div className="grid grid-cols-4 gap-2 bg-[#F8FAFC] p-3 rounded-lg mb-4 text-center">
+                    <div className="flex flex-col items-center">
+                      <ShieldCheck className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.glove.feat1')}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Sparkles className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.glove.feat2')}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <ShieldAlert className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.glove.feat3')}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Activity className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.glove.feat4')}</span>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="mb-4">
+                    <span className="text-[9px] text-slate-400 block mb-1.5 uppercase font-medium tracking-wider">
+                      {t('featuredProducts.mainProducts')}
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {['Nitrile', 'PU', 'ESD', 'Latex'].map((tag) => (
+                        <span key={tag} className="bg-blue-50 text-blue-600 rounded-sm px-2 py-0.5 text-[9px] font-bold">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions Row */}
+                <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 mt-2">
+                  <a
+                    href="/contact"
+                    className="flex-1 bg-[#1769E2] text-white text-[12px] font-semibold py-2 px-3 rounded-md flex items-center justify-center gap-1.5 hover:bg-[#1257bd] transition-colors"
+                  >
+                    {t('featuredProducts.rfqButton')}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </a>
+                  <a
+                    href="/contact"
+                    className="text-[12px] text-slate-500 hover:text-[#1769E2] font-semibold flex items-center gap-1 transition-colors shrink-0"
+                  >
+                    {t('featuredProducts.catalogue')}
+                    <Download className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 2: Film */}
+            <div className="group flex flex-col bg-white rounded-xl border border-slate-100 hover:border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+              {/* Product Image */}
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/home/section2/product-custom-pkg.webp"
+                  alt="Màng co PE - Shrink Film"
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+                  <span className="text-[16px] font-bold text-white tracking-wide uppercase">SHRINK FILM</span>
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-5 flex flex-1 flex-col justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-[#1769E2] tracking-wider uppercase block mb-1">
+                    {t('featuredProducts.film.category')}
+                  </span>
+                  <h3 className="text-[15px] font-bold text-slate-900 leading-snug mb-1">
+                    {t('featuredProducts.film.title')}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
+                    {t('featuredProducts.film.desc')}
+                  </p>
+
+                  {/* Specifications Grid */}
+                  <div className="grid grid-cols-4 gap-2 bg-[#F8FAFC] p-3 rounded-lg mb-4 text-center">
+                    <div className="flex flex-col items-center">
+                      <Layers className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.film.feat1')}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Bookmark className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.film.feat2')}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Eye className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.film.feat3')}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Settings className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.film.feat4')}</span>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="mb-4">
+                    <span className="text-[9px] text-slate-400 block mb-1.5 uppercase font-medium tracking-wider">
+                      {t('featuredProducts.mainProducts')}
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {['LDPE', 'PVC', 'ESD', 'POF'].map((tag) => (
+                        <span key={tag} className="bg-blue-50 text-blue-600 rounded-sm px-2 py-0.5 text-[9px] font-bold">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions Row */}
+                <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 mt-2">
+                  <a
+                    href="/contact"
+                    className="flex-1 bg-[#1769E2] text-white text-[12px] font-semibold py-2 px-3 rounded-md flex items-center justify-center gap-1.5 hover:bg-[#1257bd] transition-colors"
+                  >
+                    {t('featuredProducts.rfqButton')}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </a>
+                  <a
+                    href="/contact"
+                    className="text-[12px] text-slate-500 hover:text-[#1769E2] font-semibold flex items-center gap-1 transition-colors shrink-0"
+                  >
+                    {t('featuredProducts.catalogue')}
+                    <Download className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Card 3: Tape */}
+            <div className="group flex flex-col bg-white rounded-xl border border-slate-100 hover:border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
+              {/* Product Image */}
+              <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/home/section2/product-hvac-tape.webp"
+                  alt="Băng keo nhôm - HVAC"
+                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
+                  <span className="text-[16px] font-bold text-white tracking-wide uppercase">ALUMINUM TAPE</span>
+                </div>
+              </div>
+
+              {/* Card Body */}
+              <div className="p-5 flex flex-1 flex-col justify-between">
+                <div>
+                  <span className="text-[10px] font-bold text-[#1769E2] tracking-wider uppercase block mb-1">
+                    {t('featuredProducts.tape.category')}
+                  </span>
+                  <h3 className="text-[15px] font-bold text-slate-900 leading-snug mb-1">
+                    {t('featuredProducts.tape.title')}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
+                    {t('featuredProducts.tape.desc')}
+                  </p>
+
+                  {/* Specifications Grid */}
+                  <div className="grid grid-cols-4 gap-2 bg-[#F8FAFC] p-3 rounded-lg mb-4 text-center">
+                    <div className="flex flex-col items-center">
+                      <Layers className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.tape.feat1')}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Ruler className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.tape.feat2')}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Thermometer className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.tape.feat3')}</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Paperclip className="h-4 w-4 text-[#1769E2] mb-1" />
+                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.tape.feat4')}</span>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  <div className="mb-4">
+                    <span className="text-[9px] text-slate-400 block mb-1.5 uppercase font-medium tracking-wider">
+                      {t('featuredProducts.mainProducts')}
+                    </span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {['Alu Foil', 'FSK', 'Woven Fabric', 'Glass fiber'].map((tag) => (
+                        <span key={tag} className="bg-blue-50 text-blue-600 rounded-sm px-2 py-0.5 text-[9px] font-bold">
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions Row */}
+                <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 mt-2">
+                  <a
+                    href="/contact"
+                    className="flex-1 bg-[#1769E2] text-white text-[12px] font-semibold py-2 px-3 rounded-md flex items-center justify-center gap-1.5 hover:bg-[#1257bd] transition-colors"
+                  >
+                    {t('featuredProducts.rfqButton')}
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </a>
+                  <a
+                    href="/contact"
+                    className="text-[12px] text-slate-500 hover:text-[#1769E2] font-semibold flex items-center gap-1 transition-colors shrink-0"
+                  >
+                    {t('featuredProducts.catalogue')}
+                    <Download className="h-3.5 w-3.5" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    
+
+      {/* === SECTION 4: Interactive Solution Carousel === */}
+      <SolutionCarousel slides={carouselSlides} labels={carouselLabels} />
+
+      {/* === SECTION 5: Core Capabilities === */}
+      <section className="w-full bg-white py-16 sm:py-20 border-t border-slate-100">
+        <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+
+            {/* Left: Main info */}
+            <div className="lg:col-span-4 max-w-md">
+              <h2 className="text-[22px] sm:text-[24px] font-bold text-slate-900 leading-tight">
+                {t('capabilities.title')}
+              </h2>
+              <p className="mt-4 text-[13px] text-slate-500 leading-relaxed">
+                {t('capabilities.desc')}
+              </p>
+            </div>
+
+            {/* Right: Three Cards */}
+            <div className="lg:col-span-8">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+
+                {/* Card 1: Manufacturing */}
+                <div className="flex flex-col items-start">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1769E2]/8 mb-4">
+                    <Factory className="h-6 w-6 text-[#1769E2]" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-[15px] font-bold text-slate-900 mb-2">
+                    {t('capabilities.manufacturing.title')}
+                  </h3>
+                  <p className="text-[12px] text-slate-500 leading-relaxed mb-4">
+                    {t('capabilities.manufacturing.desc')}
+                  </p>
+                  <a
+                    href="/solutions"
+                    className="group text-[12px] font-semibold text-[#1769E2] inline-flex items-center gap-1 hover:text-[#1257bd] transition-colors mt-auto"
+                  >
+                    {t('capabilities.learnMore')}
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                </div>
+
+                {/* Card 2: Supply Chain */}
+                <div className="flex flex-col items-start">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1769E2]/8 mb-4">
+                    <Clock className="h-6 w-6 text-[#1769E2]" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-[15px] font-bold text-slate-900 mb-2">
+                    {t('capabilities.supplyChain.title')}
+                  </h3>
+                  <p className="text-[12px] text-slate-500 leading-relaxed mb-4">
+                    {t('capabilities.supplyChain.desc')}
+                  </p>
+                  <a
+                    href="/about"
+                    className="group text-[12px] font-semibold text-[#1769E2] inline-flex items-center gap-1 hover:text-[#1257bd] transition-colors mt-auto"
+                  >
+                    {t('capabilities.learnMore')}
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                </div>
+
+                {/* Card 3: Quality Control */}
+                <div className="flex flex-col items-start">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#1769E2]/8 mb-4">
+                    <Award className="h-6 w-6 text-[#1769E2]" strokeWidth={1.5} />
+                  </div>
+                  <h3 className="text-[15px] font-bold text-slate-900 mb-2">
+                    {t('capabilities.quality.title')}
+                  </h3>
+                  <p className="text-[12px] text-slate-500 leading-relaxed mb-4">
+                    {t('capabilities.quality.desc')}
+                  </p>
+                  <a
+                    href="/about/quality"
+                    className="group text-[12px] font-semibold text-[#1769E2] inline-flex items-center gap-1 hover:text-[#1257bd] transition-colors mt-auto"
+                  >
+                    {t('capabilities.learnMore')}
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                  </a>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+   
+
+      {/* === SECTION 3.5: Ha Nam Distribution Center Overview === */}
+      <section className="w-full bg-white py-16 sm:py-20 border-t border-slate-100">
+        <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16 text-center">
+
+          {/* Eyebrow */}
+          <span className="text-[13px] font-bold text-[#1769E2] tracking-wider uppercase block">
+            {t('hanamIntro.eyebrow')}
+          </span>
+
+          {/* Title */}
+          <h2 className="mt-3 text-[24px] sm:text-[28px] font-extrabold text-slate-900 leading-tight">
+            {t('hanamIntro.title')}
+          </h2>
+
+          {/* Description */}
+          <p className="mt-4 max-w-[800px] mx-auto text-[13px] sm:text-[14px] text-slate-500 leading-relaxed">
+            {t('hanamIntro.desc')}
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="mt-8 flex flex-wrap justify-center items-center gap-4">
+            <a
+              href="/contact"
+              className="bg-[#1769E2] text-white text-[13px] font-semibold py-3 px-6 rounded-md flex items-center gap-2 hover:bg-[#1257bd] transition-colors"
+            >
+              {t('hanamIntro.contactSales')}
+              <ArrowRight className="h-4 w-4" />
+            </a>
+            <a
+              href="/about"
+              className="border border-[#1769E2] text-[#1769E2] text-[13px] font-semibold py-3 px-6 rounded-md hover:bg-blue-50 transition-colors flex items-center gap-2"
+            >
+              {t('hanamIntro.learnMore')}
+              <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+
+          {/* Large Image Showcase */}
+          <div className="mt-12 max-w-[900px] mx-auto aspect-[16/9] rounded-xl overflow-hidden shadow-md border border-slate-100 bg-slate-50">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/images/about/hero-warehouse.webp"
+              alt="Ha Nam Distribution Center - ULink Industries"
+              className="h-full w-full object-cover"
+            />
+          </div>
+
+        </div>
+      </section>
+      
+
+      {/* === SECTION 7: Customer Testimonials === */}
+      <TestimonialCarousel labels={testimonialLabels} />
+
+      {/* === SECTION 8: Working Process === */}
+      <WorkingProcess />
+
+      {/* === SECTION 9: Resources & News === */}
+      <ResourcesNews />
+
+      {/* === SECTION 10: Call to Action Banner === */}
+      <CtaBanner containerClassName="max-w-[1440px] px-4 sm:px-8 lg:px-16" />
     </>
   );
 }
@@ -226,145 +804,19 @@ function StatRow({
   note: string;
 }) {
   return (
-    <div className="flex items-start gap-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand/8">
+    <div className="flex items-start gap-4">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#1769E2]/8">
         {icon}
       </div>
       <div>
-        <p className="text-[10px] font-semibold text-muted-foreground">{label}</p>
+        <p className="text-[11px] font-semibold text-slate-500">{label}</p>
         <div className="mt-1 flex items-baseline gap-1">
-          <span className="text-[23px] font-bold leading-none text-primary">{value}</span>
-          {unit && <span className="text-[16px] font-bold text-primary/65">{unit}</span>}
+          <span className="text-[26px] font-bold leading-none text-slate-900">{value}</span>
+          {unit && <span className="text-[18px] font-bold text-slate-800/80">{unit}</span>}
         </div>
-        <p className="mt-1 text-[10px] text-muted-foreground/80">{note}</p>
+        <p className="mt-1 text-[11px] text-slate-500/80">{note}</p>
       </div>
     </div>
   );
 }
 
-function DashboardMetric({
-  icon,
-  label,
-  value,
-  unit,
-  change,
-  note,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  unit?: string;
-  change?: string;
-  note?: string;
-}) {
-  return (
-    <div className="flex items-start gap-3">
-      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-brand/8">
-        {icon}
-      </div>
-      <div className="flex-1">
-        <p className="text-[10px] font-semibold text-muted-foreground">{label}</p>
-        <div className="mt-0.5 flex items-baseline gap-1">
-          <span className="text-[21px] font-bold leading-none text-primary">{value}</span>
-          {unit && <span className="text-[14px] font-bold text-primary/65">{unit}</span>}
-        </div>
-        {(change || note) && (
-          <div className="mt-1 flex items-center gap-1.5">
-            {change && (
-              <span className="text-[10px] font-bold text-emerald-500">{change}</span>
-            )}
-            {note && (
-              <span className="text-[10px] text-muted-foreground/70">{note}</span>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function Divider() {
-  return <div className="my-4 h-px w-full bg-[#B8C0CC]" />;
-}
-
-async function WhyChooseSection() {
-  const t = await getTranslations('whyChoose');
-
-  const items = [
-    { key: 'network', icon: <Globe className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> },
-    { key: 'supplyChain', icon: <Truck className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> },
-    { key: 'quality', icon: <ShieldCheck className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> },
-    { key: 'cost', icon: <TrendingDown className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> },
-    { key: 'support', icon: <HeadsetMic className="h-10 w-10 text-primary/70" strokeWidth={1.2} /> },
-  ];
-
-  return (
-    <section className="w-full bg-background">
-      <div className="mx-auto w-full max-w-[1440px] px-4 pb-10 sm:px-8 lg:px-16">
-        <div className="rounded-[0.25rem] border border-[#B8C0CC] bg-[#F5F5F5] px-6 py-6 sm:px-8 lg:px-10">
-          {/* Section title */}
-          <h2 className="mb-5 text-[14px] font-bold text-primary/80">
-            {t('title')}
-          </h2>
-
-          {/* Items row */}
-          <div className="grid grid-cols-1 gap-x-8 gap-y-5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-            {items.map((item) => (
-              <div key={item.key} className="flex items-start gap-3">
-                {/* Icon */}
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center">
-                  {item.icon}
-                </div>
-                {/* Text */}
-                <div className="flex-1">
-                  <p className="text-[12px] font-bold leading-tight text-primary/80">
-                    {t(`items.${item.key}.title`)}
-                  </p>
-                  <p className="mt-1.5 text-[10px] leading-relaxed text-muted-foreground">
-                    {t(`items.${item.key}.desc`)}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-async function CtaBanner() {
-  const t = await getTranslations('ctaBanner');
-
-  return (
-    <section className="w-full bg-background">
-      <div className="mx-auto w-full max-w-[1440px] px-4 pb-12 sm:px-8 lg:px-16">
-        <div className="flex flex-col items-start justify-between gap-5 rounded-[0.25rem] border border-[#1f3063] bg-[#1A2D49] px-6 py-6 sm:px-8 md:flex-row md:items-center md:gap-8 lg:px-10">
-          {/* Left: icon + text */}
-          <div className="flex items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center">
-              <FileText className="h-9 w-9 text-[#F5F5F5]" strokeWidth={1.4} />
-            </div>
-            <div>
-              <p className="text-[15px] font-bold leading-tight text-[#F5F5F5]">
-                {t('title')}
-              </p>
-              <p className="mt-1.5 text-[11px] font-bold leading-relaxed text-[#B8C0CC]">
-                {t('desc')}
-              </p>
-            </div>
-          </div>
-
-          {/* Right: CTA button */}
-          <a
-            href="/contact"
-            className="group inline-flex shrink-0 items-center gap-2 rounded-[0.25rem] border border-[#4a5582] bg-[#1769E2] px-6 py-3 text-[13px] font-semibold text-[#F5F5F5] transition-colors hover:bg-[#1257bd]"
-          >
-            {t('button')}
-            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-          </a>
-        </div>
-      </div>
-    </section>
-  );
-}

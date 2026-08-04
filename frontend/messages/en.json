@@ -577,6 +577,136 @@
       "required": "Required field",
       "invalidEmail": "Invalid email",
       "invalidPhone": "Phone must be 10-11 digits"
+    },
+    "featuredProducts": {
+      "title": "Featured Products",
+      "subtitle": "ULINK INDUSTRIES - Industrial Supply Partner for Manufacturers",
+      "viewAll": "View all",
+      "rfqButton": "Request a Quote",
+      "catalogue": "Download Catalogue",
+      "mainProducts": "Main product types",
+      "glove": {
+        "category": "INDUSTRIAL GLOVES",
+        "title": "Protective gloves for industrial environments",
+        "desc": "Nitrile, PU, Latex, Vinyl - selected according to standards and working environments",
+        "feat1": "High Quality",
+        "feat2": "Multiple sizes",
+        "feat3": "Chemical resistant",
+        "feat4": "Anti-slip"
+      },
+      "film": {
+        "category": "PE SHRINK FILM",
+        "title": "PE shrink film - block bottles, UHT boxes, cartons",
+        "desc": "Diverse materials - selected according to standards and working environments",
+        "feat1": "Virgin PE",
+        "feat2": "Tight wrapping",
+        "feat3": "Transparent",
+        "feat4": "Customizable"
+      },
+      "tape": {
+        "category": "ALUMINUM TAPE - HVAC",
+        "title": "Aluminum foil tape - HVAC applications",
+        "desc": "Specialized for sealing insulation joints - selected according to standards and working environments",
+        "feat1": "Aluminum foil",
+        "feat2": "Multiple sizes",
+        "feat3": "High heat resistance",
+        "feat4": "Excellent adhesion"
+      }
+    },
+    "carousel": {
+      "learnMore": "Learn more",
+      "rfqButton": "Request a Quote",
+      "slide1": {
+        "eyebrow": "PALLET WRAP",
+        "title": "Optimal cargo protection, saving shipping costs. Fast delivery from Ha Nam Hub.",
+        "feat1": "High adhesion, effective moisture and dust resistance. Reduce packing costs by up to 30% compared to traditional methods.",
+        "feat2": "Fast delivery within 24 hours from Ha Nam Hub. Meeting all order scales for factories and logistics."
+      },
+      "slide2": {
+        "eyebrow": "INDUSTRIAL GLOVES",
+        "title": "Comprehensive hand protection, optimizing grip and dexterity. Meeting international cleanroom standards.",
+        "feat1": "Chemical resistant, ESD anti-static, and excellent anti-slip. Ensuring absolute safety for workers.",
+        "feat2": "Always in stock at transfer warehouses. Same-day delivery to key industrial parks."
+      },
+      "slide3": {
+        "eyebrow": "ALUMINUM FOIL TAPE",
+        "title": "Sealing thermal joints, maximizing heat loss prevention. Specialized for HVAC systems.",
+        "feat1": "High temperature resistance from -30°C to 120°C. Superior durability and strong adhesion on insulation surfaces.",
+        "feat2": "Meeting urgent construction schedules. Supporting fast delivery directly to construction sites."
+      },
+      "slide4": {
+        "eyebrow": "CLEANROOM WIPER",
+        "title": "Absolute surface dust removal, lint-free. Suitable for electronic component manufacturing plants.",
+        "feat1": "Ultra-fine polyester and nylon material. Excellent absorption of solvents and liquids.",
+        "feat2": "Vacuum packed to Class 10-100 standards. Ensuring the highest purity when in use."
+      },
+      "slide5": {
+        "eyebrow": "PE SHRINK FILM",
+        "title": "Securing large cargo loads, anti-impact. Export quality heat shrink film.",
+        "feat1": "High and uniform shrinkage in all directions. Creating a strong protective film for water bottles and cartons.",
+        "feat2": "Imported virgin PE resin materials. Safe for health and environmentally friendly."
+      }
+    },
+    "capabilities": {
+      "title": "Core manufacturing and supply chain capabilities",
+      "desc": "ULink Industries owns modern manufacturing systems, optimized supply chains and an experienced team of experts, ensuring outstanding quality for every order.",
+      "learnMore": "Learn more",
+      "manufacturing": {
+        "title": "Large-scale manufacturing",
+        "desc": "ISO-standard factories with high capacity, flexibly meeting small to large orders as requested."
+      },
+      "supplyChain": {
+        "title": "Optimized supply chain",
+        "desc": "Domestic and international logistics system, ensuring on-time delivery with competitive costs."
+      },
+      "quality": {
+        "title": "Quality control",
+        "desc": "Strict QC processes from raw materials to finished products, meeting international export standards."
+      }
+    },
+    "hanamIntro": {
+      "eyebrow": "HA NAM DISTRIBUTION CENTER",
+      "title": "Connecting key industrial zones, instant delivery",
+      "desc": "Ha Nam Distribution Center, with a scale of 10,000 m², is the strategic logistics hub of ULink Industries, directly connecting key industrial parks in the Northern region. With a management system of over 2,000 SKUs, it is ready to respond to quick delivery demands. Applying smart traceability and warehouse management technology, ULink optimizes the entire supply chain — helping businesses save time, reduce costs, and improve operational efficiency.",
+      "contactSales": "Contact Sales",
+      "learnMore": "Learn more"
+    },
+    "testimonials": {
+      "eyebrow": "CUSTOMER TESTIMONIALS",
+      "title": "Customers trust and choose ULink Industries.",
+      "subtitle": "Quality and service always exceed expectations.",
+      "company1": "Thanh Phat",
+      "quote1": "We are extremely satisfied with the product quality and services of ULink Industries. From consulting and design to construction and handover, the ULink team always listens and responds precisely to our business needs. Durable factory products and thoughtful after-sales service make ULink a trustworthy partner for every manufacturing enterprise.",
+      "name1": "Nguyen Van Minh",
+      "role1": "Director, Thanh Phat Co., Ltd",
+      "company2": "Dong Nam",
+      "quote2": "ULink Industries not only provides industrial land at competitive costs but also accompanies us throughout the entire process – from consulting on plot selection, supporting legal procedures, to connecting utilities. The convenient location connecting to major transport routes helps optimize logistics costs significantly for our business.",
+      "name2": "Tran Thi Huong",
+      "role2": "Deputy General Director, Dong Nam Packaging Joint Stock Company"
+    },
+    "workingProcess": {
+      "title": "Working Process",
+      "subtitle": "Our Client Group - Custom Designed Solutions",
+      "step1Number": "Step 1",
+      "step1Title": "Requirement Intake",
+      "step1Desc": "Recording product needs, quantity, technical standards, and delivery timeline.",
+      "step1KpiLabel": "Working time",
+      "step1KpiValue": "T + 1",
+      "step2Number": "Step 2",
+      "step2Title": "Solution Proposal",
+      "step2Desc": "The ULink team reviews technical specs and selects suitable products based on cost and factory needs.",
+      "step2KpiLabel": "Quotation & Approval",
+      "step2KpiValue": "T + 1",
+      "step3Number": "Step 3",
+      "step3Title": "Manufacturing & Supply",
+      "step3Desc": "Production on modern lines and strict quality control before supplying.",
+      "step3KpiLabel": "Min Order - Flexible",
+      "step3KpiValue": "MOQ",
+      "step4Number": "Step 4",
+      "step4Title": "Delivery",
+      "step4Desc": "Careful packaging, on-time delivery, and compliance with delivery requests with clients.",
+      "step4KpiLabel": "Delivery time",
+      "step4KpiValue": "T + 1"
     }
   },
   "whyChoose": {

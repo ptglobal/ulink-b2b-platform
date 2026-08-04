@@ -37,18 +37,23 @@ export async function GET() {
           'source',
           'scheduled_delivery',
           'requested_delivery_date',
-          'date_created' as never,
+          'created_at' as never,
           'approval_note',
           'reject_reason'
         ],
         filter: {
           user: { _eq: user.id }
         },
-        sort: ['-date_created', '-id'] as never
+        sort: ['-created_at', '-id'] as never
       })
     );
 
-    return NextResponse.json({ data });
+    const mappedData = (data || []).map((item: any) => ({
+      ...item,
+      date_created: item.created_at
+    }));
+
+    return NextResponse.json({ data: mappedData });
   } catch (err) {
     console.error('RFQ /mine GET handler failed:', err);
     return NextResponse.json(

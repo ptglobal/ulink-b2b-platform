@@ -31,6 +31,12 @@ export async function GET(req: Request) {
     }
 
     const payload = await response.json();
+    if (payload && Array.isArray(payload.data)) {
+      payload.data = payload.data.map((item: any) => ({
+        ...item,
+        date_created: item.created_at
+      }));
+    }
     return NextResponse.json(payload);
   } catch (err) {
     console.error('Sample request /mine GET handler failed:', err);

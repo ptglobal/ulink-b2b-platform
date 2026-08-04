@@ -12,7 +12,7 @@ export function HeaderAuthButton() {
   // Still loading — render placeholder to avoid layout shift
   if (status === 'idle' || status === 'loading') {
     return (
-      <div className="hidden h-[38px] w-[100px] animate-pulse rounded-lg bg-muted sm:inline-flex" />
+      <div className="flex h-9 w-9 animate-pulse rounded-lg bg-muted sm:h-[38px] sm:w-[100px]" />
     );
   }
 
@@ -23,14 +23,14 @@ export function HeaderAuthButton() {
       : user.email.split('@')[0];
 
     return (
-      <div className="group relative hidden sm:inline-flex">
+      <div className="group relative flex">
         <button
           type="button"
-          className="flex h-[38px] items-center gap-1.5 rounded-lg border border-border bg-card px-3 text-[13px] font-medium text-foreground transition-colors hover:border-brand hover:text-brand"
+          className="flex h-9 w-9 items-center justify-center gap-1.5 rounded-lg border border-border bg-card text-foreground transition-colors hover:border-brand hover:text-brand sm:h-[38px] sm:w-auto sm:px-3"
         >
           <UserRound className="h-4 w-4" aria-hidden="true" />
-          <span className="max-w-[120px] truncate">{displayName}</span>
-          <ChevronDown className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
+          <span className="hidden max-w-[120px] truncate sm:inline">{displayName}</span>
+          <ChevronDown className="hidden h-3.5 w-3.5 text-muted-foreground sm:inline" aria-hidden="true" />
         </button>
 
         {/* Dropdown */}
@@ -80,10 +80,10 @@ export function HeaderAuthButton() {
   return (
     <Link
       href="/login"
-      className="hidden h-[38px] items-center gap-1.5 rounded-md border border-brand bg-background px-4 text-[13px] font-medium text-brand transition-colors hover:bg-brand/10 sm:inline-flex"
+      className="flex h-9 w-9 items-center justify-center gap-1.5 rounded-md border border-brand bg-background text-brand transition-colors hover:bg-brand/10 sm:h-[38px] sm:w-auto sm:px-4"
     >
       <UserRound className="h-4 w-4" aria-hidden="true" />
-      {t('login')}
+      <span className="hidden sm:inline text-[13px] font-medium">{t('login')}</span>
     </Link>
   );
 }

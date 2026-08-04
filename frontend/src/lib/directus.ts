@@ -244,6 +244,15 @@ export interface SampleRequest {
   date_created?: string;
 }
 
+export interface IsoCertification {
+  id: number;
+  name: string;
+  number: string;
+  issuer?: string | null;
+  file?: string | null;
+  status?: 'published' | 'draft' | 'archived';
+}
+
 export interface Schema {
   products: Product[];
   product_categories: ProductCategory[];
@@ -265,6 +274,7 @@ export interface Schema {
   integration_events: IntegrationEvent[];
   newsletter_subscribers: NewsletterSubscriber[];
   sample_requests: SampleRequest[];
+  iso_certifications: IsoCertification[];
 }
 
 const url = getDirectusUrl();

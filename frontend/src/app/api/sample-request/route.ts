@@ -60,7 +60,7 @@ export async function GET(req: Request) {
 
     const cookieHeader = getRequestCookieHeader(req);
     const response = await proxyToDirectus(
-      '/items/sample_requests?fields=*&sort=-date_created,-id',
+      '/items/sample_requests?fields=*&sort=-created_at,-id',
       { method: 'GET', cookieHeader }
     );
 
@@ -74,6 +74,12 @@ export async function GET(req: Request) {
     }
 
     const payload = await response.json();
+    if (payload && Array.isArray(payload.data)) {
+      payload.data = payload.data.map((item: any) => ({
+        ...item,
+        date_created: item.created_at
+      }));
+    }
     return NextResponse.json(payload);
   } catch (err) {
     console.error('Sample request GET handler failed:', err);

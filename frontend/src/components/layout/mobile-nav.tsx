@@ -1,8 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, UserRound, LogOut, FileText, Package, ClipboardList } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
+import { useAuth } from '@/lib/auth-context';
+import { useTranslations } from 'next-intl';
 
 interface MobileNavProps {
   items: { href: string; label: string }[];
@@ -10,6 +12,8 @@ interface MobileNavProps {
 
 export function MobileNav({ items }: MobileNavProps) {
   const [open, setOpen] = useState(false);
+  const t = useTranslations('nav');
+  const { status, user, logout } = useAuth();
 
   return (
     <>
@@ -55,6 +59,69 @@ export function MobileNav({ items }: MobileNavProps) {
                   {it.label}
                 </Link>
               ))}
+
+              {/* Authentication links for Mobile */}
+              {status === 'authenticated' && user ? (
+                <>
+                  <div className="py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">
+                    {t('account')}
+                  </div>
+                  <Link
+                    href="/rfqs"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 border-b border-border py-3 text-sm text-primary transition-colors hover:text-brand"
+                  >
+                    <FileText className="h-4 w-4" aria-hidden="true" />
+                    {t('rfqs')}
+                  </Link>
+                  <Link
+                    href="/my-rfqs"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 border-b border-border py-3 text-sm text-primary transition-colors hover:text-brand"
+                  >
+                    <ClipboardList className="h-4 w-4" aria-hidden="true" />
+                    {t('myRfqs')}
+                  </Link>
+                  <Link
+                    href="/sample-requests"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 border-b border-border py-3 text-sm text-primary transition-colors hover:text-brand"
+                  >
+                    <Package className="h-4 w-4" aria-hidden="true" />
+                    {t('sampleRequests')}
+                  </Link>
+                  <Link
+                    href="/settings"
+                    onClick={() => setOpen(false)}
+                    className="flex items-center gap-2 border-b border-border py-3 text-sm text-primary transition-colors hover:text-brand"
+                  >
+                    <UserRound className="h-4 w-4" aria-hidden="true" />
+                    {t('settings')}
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      logout();
+                    }}
+                    className="flex w-full items-center gap-2 py-3 text-left text-sm text-destructive transition-colors hover:text-destructive/80"
+                  >
+                    <LogOut className="h-4 w-4" aria-hidden="true" />
+                    {t('logout')}
+                  </button>
+                </>
+              ) : (
+                status !== 'loading' && (
+                  <Link
+                    href="/login"
+                    onClick={() => setOpen(false)}
+                    className="mt-6 flex h-10 items-center justify-center gap-2 rounded-md bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-strong"
+                  >
+                    <UserRound className="h-4 w-4" aria-hidden="true" />
+                    {t('login')}
+                  </Link>
+                )
+              )}
             </nav>
           </div>
         </div>

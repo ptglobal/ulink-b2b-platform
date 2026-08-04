@@ -577,6 +577,136 @@
       "required": "Trường bắt buộc",
       "invalidEmail": "Email không hợp lệ",
       "invalidPhone": "SĐT phải có 10-11 chữ số"
+    },
+    "featuredProducts": {
+      "title": "Sản phẩm nổi bật",
+      "subtitle": "ULINK INDUSTRIES - Đối tác cung cấp vật tư công nghiệp cho các nhà sản xuất",
+      "viewAll": "Xem tất cả",
+      "rfqButton": "Yêu cầu Báo giá",
+      "catalogue": "Tải Catalogue",
+      "mainProducts": "Loại sản phẩm chính",
+      "glove": {
+        "category": "GĂNG TAY CÔNG NGHIỆP",
+        "title": "Găng tay bảo hộ cho môi trường công nghiệp",
+        "desc": "Nitrile, PU, Latex, Vinyl - lựa chọn theo tiêu chuẩn và môi trường sử dụng",
+        "feat1": "Chất lượng cao",
+        "feat2": "Nhiều kích cỡ",
+        "feat3": "Kháng hóa chất",
+        "feat4": "Chống trượt"
+      },
+      "film": {
+        "category": "MÀNG CO PE - SHRINK FILM",
+        "title": "Màng co PE - Bolck chai, hộp UHT, carton",
+        "desc": "Đa dạng chất liệu - lựa chọn theo tiêu chuẩn và môi trường sử dụng",
+        "feat1": "PE nguyên sinh",
+        "feat2": "Co chặt",
+        "feat3": "Trong suốt",
+        "feat4": "Tùy chỉnh"
+      },
+      "tape": {
+        "category": "BĂNG KEO NHÔM - HVAC",
+        "title": "Băng keo nhôm - ứng dụng trong HVAC",
+        "desc": "Chuyên dùng dán kín mối nối bề mặt bảo ôn - lựa chọn theo tiêu chuẩn và môi trường sử dụng",
+        "feat1": "Aluminum foil",
+        "feat2": "Nhiều kích cỡ",
+        "feat3": "Chịu nhiệt cao",
+        "feat4": "Bám dính tốt"
+      }
+    },
+    "carousel": {
+      "learnMore": "Tìm hiểu thêm",
+      "rfqButton": "Yêu cầu Báo giá",
+      "slide1": {
+        "eyebrow": "MÀNG CUỐN PALLET",
+        "title": "Bảo vệ hàng hóa tối ưu, tiết kiệm chi phí vận chuyển. Giao nhanh từ Hub Hà Nam.",
+        "feat1": "Độ bám dính cao, chống ẩm và bụi hiệu quả. Giảm đến 30% chi phí đóng gói so với phương pháp truyền thống.",
+        "feat2": "Giao hàng nhanh trong 24h từ Hub Hà Nam. Đáp ứng mọi quy mô đơn hàng cho nhà máy và kho vận."
+      },
+      "slide2": {
+        "eyebrow": "GĂNG TAY CÔNG NGHIỆP",
+        "title": "Bảo vệ đôi tay toàn diện, tối ưu độ bám và thao tác. Đạt tiêu chuẩn phòng sạch quốc tế.",
+        "feat1": "Kháng hóa chất, chống tĩnh điện ESD và chống trượt vượt trội. Đảm bảo an toàn tuyệt đối cho người lao động.",
+        "feat2": "Hàng luôn có sẵn tại các kho trung chuyển. Giao hàng trong ngày tới các KCN trọng điểm."
+      },
+      "slide3": {
+        "eyebrow": "BĂNG KEO NHÔM",
+        "title": "Dán kín mối nối cách nhiệt, chống thoát nhiệt tối đa. Ứng dụng chuyên dụng hệ thống HVAC.",
+        "feat1": "Chịu nhiệt độ cao từ -30°C đến 120°C. Độ bền bỉ vượt trội và bám dính chắc chắn trên bề mặt bảo ôn.",
+        "feat2": "Đáp ứng tiến độ thi công khẩn cấp của dự án. Hỗ trợ giao nhanh trực tiếp công trình."
+      },
+      "slide4": {
+        "eyebrow": "KHĂN LAU PHÒNG SẠCH",
+        "title": "Khử bụi bề mặt tuyệt đối, không xơ vải. Phù hợp cho nhà máy sản xuất linh kiện điện tử.",
+        "feat1": "Chất liệu siêu mịn polyester kết hợp nylon. Khả năng hấp thụ dung môi và chất lỏng cực tốt.",
+        "feat2": "Đóng gói hút chân không tiêu chuẩn Class 10-100. Đảm bảo độ tinh khiết cao nhất khi sử dụng."
+      },
+      "slide5": {
+        "eyebrow": "MÀNG CO PE - SHRINK FILM",
+        "title": "Cố định kiện hàng khối lượng lớn, chống va đập. Màng co nhiệt chất lượng xuất khẩu.",
+        "feat1": "Tỷ lệ co rút cao và đồng đều các hướng. Tạo lớp màng bảo vệ chắc chắn cho lốc chai nước, hộp giấy.",
+        "feat2": "Nguyên liệu hạt nhựa PE nguyên sinh nhập khẩu. An toàn với sức khỏe và thân thiện với môi trường."
+      }
+    },
+    "capabilities": {
+      "title": "Năng lực cốt lõi trong sản xuất và cung ứng",
+      "desc": "ULink Industries sở hữu hệ thống sản xuất hiện đại, chuỗi cung ứng tối ưu và đội ngũ chuyên gia giàu kinh nghiệm, đảm bảo chất lượng vượt trội cho mọi đơn hàng.",
+      "learnMore": "Tìm hiểu thêm",
+      "manufacturing": {
+        "title": "Sản xuất quy mô lớn",
+        "desc": "Nhà máy đạt chuẩn ISO với công suất cao, linh hoạt đáp ứng đơn hàng từ nhỏ đến lớn theo yêu cầu."
+      },
+      "supplyChain": {
+        "title": "Chuỗi cung ứng tối ưu",
+        "desc": "Hệ thống logistics nội địa và quốc tế, đảm bảo giao hàng đúng tiến độ với chi phí cạnh tranh."
+      },
+      "quality": {
+        "title": "Kiểm soát chất lượng",
+        "desc": "Quy trình QC nghiêm ngặt từ nguyên liệu đầu vào đến thành phẩm, đạt tiêu chuẩn xuất khẩu quốc tế."
+      }
+    },
+    "hanamIntro": {
+      "eyebrow": "TRUNG TÂM PHÂN PHỐI HÀ NAM",
+      "title": "Kết nối các KCN trọng điểm, giao hàng tức thì",
+      "desc": "Trung tâm phân phối Hà Nam với quy mô 10.000 m² là đầu mối logistics chiến lược của ULink Industries, kết nối trực tiếp các KCN trọng điểm khu vực phía Bắc. Hệ thống quản lý hơn 2.000 SKU, sẵn sàng đáp ứng giao hàng nhanh chóng. Ứng dụng công nghệ truy xuất và quản lý kho thông minh, ULink tối ưu hóa toàn bộ chuỗi cung ứng — giúp doanh nghiệp tiết kiệm thời gian, giảm chi phí và nâng cao hiệu quả vận hành.",
+      "contactSales": "Liên hệ Sales",
+      "learnMore": "Tìm hiểu thêm"
+    },
+    "testimonials": {
+      "eyebrow": "ĐÁNH GIÁ CỦA KHÁCH HÀNG",
+      "title": "Khách hàng tin tưởng lựa chọn ULink Industries.",
+      "subtitle": "Chất lượng và dịch vụ luôn vượt mong đợi.",
+      "company1": "Thành Phát",
+      "quote1": "Chúng tôi rất hài lòng với chất lượng sản phẩm và dịch vụ của ULink Industries. Từ khâu tư vấn, thiết kế đến thi công và bàn giao, đội ngũ ULink luôn lắng nghe và đáp ứng chính xác nhu cầu của doanh nghiệp. Sản phẩm nhà xưởng bền vững, dịch vụ hậu mãi chu đáo – đây chính là đối tác đáng tin cậy cho mọi doanh nghiệp sản xuất.",
+      "name1": "Nguyễn Văn Minh",
+      "role1": "Giám đốc, Công ty TNHH Thành Phát",
+      "company2": "Đông Nam",
+      "quote2": "ULink Industries không chỉ cung cấp mặt bằng với chi phí cạnh tranh mà còn đồng hành cùng chúng tôi trong suốt quá trình – từ tư vấn lựa chọn lô đất, hỗ trợ hoàn thiện thủ tục pháp lý đến kết nối các dịch vụ tiện ích. Vị trí kết nối thuận lợi với các tuyến giao thông huyết mạch giúp tối ưu chi phí logistics đáng kể cho doanh nghiệp.",
+      "name2": "Trần Thị Hương",
+      "role2": "Phó TGĐ, Công ty CP Bao bì Đông Nam"
+    },
+    "workingProcess": {
+      "title": "Quy trình làm việc",
+      "subtitle": "Nhóm Khách hàng của Chúng tôi - Các giải pháp được thiết kế riêng",
+      "step1Number": "Bước 1",
+      "step1Title": "Tiếp nhận yêu cầu",
+      "step1Desc": "Ghi nhận nhu cầu về sản phẩm, số lượng, tiêu chuẩn kỹ thuật và thời gian giao hàng.",
+      "step1KpiLabel": "Thời gian làm việc",
+      "step1KpiValue": "T + 1",
+      "step2Number": "Bước 2",
+      "step2Title": "Đề xuất giải pháp",
+      "step2Desc": "Đội ngũ ULink xem yêu cầu kỹ thuật và lựa chọn sản phẩm phù hợp dựa trên chi phí và nhu cầu của nhà máy",
+      "step2KpiLabel": "Báo giá & phê duyệt",
+      "step2KpiValue": "T + 1",
+      "step3Number": "Bước 3",
+      "step3Title": "Sản xuất và cung ứng",
+      "step3Desc": "Sản xuất trên dây truyền hiện đại và kiểm soát chất lượng nghiêm ngặt, trước khi cung ứng.",
+      "step3KpiLabel": "Min Order - Linh hoạt",
+      "step3KpiValue": "MOQ",
+      "step4Number": "Bước 4",
+      "step4Title": "Giao hàng",
+      "step4Desc": "Đóng gói cẩn thận, giao hàng đúng tiến độ và tuân thủ các yêu cầu trong quá trình giao nhận với khách hàng.",
+      "step4KpiLabel": "Thời gian giao hàng",
+      "step4KpiValue": "T + 1"
     }
   },
   "whyChoose": {

@@ -9,9 +9,10 @@ import type { Product } from '@/lib/directus';
 interface ProductCardProps {
   product: Product;
   locale: string;
+  roundedClass?: string;
 }
 
-export default function ProductCard({ product, locale }: ProductCardProps) {
+export default function ProductCard({ product, locale, roundedClass }: ProductCardProps) {
   const DIRECTUS_URL = getDirectusUrl();
   const productName = getTranslatedName(product, locale);
 
@@ -37,7 +38,7 @@ export default function ProductCard({ product, locale }: ProductCardProps) {
         : null;
 
   return (
-    <div className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg hover:border-blue-200">
+    <div className={`group flex flex-col overflow-hidden ${roundedClass || 'rounded-xl'} border border-gray-200 bg-white shadow-sm transition-all hover:shadow-lg hover:border-blue-200`}>
       {/* Hero image */}
       <Link href={`/${locale}/solutions/${product.slug}`} className="relative aspect-[5/3] w-full bg-gray-50 block overflow-hidden">
         {product.hero ? (

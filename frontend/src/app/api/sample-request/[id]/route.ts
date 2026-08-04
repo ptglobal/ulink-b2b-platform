@@ -39,6 +39,9 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 
     const payload = await response.json();
+    if (payload && payload.data) {
+      payload.data.date_created = payload.data.created_at;
+    }
     return NextResponse.json(payload);
   } catch (err) {
     console.error('Sample request GET [id] handler failed:', err);

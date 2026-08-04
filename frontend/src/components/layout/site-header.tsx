@@ -1,10 +1,9 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { ChevronDown, Search, ShoppingCart } from 'lucide-react';
+import { Search, ShoppingCart } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
 import { MobileNav } from './mobile-nav';
-import { CartBadge } from './cart-badge';
 import { HeaderAuthButton } from './header-auth-button';
 
 /**

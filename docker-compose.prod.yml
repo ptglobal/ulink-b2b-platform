@@ -40,15 +40,14 @@ services:
       - ulink_uploads:/directus/uploads
       - ./directus/lib:/directus/lib
 
-  # Frontend (Next.js) — TEST deployment only. The contract is "frontend runs
-  # separately (Vercel/prod, npm run dev locally)", so it lives in this prod
-  # overlay rather than the base backend stack. Runs `next dev` in a node
-  # container against the live backend so we can click through flows + see mail.
+  # Frontend (Next.js) — production container build overlay.
+  # Compiles and runs Next.js in production mode (disabling Hot Reload/dev features).
   frontend:
-    image: node:20-alpine
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: ulink/frontend:local
     restart: unless-stopped
-    working_dir: /app
-    command: ['sh', '-c', 'npm ci --no-audit --no-fund && npm run dev']
     environment:
       # Public backend URL: works for server-side BFF calls AND for asset/image
       # URLs rendered to the browser. (Container reaches the host's published port.)
@@ -66,9 +65,7 @@ services:
       SMTP_PORT: '1025'
       SMTP_FROM: ULink <no-reply@ulink.local>
       ERP_SYNC_ENABLED: 'false'
-      NODE_ENV: development
-    volumes:
-      - ./frontend:/app
+      NODE_ENV: production
     ports:
       - '3002:3000'
     depends_on:

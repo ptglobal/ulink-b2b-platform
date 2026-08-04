@@ -49,9 +49,9 @@ function computeListTargets(count: number): number[] {
   if (count <= 0) return [];
   if (count === 1) return [VIEW_H / 2];
 
-  const containerHeight = 540;
-  const paddingY = 32;
-  const usable = containerHeight - 2 * paddingY; // 476px
+  const containerHeight = 640;
+  const paddingY = 70; // larger padding = tighter vertical spread
+  const usable = containerHeight - 2 * paddingY;
   const step = usable / (count - 1);
   const scale = VIEW_H / containerHeight;
 
@@ -90,6 +90,7 @@ export function VietnamMap({ className, clusters }: VietnamMapProps) {
         src="/images/illustrations/vietnam-provinces.svg"
         alt="Bản đồ Việt Nam với ranh giới tỉnh"
         className="h-full w-full"
+        style={{ filter: 'brightness(0) invert(1)', opacity: 0.9 }}
         draggable={false}
       />
 
@@ -98,38 +99,62 @@ export function VietnamMap({ className, clusters }: VietnamMapProps) {
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute inset-0 h-full w-full"
+        className="absolute inset-0 h-full w-full overflow-visible"
         aria-label="Các cụm công nghiệp"
       >
-        {/* Elbow connector lines: point → horizontal → vertical → horizontal to edge */}
+        {/* Connector lines: from node to hub card on the right */}
         {activeMarkers.map((cluster, i) => {
           const { x, y } = geoToSvg(cluster.lat, cluster.lon);
           const targetY = listTargets[i];
-          const bendX = bendXPositions[i];
-          // Path: from marker → right to bend column → up/down to target Y → right to edge
-          const d = `M ${x + 6} ${y} H ${bendX} V ${targetY} H ${VIEW_W}`;
+          // Extend far enough to reach the left edge of hub cards
+          const targetX = VIEW_W + 160;
+          // Smooth cubic Bezier curve
+          const d = `M ${x} ${y} C ${(x + targetX) / 2} ${y}, ${(x + targetX) / 2} ${targetY}, ${targetX} ${targetY}`;
           return (
             <path
               key={`connector-${cluster.id}`}
               d={d}
               fill="none"
-              stroke="#1A2D49"
-              strokeWidth="1.4"
-              strokeDasharray="5 3"
-              opacity="0.55"
+              stroke="#00e5ff"
+              strokeWidth="1.2"
+              strokeDasharray="4 3"
+              opacity="0.6"
             />
           );
         })}
 
-        {/* Cluster markers — subtle solid dot with thin pulse ring */}
+        {/* Cluster markers — glowing cyan dot with pulsating ripple ring */}
         {activeMarkers.map((cluster) => {
           const { x, y } = geoToSvg(cluster.lat, cluster.lon);
           return (
             <g key={cluster.id}>
-              {/* Subtle outer pulse — thin ring */}
-              <circle cx={x} cy={y} r="10" fill="none" stroke="#1A2D49" strokeWidth="0.8" opacity="0.2" />
-              {/* Main dot */}
-              <circle cx={x} cy={y} r="4.5" fill="#1A2D49" opacity="0.9" />
+              {/* Pulsating ripple ring */}
+              <circle
+                cx={x}
+                cy={y}
+                r="8"
+                fill="#00e5ff"
+                opacity="0.3"
+                className="animate-ping"
+                style={{ transformOrigin: `${x}px ${y}px` }}
+              />
+              {/* Glow border ring */}
+              <circle
+                cx={x}
+                cy={y}
+                r="7"
+                fill="none"
+                stroke="#00e5ff"
+                strokeWidth="1"
+                opacity="0.6"
+              />
+              {/* Solid cyan center */}
+              <circle
+                cx={x}
+                cy={y}
+                r="3.5"
+                fill="#00e5ff"
+              />
             </g>
           );
         })}

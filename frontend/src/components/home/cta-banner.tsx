@@ -2,12 +2,12 @@ import { ArrowRight, PhoneCall, Mail, Send } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 
-export async function CtaBanner() {
+export async function CtaBanner({ containerClassName = 'max-w-[1800px] px-6' }: { containerClassName?: string }) {
   const tCta = await getTranslations('ctaBanner');
 
   return (
     <section className="w-full bg-[#3B82F6] text-white">
-      <div className="mx-auto w-full max-w-[1800px] px-6 py-16 lg:py-20">
+      <div className={`mx-auto w-full py-16 lg:py-20 ${containerClassName}`}>
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
           {/* ── CỘT BÊN TRÁI: BÁO GIÁ NHANH 24H (7/12 COLS) ── */}
           <div className="flex flex-col justify-center lg:col-span-7">
