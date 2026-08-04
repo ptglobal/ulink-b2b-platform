@@ -7,12 +7,13 @@ const pendingProducts = new Map(); // productId → timeoutId
 const preDeleteCache = new Map(); // `${collection}:${id}` → productId
 
 export default ({ filter, action }, extensionContext) => {
-  const WATCHED_COLLECTIONS = ['product_attribute_options', 'product_attributes'];
+  const WATCHED_COLLECTIONS = ['product_attribute_options', 'product_attributes', 'products_product_attributes'];
 
   /**
-   * Resolve product ID from an attribute or option (item still exists in DB).
+   * Resolve product ID(s) from an attribute, option, or M2M junction.
+   * Returns an array of product IDs.
    */
-  async function resolveProductId(collection, keys, context) {
+  async function resolveProductIds(collection, keys, context) {
     const { services, getSchema } = extensionContext;
     const schema = await getSchema();
     const { ItemsService } = services;
@@ -23,35 +24,51 @@ export default ({ filter, action }, extensionContext) => {
       knex: context.database
     };
 
-    if (collection === 'product_attributes') {
-      const attrId = Array.isArray(keys) ? keys[0] : keys;
-      if (!attrId) return null;
-
-      const attrService = new ItemsService('product_attributes', serviceOpts);
+    if (collection === 'products_product_attributes') {
+      const junctionId = Array.isArray(keys) ? keys[0] : keys;
+      if (!junctionId) return [];
+      const junctionService = new ItemsService('products_product_attributes', serviceOpts);
       try {
-        const attr = await attrService.readOne(attrId, { fields: ['product'] });
-        return attr?.product ?? null;
+        const junction = await junctionService.readOne(junctionId, { fields: ['products_id'] });
+        return junction?.products_id ? [junction.products_id] : [];
       } catch {
-        return null;
+        return [];
       }
+    }
+
+    let attrId = null;
+
+    if (collection === 'product_attributes') {
+      attrId = Array.isArray(keys) ? keys[0] : keys;
     }
 
     if (collection === 'product_attribute_options') {
       const optionId = Array.isArray(keys) ? keys[0] : keys;
-      if (!optionId) return null;
+      if (!optionId) return [];
 
       const optionService = new ItemsService('product_attribute_options', serviceOpts);
       try {
-        const option = await optionService.readOne(optionId, {
-          fields: ['attribute.product']
-        });
-        return option?.attribute?.product ?? null;
+        const option = await optionService.readOne(optionId, { fields: ['attribute'] });
+        attrId = option?.attribute ?? null;
       } catch {
-        return null;
+        return [];
       }
     }
 
-    return null;
+    if (!attrId) return [];
+
+    // Find all products linked to this attribute via M2M junction
+    const junctionService = new ItemsService('products_product_attributes', serviceOpts);
+    try {
+      const junctions = await junctionService.readByQuery({
+        filter: { product_attributes_id: { _eq: attrId } },
+        fields: ['products_id'],
+        limit: -1
+      });
+      return junctions.map((j) => j.products_id).filter(Boolean);
+    } catch {
+      return [];
+    }
   }
 
   function scheduleRegeneration(productId, context) {
@@ -73,16 +90,16 @@ export default ({ filter, action }, extensionContext) => {
     pendingProducts.set(productId, timeoutId);
   }
 
-  // ─── FILTER: Pre-delete — capture product ID before item is removed ────────
+  // ─── FILTER: Pre-delete — capture product IDs before item is removed ────────
   filter('items.delete', async (keys, meta, context) => {
     if (!WATCHED_COLLECTIONS.includes(meta?.collection)) return keys;
 
     const keyList = Array.isArray(keys) ? keys : [keys];
     for (const key of keyList) {
       try {
-        const productId = await resolveProductId(meta.collection, key, context);
-        if (productId) {
-          preDeleteCache.set(`${meta.collection}:${key}`, productId);
+        const productIds = await resolveProductIds(meta.collection, key, context);
+        if (productIds.length > 0) {
+          preDeleteCache.set(`${meta.collection}:${key}`, productIds);
         }
       } catch (err) {
         console.error('[sku-autogen] pre-delete cache error:', err);
@@ -96,10 +113,10 @@ export default ({ filter, action }, extensionContext) => {
   action('items.create', async (meta, context) => {
     if (!WATCHED_COLLECTIONS.includes(meta?.collection)) return;
 
-    const productId = await resolveProductId(meta.collection, meta.key ?? meta.keys, context);
-    if (!productId) return;
-
-    scheduleRegeneration(productId, context);
+    const productIds = await resolveProductIds(meta.collection, meta.key ?? meta.keys, context);
+    for (const pid of productIds) {
+      scheduleRegeneration(pid, context);
+    }
   });
 
   // ─── ACTION: items.update — option value/suffix changed ────────────────────
@@ -109,13 +126,13 @@ export default ({ filter, action }, extensionContext) => {
     const keys = meta.keys ?? (meta.key ? [meta.key] : []);
     if (keys.length === 0) return;
 
-    const productId = await resolveProductId(meta.collection, keys, context);
-    if (!productId) return;
-
-    scheduleRegeneration(productId, context);
+    const productIds = await resolveProductIds(meta.collection, keys, context);
+    for (const pid of productIds) {
+      scheduleRegeneration(pid, context);
+    }
   });
 
-  // ─── ACTION: items.delete — retrieve product ID from pre-delete cache ──────
+  // ─── ACTION: items.delete — retrieve product IDs from pre-delete cache ─────
   action('items.delete', async (meta, context) => {
     if (!WATCHED_COLLECTIONS.includes(meta?.collection)) return;
 
@@ -126,9 +143,11 @@ export default ({ filter, action }, extensionContext) => {
 
     for (const key of keys) {
       const cacheKey = `${meta.collection}:${key}`;
-      const productId = preDeleteCache.get(cacheKey);
+      const productIds = preDeleteCache.get(cacheKey);
       preDeleteCache.delete(cacheKey);
-      if (productId) affectedProducts.add(productId);
+      if (productIds) {
+        for (const pid of productIds) affectedProducts.add(pid);
+      }
     }
 
     for (const pid of affectedProducts) {

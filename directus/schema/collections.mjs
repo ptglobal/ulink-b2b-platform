@@ -70,7 +70,7 @@ export const COLLECTION_DEFS = [
       { field: 'regions', type: 'alias', meta: { interface: 'list-m2m', special: ['m2m'] } },
       { field: 'documents', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } },
       { field: 'skus', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'] } },
-      { field: 'product_attributes', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'], options: { template: '{{name}}' } } },
+      { field: 'assigned_attributes', type: 'alias', meta: { interface: 'list-m2m', special: ['m2m'], options: { template: '{{product_attributes_id.name}}' } } },
       { field: 'meta_title', type: 'string', meta: { interface: 'input' } },
       { field: 'meta_description', type: 'text', meta: { interface: 'textarea' } }
     ]
@@ -108,12 +108,12 @@ export const COLLECTION_DEFS = [
   },
   {
     collection: 'product_attributes',
-    meta: { icon: 'tune', note: 'Product variant attributes (e.g. Size, Color)', sort_field: 'sort' },
+    meta: { icon: 'tune', note: 'Global attribute definitions (master data)', sort_field: 'sort' },
     schema: {},
     fields: [
       ID_FIELD,
-      { field: 'product', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'], required: true, hidden: true } },
       { field: 'name', type: 'string', meta: { interface: 'input', required: true, width: 'half', note: 'Attribute name (e.g. Size, Color)' } },
+      { field: 'slug', type: 'string', meta: { interface: 'input', required: true, width: 'half', note: 'Slug key for SKU JSON (e.g. size, color)' }, schema: { is_unique: true } },
       { field: 'sort', type: 'integer', meta: { interface: 'input', hidden: true } },
       { field: 'options', type: 'alias', meta: { interface: 'list-o2m', special: ['o2m'], options: { template: '{{value}} ({{sku_suffix}})' } } }
     ]
@@ -832,6 +832,16 @@ export const COLLECTION_DEFS = [
       ID_FIELD,
       { field: 'products_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
       { field: 'standards_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
+    ]
+  },
+  {
+    collection: 'products_product_attributes',
+    meta: { hidden: true },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'products_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } },
+      { field: 'product_attributes_id', type: 'integer', meta: { interface: 'select-dropdown-m2o', special: ['m2o'] } }
     ]
   },
   {

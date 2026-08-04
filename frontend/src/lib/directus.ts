@@ -51,7 +51,7 @@ export interface Product {
   standards?: Array<{ standards_id: number | Standard }>;
   documents?: ProductDocument[];
   skus?: ProductSku[];
-  product_attributes?: ProductAttribute[];
+  assigned_attributes?: Array<{ product_attributes_id: number | ProductAttribute }>;
   meta_title?: string | null;
   meta_description?: string | null;
   status: 'published' | 'draft' | 'archived';
@@ -70,8 +70,8 @@ export interface ProductSku {
 
 export interface ProductAttribute {
   id: number;
-  product: number | Product;
   name: string;
+  slug: string;
   sort: number;
   options?: ProductAttributeOption[];
 }

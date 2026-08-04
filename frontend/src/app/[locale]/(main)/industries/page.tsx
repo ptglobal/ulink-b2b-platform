@@ -1,8 +1,28 @@
 import type { Metadata } from 'next';
 import { setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-
+import Image from 'next/image';
+import { Armchair, Warehouse, Pill, Utensils, Wrench, Cpu, Check, ArrowRight } from 'lucide-react';
+import CoreAdvantages from '@/components/solutions/core-advantages';
+import AboutUsHub from '@/components/solutions/about-us-hub';
+import ContactCta from '@/components/solutions/contact-cta';
+import MarketNews from '@/components/solutions/market-news';
+import FaqSection from '@/components/solutions/faq-section';
+import {
+  TargetSegments,
+  PartnersCertifications,
+  WorkingProcess
+} from '@/components/home';
 type Props = { params: { locale: string } };
+
+const IconMap: Record<string, React.ComponentType<any>> = {
+  Armchair: Armchair,
+  Warehouse: Warehouse,
+  Pill: Pill,
+  Utensils: Utensils,
+  Wrench: Wrench,
+  Cpu: Cpu
+};
 
 export async function generateMetadata({ params: { locale } }: Props): Promise<Metadata> {
   const isVi = locale === 'vi';
@@ -27,289 +47,341 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
   const isVi = locale === 'vi';
   const isJa = locale === 'ja';
 
-  // Content dictionary for multi-lingual support
   const content = {
     breadcrumbHome: isVi ? 'Trang chủ' : isJa ? 'ホーム' : 'Home',
     breadcrumbCurrent: isVi ? 'Ngành nghề' : isJa ? '業界別' : 'Industries',
-    
-    heroTitleLine1: isVi 
-      ? 'Giải pháp tối ưu cho mọi ngành nghề.' 
-      : isJa 
-      ? 'あらゆる業界に最適なソリューション。' 
-      : 'Optimized solutions for every industry.',
-    heroTitleLine2: isVi 
-      ? 'Phòng sạch & Đóng gói toàn diện.' 
-      : isJa 
-      ? '包括的なクリーンルーム＆包装。' 
-      : 'Comprehensive Cleanroom & Packaging.',
-      
-    heroDesc: isVi
-      ? 'ULink Industries thấu hiểu các tiêu chuẩn khắt khe và thách thức vận hành trong từng ngành. Chúng tôi cung cấp giải pháp toàn diện, giúp nâng cao chất lượng, đảm bảo an toàn và tối ưu hiệu suất.'
-      : isJa
-      ? 'ULink Industriesは、各業界の厳格な基準 và 運用の課題を深く理解しています。品質向上、安全確保、およびパフォーマンス最適化を支援する包括的なソリューションを提供します。'
-      : 'ULink Industries understands the strict standards and operational challenges of each sector. We deliver end-to-end solutions to enhance quality, safety, and performance.',
-      
-    btnCleanroom: isVi ? 'Giải pháp phòng sạch' : isJa ? 'クリーンルームソリューション' : 'Cleanroom Solutions',
-    btnPackaging: isVi ? 'Giải pháp đóng gói' : isJa ? '包装ソリューション' : 'Packaging Solutions',
-    
-    sectionTitle: isVi ? 'Giải pháp theo ngành nghề' : isJa ? '業界別ソリューション' : 'Solutions by Industry',
-    sectionSubtitle: isVi
-      ? 'Các giải pháp phòng sạch & đóng gói được thiết kế phù hợp với đặc thù và yêu cầu riêng của từng ngành.'
-      : isJa
-      ? '各業界の特性と個別の要件に合わせて設計されたクリーンルームおよび包装ソリューション。'
-      : 'Cleanroom & packaging solutions designed to suit the specific characteristics and requirements of each industry.',
-      
-    keySolutionsLabel: isVi ? 'Giải pháp chính:' : isJa ? '主なソリューション:' : 'Key solutions:',
-    btnViewDetails: isVi ? 'Xem chi tiết' : isJa ? '詳細を見る' : 'Xem chi tiết',
-    
-    bottomQuoteBtn: isVi ? 'Yêu cầu báo giá/Liên hệ' : isJa ? '見積もり依頼/お問い合わせ' : 'Yêu cầu báo giá/Liên hệ',
-    
-    bottomColumns: [
-      {
-        icon: '/images/icons/icon_support.webp',
-        title: isVi ? 'Đội ngũ chuyên môn' : isJa ? '専門家チーム' : 'Expert Team',
-        desc: isVi ? 'Tư vấn giải pháp phù hợp theo từng ngành nghề.' : isJa ? '業界ごとに適したソリューションを提案します。' : 'Tailored solutions consulting for each industry.'
-      },
-      {
-        icon: '/images/icons/icon_customization.webp',
-        title: isVi ? 'Giải pháp tùy chỉnh' : isJa ? 'カスタムソリューション' : 'Custom Solutions',
-        desc: isVi ? 'Thiết kế linh hoạt, đáp ứng yêu cầu đặc thù của khách hàng.' : isJa ? 'お客様の固有の要件に対応する柔軟な設計。' : 'Flexible design meeting unique customer requirements.'
-      },
-      {
-        icon: '/images/icons/icon_global.webp',
-        title: isVi ? 'Chuỗi cung ứng toàn cầu' : isJa ? 'グローバルサプライチェーン' : 'Global Supply Chain',
-        desc: isVi ? 'Sản phẩm chất lượng từ các đối tác uy tín trên toàn thế giới.' : isJa ? '世界中の信頼できるパートナーからの高品質製品。' : 'Quality products from reliable global partners.'
-      },
-      {
-        icon: '/images/icons/icon_standards.webp',
-        title: isVi ? 'Chất lượng & tiêu chuẩn' : isJa ? '品質と基準' : 'Quality & Standards',
-        desc: isVi ? 'Đáp ứng ISO, GMP, RoHS và các tiêu chuẩn quốc tế khác.' : isJa ? 'ISO、GMP、RoHS、およびその他の国際基準に準拠。' : 'Meeting ISO, GMP, RoHS, and other international standards.'
-      }
-    ],
-
-    industries: [
-      {
-        slug: 'electronics',
-        name: isVi ? 'Điện tử' : isJa ? '電子' : 'Electronics',
-        icon: '/images/icons/icon_electronics.webp',
-        image: '/images/icons/electronics.webp',
-        description: isVi 
-          ? 'Kiểm soát tĩnh điện và hạt bụi, bảo vệ linh kiện và đảm bảo độ tin cậy.'
-          : isJa
-          ? '静電気と塵埃を制御し、部品を保護して信頼性を確保します。'
-          : 'Static and dust particle control, protecting components and ensuring reliability.',
-        bullets: isVi 
-          ? ['Phòng sạch & PPE', 'Sản phẩm chống tĩnh điện', 'Vật tư phòng sạch', 'Bao bì chống ẩm và chống tĩnh điện']
-          : isJa
-          ? ['クリーンルーム＆PPE', '静電気対策製品', 'クリーンルーム資材', '防湿・静電防止包装']
-          : ['Cleanroom & PPE', 'ESD Products', 'Cleanroom Consumables', 'Moisture & ESD Packaging']
-      },
-      {
-        slug: 'pharmaceutical',
-        name: isVi ? 'Dược phẩm' : isJa ? '製薬' : 'Pharmaceuticals',
-        icon: '/images/icons/icon_pharmaceutical.webp',
-        image: '/images/icons/pharmaceuticals.webp',
-        description: isVi 
-          ? 'Tuân thủ GMP, đảm bảo vô trùng và an toàn trong sản xuất.'
-          : isJa
-          ? 'GMPに準拠し、製造における無菌性と安全性を確保します。'
-          : 'GMP compliance, ensuring sterility and safety in production.',
-        bullets: isVi 
-          ? ['Phòng sạch & PPE', 'Vật tư tiêu hao', 'Thiết bị phòng sạch', 'Bao bì dược phẩm']
-          : isJa
-          ? ['クリーンルーム＆PPE', '消耗資材', 'クリーンルーム設備', '医薬品包装']
-          : ['Cleanroom & PPE', 'Consumable Supplies', 'Cleanroom Equipment', 'Pharmaceutical Packaging']
-      },
-      {
-        slug: 'cosmetics',
-        name: isVi ? 'Mỹ phẩm' : isJa ? '化粧品' : 'Cosmetics',
-        icon: '/images/icons/icon_pharmaceutical.webp',
-        image: '/images/icons/medical.webp',
-        description: isVi 
-          ? 'Kiểm soát ô nhiễm và vi sinh, bảo vệ sức khỏe và chất lượng sản phẩm.'
-          : isJa
-          ? '微生物と汚染を制御し、健康と製品の品質を保護します。'
-          : 'Microbial and contamination control, protecting health and product quality.',
-        bullets: isVi 
-          ? ['Phòng sạch & PPE', 'Khăn lau & chất làm sạch', 'Thiết bị đóng gói vô trùng', 'Bao bì màng nhôm bảo vệ']
-          : isJa
-          ? ['クリーンルーム＆PPE', 'ワイパー＆洗浄剤', '無菌包装設備', 'アルミ保護包装']
-          : ['Cleanroom & PPE', 'Wipers & Sanitizers', 'Sterile Packaging Equipment', 'Aluminum Barrier Packaging']
-      },
-      {
-        slug: 'food',
-        name: isVi ? 'Thực phẩm' : isJa ? '食品' : 'Food',
-        icon: '/images/icons/icon_food.webp',
-        image: '/images/icons/food_processing.webp',
-        description: isVi 
-          ? 'Kiểm soát vi sinh và dị vật, đảm bảo an toàn thực phẩm.'
-          : isJa
-          ? '微生物と異物を制御し、食品安全を確保します。'
-          : 'Controlling microbes and foreign bodies, ensuring food safety.',
-        bullets: isVi 
-          ? ['Phòng sạch & PPE', 'Vật tư tiêu hao', 'Hóa chất vệ sinh', 'Bao bì thực phẩm']
-          : isJa
-          ? ['クリーンルーム＆PPE', '消耗資材', '衛生化学品', '食品包装']
-          : ['Cleanroom & PPE', 'Consumable Supplies', 'Sanitation Chemicals', 'Food Packaging']
-      }
-    ]
+    viewDetails: isVi ? 'Xem chi tiết' : isJa ? '詳細を見る' : 'View details'
   };
+
+  const industriesList = [
+    {
+      slug: 'furniture',
+      name: isVi ? 'Nội thất' : isJa ? '家具・インテリア' : 'Furniture & Interior',
+      icon: 'Armchair',
+      image: '/images/home/section3/funiture.webp',
+      description: isVi
+        ? 'Bảo vệ toàn diện bề mặt gỗ, da, vải và kim loại trong suốt quy trình sản xuất, vận chuyển và lắp đặt nội thất cao cấp.'
+        : isJa
+        ? '高級家具の製造、輸送、設置プロセス全体において、木材、皮革、布地、金属の表面を包括的に保護します。'
+        : 'Comprehensive protection for wood, leather, fabric, and metal surfaces throughout the manufacturing, transport, and installation of premium furniture.',
+      bullets: isVi
+        ? [
+            'Màng bọc PE bảo vệ bề mặt gỗ & da',
+            'Bao bì carton chống va đập & xốp định hình',
+            'Túi chống ẩm cho linh kiện & phụ kiện nội thất'
+          ]
+        : isJa
+        ? [
+            '木材・皮革表面保護用PEラップ',
+            '耐衝撃ダンボール包装＆成形発泡スチロール',
+            '家具部品・アクセサリー用防湿バッグ'
+          ]
+        : [
+            'PE wrap protecting wood & leather surfaces',
+            'Anti-impact carton packaging & molded foam',
+            'Moisture-proof bags for components & accessories'
+          ]
+    },
+    {
+      slug: 'logistics',
+      name: isVi ? 'Kho & Logistics' : isJa ? '倉庫＆物流' : 'Warehouse & Logistics',
+      icon: 'Warehouse',
+      image: '/images/about/op-warehouse.webp',
+      description: isVi
+        ? 'Tối ưu hóa quy trình lưu kho, vận chuyển và phân phối hàng hóa với giải pháp bao bì bảo vệ chuyên dụng từ ULink Industries.'
+        : isJa
+        ? 'ULink Industriesの専用保護包装ソリューションにより、倉庫保管、輸送、および流通プロセスを最適化します。'
+        : 'Optimize warehousing, transport, and distribution processes with specialized protective packaging solutions from ULink Industries.',
+      bullets: isVi
+        ? [
+            'Màng co, màng quấn pallet bảo vệ hàng hóa',
+            'Bao bì chống ẩm, chống va đập khi vận chuyển',
+            'Vật tư đóng gói & dán nhãn cho kho bãi'
+          ]
+        : isJa
+        ? [
+            '貨物保護用シュリンクフィルム＆パレットラップ',
+            '輸送用防湿・耐衝撃包装',
+            '倉庫用梱包資材＆ラベル表示'
+          ]
+        : [
+            'Shrink film & pallet wrap protecting cargo',
+            'Moisture-proof & anti-impact transport packaging',
+            'Packaging materials & labeling for warehouses'
+          ]
+    },
+    {
+      slug: 'pharmaceutical',
+      name: isVi ? 'Dược phẩm' : isJa ? '製薬・バイオ' : 'Pharmaceuticals',
+      icon: 'Pill',
+      image: '/images/about/quality-hero-bg.webp',
+      description: isVi
+        ? 'Các sản phẩm bảo hộ y tế chất lượng cao, phục vụ môi trường khám chữa bệnh, phẫu thuật chuẩn vô trùng.'
+        : isJa
+        ? '無菌基準の診療・手術環境に対応する、高品質な医療用保護製品。'
+        : 'High-quality medical protective products serving sterile examination and surgical environments.',
+      bullets: isVi
+        ? [
+            'Khẩu trang y tế, găng tay vô trùng tiêu chuẩn',
+            'Dụng cụ bảo hộ phẫu thuật dùng một lần',
+            'Bao bì và hộp đựng rác thải y tế chuyên dụng'
+          ]
+        : isJa
+        ? [
+            '標準的な医療用マスク＆無菌手袋',
+            '使い捨て手術用保護具',
+            '医療用専用包装＆廃棄物容器'
+          ]
+        : [
+            'Standard medical masks & sterile gloves',
+            'Single-use surgical protective equipment',
+            'Specialized medical packaging & waste containers'
+          ]
+    },
+    {
+      slug: 'food',
+      name: isVi ? 'Thực phẩm' : isJa ? '食品・飲料' : 'Food & Beverage',
+      icon: 'Utensils',
+      image: '/images/icons/food_processing.webp',
+      description: isVi
+        ? 'Giải pháp bao bì chuyên dụng cho ngành thực phẩm & đồ uống — màng co PE, màng bọc thực phẩm, bảo quản tươi ngon, đạt chuẩn ISO 22000.'
+        : isJa
+        ? '食品・飲料業界向けの専用包装ソリューション — PEシュリンクフィルム、食品用ラップ、鮮度保持、ISO 22000基準。'
+        : 'Specialized packaging solutions for the food & beverage industry — PE shrink film, food wrap, freshness preservation, ISO 22000 standard.',
+      bullets: isVi
+        ? [
+            'Màng bọc, túi đóng gói thực phẩm an toàn',
+            'Trang phục bảo hộ cho công nhân chế biến',
+            'Giải pháp kiểm soát vi sinh bề mặt thiết bị'
+          ]
+        : isJa
+        ? [
+            '安全な食品用ラップ＆包装袋',
+            '加工従事者用保護作業服',
+            '設備表面の微生物制御ソリューション'
+          ]
+        : [
+            'Safe food wraps & packaging bags',
+            'Protective clothing for food processing workers',
+            'Microbial control solutions for equipment surfaces'
+          ]
+    },
+    {
+      slug: 'manufacturing',
+      name: isVi ? 'Cơ khí chế tạo & HVAC' : isJa ? '精密機械＆HVAC' : 'Precision Engineering & HVAC',
+      icon: 'Wrench',
+      image: '/images/icons/manufacturing.webp',
+      description: isVi
+        ? 'Cung cấp vật tư cơ khí, phụ kiện ống đồng, van điều khiển và thiết bị HVAC chính hãng cho hệ thống điều hòa không khí và thông gió công nghiệp.'
+        : isJa
+        ? '産業用空調・換気システム向けに、機械資材、銅管継手、制御バルブ、および純正HVAC機器を提供します。'
+        : 'Providing engineering materials, copper pipe fittings, control valves, and genuine HVAC equipment for industrial air conditioning and ventilation systems.',
+      bullets: isVi
+        ? [
+            'Màng PE đóng kiện, dây đai chịu lực lớn',
+            'Dầu, mỡ bôi trơn và hóa chất công nghiệp',
+            'Kẹp cơ khí và màng chống rỉ sét VCI'
+          ]
+        : isJa
+        ? [
+            '梱包用PEフィルム＆高耐荷重ストラップ',
+            '工業用潤滑油・グリース＆化学品',
+            '機械用クランプ＆VCI防錆フィルム'
+          ]
+        : [
+            'PE packaging film & heavy-duty strapping',
+            'Industrial lubricants, greases & chemicals',
+            'Mechanical clamps & VCI anti-rust film'
+          ]
+    },
+    {
+      slug: 'electronics',
+      name: isVi ? 'Điện tử' : isJa ? '電子・半導体' : 'Electronics & Semiconductors',
+      icon: 'Cpu',
+      image: '/images/icons/electronics.webp',
+      description: isVi
+        ? 'Đảm bảo môi trường sản xuất không ô nhiễm hạt bụi và tĩnh điện, bảo vệ cấu trúc nhạy cảm của vi mạch.'
+        : isJa
+        ? '塵埃や静電気のないクリーンな製造環境を確保し、微細な集積回路の脆弱な構造を保護します。'
+        : 'Ensuring a clean manufacturing environment free of dust particles and static electricity, protecting the sensitive structures of microcircuits.',
+      bullets: isVi
+        ? [
+            'Phòng sạch & trang phục bảo hộ PPE',
+            'Sản phẩm chống tĩnh điện ESD chuyên dụng',
+            'Bao bì chống ẩm, chống từ trường đa lớp'
+          ]
+        : isJa
+        ? [
+            'クリーンルーム＆PPE保護服',
+            '静電気放電（ESD）対策専用製品',
+            '多層防湿・防磁シールド包装'
+          ]
+        : [
+            'Cleanroom & PPE protective wear',
+            'Specialized electrostatic discharge (ESD) products',
+            'Multi-layer moisture-barrier & shielding packaging'
+          ]
+    }
+  ];
 
   return (
     <div className="min-h-screen bg-white text-slate-900 pb-16">
-      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16 py-8 flex flex-col gap-10">
-        
-        {/* Breadcrumb Section */}
-        <nav className="flex items-center gap-1 text-[11px] font-medium text-slate-400">
-          <Link href="/" className="hover:text-slate-600 transition-colors">
-            {content.breadcrumbHome}
-          </Link>
-          <span className="mx-1">/</span>
-          <span className="text-slate-500 font-semibold">{content.breadcrumbCurrent}</span>
-        </nav>
+      {/* Hero Section Banner Layout - Full Width */}
+      <div className="relative overflow-hidden bg-slate-900 min-h-[420px] lg:min-h-[480px] shadow-sm flex items-stretch w-full">
+        {/* Background Image */}
+        <Image
+          src="/images/industries/indus.png"
+          alt="ULink Industries Solutions"
+          fill
+          className="object-cover pointer-events-none"
+          priority
+        />
+        {/* Dark overlay for contrast */}
+        <div className="absolute inset-0 bg-slate-950/45 z-0" />
 
-        {/* Hero Section Banner Layout */}
-        <div className="relative overflow-hidden bg-slate-50 rounded-2xl border border-slate-100 flex flex-col md:flex-row items-stretch min-h-[350px] shadow-sm">
-          {/* Left Content Side */}
-          <div className="flex-1 p-8 sm:p-12 flex flex-col justify-center space-y-6 z-10 bg-gradient-to-r from-slate-50 via-slate-50/95 to-transparent md:max-w-2xl lg:max-w-3xl">
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-[#0F1E36] leading-[1.15]">
-              {content.heroTitleLine1}
-              <br />
-              {content.heroTitleLine2}
+        {/* Content - Contrained inside max-width container for content alignment */}
+        <div className="relative z-10 w-full max-w-[1440px] mx-auto px-4 sm:px-8 lg:px-16 p-8 sm:p-12 lg:p-16 flex flex-col justify-between">
+          {/* Breadcrumb */}
+          <nav className="flex items-center gap-1.5 text-xs text-blue-200/90 mb-6">
+            <Link href="/" className="hover:text-white transition-colors">
+              {content.breadcrumbHome}
+            </Link>
+            <span className="text-blue-200/40">&gt;</span>
+            <span className="text-white font-medium">{content.breadcrumbCurrent}</span>
+          </nav>
+
+          {/* Text area */}
+          <div className="max-w-3xl my-auto">
+            <h1 className="text-2xl sm:text-3.5xl lg:text-[40px] font-extrabold text-white leading-[1.2] tracking-tight">
+              {isVi 
+                ? 'Tối ưu chuỗi cung ứng nguyên liệu và vật tư với giải pháp Phòng sạch & Đóng gói.' 
+                : isJa 
+                ? 'クリーンルーム＆包装ソリューションによる原材料と資材のサプライチェーン最適化。' 
+                : 'Optimizing material & supply chain with Cleanroom & Packaging solutions.'}
             </h1>
-            
-            <p className="text-xs sm:text-sm leading-relaxed text-slate-500 max-w-xl font-medium">
-              {content.heroDesc}
+            <p className="mt-5 text-xs sm:text-sm lg:text-base leading-relaxed text-blue-100/90 max-w-2xl font-medium">
+              {isVi
+                ? 'ULink Industries thấu hiểu các tiêu chuẩn khắt khe & thách thức vận hành trong từng ngành. Chúng tôi cung cấp giải pháp toàn diện, giúp nâng cao chất lượng, đảm bảo an toàn & tối ưu hiệu suất sản xuất.'
+                : isJa
+                ? 'ULink Industriesは、各業界の厳格な基準と運用の課題を深く理解しています。品質向上、安全確保、および生産効率最適化を支援する包括的なソリューションを提供します。'
+                : 'ULink Industries understands the strict standards & operational challenges in each sector. We deliver comprehensive solutions to enhance quality, ensure safety & optimize production efficiency.'}
             </p>
 
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="mt-8">
               <Link
-                href={`/solutions?category=cleanroom-consumables`}
-                className="inline-flex h-11 items-center justify-center rounded-lg bg-[#0F1E36] px-6 text-xs sm:text-sm font-semibold text-white shadow-sm hover:bg-[#1A2D49] transition-all hover:scale-[1.01] active:scale-[0.99]"
+                href={`/rfq`}
+                className="inline-flex items-center justify-center rounded-lg border-2 border-white text-white hover:bg-white/10 px-5 py-2.5 text-xs sm:text-sm font-bold tracking-wide transition-colors"
               >
-                <img src="/images/icons/icon_standards.webp" className="h-4.5 w-4.5 mr-2 brightness-0 invert" alt="" />
-                {content.btnCleanroom}
-              </Link>
-              <Link
-                href={`/solutions?category=industrial-packaging`}
-                className="inline-flex h-11 items-center justify-center rounded-lg border-2 border-[#0F1E36] bg-white px-6 text-xs sm:text-sm font-semibold text-[#0F1E36] hover:bg-slate-50 transition-all hover:scale-[1.01] active:scale-[0.99]"
-              >
-                <img src="/images/icons/icon_packaging.webp" className="h-4.5 w-4.5 mr-2" alt="" />
-                {content.btnPackaging}
+                {isVi ? 'Liên hệ với Chúng tôi' : isJa ? 'お問い合わせ' : 'Contact Us'}
               </Link>
             </div>
           </div>
-
-          {/* Right Cleanroom Background Image */}
-          <div className="hidden md:block absolute right-0 top-0 bottom-0 w-[45%] lg:w-[50%] z-0">
-            <img
-              src="/images/icons/food_processing.webp"
-              className="w-full h-full object-cover"
-              alt="ULink Cleanroom Solutions"
-            />
-            {/* White overlay gradient to blend with left text */}
-            <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-slate-50 to-transparent" />
-          </div>
         </div>
+      </div>
 
-        {/* Industry Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pt-6 border-t border-slate-100">
-          <h2 className="text-xl sm:text-2xl font-bold text-[#0F1E36] shrink-0">
-            {content.sectionTitle}
+      {/* Main Grid Content */}
+      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16 py-12 lg:py-16 flex flex-col gap-12">
+        {/* Section Header */}
+        <div className="flex flex-col items-start max-w-3xl">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] leading-tight tracking-tight">
+            {isVi 
+              ? 'Giải pháp theo ngành nghề' 
+              : isJa 
+              ? '業界別ソリューション' 
+              : 'Solutions by Industry'}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 max-w-xl md:text-right font-medium">
-            {content.sectionSubtitle}
+          <p className="mt-3 text-sm text-slate-500 leading-relaxed font-medium">
+            {isVi 
+              ? 'Các giải pháp phòng sạch & đóng gói được thiết kế phù hợp với đặc thù & yêu cầu riêng của từng ngành nghề sản xuất.' 
+              : isJa 
+              ? '各業界の特性と個別の要件に合わせて設計されたクリーンルームおよび包装ソリューション。' 
+              : 'Cleanroom & packaging solutions designed to suit the specific characteristics and requirements of each manufacturing industry.'}
           </p>
         </div>
 
-        {/* Grid of 6 Industry Cards */}
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {content.industries.map((ind, index) => (
-            <div
-              key={index}
-              className="flex rounded-xl border border-slate-100 bg-[#F8FAFC] shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden"
-            >
-              {/* Card Left: text and details (60% width) */}
-              <div className="w-[60%] flex-1 p-5 sm:p-6 flex flex-col justify-between gap-4">
-                <div className="space-y-4">
+        {/* 6-Card Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {industriesList.map((ind, index) => {
+            const IconComponent = IconMap[ind.icon] || Cpu;
+            return (
+              <div
+                key={index}
+                className="group bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col"
+              >
+                {/* Top Image */}
+                <div className="relative aspect-[16/10] w-full bg-slate-50 overflow-hidden">
+                  <Image
+                    src={ind.image}
+                    alt={ind.name}
+                    fill
+                    className="object-cover transition-transform group-hover:scale-102 duration-300"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  />
+                </div>
+
+                {/* Card Body */}
+                <div className="p-6 flex flex-col flex-1">
                   {/* Icon & Title */}
-                  <div className="flex items-center gap-2.5">
-                    <img src={ind.icon} className="h-7 w-7 sm:h-8 sm:w-8 shrink-0" alt="" />
-                    <h3 className="text-sm sm:text-base font-extrabold text-[#0F1E36] leading-tight">
+                  <div className="flex items-center gap-2.5 mb-4">
+                    <IconComponent className="h-5.5 w-5.5 text-blue-600 shrink-0" />
+                    <h3 className="text-base sm:text-lg font-bold text-[#0F1E36] leading-tight">
                       {ind.name}
                     </h3>
                   </div>
-                  
-                  <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed min-h-[48px]">
+
+                  {/* Description */}
+                  <p className="text-xs sm:text-sm text-slate-500 mb-6 leading-relaxed flex-1 font-medium">
                     {ind.description}
                   </p>
 
-                  <div className="space-y-1.5">
-                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                      {content.keySolutionsLabel}
-                    </p>
-                    <ul className="space-y-1 text-[11px] text-slate-600 font-medium">
-                      {ind.bullets.map((bullet, idx) => (
-                        <li key={idx} className="flex items-start gap-1">
-                          <span className="text-[#1769E2] font-bold select-none shrink-0">✓</span>
-                          <span className="leading-tight">{bullet}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  {/* Bullet Points */}
+                  <ul className="space-y-2.5 mb-6">
+                    {ind.bullets.map((bullet, bIdx) => (
+                      <li key={bIdx} className="flex items-start gap-2 text-[11px] sm:text-xs text-slate-600 font-medium leading-normal">
+                        <Check className="h-4 w-4 text-blue-500 shrink-0 mt-0.5" />
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* View Details Link */}
+                  <div className="pt-4 border-t border-slate-100 mt-auto">
+                    <Link
+                      href={`/industries/${ind.slug}`}
+                      className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors"
+                    >
+                      {content.viewDetails}
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
                   </div>
                 </div>
-
-                <div className="pt-2">
-                  <Link
-                    href={`/industries/${ind.slug}`}
-                    className="inline-flex h-8 items-center justify-center rounded-lg border border-slate-300 bg-white px-3 text-[11px] font-bold text-slate-700 hover:border-[#0F1E36] hover:text-[#0F1E36] transition-all hover:scale-[1.01]"
-                  >
-                    {content.btnViewDetails} <span className="ml-1">→</span>
-                  </Link>
-                </div>
               </div>
-
-              {/* Card Right: industry photo (40% width) */}
-              <div className="w-[40%] shrink-0 relative hidden sm:block">
-                <img
-                  src={ind.image}
-                  className="w-full h-full object-cover"
-                  alt={`${ind.name} solution`}
-                />
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
+        
+        {/* Core Advantages & Features Section */}
+        <CoreAdvantages locale={locale} />
 
-        {/* Bottom Bar Section */}
-        <div className="mt-8 flex flex-col xl:flex-row items-stretch xl:items-center justify-between gap-6 p-6 sm:p-8 bg-[#F8FAFC] rounded-xl border border-slate-200/40">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 flex-1">
-            {content.bottomColumns.map((col, idx) => (
-              <div key={idx} className="flex items-start gap-2.5">
-                <img src={col.icon} className="h-5.5 w-5.5 shrink-0" alt="" />
-                <div className="space-y-0.5">
-                  <h4 className="text-xs sm:text-sm font-bold text-[#0F1E36] leading-snug">
-                    {col.title}
-                  </h4>
-                  <p className="text-[11px] sm:text-xs text-slate-500 leading-relaxed font-medium">
-                    {col.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-          
-          <div className="flex items-center shrink-0 self-start sm:self-auto pt-4 xl:pt-0 border-t xl:border-t-0 border-slate-200/60 w-full xl:w-auto">
-            <Link
-              href={`/quick-order`}
-              className="inline-flex h-11 items-center justify-center rounded-lg bg-[#0F1E36] px-6 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-[#1A2D49] transition-all hover:scale-[1.01] w-full sm:w-auto text-center"
-            >
-              {content.bottomQuoteBtn} <span className="ml-1">→</span>
-            </Link>
-          </div>
-        </div>
-
+        {/* About Us & Hub Ha Nam Section */}
+        <AboutUsHub locale={locale} />
       </div>
+      {/* Customer Segments Section */}
+      <TargetSegments />
+      
+      <PartnersCertifications />
+      <WorkingProcess />
+
+      {/* Market News Section */}
+      <MarketNews locale={locale} />
+
+    
+
+      {/* Direct Contact Banner Section */}
+      <ContactCta locale={locale} />
+
+        {/* FAQ Accordion Section */}
+      <FaqSection locale={locale} />
     </div>
   );
 }

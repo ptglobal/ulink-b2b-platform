@@ -1,12 +1,12 @@
 /**
  * SKU Auto-generation Service
  *
- * Core logic: given a product ID, fetches its attributes + options,
- * computes the cartesian product, and reconciles with existing SKUs.
+ * Core logic: given a product ID, fetches its assigned attributes (via M2M junction)
+ * + options, computes the cartesian product, and reconciles with existing SKUs.
  *
- * - New combinations → create as 'draft'
+ * - New combinations → create as 'published'
  * - Orphaned SKUs (no longer in cartesian) → archive
- * - Archived SKUs that match a current combination → restore to 'draft'
+ * - Archived SKUs that match a current combination → restore to 'published'
  * - Existing active SKUs → unchanged
  */
 
@@ -29,6 +29,7 @@ export async function regenerateSkusForProduct(extensionContext, context, produc
 
   const productsService = new ItemsService('products', serviceOptions);
   const attrsService = new ItemsService('product_attributes', serviceOptions);
+  const junctionService = new ItemsService('products_product_attributes', serviceOptions);
   const skusService = new ItemsService('product_skus', serviceOptions);
 
   // 1. Fetch product slug for SKU prefix
@@ -38,37 +39,53 @@ export async function regenerateSkusForProduct(extensionContext, context, produc
     return;
   }
 
-  // 2. Fetch all attributes with their options (sorted)
-  const attributes = await attrsService.readByQuery({
-    filter: { product: { _eq: productId } },
-    fields: ['id', 'name', 'sort', 'options.id', 'options.value', 'options.sku_suffix', 'options.sort'],
-    sort: ['sort', 'id']
+  // 2. Fetch assigned attribute IDs via M2M junction
+  const junctions = await junctionService.readByQuery({
+    filter: { products_id: { _eq: productId } },
+    fields: ['product_attributes_id'],
+    limit: -1
   });
 
-  if (!attributes || attributes.length === 0) {
-    console.log(`[sku-autogen] Product ${productId} has no attributes, archiving all auto-generated SKUs.`);
+  const attrIds = junctions.map((j) => j.product_attributes_id).filter(Boolean);
+
+  if (attrIds.length === 0) {
+    console.log(`[sku-autogen] Product ${productId} has no assigned attributes, archiving all auto-generated SKUs.`);
     await archiveAllAutoSkus(skusService, productId);
     return;
   }
 
-  // 3. Sort options within each attribute
+  // 3. Fetch attributes with their options (sorted)
+  const attributes = await attrsService.readByQuery({
+    filter: { id: { _in: attrIds } },
+    fields: ['id', 'name', 'slug', 'sort', 'options.id', 'options.value', 'options.sku_suffix', 'options.sort'],
+    sort: ['sort', 'id']
+  });
+
+  if (!attributes || attributes.length === 0) {
+    console.log(`[sku-autogen] Product ${productId} assigned attributes not found, archiving all auto-generated SKUs.`);
+    await archiveAllAutoSkus(skusService, productId);
+    return;
+  }
+
+  // 4. Sort options within each attribute
   for (const attr of attributes) {
     if (attr.options) {
       attr.options.sort((a, b) => (a.sort ?? 0) - (b.sort ?? 0) || a.id - b.id);
     }
   }
 
-  // 4. Skip if any attribute has no options yet (admin still adding)
+  // 5. Skip if any attribute has no options yet (admin still adding)
   const attrWithOptions = attributes.filter((a) => a.options && a.options.length > 0);
   if (attrWithOptions.length === 0) {
     console.log(`[sku-autogen] Product ${productId}: no attribute has options yet, skipping.`);
     return;
   }
 
-  // 5. Compute cartesian product
+  // 6. Compute cartesian product
   const optionSets = attrWithOptions.map((attr) =>
     attr.options.map((opt) => ({
       attrName: attr.name,
+      attrSlug: attr.slug,
       value: opt.value,
       suffix: opt.sku_suffix.toLowerCase().trim()
     }))
@@ -76,7 +93,7 @@ export async function regenerateSkusForProduct(extensionContext, context, produc
 
   const combinations = cartesianProduct(optionSets);
 
-  // 6. Safety cap
+  // 7. Safety cap
   if (combinations.length > MAX_COMBINATIONS) {
     console.error(
       `[sku-autogen] Product ${productId}: ${combinations.length} combinations exceeds cap of ${MAX_COMBINATIONS}. Aborting.`
@@ -84,7 +101,7 @@ export async function regenerateSkusForProduct(extensionContext, context, produc
     return;
   }
 
-  // 7. Build desired SKU map: sku_code → attributes JSON
+  // 8. Build desired SKU map: sku_code → attributes JSON
   const prefix = buildSkuPrefix(product.slug);
   const desiredMap = new Map(); // sku_code → { attributes }
 
@@ -93,12 +110,13 @@ export async function regenerateSkusForProduct(extensionContext, context, produc
     const skuCode = `${prefix}-${suffixParts.join('-')}`;
     const attrs = {};
     for (const c of combo) {
-      attrs[c.attrName] = c.value;
+      // Use slug as key (e.g. "size": "M", "color": "Xanh dương")
+      attrs[c.attrSlug] = c.value;
     }
     desiredMap.set(skuCode, attrs);
   }
 
-  // 8. Fetch existing SKUs for this product
+  // 9. Fetch existing SKUs for this product
   const existingSkus = await skusService.readByQuery({
     filter: { product: { _eq: productId } },
     fields: ['id', 'sku_code', 'status', 'attributes'],
@@ -110,9 +128,9 @@ export async function regenerateSkusForProduct(extensionContext, context, produc
     existingByCode.set(sku.sku_code, sku);
   }
 
-  // 9. Reconcile
+  // 10. Reconcile
   const toCreate = [];
-  const toRestore = []; // archived → draft
+  const toRestore = []; // archived → published
   const toArchive = []; // active but no longer in desired
 
   // Find new or restorable
@@ -136,7 +154,7 @@ export async function regenerateSkusForProduct(extensionContext, context, produc
     }
   }
 
-  // 10. Execute in batches
+  // 11. Execute in batches
   // Create new SKUs
   for (let i = 0; i < toCreate.length; i += BATCH_SIZE) {
     const batch = toCreate.slice(i, i + BATCH_SIZE);
