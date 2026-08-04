@@ -64,6 +64,7 @@ export interface ProductSku {
   unit: string | null;
   pack_size: string | null;
   attributes: Record<string, unknown> | null;
+  image?: string | null;
   stock_status: 'in_stock' | 'low_stock' | 'out_of_stock';
   status: 'published' | 'draft' | 'archived';
 }

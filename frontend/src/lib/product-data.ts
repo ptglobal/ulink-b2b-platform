@@ -61,7 +61,7 @@ const PRODUCT_LIST_FIELDS = [
   'translations.languages_code', 'translations.name', 'translations.short_description', 'translations.meta_title', 'translations.meta_description',
   'category.id', 'category.name', 'category.slug',
   'category.translations.languages_code', 'category.translations.name',
-  'skus.id', 'skus.sku_code', 'skus.stock_status', 'skus.unit', 'skus.pack_size', 'skus.status',
+  'skus.id', 'skus.sku_code', 'skus.stock_status', 'skus.unit', 'skus.pack_size', 'skus.image', 'skus.status',
   'industries.industries_id.id', 'industries.industries_id.name', 'industries.industries_id.slug',
   'industries.industries_id.translations.languages_code', 'industries.industries_id.translations.name',
   'standards.standards_id.id', 'standards.standards_id.name', 'standards.standards_id.slug',
@@ -186,7 +186,7 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
       'translations.languages_code', 'translations.name', 'translations.short_description', 'translations.meta_title', 'translations.meta_description',
       'category.id', 'category.name', 'category.slug',
       'category.translations.languages_code', 'category.translations.name', 'category.translations.description',
-      'skus.id', 'skus.sku_code', 'skus.stock_status', 'skus.unit', 'skus.pack_size', 'skus.attributes', 'skus.status',
+      'skus.id', 'skus.sku_code', 'skus.stock_status', 'skus.unit', 'skus.pack_size', 'skus.attributes', 'skus.image', 'skus.status',
       'industries.industries_id.id', 'industries.industries_id.name', 'industries.industries_id.slug', 'industries.industries_id.description',
       'industries.industries_id.translations.languages_code', 'industries.industries_id.translations.name', 'industries.industries_id.translations.description',
       'standards.standards_id.id', 'standards.standards_id.name', 'standards.standards_id.slug', 'standards.standards_id.description',
@@ -355,6 +355,41 @@ export async function fetchRegionalHubs(): Promise<RegionalHub[]> {
     return json.data ?? [];
   } catch (error) {
     console.error('Failed to fetch regional hubs:', error);
+    return [];
+  }
+}
+
+export interface CategoryWithProducts {
+  category: ProductCategory;
+  products: Product[];
+}
+
+/**
+ * Fetch top-level categories (no parent) with their first N products each.
+ * Used by the Catalog Showcase section on the /solutions page.
+ */
+export async function fetchTopCategoriesWithProducts(
+  productsPerCategory = 4,
+  maxCategories = 3
+): Promise<CategoryWithProducts[]> {
+  try {
+    const categories = await fetchProductCategories();
+    const topCategories = categories
+      .filter((c) => !c.parent)
+      .slice(0, maxCategories);
+
+    const results: CategoryWithProducts[] = [];
+    for (const cat of topCategories) {
+      const { products } = await fetchProducts({
+        category: cat.slug,
+        limit: productsPerCategory,
+        sort: 'newest',
+      });
+      results.push({ category: cat, products });
+    }
+    return results;
+  } catch (error) {
+    console.error('Failed to fetch top categories with products:', error);
     return [];
   }
 }

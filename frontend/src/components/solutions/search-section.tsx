@@ -107,11 +107,10 @@ export default function SearchSection({ locale, labels }: SearchSectionProps) {
                     handleSearch(tag.value);
                   }
                 }}
-                className={`rounded-full px-4 py-2 text-xs font-semibold transition-all border ${
-                  isActive
+                className={`rounded-full px-4 py-2 text-xs font-semibold transition-all border ${isActive
                     ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
                     : 'bg-white border-gray-200 text-slate-600 hover:bg-slate-50 hover:border-gray-300'
-                }`}
+                  }`}
               >
                 {tag.label}
               </button>

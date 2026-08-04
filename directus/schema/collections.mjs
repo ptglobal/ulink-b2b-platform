@@ -103,7 +103,8 @@ export const COLLECTION_DEFS = [
       },
       { field: 'unit', type: 'string', meta: { interface: 'input' } },
       { field: 'pack_size', type: 'string', meta: { interface: 'input' } },
-      { field: 'attributes', type: 'json', meta: { interface: 'json' } }
+      { field: 'attributes', type: 'json', meta: { interface: 'json' } },
+      { field: 'images', type: 'json', meta: { interface: 'input-code', options: { language: 'json' }, note: 'JSON array of directus_files UUIDs, e.g. ["uuid1","uuid2"]' } }
     ]
   },
   {

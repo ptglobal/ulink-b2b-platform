@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
+import Link from 'next/link';
 import { ShoppingCart, Check, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -14,6 +15,9 @@ interface SkuItem {
 
 interface ProductDetailClientProps {
   skus: SkuItem[];
+  locale: string;
+  basePrice: number;
+  unitLabel: string;
   labels: {
     addToCart: string;
     added: string;
@@ -22,67 +26,105 @@ interface ProductDetailClientProps {
   };
 }
 
-/**
- * Extract unique attribute names and their possible values from all SKUs.
- * Returns array of { name, values } maintaining insertion order.
- */
-function extractAttributes(skus: SkuItem[]): { name: string; values: string[] }[] {
-  const attrMap = new Map<string, Set<string>>();
-
-  for (const sku of skus) {
-    if (!sku.attributes) continue;
-    for (const [key, val] of Object.entries(sku.attributes)) {
-      if (!attrMap.has(key)) attrMap.set(key, new Set());
-      attrMap.get(key)!.add(val);
-    }
-  }
-
-  return Array.from(attrMap.entries()).map(([name, valSet]) => ({
-    name,
-    values: Array.from(valSet)
-  }));
-}
-
-/**
- * Find the SKU that matches all selected attribute values.
- */
-function findMatchingSku(
-  skus: SkuItem[],
-  selections: Record<string, string>
-): SkuItem | null {
-  const selKeys = Object.keys(selections);
-  if (selKeys.length === 0) return skus[0] ?? null;
-
-  return (
-    skus.find((sku) => {
-      if (!sku.attributes) return false;
-      return selKeys.every((key) => sku.attributes![key] === selections[key]);
-    }) ?? null
-  );
-}
-
-export default function ProductDetailClient({ skus, labels }: ProductDetailClientProps) {
-  const attributes = useMemo(() => extractAttributes(skus), [skus]);
-
-  // Initialize selections with first value of each attribute
+export default function ProductDetailClient({
+  skus,
+  locale,
+  basePrice,
+  unitLabel,
+  labels
+}: ProductDetailClientProps) {
+  // 1. Selection states for attributes
   const [selections, setSelections] = useState<Record<string, string>>(() => {
     const init: Record<string, string> = {};
-    for (const attr of extractAttributes(skus)) {
-      if (attr.values.length > 0) init[attr.name] = attr.values[0];
+    // Extract unique attributes
+    const attrMap = new Map<string, Set<string>>();
+    for (const sku of skus) {
+      if (!sku.attributes) continue;
+      for (const [key, val] of Object.entries(sku.attributes)) {
+        if (!attrMap.has(key)) attrMap.set(key, new Set());
+        attrMap.get(key)!.add(val);
+      }
+    }
+    // Set first attribute value as default selection
+    for (const [name, valSet] of attrMap.entries()) {
+      const arr = Array.from(valSet);
+      if (arr.length > 0) init[name] = arr[0];
     }
     return init;
   });
 
+  // 2. Quantity state
+  const [quantity, setQuantity] = useState<number>(100);
   const [added, setAdded] = useState(false);
 
-  const selectedSku = useMemo(
-    () => findMatchingSku(skus, selections),
-    [skus, selections]
-  );
+  // Extract unique attributes list for rendering
+  const attributes = useMemo(() => {
+    const attrMap = new Map<string, Set<string>>();
+    for (const sku of skus) {
+      if (!sku.attributes) continue;
+      for (const [key, val] of Object.entries(sku.attributes)) {
+        if (!attrMap.has(key)) attrMap.set(key, new Set());
+        attrMap.get(key)!.add(val);
+      }
+    }
+    return Array.from(attrMap.entries()).map(([name, valSet]) => ({
+      name,
+      values: Array.from(valSet)
+    }));
+  }, [skus]);
 
-  const handleSelect = useCallback((attrName: string, value: string) => {
+  // Find the selected SKU
+  const selectedSku = useMemo(() => {
+    const selKeys = Object.keys(selections);
+    if (selKeys.length === 0) return skus[0] ?? null;
+    return (
+      skus.find((sku) => {
+        if (!sku.attributes) return false;
+        return selKeys.every((key) => sku.attributes![key] === selections[key]);
+      }) ?? null
+    );
+  }, [skus, selections]);
+
+  // Determine current active discount tier index based on quantity
+  const activeTierIdx = useMemo(() => {
+    if (quantity < 100) return 0;
+    if (quantity < 300) return 1;
+    if (quantity < 500) return 2;
+    return 3;
+  }, [quantity]);
+
+  // Dynamic pricing tiers multiplier
+  const priceTiers = useMemo(() => {
+    return [
+      { min: 50, max: 99, multiplier: 1.2, label: '50–99' },
+      { min: 100, max: 299, multiplier: 1.0, label: '100–299' },
+      { min: 300, max: 499, multiplier: 0.84, label: '300–499' },
+      { min: 500, max: null, multiplier: 0.72, label: '500+' }
+    ];
+  }, []);
+
+  // Format currency dynamically based on locale
+  const formatPrice = useCallback((amount: number) => {
+    if (locale === 'vi') {
+      return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+    }
+    return '$' + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount / 25000);
+  }, [locale]);
+
+  // Calculate current unit price
+  const currentUnitPrice = useMemo(() => {
+    const tier = priceTiers[activeTierIdx];
+    return Math.round(basePrice * tier.multiplier);
+  }, [basePrice, activeTierIdx, priceTiers]);
+
+  const handleSelectAttribute = useCallback((attrName: string, value: string) => {
     setSelections((prev) => ({ ...prev, [attrName]: value }));
     setAdded(false);
+  }, []);
+
+  const handleQuantityChange = useCallback((val: number) => {
+    if (isNaN(val)) return;
+    setQuantity(Math.max(1, val));
   }, []);
 
   const handleAddToCart = useCallback(() => {
@@ -90,11 +132,13 @@ export default function ProductDetailClient({ skus, labels }: ProductDetailClien
 
     try {
       const raw = localStorage.getItem('rfq-cart');
-      const cart: Array<{ sku: string; product_name: string; note: string }> = raw ? JSON.parse(raw) : [];
+      const cart: Array<{ sku: string; qty: number; note: string }> = raw ? JSON.parse(raw) : [];
 
-      const existing = cart.find((item) => item.sku === selectedSku.sku_code);
-      if (!existing) {
-        cart.push({ sku: selectedSku.sku_code, product_name: '', note: '' });
+      const existingIdx = cart.findIndex((item) => item.sku === selectedSku.sku_code);
+      if (existingIdx > -1) {
+        cart[existingIdx].qty = quantity;
+      } else {
+        cart.push({ sku: selectedSku.sku_code, qty: quantity, note: '' });
       }
 
       localStorage.setItem('rfq-cart', JSON.stringify(cart));
@@ -104,108 +148,157 @@ export default function ProductDetailClient({ skus, labels }: ProductDetailClien
     } catch (err) {
       console.error('Failed to add to cart:', err);
     }
-  }, [selectedSku]);
+  }, [selectedSku, quantity]);
 
   if (skus.length === 0) return null;
 
-  // Fallback: if no attributes, show flat list by sku_code
-  const hasAttributes = attributes.length > 0;
-
   return (
-    <div className="space-y-4">
-      {/* Dynamic Attribute Selectors */}
-      {hasAttributes ? (
-        attributes.map((attr) => (
-          <div key={attr.name}>
-            <p className="text-xs font-medium text-gray-500 mb-2">{attr.name}</p>
-            <div className="flex flex-wrap gap-2">
-              {attr.values.map((val) => {
-                const isSelected = selections[attr.name] === val;
-                return (
-                  <button
-                    key={val}
-                    type="button"
-                    onClick={() => handleSelect(attr.name, val)}
-                    className={cn(
-                      'px-3.5 py-2 rounded-lg text-xs font-medium border transition-all',
-                      isSelected
-                        ? 'border-blue-600 bg-blue-50 text-blue-700'
-                        : 'border-gray-200 text-gray-700 hover:border-blue-300'
-                    )}
-                  >
-                    {val}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        ))
-      ) : skus.length > 1 ? (
-        /* Fallback: no structured attributes — show sku_code list */
-        <div>
-          <p className="text-xs font-medium text-gray-500 mb-2">{labels.selectVariant}</p>
+    <div className="space-y-6">
+      {/* 1. Price block */}
+      <div className="space-y-1">
+        <div className="flex items-baseline gap-2">
+          <span className="text-3xl font-extrabold text-blue-600">
+            {formatPrice(currentUnitPrice)}
+          </span>
+          <span className="text-sm font-semibold text-slate-500">
+            / {unitLabel}
+          </span>
+        </div>
+        <p className="text-[11px] text-slate-400 font-medium">
+          {locale === 'vi' ? 'Đã bao gồm thuế (8% VAT)' : 'Tax included (8% VAT)'}
+        </p>
+        <div className="flex items-center gap-1.5 pt-1">
+          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+          <span className="text-xs font-bold text-emerald-600">
+            {locale === 'vi' ? 'Còn hàng' : 'In Stock'}
+          </span>
+        </div>
+      </div>
+
+      <hr className="border-gray-100" />
+
+      {/* 2. Dynamic Attribute Selectors */}
+      {attributes.map((attr) => (
+        <div key={attr.name} className="space-y-2">
+          <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+            {attr.name === 'size' ? (locale === 'vi' ? 'Kích cỡ' : 'Size') : attr.name}
+          </p>
           <div className="flex flex-wrap gap-2">
-            {skus.map((sku) => {
-              const isSelected = selectedSku?.id === sku.id;
+            {attr.values.map((val) => {
+              const isSelected = selections[attr.name] === val;
               return (
                 <button
-                  key={sku.id}
+                  key={val}
                   type="button"
-                  onClick={() => setSelections({})}
+                  onClick={() => handleSelectAttribute(attr.name, val)}
                   className={cn(
-                    'px-3.5 py-2 rounded-lg text-xs font-medium border transition-all',
+                    'w-10 h-8 rounded-md text-xs font-bold border transition-all flex items-center justify-center',
                     isSelected
-                      ? 'border-blue-600 bg-blue-50 text-blue-700'
-                      : 'border-gray-200 text-gray-700 hover:border-blue-300'
+                      ? 'border-blue-600 text-blue-600 bg-white ring-1 ring-blue-600'
+                      : 'border-gray-200 text-slate-700 hover:border-gray-300 bg-white'
                   )}
                 >
-                  {sku.pack_size || sku.sku_code}
+                  {val}
                 </button>
               );
             })}
           </div>
         </div>
-      ) : null}
+      ))}
 
-      {/* Selected SKU info */}
-      {selectedSku && (
-        <p className="text-xs text-gray-400">SKU: {selectedSku.sku_code}</p>
-      )}
+      {/* 3. Quantity input */}
+      <div className="space-y-2">
+        <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+          {locale === 'vi' ? 'Số lượng' : 'Quantity'}
+        </p>
+        <div className="flex items-center w-full max-w-[200px] bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <button
+            type="button"
+            onClick={() => handleQuantityChange(quantity - 1)}
+            className="w-10 h-9 flex items-center justify-center hover:bg-slate-50 text-slate-600 text-lg font-medium border-r border-gray-200 select-none transition-colors"
+          >
+            &minus;
+          </button>
+          <input
+            type="number"
+            value={quantity}
+            onChange={(e) => handleQuantityChange(parseInt(e.target.value, 10))}
+            className="flex-1 text-center font-bold text-sm text-slate-800 focus:outline-none w-12"
+          />
+          <button
+            type="button"
+            onClick={() => handleQuantityChange(quantity + 1)}
+            className="w-10 h-9 flex items-center justify-center hover:bg-slate-50 text-slate-600 text-lg font-medium border-l border-gray-200 select-none transition-colors"
+          >
+            &#43;
+          </button>
+        </div>
+      </div>
 
-      {/* Add to Cart Button */}
-      <button
-        type="button"
-        onClick={handleAddToCart}
-        disabled={!selectedSku}
-        className={cn(
-          'w-full inline-flex items-center justify-center gap-2 h-11 rounded-lg font-semibold text-sm transition-all',
-          added
-            ? 'bg-green-600 text-white'
-            : 'bg-gray-900 text-white hover:bg-gray-800',
-          !selectedSku && 'opacity-50 cursor-not-allowed'
-        )}
-      >
-        {added ? (
-          <>
-            <Check className="h-4 w-4" />
-            {labels.added}
-          </>
-        ) : (
-          <>
-            <ShoppingCart className="h-4 w-4" />
-            {labels.addToCart}
-          </>
-        )}
-      </button>
+      {/* 4. Quantity Discount Table */}
+      <div className="space-y-2">
+        <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+          {locale === 'vi' ? 'Chiết khấu theo số lượng' : 'Volume Discount'}
+        </p>
+        <div className="border border-gray-200 rounded-lg overflow-hidden bg-white divide-y divide-gray-150">
+          {priceTiers.map((tier, idx) => {
+            const isActive = activeTierIdx === idx;
+            const tierPrice = Math.round(basePrice * tier.multiplier);
+            return (
+              <div
+                key={tier.label}
+                className={cn(
+                  'flex justify-between items-center px-4 py-2.5 text-xs transition-colors',
+                  isActive ? 'bg-blue-50/60 font-bold text-blue-600' : 'text-slate-600'
+                )}
+              >
+                <span>
+                  {tier.label} {unitLabel}
+                </span>
+                <span className={isActive ? 'text-blue-600' : 'text-slate-900 font-semibold'}>
+                  {formatPrice(tierPrice)}/{unitLabel}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
-      {/* Request Quote Button */}
-      <button
-        type="button"
-        className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-lg font-medium text-sm border border-gray-200 text-gray-700 hover:bg-gray-50 transition-colors"
-      >
-        <FileText className="h-4 w-4" />
-        {labels.requestQuote}
-      </button>
+      {/* 5. Action Buttons */}
+      <div className="space-y-3 pt-2">
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={!selectedSku}
+          className={cn(
+            'w-full flex items-center justify-center gap-2 h-11 rounded-lg font-bold text-sm transition-all shadow-sm',
+            added
+              ? 'bg-emerald-600 text-white'
+              : 'bg-blue-600 text-white hover:bg-blue-700 active:bg-blue-800',
+            !selectedSku && 'opacity-50 cursor-not-allowed'
+          )}
+        >
+          {added ? (
+            <>
+              <Check className="h-4.5 w-4.5" />
+              {labels.added}
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="h-4.5 w-4.5" />
+              {locale === 'vi' ? 'Thêm vào giỏ hàng' : labels.addToCart}
+            </>
+          )}
+        </button>
+
+        <Link
+          href={`/${locale}/rfq`}
+          className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-lg font-bold text-sm border border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors bg-white"
+        >
+          <FileText className="h-4.5 w-4.5" />
+          {locale === 'vi' ? 'Yêu cầu báo giá sản lượng lớn' : labels.requestQuote}
+        </Link>
+      </div>
     </div>
   );
 }
