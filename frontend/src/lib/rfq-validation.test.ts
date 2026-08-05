@@ -62,7 +62,7 @@ test('preserves case of sku codes in RFQ items', () => {
 
   assert.equal(result.ok, true);
   if (!result.ok) throw new Error('Unexpected validation failure');
-  assert.deepEqual(result.value.items, [{ sku: 'CR-GLV-001' }]);
+  assert.deepEqual(result.value.items, [{ sku: 'CR-GLV-001', qty: 1 }]);
 });
 
 test('rejects missing address', () => {

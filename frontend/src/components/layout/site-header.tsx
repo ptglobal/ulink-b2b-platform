@@ -5,6 +5,7 @@ import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
 import { MobileNav } from './mobile-nav';
 import { HeaderAuthButton } from './header-auth-button';
+import { CartBadge } from './cart-badge';
 
 /**
  * Header trang chủ — bám sát thiết kế Figma (node 2071:1118):
@@ -60,11 +61,12 @@ export async function SiteHeader() {
           </button>
 
           <Link
-            href="/quick-order"
+            href="/cart"
             aria-label={t('cart')}
-            className="flex h-9 w-9 items-center justify-center text-brand transition-colors hover:bg-muted sm:h-10 sm:w-10"
+            className="relative flex h-9 w-9 items-center justify-center text-brand transition-colors hover:bg-muted sm:h-10 sm:w-10"
           >
             <ShoppingCart className="h-5 w-5 sm:h-[22px] sm:w-[22px]" aria-hidden="true" />
+            <CartBadge />
           </Link>
 
           <Link

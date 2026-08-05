@@ -1,6 +1,7 @@
 
 export interface NormalizedRfqItem {
   sku: string;
+  qty: number;
   note?: string;
 }
 
@@ -185,16 +186,27 @@ function normalizeItems(value: unknown, state: ValidationState): NormalizedRfqIt
       continue;
     }
 
-    const rawSku = cleanString((item as Record<string, unknown>).sku);
-    const rawNote = cleanString((item as Record<string, unknown>).note);
+    const rec = item as Record<string, unknown>;
+    const rawSku = cleanString(rec.sku);
+    const rawNote = cleanString(rec.note);
 
     if (!rawSku) {
       addInvalid(state, 'items', 'INVALID_SKU');
       continue;
     }
 
+    // Parse quantity: accept number or numeric string, default to 1
+    let qty = 1;
+    if (typeof rec.qty === 'number' && Number.isFinite(rec.qty) && rec.qty > 0) {
+      qty = Math.floor(rec.qty);
+    } else if (typeof rec.qty === 'string') {
+      const parsed = parseInt(rec.qty, 10);
+      if (Number.isFinite(parsed) && parsed > 0) qty = parsed;
+    }
+
     items.push({
       sku: rawSku.trim(),
+      qty,
       ...(rawNote ? { note: rawNote } : {})
     });
   }

@@ -139,7 +139,7 @@ export async function submitRfq(body: unknown, deps: SubmitRfqDeps): Promise<Sub
       message: validation.value.message || '',
       scheduled_delivery: validation.value.scheduled_delivery,
       requested_delivery_date: validation.value.requested_delivery_date,
-      ...(validation.value.items && validation.value.items.length > 0 ? { line_items: validation.value.items.map((item) => ({ sku: item.sku, qty: 1 })) } : {}),
+      ...(validation.value.items && validation.value.items.length > 0 ? { line_items: validation.value.items.map((item) => ({ sku: item.sku, qty: item.qty })) } : {}),
       status: 'pending',
       source: validation.value.source === 'portal' ? 'portal' : 'web'
     });

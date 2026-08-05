@@ -2,7 +2,15 @@
 export interface CartItem {
   sku: string;
   product_name: string;
+  spec: string;       // Quy cách kỹ thuật
+  unit: string;       // Đơn vị tính (ĐVT)
+  quantity: number;   // Số lượng (MOQ)
   note: string;
+}
+
+/** Create a blank cart item for adding new rows */
+export function createBlankCartItem(): CartItem {
+  return { sku: '', product_name: '', spec: '', unit: '', quantity: 0, note: '' };
 }
 
 /** Read cart from localStorage, migrating old format if needed */
@@ -13,16 +21,15 @@ export function readCart(): CartItem[] {
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
 
-    // Migrate old format { sku, qty } → new format { sku, product_name, note }
-    return parsed.map((item: any) => {
-      if ('product_name' in item) return { sku: item.sku, product_name: item.product_name, note: item.note || '' } as CartItem;
-      // Legacy item
-      return {
-        sku: item.sku || '',
-        product_name: '',
-        note: ''
-      } as CartItem;
-    });
+    // Migrate old format { sku, qty } → new format
+    return parsed.map((item: any) => ({
+      sku: item.sku || '',
+      product_name: item.product_name || '',
+      spec: item.spec || '',
+      unit: item.unit || '',
+      quantity: typeof item.quantity === 'number' ? item.quantity : 0,
+      note: item.note || ''
+    } as CartItem));
   } catch {
     return [];
   }
@@ -41,3 +48,25 @@ export function parseSkuText(text: string): string[] {
     .map((s) => s.trim())
     .filter((s) => s.length > 0);
 }
+
+/** Save draft form data to localStorage */
+export function saveDraft(data: Record<string, unknown>) {
+  localStorage.setItem('rfq-draft', JSON.stringify(data));
+}
+
+/** Read draft form data from localStorage */
+export function readDraft(): Record<string, unknown> | null {
+  try {
+    const raw = localStorage.getItem('rfq-draft');
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+/** Clear draft from localStorage */
+export function clearDraft() {
+  localStorage.removeItem('rfq-draft');
+}
+

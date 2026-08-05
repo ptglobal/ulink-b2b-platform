@@ -1,24 +1,17 @@
 import type { Metadata } from 'next';
-import { setRequestLocale } from 'next-intl/server';
+import { setRequestLocale, getTranslations } from 'next-intl/server';
 import { getCurrentUser } from '@/lib/auth-helpers';
 import { QuickOrderClient } from '@/components/rfq/quick-order-client';
+import { Link } from '@/i18n/navigation';
+import { ChevronRight } from 'lucide-react';
 
 type Props = { params: { locale: string } };
 
 export async function generateMetadata({ params: { locale } }: Props): Promise<Metadata> {
-  const isVi = locale === 'vi';
-  const isJa = locale === 'ja';
+  const t = await getTranslations({ locale, namespace: 'quickOrderPage' });
   return {
-    title: isVi
-      ? 'Đặt hàng nhanh (Quick Order) | ULink B2B'
-      : isJa
-      ? 'クイックオーダー (Quick Order) | ULink B2B'
-      : 'Quick Order | ULink B2B',
-    description: isVi
-      ? 'Tạo nhanh yêu cầu báo giá bằng cách thêm trực tiếp SKU sản phẩm.'
-      : isJa
-      ? '製品SKUを直接追加して見積依頼を素早く作成します。'
-      : 'Create requests for quotation quickly by directly adding product SKUs.'
+    title: `${t('title')} | ULink B2B`,
+    description: t('description')
   };
 }
 
@@ -27,19 +20,29 @@ export default async function QuickOrderPage({ params: { locale } }: Props) {
 
   // Get current user (can be guest/visitor, so null is allowed)
   const user = await getCurrentUser();
+  const t = await getTranslations({ locale, namespace: 'quickOrderPage' });
 
   return (
-    <section className="relative overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(0,106,167,0.1),_transparent_40%),linear-gradient(180deg,_rgba(255,255,255,0.9),_rgba(248,250,252,1))] min-h-screen">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-brand/30 to-transparent" />
-
+    <section className="relative overflow-hidden bg-white min-h-screen">
       <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 py-8 sm:px-8 sm:gap-8 lg:px-16 lg:py-12">
-        <div className="max-w-3xl">
-          <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-brand">Portal</p>
-          <h1 className="mt-2 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-            Đặt hàng nhanh (Quick Order)
+        {/* Breadcrumbs */}
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-muted-foreground">
+          <Link href="/" className="transition-colors hover:text-brand">
+            {t('breadcrumbHome')}
+          </Link>
+          <ChevronRight className="h-3 w-3 text-muted-foreground/60" />
+          <span className="font-medium text-foreground">{t('breadcrumbRfq')}</span>
+        </nav>
+
+        <div className="max-w-4xl">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand">
+            {t('subtitle')}
+          </p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+            {t('title')}
           </h1>
-          <p className="mt-2 text-xs leading-6 text-muted-foreground sm:text-sm">
-            Tạo nhanh yêu cầu báo giá bằng cách chọn sản phẩm hoặc dán danh sách mã SKU trực tiếp vào giỏ hàng.
+          <p className="mt-3 text-sm leading-relaxed text-muted-foreground max-w-3xl">
+            {t('description')}
           </p>
         </div>
 
