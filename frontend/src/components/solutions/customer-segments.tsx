@@ -65,7 +65,7 @@ export default async function CustomerSegments({ locale }: CustomerSegmentsProps
             {/* Action Button */}
             <div className="flex justify-center pt-2">
               <Link
-                href="/rfq"
+                href="/quick-order"
                 className="inline-flex items-center justify-center gap-2 w-full max-w-[200px] bg-white text-[#4F70B5] hover:bg-slate-50 px-6 py-2.5 rounded-lg text-xs sm:text-sm font-bold shadow-sm transition-all hover:scale-[1.01]"
               >
                 {t('customerSegments.viewDetails')}
@@ -103,7 +103,7 @@ export default async function CustomerSegments({ locale }: CustomerSegmentsProps
             {/* Action Button */}
             <div className="flex justify-center pt-2">
               <Link
-                href="/rfq"
+                href="/quick-order"
                 className="inline-flex items-center justify-center gap-2 w-full max-w-[200px] bg-[#1E40AF] hover:bg-blue-800 text-white px-6 py-2.5 rounded-lg text-xs sm:text-sm font-bold shadow-sm transition-all hover:scale-[1.01]"
               >
                 {t('customerSegments.viewDetails')}

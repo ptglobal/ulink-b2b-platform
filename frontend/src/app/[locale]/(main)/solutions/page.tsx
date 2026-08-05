@@ -60,7 +60,7 @@ export default async function SolutionsPage({ params: { locale } }: SolutionsPag
             {/* Button: Báo giá nhanh */}
             <div className="mt-8">
               <Link
-                href="/rfq"
+                href="/quick-order"
                 className="inline-flex items-center gap-2 rounded-md bg-white text-blue-600 px-6 py-3 text-[14px] font-bold shadow-md hover:bg-slate-50 transition-colors"
               >
                 {t('heroCta')}

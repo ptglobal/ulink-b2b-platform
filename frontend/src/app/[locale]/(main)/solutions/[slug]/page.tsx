@@ -323,6 +323,7 @@ export default async function ProductDetailPage({ params: { locale, slug } }: Pr
                   pack_size: s.pack_size,
                   attributes: s.attributes as Record<string, string> | null
                 }))}
+                productName={productName}
                 locale={locale}
                 basePrice={pricing.price}
                 unitLabel={pricing.unit}

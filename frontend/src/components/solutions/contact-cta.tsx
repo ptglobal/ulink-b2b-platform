@@ -34,7 +34,7 @@ export default async function ContactCta({ locale }: ContactCtaProps) {
             {t('contactCta.callNow')}
           </Link>
           <Link
-            href="/rfq"
+            href="/quick-order"
             className="inline-flex h-11 items-center justify-center rounded-lg bg-blue-600 px-6 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition-colors w-1/2 sm:w-auto text-center"
           >
             {t('contactCta.sendRequest')}

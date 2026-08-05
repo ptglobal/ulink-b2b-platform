@@ -44,11 +44,20 @@ export async function GET(req: Request) {
     const skusPayload = skusRes.ok ? await skusRes.json() : null;
     const skusData = skusPayload?.data || [];
 
+    // 5. Fetch published products for suggestion cards
+    const productsRes = await proxyToDirectus('/items/products?fields=id,slug,name,hero,translations.languages_code,translations.name,skus.unit&filter[status][_eq]=published&limit=8', {
+      method: 'GET',
+      cookieHeader
+    });
+    const productsPayload = productsRes.ok ? await productsRes.json() : null;
+    const productsData = productsPayload?.data || [];
+
     return NextResponse.json({
       customer: customerData[0] || null,
       hubs: hubsData,
       industries: industriesData,
-      skus: skusData
+      skus: skusData,
+      products: productsData
     });
   } catch (err) {
     console.error('Customer metadata fetch failed:', err);

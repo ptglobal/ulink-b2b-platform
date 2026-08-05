@@ -24,7 +24,7 @@ export async function CtaBanner({ containerClassName = 'max-w-[1800px] px-6' }: 
             {/* Action Buttons Row */}
             <div className="mt-10 flex flex-wrap items-center gap-6">
               <Link
-                href="/rfq"
+                href="/quick-order"
                 className="inline-flex items-center gap-3 rounded-lg bg-white px-8 py-3.5 text-[15px] font-bold text-brand shadow-lg transition-transform hover:scale-102 hover:bg-slate-50"
               >
                 {tCta('ctaRfq')}

@@ -27,7 +27,7 @@ export function readCart(): CartItem[] {
       product_name: item.product_name || '',
       spec: item.spec || '',
       unit: item.unit || '',
-      quantity: typeof item.quantity === 'number' ? item.quantity : 0,
+      quantity: typeof item.quantity === 'number' ? item.quantity : (typeof item.qty === 'number' ? item.qty : 1),
       note: item.note || ''
     } as CartItem));
   } catch {

@@ -17,10 +17,16 @@ import {
   Shield,
   Headphones,
   Truck,
-  Award
+  Award,
+  Check,
+  Info,
+  Package
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { AuthUser } from '@/lib/auth-helpers';
+import Image from 'next/image';
+import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
+import { getTranslatedName } from '@/lib/i18n-content';
 import {
   type CartItem,
   readCart,
@@ -29,7 +35,7 @@ import {
   readDraft,
   clearDraft
 } from './cart-types';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
 /* ───────────────────── types ───────────────────── */
@@ -55,6 +61,14 @@ interface MetaData {
   hubs: Array<{ id: number; name: string; slug: string }>;
   industries: Array<{ id: number; name: string; slug: string }>;
   skus: SkuItem[];
+  products?: Array<{
+    id: number;
+    slug: string;
+    name: string;
+    hero: string | null;
+    translations?: Array<{ languages_code: string; name: string }>;
+    skus?: Array<{ unit: string | null }>;
+  }>;
 }
 
 interface UploadedFile {
@@ -74,10 +88,21 @@ function formatFileSize(bytes: number): string {
 
 export function QuickOrderClient({ user }: { user: AuthUser | null }) {
   const t = useTranslations('quickOrderPage');
+  const locale = useLocale();
 
   /* ── cart state ── */
   const [cart, setCart] = useState<CartItem[]>([]);
   const [meta, setMeta] = useState<MetaData | null>(null);
+
+  interface SubmittedRfqInfo {
+    code: string;
+    company: string;
+    industry: string;
+    products: string;
+    time: string;
+    status: string;
+  }
+  const [submittedRfq, setSubmittedRfq] = useState<SubmittedRfqInfo | null>(null);
 
   /* ── form state ── */
   const [formCompany, setFormCompany] = useState('');
@@ -333,6 +358,26 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
       }
 
       // Success
+      const rfqIdNum = json.data?.id || 8947;
+      const formattedRfqCode = `RFQ-2026-${String(rfqIdNum).slice(-4).padStart(4, '0')}A`;
+
+      const industryObj = meta?.industries.find(i => i.slug === formIndustry);
+      const industryLabel = industryObj ? industryObj.name : formIndustry;
+
+      const productNames = validCartItems.map(item => item.product_name || item.sku).join(' & ');
+
+      const now = new Date();
+      const timeString = `Hôm nay, lúc ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')} (GMT+7)`;
+
+      setSubmittedRfq({
+        code: formattedRfqCode,
+        company: formCompany.trim() || 'Công ty của Quý khách',
+        industry: industryLabel || 'Chưa xác định',
+        products: productNames || 'Sản phẩm B2B',
+        time: timeString,
+        status: 'Đang xử lý kỹ thuật'
+      });
+
       setCreatedRfqId(json.data?.id || null);
       setShowSuccess(true);
       saveCart([]);
@@ -379,32 +424,179 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
 
   /* ───────────────── RENDER ─────────────────── */
 
-  return (
-    <div className="grid gap-8 lg:grid-cols-12">
-      {/* ════════ LEFT: Form ════════ */}
-      <div className="lg:col-span-8 space-y-8">
-        {/* Success state */}
-        {showSuccess ? (
-          <div className="rounded-2xl border border-emerald-100 p-8 text-center dark:border-emerald-900/30 space-y-4 animate-in zoom-in-95 duration-200">
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-900/35">
-              <CheckCircle2 className="h-7 w-7 text-emerald-600 dark:text-emerald-400" />
+  if (showSuccess && submittedRfq) {
+    return (
+      <div className="w-full max-w-[800px] mx-auto text-center py-6 sm:py-10 space-y-8 text-slate-800 text-left">
+        {/* Breadcrumbs */}
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-muted-foreground justify-center">
+          <Link href="/" className="transition-colors hover:text-brand">
+            {t('breadcrumbHome')}
+          </Link>
+          <ChevronRight className="h-3 w-3 text-muted-foreground/60" />
+          <span className="font-medium text-foreground">{t('breadcrumbRfq')}</span>
+        </nav>
+
+        {/* Soft Blue Circle Check Icon */}
+        <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#EBF5FF] shadow-sm border border-blue-100/40">
+          <Check className="h-6 w-6 text-[#1D4ED8] stroke-[3]" />
+        </div>
+
+        {/* Heading & Subtext */}
+        <div className="space-y-4 max-w-2xl mx-auto text-center">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight">
+            Yêu cầu báo giá đã được gửi thành công!
+          </h2>
+          <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
+            Cảm ơn Quý khách đã tin tưởng và lựa chọn ULink Industries. Yêu cầu của bạn đã được chuyển tới phòng chuyên môn kỹ thuật. Đội ngũ kỹ sư của chúng tôi đang tiến hành rà soát các yêu cầu kỹ thuật và sẽ liên hệ phản hồi chi tiết tới Quý khách trong vòng 24 giờ tới.
+          </p>
+        </div>
+
+        {/* Card: Chi tiết yêu cầu */}
+        <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 w-full max-w-[540px] mx-auto text-left shadow-sm space-y-6">
+          <h3 className="text-sm font-extrabold text-[#0F1E36] border-b border-slate-100 pb-3 uppercase tracking-wider">
+            Chi tiết yêu cầu của Quý khách
+          </h3>
+
+          <div className="divide-y divide-slate-100 text-xs sm:text-sm">
+            <div className="flex justify-between items-center py-3">
+              <span className="text-slate-400 font-medium">Mã số yêu cầu</span>
+              <span className="font-extrabold text-slate-850 font-mono">{submittedRfq.code}</span>
             </div>
-            <div className="space-y-1">
-              <h4 className="text-lg font-semibold text-emerald-900 dark:text-emerald-400">{t('submitSuccess')}</h4>
-              <p className="text-sm text-emerald-800 dark:text-emerald-500 opacity-90 leading-relaxed">
-                {t('submitSuccessDesc')} <strong className="font-mono">#{createdRfqId}</strong>.
-              </p>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-slate-400 font-medium">Doanh nghiệp</span>
+              <span className="font-extrabold text-slate-850 text-right max-w-[240px] truncate" title={submittedRfq.company}>
+                {submittedRfq.company}
+              </span>
             </div>
-            <button
-              type="button"
-              onClick={() => { setShowSuccess(false); setCreatedRfqId(null); }}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700 transition-all shadow"
-            >
-              {t('createNew')}
-              <ArrowRight className="h-4 w-4" />
-            </button>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-slate-400 font-medium">Ngành nghề</span>
+              <span className="font-extrabold text-slate-850">{submittedRfq.industry}</span>
+            </div>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-slate-400 font-medium">Sản phẩm quan tâm</span>
+              <span className="font-extrabold text-slate-850 text-right max-w-[285px] truncate" title={submittedRfq.products}>
+                {submittedRfq.products}
+              </span>
+            </div>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-slate-400 font-medium">Thời gian tiếp nhận</span>
+              <span className="font-extrabold text-slate-850">{submittedRfq.time}</span>
+            </div>
+            <div className="flex justify-between items-center py-3">
+              <span className="text-slate-400 font-medium">Trạng thái</span>
+              <span className="font-bold text-emerald-650 bg-emerald-50 px-2.5 py-0.5 rounded text-[11px] uppercase tracking-wide">
+                {submittedRfq.status}
+              </span>
+            </div>
           </div>
-        ) : (
+
+          {/* Info note */}
+          <div className="bg-blue-50/50 text-[#1E40AF] p-3 rounded-lg text-[11px] font-semibold flex items-start gap-2 border border-blue-100/35">
+            <Info className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+            <p className="leading-relaxed">
+              Một bản sao chi tiết yêu cầu báo giá đã được gửi tự động tới email liên hệ của bạn.
+            </p>
+          </div>
+        </div>
+
+        {/* Action Button: Tạo yêu cầu mới */}
+        <div className="pt-2 text-center">
+          <button
+            type="button"
+            onClick={() => {
+              setShowSuccess(false);
+              setCreatedRfqId(null);
+              setSubmittedRfq(null);
+            }}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-6 py-3 text-xs sm:text-sm font-bold text-white hover:bg-brand/95 transition-all shadow hover:scale-[1.01]"
+          >
+            {t('createNew')}
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        </div>
+
+        {/* Suggestion block: Có thể Quý khách quan tâm */}
+        {meta?.products && meta.products.length > 0 && (
+          <div className="w-full text-left pt-12 border-t border-slate-100 mt-12 space-y-6">
+            <h3 className="text-lg sm:text-xl font-bold text-[#0F1E36]">
+              Có thể Quý khách quan tâm
+            </h3>
+            
+            {/* Suggested horizontal products grid */}
+            <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
+              {meta.products.slice(0, 4).map((product) => {
+                const directusUrl = getDirectusUrl();
+                const imageUrl = product.hero ? `${directusUrl}/assets/${product.hero}?width=200&height=200&fit=cover` : null;
+                const translatedName = getTranslatedName(product, locale);
+                const unit = product.skus?.[0]?.unit || 'cái';
+
+                return (
+                  <Link
+                    key={product.id}
+                    href={`/solutions/${product.slug}`}
+                    className="bg-white border border-slate-150 p-4 rounded-xl flex flex-col justify-between hover:shadow-md transition-all group"
+                  >
+                    <div className="space-y-2">
+                      <div className="aspect-square bg-slate-50/60 rounded-lg flex items-center justify-center relative overflow-hidden">
+                        {imageUrl ? (
+                          <Image
+                            src={imageUrl}
+                            alt={translatedName}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            sizes="(max-width: 768px) 50vw, 25vw"
+                          />
+                        ) : (
+                          <Package className="h-8 w-8 text-slate-200 group-hover:scale-105 transition-transform" />
+                        )}
+                      </div>
+                      <h4 className="text-xs font-bold text-slate-800 line-clamp-2 leading-tight">
+                        {translatedName}
+                      </h4>
+                    </div>
+                    <div className="pt-3 border-t border-slate-50 mt-3 flex items-center justify-between">
+                      <span className="text-[10px] text-slate-400 font-bold uppercase">{unit}</span>
+                      <span className="text-[10px] font-extrabold text-blue-600 group-hover:underline">
+                        Xem chi tiết &gt;
+                      </span>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full space-y-6 text-left">
+      {/* Breadcrumbs */}
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-muted-foreground">
+        <Link href="/" className="transition-colors hover:text-brand">
+          {t('breadcrumbHome')}
+        </Link>
+        <ChevronRight className="h-3 w-3 text-muted-foreground/60" />
+        <span className="font-medium text-foreground">{t('breadcrumbRfq')}</span>
+      </nav>
+
+      {/* Page Header */}
+      <div className="max-w-4xl">
+        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand">
+          {t('subtitle')}
+        </p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+          {t('title')}
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-muted-foreground max-w-3xl">
+          {t('description')}
+        </p>
+      </div>
+
+      <div className="grid gap-8 lg:grid-cols-12 pt-2">
+        {/* ════════ LEFT: Form ════════ */}
+        <div className="lg:col-span-8 space-y-8">
           <form onSubmit={handleSubmit} className="space-y-8">
             {/* Submit error */}
             {submitError && (
@@ -785,8 +977,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
               </button>
             </div>
           </form>
-        )}
-      </div>
+        </div>
 
       {/* ════════ RIGHT: Sidebar ════════ */}
       <div className="lg:col-span-4">
@@ -865,5 +1056,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
         </div>
       </div>
     </div>
+  </div>
   );
 }

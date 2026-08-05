@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import Link from 'next/link';
 import { ShoppingCart, Check, FileText } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useRouter } from '@/i18n/navigation';
 
 interface SkuItem {
   id: number;
@@ -15,6 +15,7 @@ interface SkuItem {
 
 interface ProductDetailClientProps {
   skus: SkuItem[];
+  productName: string;
   locale: string;
   basePrice: number;
   unitLabel: string;
@@ -28,11 +29,13 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({
   skus,
+  productName,
   locale,
   basePrice,
   unitLabel,
   labels
 }: ProductDetailClientProps) {
+  const router = useRouter();
   // 1. Selection states for attributes
   const [selections, setSelections] = useState<Record<string, string>>(() => {
     const init: Record<string, string> = {};
@@ -127,28 +130,64 @@ export default function ProductDetailClient({
     setQuantity(Math.max(1, val));
   }, []);
 
-  const handleAddToCart = useCallback(() => {
-    if (!selectedSku) return;
+  const performAddToCart = useCallback((targetQty: number) => {
+    if (!selectedSku) return false;
 
     try {
       const raw = localStorage.getItem('rfq-cart');
-      const cart: Array<{ sku: string; qty: number; note: string }> = raw ? JSON.parse(raw) : [];
+      const cart: Array<any> = raw ? JSON.parse(raw) : [];
+
+      // Construct attribute spec string, e.g. "Màu sắc: Xanh dương"
+      const specArr: string[] = [];
+      if (selectedSku.attributes) {
+        for (const [k, v] of Object.entries(selectedSku.attributes)) {
+          specArr.push(`${k === 'color' ? 'Màu sắc' : k}: ${v}`);
+        }
+      }
+      const specString = specArr.join(', ');
 
       const existingIdx = cart.findIndex((item) => item.sku === selectedSku.sku_code);
       if (existingIdx > -1) {
-        cart[existingIdx].qty = quantity;
+        cart[existingIdx].quantity = targetQty;
+        cart[existingIdx].qty = targetQty; // keep for backward compatibility
+        cart[existingIdx].product_name = productName;
+        cart[existingIdx].spec = specString;
+        cart[existingIdx].unit = unitLabel;
       } else {
-        cart.push({ sku: selectedSku.sku_code, qty: quantity, note: '' });
+        cart.push({
+          sku: selectedSku.sku_code,
+          product_name: productName,
+          spec: specString,
+          unit: unitLabel,
+          quantity: targetQty,
+          qty: targetQty, // keep for backward compatibility
+          note: ''
+        });
       }
 
       localStorage.setItem('rfq-cart', JSON.stringify(cart));
       window.dispatchEvent(new Event('rfq-cart-changed'));
-      setAdded(true);
-      setTimeout(() => setAdded(false), 2500);
+      return true;
     } catch (err) {
       console.error('Failed to add to cart:', err);
+      return false;
     }
-  }, [selectedSku, quantity]);
+  }, [selectedSku, productName, unitLabel]);
+
+  const handleAddToCart = useCallback(() => {
+    const success = performAddToCart(quantity);
+    if (success) {
+      setAdded(true);
+      setTimeout(() => setAdded(false), 2500);
+    }
+  }, [performAddToCart, quantity]);
+
+  const handleRequestQuote = useCallback(() => {
+    const success = performAddToCart(quantity);
+    if (success) {
+      router.push('/quick-order');
+    }
+  }, [performAddToCart, quantity, router]);
 
   if (skus.length === 0) return null;
 
@@ -192,7 +231,7 @@ export default function ProductDetailClient({
                   type="button"
                   onClick={() => handleSelectAttribute(attr.name, val)}
                   className={cn(
-                    'w-10 h-8 rounded-md text-xs font-bold border transition-all flex items-center justify-center',
+                    'px-4 h-8 min-w-[40px] rounded-md text-xs font-bold border transition-all flex items-center justify-center',
                     isSelected
                       ? 'border-blue-600 text-blue-600 bg-white ring-1 ring-blue-600'
                       : 'border-gray-200 text-slate-700 hover:border-gray-300 bg-white'
@@ -291,13 +330,18 @@ export default function ProductDetailClient({
           )}
         </button>
 
-        <Link
-          href={`/${locale}/rfq`}
-          className="w-full inline-flex items-center justify-center gap-2 h-11 rounded-lg font-bold text-sm border border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors bg-white"
+        <button
+          type="button"
+          onClick={handleRequestQuote}
+          disabled={!selectedSku}
+          className={cn(
+            'w-full inline-flex items-center justify-center gap-2 h-11 rounded-lg font-bold text-sm border border-blue-600 text-blue-600 hover:bg-blue-50 transition-colors bg-white',
+            !selectedSku && 'opacity-50 cursor-not-allowed'
+          )}
         >
           <FileText className="h-4.5 w-4.5" />
           {locale === 'vi' ? 'Yêu cầu báo giá sản lượng lớn' : labels.requestQuote}
-        </Link>
+        </button>
       </div>
     </div>
   );

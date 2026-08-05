@@ -3,6 +3,8 @@ import { setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { fetchProducts } from '@/lib/product-data';
 import IndustryDetailClient from '@/components/industries/industry-detail-client';
+import { CtaBanner } from '@/components/home';
+
 
 interface IndustryPageProps {
   params: { locale: string; slug: string };
@@ -29,9 +31,9 @@ function getIndustryDetails(slug: string, locale: string) {
   if (actualSlug === 'electronics') {
     return {
       slug: 'electronics',
-      name: isVi ? 'Điện tử' : isJa ? '電子' : 'Electronics',
+      name: isVi ? 'Điện tử & Bán dẫn' : isJa ? '電子・半導体' : 'Electronics & Semiconductors',
       title: isVi 
-        ? 'Giải pháp cho ngành Điện tử' 
+        ? 'Giải pháp cho ngành Điện tử & Bán dẫn' 
         : isJa 
         ? '電子・半導体産業向けソリューション' 
         : 'Solutions for Electronics & Semiconductors',
@@ -70,6 +72,15 @@ function getIndustryDetails(slug: string, locale: string) {
             ? '安定したグローバル供給とタイムリーな納品。' 
             : 'Stable global supply and timely delivery.',
           iconName: 'Globe'
+        },
+        {
+          title: isVi ? 'Tối ưu hóa chi phí' : isJa ? 'コスト最適化' : 'Cost Optimization',
+          desc: isVi 
+            ? 'Giải pháp vật tư toàn diện giúp tiết kiệm chi phí vận hành.' 
+            : isJa 
+            ? '包括的な資材ソリューションにより、運用コストを削減します。' 
+            : 'Comprehensive supply solutions help save operational costs.',
+          iconName: 'Zap'
         }
       ],
       challengesIntro: isVi 
@@ -92,7 +103,7 @@ function getIndustryDetails(slug: string, locale: string) {
           desc: isVi
             ? 'Hiện tượng phóng tĩnh điện (ESD) gây hỏng chip ngầm không thể phát hiện bằng mắt thường.'
             : isJa
-            ? '静電気放電（ESD）により、目視では検出できない潜在的なチップ損傷が発生します。'
+            ? '静電気放電（ESD）により、目視では検出できない潜在的なチップ破損が発生します。'
             : 'Electrostatic discharge (ESD) causes latent chip damage undetectable to the eye.',
           iconName: 'Zap'
         },
@@ -130,11 +141,6 @@ function getIndustryDetails(slug: string, locale: string) {
         {
           name: isVi ? 'Thảm dính bụi' : isJa ? '粘着マット' : 'Sticky Mats',
           image: '/images/industries/sticky_mat.webp',
-          slug: 'cleanroom-consumables'
-        },
-        {
-          name: isVi ? 'Giấy lau phòng sạch' : isJa ? 'クリーンルームワイパー' : 'Cleanroom Wipers',
-          image: '/images/home/product-wipes.jpg',
           slug: 'cleanroom-consumables'
         }
       ],
@@ -215,23 +221,23 @@ function getIndustryDetails(slug: string, locale: string) {
       whyUsTitle: isVi ? 'Vì sao chọn ULINK?' : isJa ? 'なぜULINKを選ぶのか？' : 'Why Choose ULINK?',
       whyUsList: isVi 
         ? [
-            'Sản phẩm đạt tiêu chuẩn chất lượng cao',
-            'Kiểm soát chất lượng nghiêm ngặt',
-            'Chuỗi cung ứng ổn định toàn cầu',
-            'Hỗ trợ kỹ thuật và tùy chỉnh theo yêu cầu'
+            'Sản phẩm đạt tiêu chuẩn chất lượng phòng sạch cao cấp',
+            'Quy trình kiểm soát chất lượng kiểm định nghiêm ngặt',
+            'Chuỗi cung ứng ổn định toàn cầu, giao hàng đúng hẹn',
+            'Hỗ trợ kỹ thuật chuyên sâu và tùy chỉnh theo yêu cầu riêng'
           ]
         : isJa
         ? [
-            '高品質基準を満たす製品',
-            '厳格な品質管理プロセス',
-            '安定したグローバルサプライチェーン',
-            '技術サポートと個別要望への対応'
+            '高品質クリーンルーム基準を満たす製品',
+            '厳格な品質管理・検査プロセス',
+            '安定したグローバルサプライチェーンと確実な納期',
+            '技術サポートと個別要望への柔軟な対応'
           ]
         : [
-            'Products meeting high quality standards',
-            'Strict quality control processes',
-            'Stable global supply chain',
-            'Technical support & custom tailoring'
+            'Products meeting high cleanroom quality standards',
+            'Strict quality control and inspection processes',
+            'Stable global supply chain and timely delivery',
+            'Dedicated technical support & custom tailoring'
           ],
       standardsTitle: isVi ? 'Chứng nhận & tiêu chuẩn áp dụng' : isJa ? '適用される認証＆規格' : 'Certifications & Standards',
       standards: [
@@ -247,190 +253,435 @@ function getIndustryDetails(slug: string, locale: string) {
           : isJa 
           ? '電子産業向けソリューションカタログ' 
           : 'Solutions Catalogue for Electronics',
-        info: isVi ? 'PDF / 6.2MB' : isJa ? 'PDF / 6.2MB' : 'PDF / 6.2MB',
+        info: 'PDF / 6.2MB',
         url: '#'
       }
     };
   }
 
-  // Fallback data mapping for other slugs
-  const name = actualSlug === 'pharmaceutical-cosmetics'
-    ? (isVi ? 'Dược phẩm & Mỹ phẩm' : isJa ? '医薬品・化粧品' : 'Pharmaceuticals & Cosmetics')
-    : actualSlug === 'food-beverage'
-    ? (isVi ? 'Thực phẩm' : isJa ? '食品・飲料' : 'Food & Beverage')
-    : actualSlug === 'automotive'
-    ? (isVi ? 'Cơ khí chế tạo' : isJa ? '自動車・精密機械' : 'Automotive & Manufacturing')
-    : actualSlug === 'solar-energy'
-    ? (isVi ? 'Năng lượng mặt trời' : isJa ? '太陽光エネルギー' : 'Solar Energy')
-    : (isVi ? 'Giải pháp chuyên biệt' : isJa ? '専門ソリューション' : 'Specialized Solutions');
-
-  const title = actualSlug === 'pharmaceutical-cosmetics'
-    ? (isVi ? 'Giải pháp vô trùng & kiểm soát vi sinh cho ngành Dược phẩm & Mỹ phẩm' : isJa ? '医薬品・化粧品向け無菌・微生物制御ソリューション' : 'Sterility & Microbe Control Solutions for Pharmaceuticals & Cosmetics')
-    : actualSlug === 'food-beverage'
-    ? (isVi ? 'Giải pháp vệ sinh an toàn cho ngành chế biến Thực phẩm & Đồ uống' : isJa ? '食品・飲料加工向け安全・衛生ソリューション' : 'Safety & Sanitation Solutions for Food & Beverage Processing')
-    : actualSlug === 'automotive'
-    ? (isVi ? 'Giải pháp phòng sạch & bảo vệ bề mặt cho ngành Cơ khí & Lắp ráp Ô tô' : isJa ? '自動車・精密機械向け表面保護・クリーンルームソリューション' : 'Surface Protection & Cleanroom Solutions for Automotive & Manufacturing')
-    : actualSlug === 'solar-energy'
-    ? (isVi ? 'Giải pháp kiểm soát bụi chuyên sâu cho ngành Năng lượng mặt trời' : isJa ? '太陽光発電向け高度塵埃制御ソリューション' : 'Advanced Dust Control Solutions for Solar Energy Industry')
-    : (isVi ? 'Giải pháp kỹ thuật chuyên nghiệp' : isJa ? 'プロフェッショナルエンジニアリングソリューション' : 'Professional Engineering Solutions');
-
-  const description = actualSlug === 'pharmaceutical-cosmetics'
-    ? (isVi ? 'Môi trường bào chế thuốc tiêm, thiết bị y tế và sản phẩm mỹ phẩm đòi hỏi độ vô trùng tối đa (Class 100 - ISO 5) để triệt tiêu bào tử nấm và vi khuẩn.' : isJa ? '注射剤、医療機器、化粧品の調製環境では、カビ胞子や細菌を死滅させるために最大限の無菌性（Class 100 - ISO 5）が求められます。' : 'Preparation environments for injectables, medical devices, and cosmetics require maximum sterility (Class 100 - ISO 5) to eliminate mold spores and bacteria.')
-    : actualSlug === 'food-beverage'
-    ? (isVi ? 'Chế biến thực phẩm đòi hỏi kiểm soát bụi bẩn tối đa và các loại vật tư bao bì tiếp xúc trực tiếp an toàn. Đảm bảo vệ sinh an toàn thực phẩm nghiêm ngặt.' : isJa ? '食品加工では、最大限の塵埃管理と安全な直接接触包装資材が必要です。厳格な食品衛生安全性を確保します。' : 'Food processing requires maximum contamination control and food-contact safe packaging supplies. Strict hygiene and food safety assurance.')
-    : actualSlug === 'automotive'
-    ? (isVi ? 'Bao bì bảo vệ sản phẩm, chống trầy xước và bám bẩn hạt sơn, hóa chất dầu mỡ trong quá trình gia công cơ khí chính xác và lắp ráp linh kiện ô tô xe máy.' : isJa ? '精密機械加工および自動車・バイク部品の組み立て工程における製品保護、傷防止、塗装粒着、油脂化学物質汚染対策の包装。' : 'Product protective packaging, scratch prevention, and resistance to paint particles and greases during precision machining and vehicle assembly.')
-    : actualSlug === 'solar-energy'
-    ? (isVi ? 'Giải pháp kiểm soát bụi chuyên sâu trên bề mặt tấm pin năng lượng mặt trời, hạn chế tối đa suy hao hiệu suất quang năng và rủi ro lỗi cell.' : isJa ? '太陽光パネル表面の高度な塵埃制御ソリューション。発電効率の低下やセル欠陥のリスクを最小限に抑えます。' : 'Specialized dust control solutions on solar panel surfaces, minimizing solar performance loss and cell defect risks.')
-    : '';
-
-  const iconName = actualSlug === 'pharmaceutical-cosmetics' ? 'Activity' : actualSlug === 'food-beverage' ? 'Utensils' : actualSlug === 'automotive' ? 'Car' : actualSlug === 'solar-energy' ? 'Sun' : 'Shield';
-  const gradient = actualSlug === 'pharmaceutical-cosmetics' ? 'from-emerald-600 to-teal-900' : actualSlug === 'food-beverage' ? 'from-amber-500 to-orange-800' : actualSlug === 'automotive' ? 'from-violet-600 to-purple-900' : actualSlug === 'solar-energy' ? 'from-orange-500 to-red-800' : 'from-slate-600 to-slate-900';
-  const bannerImage = actualSlug === 'pharmaceutical-cosmetics' ? '/images/icons/pharmaceuticals.webp' : actualSlug === 'food-beverage' ? '/images/icons/food_processing.webp' : actualSlug === 'automotive' ? '/images/icons/manufacturing.webp' : actualSlug === 'solar-energy' ? '/images/icons/semiconductor.webp' : '/images/home/solution-cleanroom.jpg';
-
-  const challengesList = actualSlug === 'pharmaceutical-cosmetics'
-    ? [
-        { title: isVi ? 'Bụi bẩn & vi sinh vật bám dính trên bao bì' : isJa ? '容器に付着する塵埃・微生物' : 'Dust & microbes adhering to packaging', iconName: 'Sparkles' },
-        { title: isVi ? 'Lông bụi từ trang phục công nhân thông thường' : isJa ? '通常作業服からの繊維クズ・発塵' : 'Fibers & dust shedding from regular clothes', iconName: 'AlertCircle' },
-        { title: isVi ? 'Rủi ro nhiễm bẩn chéo giữa các lô hàng' : isJa ? 'ロット間の交差汚染リスク' : 'Cross-contamination risk between batches', iconName: 'ShieldCheck' }
-      ]
-    : actualSlug === 'food-beverage'
-    ? [
-        { title: isVi ? 'Rác thải vi nhựa và xơ vải rơi vào nguyên liệu' : isJa ? '原材料へのマイクロプラスチック・繊維混入' : 'Microplastics & fibers falling into ingredients', iconName: 'Sparkles' },
-        { title: isVi ? 'Bao bì đóng gói pallet bên ngoài bị rách' : isJa ? '外装パレット包装の破損・破れ' : 'Outer pallet packaging tearing or breaking', iconName: 'AlertCircle' },
-        { title: isVi ? 'Quy trình lau chùi băng chuyền dính dầu mỡ' : isJa ? 'コンベアの油分除去・清掃作業' : 'Conveyor belt grease cleaning process', iconName: 'Settings' }
-      ]
-    : actualSlug === 'automotive'
-    ? [
-        { title: isVi ? 'Bụi bẩn & xơ vải bám trên bề mặt trước khi sơn' : isJa ? '塗装前の表面への塵埃・繊維付着' : 'Dust & fibers on surface before painting', iconName: 'Sparkles' },
-        { title: isVi ? 'Hóa chất, dầu mỡ cơ khí gây hư hỏng' : isJa ? '油脂・化学薬品による損傷' : 'Chemicals & mechanical greases causing damage', iconName: 'AlertCircle' },
-        { title: isVi ? 'Rủi ro trầy xước trong quá trình đóng gói' : isJa ? '包装・輸送中の擦り傷リスク' : 'Scratch risks during packaging and transit', iconName: 'Shield' }
-      ]
-    : [
-        { title: isVi ? 'Bụi mịn bám trên bề mặt cell pin' : isJa ? 'セル表面への微細塵埃付着' : 'Fine dust on cell surfaces', iconName: 'Sparkles' },
-        { title: isVi ? 'Tích tụ bụi bẩn gây điểm nóng (hotspot)' : isJa ? '発塵蓄積によるホットスポット現象' : 'Dust buildup causing hotspots', iconName: 'AlertCircle' },
-        { title: isVi ? 'Hao mòn vật lý do thời tiết khắc nghiệt' : isJa ? '過酷な気象条件による物理的摩耗' : 'Physical wear due to harsh weather', iconName: 'Settings' }
-      ];
-
-  const standardsList = actualSlug === 'pharmaceutical-cosmetics'
-    ? [
-        { name: 'ISO 13485', detail: 'Medical Devices' },
-        { name: 'WHO-GMP', detail: 'Good Manufacturing' },
-        { name: 'ISO 14644', detail: 'Cleanroom Class 5' }
-      ]
-    : actualSlug === 'food-beverage'
-    ? [
-        { name: 'FDA', detail: 'Food Contact Safe' },
-        { name: 'HACCP', detail: 'Hazard Analysis' },
-        { name: 'ISO 22000', detail: 'Food Safety Mgmt' }
-      ]
-    : actualSlug === 'automotive'
-    ? [
-        { name: 'ISO 9001', detail: 'Quality Mgmt' },
-        { name: 'RoHS', detail: 'Hazardous Materials' },
-        { name: 'CE Standard', detail: 'European Conformity' }
-      ]
-    : [
-        { name: 'IEC 61215', detail: 'PV Design Cert' },
-        { name: 'UL 1703', detail: 'PV Safety Standard' },
-        { name: 'ISO 9001', detail: 'Quality Mgmt' }
-      ];
-
-  return {
-    slug: actualSlug,
-    name,
-    title,
-    description,
-    iconName,
-    gradient,
-    bannerImage,
-    valueProps: [
-      {
-        title: isVi ? 'Đảm bảo chất lượng' : isJa ? '品質保証' : 'Quality Assurance',
-        desc: isVi ? 'Kiểm soát ô nhiễm tối ưu để nâng cao tỷ lệ thành phẩm đạt chuẩn.' : isJa ? '製品合格率向上のための最適な汚染管理。' : 'Optimal contamination control to improve yield rates.',
-        iconName: 'ShieldCheck'
-      },
-      {
-        title: isVi ? 'Quy trình chuẩn hóa' : isJa ? 'プロセスの標準化' : 'Process Standardization',
-        desc: isVi ? 'Tiêu chuẩn hóa vật tư giúp quy trình sản xuất luôn ổn định.' : isJa ? '資材の標準化により安定した生産プロセスを実現。' : 'Standardizing supplies keeps the production process stable.',
-        iconName: 'Settings'
-      },
-      {
-        title: isVi ? 'Hỗ trợ chuyên sâu' : isJa ? '専門的なサポート' : 'Dedicated Support',
-        desc: isVi ? 'Tư vấn kỹ thuật và giải pháp thiết kế riêng biệt.' : isJa ? 'カスタム設計のための技術相談と提案。' : 'Technical consulting and tailored design solutions.',
-        iconName: 'Globe'
+  if (actualSlug === 'pharmaceutical-cosmetics') {
+    return {
+      slug: 'pharmaceutical-cosmetics',
+      name: isVi ? 'Dược phẩm & Y tế' : isJa ? '医薬品・医療' : 'Pharmaceuticals & Medical',
+      title: isVi 
+        ? 'Giải pháp cho ngành Dược phẩm' 
+        : isJa 
+        ? '医薬品・医療産業向けソリューション' 
+        : 'Solutions for Pharmaceuticals & Medical',
+      description: isVi
+        ? 'ULink Industries cung cấp hệ thống vật tư phòng sạch PPE chuẩn vô trùng, màng đóng gói bảo vệ và các giải pháp chống ô nhiễm chéo tối ưu đạt chuẩn GMP, ISO 14644 và FDA.'
+        : isJa
+        ? 'ULink Industriesは、GMP、ISO 14644、およびFDA規格に準拠した無菌PPEクリーンルーム用品、保護包装用フィルム、および最適な交差汚染防止ソリューションを提供します。'
+        : 'ULink Industries provides sterile PPE cleanroom supplies, protective packaging films, and optimal anti-cross contamination solutions complying with GMP, ISO 14644, and FDA standards.',
+      iconName: 'Activity',
+      gradient: 'from-emerald-600 to-teal-900',
+      bannerImage: '/images/industries/indus.png',
+      valueProps: [
+        {
+          title: isVi ? 'Chuẩn vô trùng tối đa' : isJa ? '最大レベルの無菌' : 'Max Sterility Level',
+          desc: isVi 
+            ? 'Đạt tiêu chuẩn phòng sạch Class 100 - ISO 5 khắt khe.' 
+            : isJa 
+            ? '厳しいClass 100 - ISO 5クリーンルーム基準に準拠。' 
+            : 'Complies with strict Class 100 - ISO 5 cleanroom standards.',
+          iconName: 'ShieldCheck'
+        },
+        {
+          title: isVi ? 'Chống nhiễm chéo' : isJa ? '交差汚染防止' : 'Cross Contamination Control',
+          desc: isVi 
+            ? 'Vật tư thiết kế tối ưu giảm thiểu nguy cơ lây nhiễm vi sinh.' 
+            : isJa 
+            ? '微生物汚染リスクを最小限に抑える最適な資材設計。' 
+            : 'Optimally designed supplies minimizing microbial risks.',
+          iconName: 'Activity'
+        },
+        {
+          title: isVi ? 'Đạt chuẩn GMP & FDA' : isJa ? 'GMP & FDA適合' : 'GMP & FDA Compliant',
+          desc: isVi 
+            ? 'Đáp ứng đầy đủ các chứng nhận an toàn y tế quốc tế.' 
+            : isJa 
+            ? '国際的な医療安全認証に完全に適合。' 
+            : 'Fully complies with international medical safety certs.',
+          iconName: 'CheckCircle2'
+        },
+        {
+          title: isVi ? 'Hỗ trợ kỹ thuật 24/7' : isJa ? '24/7技術サポート' : '24/7 Tech Support',
+          desc: isVi 
+            ? 'Tư vấn giải pháp và cung cấp hồ sơ năng lực đầy đủ.' 
+            : isJa 
+            ? 'ソリューション提案と完全な機能プロファイルの提供。' 
+            : 'Solution consulting and complete capability profiles.',
+          iconName: 'Factory'
+        }
+      ],
+      challengesIntro: isVi 
+        ? 'Thách thức trong ngành Dược phẩm' 
+        : isJa 
+        ? '医薬品産業における課題' 
+        : 'Challenges in the Pharmaceutical Industry',
+      challenges: [
+        {
+          title: isVi ? 'Bụi bẩn & vi sinh vật bám dính trên bao bì' : isJa ? '容器に付着する塵埃・微生物' : 'Dust & microbes adhering to packaging',
+          desc: isVi
+            ? 'Sự bám dính của các bào tử nấm mốc hoặc vi sinh trên chai lọ, bao bì đóng gói trực tiếp có thể làm hỏng hoạt chất của thuốc.'
+            : isJa
+            ? '直接包装資材やボトルに付着したカビ胞子や微生物は、製剤の有効成分を損なう可能性があります。'
+            : 'Adhesion of mold spores or microbes to direct packaging containers can compromise active drug ingredients.',
+          iconName: 'Sparkles'
+        },
+        {
+          title: isVi ? 'Lông bụi từ trang phục công nhân thông thường' : isJa ? '通常作業服からの繊維クズ・発塵' : 'Fibers & dust shedding from regular clothes',
+          desc: isVi
+            ? 'Vải dệt thông thường liên tục phát tán xơ vải và tế bào chết từ cơ thể người vào luồng khí phòng sạch.'
+            : isJa
+            ? '通常の織物は、クリーンルーム内の気流中に繊維クズや人体からの角質細胞を継続的に放出します。'
+            : 'Regular woven fabrics continuously shed lint fibers and human skin cells into the cleanroom airflow.',
+          iconName: 'AlertCircle'
+        },
+        {
+          title: isVi ? 'Rủi ro nhiễm bẩn chéo giữa các lô hàng' : isJa ? 'ロット間の交差汚染リスク' : 'Cross-contamination risk between batches',
+          desc: isVi
+            ? 'Quy trình khử trùng không triệt để hoặc dùng sai vật dụng lau phòng sạch tạo cơ hội lây nhiễm chéo hoạt chất thuốc.'
+            : isJa
+            ? '不完全な滅菌や誤ったワイパーの使用により、製剤成分の交差汚染を引き起こす可能性があります。'
+            : 'Incomplete sterilization or usage of incorrect cleanroom wipers allows active pharmaceutical ingredients to cross-contaminate.',
+          iconName: 'ShieldCheck'
+        }
+      ],
+      cleanroomIntro: isVi
+        ? 'Giải pháp bảo vệ môi trường sản xuất vô trùng, phòng sạch dược phẩm.'
+        : isJa
+        ? '無菌製造環境や医薬品クリーンルーム向けの保護ソリューション。'
+        : 'Protective solutions for sterile pharmaceutical and cleanroom manufacturing environments.',
+      cleanroomCategories: [
+        {
+          name: isVi ? 'Quần áo phòng sạch' : isJa ? 'クリーンルームウェア' : 'Cleanroom Wear & Coveralls',
+          image: '/images/industries/cleanroom_suit.webp',
+          slug: 'cleanroom-consumables'
+        },
+        {
+          name: isVi ? 'Khẩu trang phòng sạch vô trùng' : isJa ? '滅菌クリーンルームマスク' : 'Sterile Cleanroom Masks',
+          image: '/images/industries/cleanroom_mask.webp',
+          slug: 'cleanroom-consumables'
+        },
+        {
+          name: isVi ? 'Khăn lau phòng sạch' : isJa ? 'クリーンルームワイパー' : 'Cleanroom Wipers',
+          image: '/images/home/product-wipes.jpg',
+          slug: 'cleanroom-consumables'
+        },
+        {
+          name: isVi ? 'Thảm dính bụi phòng dịch' : isJa ? '除塵粘着マット' : 'De-dusting Sticky Mats',
+          image: '/images/industries/sticky_mat.webp',
+          slug: 'cleanroom-consumables'
+        }
+      ],
+      cleanroomViewAll: isVi ? 'Xem tất cả sản phẩm phòng sạch' : isJa ? 'すべてのクリーンルーム製品を見る' : 'See all cleanroom products',
+      packagingIntro: isVi
+        ? 'Bao bì sơ cấp tiếp xúc trực tiếp vô trùng và màng bảo vệ bên ngoài.'
+        : isJa
+        ? '無菌の直接接触一次包装および外装保護フィルム。'
+        : 'Sterile primary contact packaging and external protective film solutions.',
+      packagingCategories: [
+        {
+          name: isVi ? 'Túi nhôm chống ẩm & tiệt trùng' : isJa ? '防湿・滅菌アルミ袋' : 'Sterile Moisture Barrier Aluminum Bags',
+          image: '/images/industries/shielding_bag.webp',
+          slug: 'industrial-packaging'
+        },
+        {
+          name: isVi ? 'Màng PE quấn bảo vệ y tế' : isJa ? '医療用保護PEフィルム' : 'Medical Grade PE protective film',
+          image: '/images/industries/pe_film.webp',
+          slug: 'industrial-packaging'
+        },
+        {
+          name: isVi ? 'Khay nhựa chống tĩnh điện y tế' : isJa ? '医療用ESDプラスチックトレイ' : 'Medical ESD Plastic Trays',
+          image: '/images/industries/esd_tray.webp',
+          slug: 'industrial-packaging'
+        }
+      ],
+      packagingViewAll: isVi ? 'Xem tất cả sản phẩm đóng gói' : isJa ? 'すべての包装製品を見る' : 'See all packaging products',
+      casesTitle: isVi ? 'Trường hợp áp dụng thực tế' : isJa ? '実際の導入事例' : 'Real-world Applications',
+      cases: [
+        {
+          title: isVi 
+            ? 'Đạt chuẩn GMP WHO cho nhà máy Dược Hậu Giang' 
+            : isJa 
+            ? 'Dược Hậu Giang工場のGMP WHO基準の達成' 
+            : 'Achieving GMP WHO Standards for DHG Pharma Factory',
+          description: isVi
+            ? 'Đồng bộ hóa vật tư quần áo phòng sạch vô trùng Class 100 giúp vượt qua đợt đánh giá khắt khe của Bộ Y Tế thành công.'
+            : isJa
+            ? 'Class 100滅菌クリーンルームウェア等の資材同期化により、保健省による厳格な評価を通過。'
+            : 'Synchronizing Class 100 sterile cleanroom wear and supplies successfully passed strict Ministry of Health audits.',
+          image: '/images/industries/case_cleanroom.webp',
+          badge: isVi ? 'Đạt chuẩn GMP' : isJa ? 'GMP phù hợp' : 'GMP Compliant'
+        },
+        {
+          title: isVi 
+            ? 'Tối ưu màng đóng gói cho nhà máy thiết bị y tế' 
+            : isJa 
+            ? '医療機器工場の包装フィルム最適化' 
+            : 'Optimizing packaging film for medical device factory',
+          description: isVi
+            ? 'Ứng dụng túi nhôm chống ẩm và màng tiệt trùng giúp tăng thời gian bảo quản dụng cụ phẫu thuật thêm 18 tháng.'
+            : isJa
+            ? '防湿アルミ袋と滅菌フィルムの採用により、手術器具の保存期間を18ヶ月延長。'
+            : 'Application of moisture-barrier aluminum bags and sterile film extended surgical instrument shelf life by 18 months.',
+          image: '/images/industries/case_packaging.webp',
+          badge: isVi ? 'Tăng 18 tháng bảo quản' : isJa ? '保存期間18ヶ月延長' : '+18mo Shelf Life'
+        },
+        {
+          title: isVi 
+            ? 'Kiểm soát nhiễm chéo tại lab nghiên cứu vacxin' 
+            : isJa 
+            ? 'ワクチン研究所における交差汚染制御' 
+            : 'Controlling cross-contamination at vaccine research lab',
+          description: isVi
+            ? 'Hệ thống giấy lau phòng sạch và thảm dính bụi chuyên dụng giúp triệt tiêu hoàn toàn vi khuẩn phát tán trong phòng thí nghiệm.'
+            : isJa
+            ? '専用クリーンルームワイパーと粘着マットの導入により、実験室内の浮遊細菌を完全に排除。'
+            : 'Specialized cleanroom wipers and sticky mats completely eliminated airborne bacteria in the laboratory room.',
+          image: '/images/industries/case_supplier.webp',
+          badge: isVi ? 'Triệt tiêu 100% khuẩn' : isJa ? '細菌100%排除' : '100% Bacteria Elimination'
+        }
+      ],
+      whyUsTitle: isVi ? 'Vì sao chọn ULINK?' : isJa ? 'なぜULINKを選ぶのか？' : 'Why Choose ULINK?',
+      whyUsList: isVi 
+        ? [
+            'Sản phẩm đạt tiêu chuẩn chất lượng cao cấp, vô trùng tuyệt đối',
+            'Kiểm soát chất lượng nghiêm ngặt đạt chuẩn WHO-GMP và FDA',
+            'Nguồn cung ứng dồi dào, đảm bảo giao hàng đúng hẹn',
+            'Hỗ trợ kỹ thuật, kiểm định và hồ sơ năng lực đầy đủ cho nhà máy'
+          ]
+        : isJa
+        ? [
+            '最高水準の無菌品質を満たす製品',
+            'WHO-GMPおよびFDA規格に準拠した厳格な品質管理',
+            '豊富な供給能力により確実な納期を約束',
+            '技術サポート、製品検査、工場向け機能プロファイルの提供'
+          ]
+        : [
+            'Products meeting premium sterile quality standards',
+            'Strict quality control complying with WHO-GMP and FDA',
+            'Abundant supply capacity ensuring on-time delivery',
+            'Technical support, inspection reports, and full factory profile documentation'
+          ],
+      standardsTitle: isVi ? 'Chứng nhận & tiêu chuẩn áp dụng' : isJa ? '適用される認証＆規格' : 'Certifications & Standards',
+      standards: [
+        { name: 'WHO-GMP', detail: isVi ? 'Thực hành sản xuất tốt' : isJa ? '優良製造基準' : 'Good Manufacturing' },
+        { name: 'ISO 13485', detail: isVi ? 'Thiết bị y tế' : isJa ? '医療機器品質' : 'Medical Devices Mgmt' },
+        { name: 'ISO 14644', detail: isVi ? 'Tiêu chuẩn phòng sạch' : isJa ? 'クリーンルーム基準' : 'Cleanroom Standard' },
+        { name: 'FDA & CE', detail: isVi ? 'Tiêu chuẩn Mỹ & Châu Âu' : isJa ? '米国＆欧州安全基準' : 'US & EU Certification' }
+      ],
+      resourcesTitle: isVi ? 'Tài liệu liên quan' : isJa ? '関連資料' : 'Related Resources',
+      catalogue: {
+        title: isVi 
+          ? 'Catalogue giải pháp cho ngành Dược phẩm & Y tế' 
+          : isJa 
+          ? '医薬品・医療用ソリューションカタログ' 
+          : 'Solutions Catalogue for Pharmaceuticals & Medical',
+        info: 'PDF / 5.8MB',
+        url: '#'
       }
-    ],
-    challengesIntro: isVi ? 'Thách thức sản xuất & Kiểm soát rủi ro' : isJa ? '製造上の課題とリスク管理' : 'Production Challenges & Risk Control',
-    challenges: challengesList,
-    cleanroomIntro: isVi ? 'Giải pháp bảo vệ môi trường sản xuất vô trùng, phòng sạch.' : isJa ? '無菌製造環境やクリーンルーム向けの保護ソリューション。' : 'Protective solutions for sterile and cleanroom manufacturing environments.',
-    cleanroomCategories: [
-      {
-        name: isVi ? 'Quần áo phòng sạch & phụ kiện' : isJa ? 'クリーンルームウェア＆用品' : 'Cleanroom Wear & Accessories',
-        image: '/images/home/product-gloves.jpg',
-        slug: 'cleanroom-consumables'
-      },
-      {
-        name: isVi ? 'Khăn lau phòng sạch' : isJa ? 'クリーンルームワイパー' : 'Cleanroom Wipers',
-        image: '/images/home/product-wipes.jpg',
-        slug: 'cleanroom-consumables'
+    };
+  }
+
+  if (actualSlug === 'food-beverage') {
+    return {
+      slug: 'food-beverage',
+      name: isVi ? 'Thực phẩm & Đồ uống' : isJa ? '食品・飲料' : 'Food & Beverage',
+      title: isVi 
+        ? 'Giải pháp cho ngành Thực phẩm & Đồ uống' 
+        : isJa 
+        ? '食品・飲料加工向け安全・衛生ソリューション' 
+        : 'Safety & Sanitation Solutions for Food & Beverage Processing',
+      description: isVi
+        ? 'Chế biến thực phẩm đòi hỏi kiểm soát bụi bẩn tối đa và các loại vật tư bao bì tiếp xúc trực tiếp an toàn. Đảm bảo vệ sinh an toàn thực phẩm nghiêm ngặt.'
+        : isJa
+        ? '食品加工では、最大限 of 塵埃管理と安全な直接接触包装資材が必要です。厳格な食品衛生安全性を確保します。'
+        : 'Food processing requires maximum contamination control and food-contact safe packaging supplies. Strict hygiene and food safety assurance.',
+      iconName: 'Utensils',
+      gradient: 'from-amber-500 to-orange-800',
+      bannerImage: '/images/home/solution-packaging.jpg',
+      valueProps: [
+        {
+          title: isVi ? 'Đạt chuẩn FDA' : isJa ? 'FDA適合' : 'FDA Certified',
+          desc: isVi 
+            ? 'Vật liệu an toàn tuyệt đối khi tiếp xúc trực tiếp với thực phẩm.' 
+            : isJa 
+            ? '食品に直接接触しても完全に安全な素材を使用。' 
+            : 'Materials fully safe for direct contact with food products.',
+          iconName: 'ShieldCheck'
+        },
+        {
+          title: isVi ? 'Kiểm soát xơ vải & vi nhựa' : isJa ? '繊維・マイクロプラスチック制御' : 'Lint & Microplastics Control',
+          desc: isVi 
+            ? 'Hạn chế dị vật rơi vào nguyên liệu chế biến.' 
+            : isJa 
+            ? '加工原材料への異物混入を効果的に抑制。' 
+            : 'Effectively prevents foreign objects from falling into ingredients.',
+          iconName: 'Activity'
+        },
+        {
+          title: isVi ? 'Quy trình chuẩn hóa' : isJa ? 'プロセスの標準化' : 'Process Standardization',
+          desc: isVi 
+            ? 'Tiêu chuẩn hóa vật tư giúp dây chuyền luôn ổn định.' 
+            : isJa 
+            ? '資材の標準化により生産ラインを安定させます。' 
+            : 'Standardizing supplies keeps the production lines stable.',
+          iconName: 'Settings'
+        },
+        {
+          title: isVi ? 'Tối ưu chi phí' : isJa ? 'コスト最適化' : 'Cost Optimization',
+          desc: isVi 
+            ? 'Giảm thiểu hao phí vật tư và đóng gói hiệu quả.' 
+            : isJa 
+            ? '包装資材の無駄を最小限に抑え、効率化を図ります。' 
+            : 'Minimizes material waste and increases packaging efficiency.',
+          iconName: 'Zap'
+        }
+      ],
+      challengesIntro: isVi 
+        ? 'Thách thức trong ngành Thực phẩm' 
+        : isJa 
+        ? '食品産業における課題' 
+        : 'Challenges in the Food Industry',
+      challenges: [
+        {
+          title: isVi ? 'Rác thải vi nhựa và xơ vải rơi vào nguyên liệu' : isJa ? '原材料へのマイクロプラスチック・繊維混入' : 'Microplastics & fibers falling into ingredients',
+          desc: isVi
+            ? 'Xơ vải từ trang phục bảo hộ cũ rơi vào bồn trộn nguyên liệu gây lỗi chất lượng thành phẩm hàng loạt.'
+            : isJa
+            ? '古い防護服からの繊維が混合タンクに混入し、大量の製品品質不良の原因となります。'
+            : 'Fibers from old protective suits falling into mixing vats cause bulk product quality defects.',
+          iconName: 'Sparkles'
+        },
+        {
+          title: isVi ? 'Bao bì đóng gói pallet bên ngoài bị rách' : isJa ? '外装パレット包装の破損・破れ' : 'Outer pallet packaging tearing or breaking',
+          desc: isVi
+            ? 'Màng quấn pallet không đủ dai dẫn đến rách, làm ẩm nước và côn trùng xâm nhập trong kho lạnh.'
+            : isJa
+            ? 'パレットストレッチフィルムの強度が不足し、冷凍庫内での破れや湿気、虫の侵入を招きます。'
+            : 'Insufficient pallet stretch film strength leads to tearing, moisture, and pest intrusion in cold storage.',
+          iconName: 'AlertCircle'
+        },
+        {
+          title: isVi ? 'Quy trình lau chùi băng chuyền dính dầu mỡ' : isJa ? 'コンベアの油分除去・清掃作業' : 'Conveyor belt grease cleaning process',
+          desc: isVi
+            ? 'Hao phí thời gian và hóa chất khi lau băng tải thực phẩm bằng khăn thông thường phát sinh bụi vải.'
+            : isJa
+            ? '通常のタオルで食品コンベアを清掃すると、清掃時間や化学薬品の浪費、および布埃が発生します。'
+            : 'Wiping food conveyor belts with regular cloths wastes time/chemicals and generates lint dust.',
+          iconName: 'Settings'
+        }
+      ],
+      cleanroomIntro: isVi
+        ? 'Giải pháp kiểm soát vệ sinh, trang phục bảo hộ đạt chuẩn tiếp xúc thực phẩm.'
+        : isJa
+        ? '食品接触基準に適合した衛生管理・防護服ソリューション。'
+        : 'Sanitation control and protective wear solutions complying with food contact standards.',
+      cleanroomCategories: [
+        {
+          name: isVi ? 'Mũ bảo hộ & Khẩu trang thực phẩm' : isJa ? '食品用キャップ＆マスク' : 'Food Grade Caps & Masks',
+          image: '/images/industries/cleanroom_mask.webp',
+          slug: 'cleanroom-consumables'
+        },
+        {
+          name: isVi ? 'Găng tay cao su tiếp xúc thực phẩm' : isJa ? '食品接触用ゴム手袋' : 'Food Contact Rubber Gloves',
+          image: '/images/home/product-gloves.jpg',
+          slug: 'cleanroom-consumables'
+        },
+        {
+          name: isVi ? 'Giấy lau băng tải không bụi' : isJa ? '無塵コンベアワイパー' : 'Lint-free Conveyor Wipers',
+          image: '/images/home/product-wipes.jpg',
+          slug: 'cleanroom-consumables'
+        }
+      ],
+      cleanroomViewAll: isVi ? 'Xem tất cả sản phẩm phòng sạch' : isJa ? 'すべてのクリーンルーム製品を見る' : 'See all cleanroom products',
+      packagingIntro: isVi
+        ? 'Màng bọc, màng co đóng gói an toàn thực phẩm.'
+        : isJa
+        ? '食品安全衛生に準拠したラッピング・シュリンクフィルム。'
+        : 'Wrapping and shrink film solutions complying with food safety standards.',
+      packagingCategories: [
+        {
+          name: isVi ? 'Màng PE quấn pallet thực phẩm' : isJa ? '食品パレット用PEフィルム' : 'Food Grade PE Pallet Film',
+          image: '/images/industries/pe_film.webp',
+          slug: 'industrial-packaging'
+        }
+      ],
+      packagingViewAll: isVi ? 'Xem tất cả sản phẩm đóng gói' : isJa ? 'すべての包装製品を見る' : 'See all packaging products',
+      casesTitle: isVi ? 'Trường hợp áp dụng thực tế' : isJa ? '実際の導入事例' : 'Real-world Applications',
+      cases: [
+        {
+          title: isVi 
+            ? 'Cải tiến quy trình đóng gói hàng xuất khẩu thủy sản' 
+            : isJa 
+            ? '水産輸出製品包装プロセスの改善' 
+            : 'Improving seafood export packaging process',
+          description: isVi
+            ? 'Sử dụng màng PE lực căng cao của ULink giúp pallet thủy sản vững chắc, chống ẩm lạnh 100% suốt quá trình vận chuyển đường biển.'
+            : isJa
+            ? 'ULinkの高張力PEフィルムを使用することで、海上輸送中も水産パレットを強固に固定し、100%防湿防寒します。'
+            : 'Using ULink high-tension PE film secured seafood pallets firmly, ensuring 100% moisture protection during ocean freight.',
+          image: '/images/home/solution-packaging.jpg',
+          badge: isVi ? 'Chống ẩm 100%' : isJa ? '100%防湿' : '100% Moisture Proof'
+        },
+        {
+          title: isVi 
+            ? 'Giảm thiểu dị vật tại nhà máy sữa chua' 
+            : isJa 
+            ? 'ヨーグルト工場における異物混入の削減' 
+            : 'Reducing foreign object entry at yogurt factory',
+          description: isVi
+            ? 'Thay thế trang phục bảo hộ thông thường bằng bộ đồ chống phát tán xơ vải của ULink giúp tỷ lệ dị vật đạt mức 0%.'
+            : isJa
+            ? '通常の防護服をULinkの発塵防止ウェアに変更したことで、異物混入率が0%になりました。'
+            : 'Replacing regular suits with ULink lint-free coveralls successfully reduced foreign object entry rate to 0%.',
+          image: '/images/home/solution-cleanroom.jpg',
+          badge: isVi ? 'Dị vật giảm về 0%' : isJa ? '異物混入0%' : '0% Foreign Objects'
+        }
+      ],
+      whyUsTitle: isVi ? 'Vì sao chọn ULINK?' : isJa ? 'なぜULINKを選ぶのか？' : 'Why Choose ULINK?',
+      whyUsList: isVi 
+        ? [
+            'Sản phẩm đạt chuẩn FDA, an toàn tuyệt đối cho thực phẩm',
+            'Kiểm soát chất lượng vệ sinh nghiêm ngặt đạt chuẩn HACCP',
+            'Chuỗi cung ứng bền vững và giải pháp logistics tối ưu',
+            'Hỗ trợ thiết kế kích thước và quy cách theo yêu cầu riêng'
+          ]
+        : isJa
+        ? [
+            'FDA基準を満たし、食品に完全に安全な製品',
+            'HACCP基準に準拠した厳格な衛生・品質管理',
+            '持続可能なサプライチェーンと最適化された物流ソリューション',
+            'ご要望に応じたカスタムサイズ・仕様の設計サポート'
+          ]
+        : [
+            'Products meeting FDA standards, fully safe for food contact',
+            'Strict hygiene and quality control complying with HACCP standards',
+            'Sustainable supply chain and optimized logistics solutions',
+            'Support for custom size and specifications design tailoring'
+          ],
+      standardsTitle: isVi ? 'Chứng nhận & tiêu chuẩn áp dụng' : isJa ? '適用される認証＆規格' : 'Certifications & Standards',
+      standards: [
+        { name: 'FDA', detail: isVi ? 'An toàn thực phẩm Hoa Kỳ' : isJa ? '米国食品医薬品局安全基準' : 'Food Contact Safety' },
+        { name: 'HACCP', detail: isVi ? 'Phân tích mối nguy' : isJa ? 'ハサップ衛生管理' : 'Hazard Analysis' },
+        { name: 'ISO 22000', detail: isVi ? 'Hệ thống an toàn thực phẩm' : isJa ? '食品安全マネジメント' : 'Food Safety Mgmt' }
+      ],
+      resourcesTitle: isVi ? 'Tài liệu liên quan' : isJa ? '関連資料' : 'Related Resources',
+      catalogue: {
+        title: isVi 
+          ? 'Catalogue giải pháp ngành Thực phẩm & Đồ uống' 
+          : isJa 
+          ? '食品・飲料向けカタログ' 
+          : 'Solutions Catalogue for Food & Beverage',
+        info: 'PDF / 5.8MB',
+        url: '#'
       }
-    ],
-    cleanroomViewAll: isVi ? 'Xem tất cả sản phẩm phòng sạch' : isJa ? 'すべてのクリーンルーム製品を見る' : 'See all cleanroom products',
-    packagingIntro: isVi ? 'Giải pháp đóng gói lưu kho và bảo quản sản phẩm an toàn.' : isJa ? '安全な保管と製品保護のための包装ソリューション。' : 'Packaging solutions for safe warehousing and product protection.',
-    packagingCategories: [
-      {
-        name: isVi ? 'Màng đóng gói công nghiệp' : isJa ? '工業用包装フィルム' : 'Industrial Packaging Film',
-        image: '/images/home/product-packaging.jpg',
-        slug: 'industrial-packaging'
-      }
-    ],
-    packagingViewAll: isVi ? 'Xem tất cả sản phẩm đóng gói' : isJa ? 'すべての包装製品を見る' : 'See all packaging products',
-    casesTitle: isVi ? 'Trường hợp áp dụng thực tế' : isJa ? '実際の導入事例' : 'Real-world Applications',
-    cases: [
-      {
-        title: isVi ? 'Nâng cấp phòng sạch Class 1000' : isJa ? 'Class 1000クリーンルームのアップグレード' : 'Upgrading Class 1000 Cleanroom',
-        description: isVi ? 'Tối ưu hóa môi trường làm việc thông qua hệ thống vật tư đồng bộ và kiểm soát tĩnh điện tốt hơn.' : isJa ? '一貫した資材システムと優れた静電気管理による作業環境の最適化。' : 'Optimizing the work environment through standardized supplies and enhanced electrostatic control.',
-        image: '/images/home/solution-cleanroom.jpg',
-        badge: isVi ? 'Tăng 15% hiệu quả' : isJa ? '効率15%向上' : '15% Efficiency Increase'
-      },
-      {
-        title: isVi ? 'Cải tiến đóng gói hàng xuất khẩu' : isJa ? '輸出製品包装の改善' : 'Improving Export Packaging',
-        description: isVi ? 'Áp dụng màng PE chuyên dụng giúp bảo vệ sản phẩm khỏi rách nát và bụi bẩn khi vận chuyển đường biển.' : isJa ? '専用PEフィルムの採用により、海上輸送中の製品の破れやチリから保護。' : 'Adopting specialized PE films protects products from tears and dust during maritime shipping.',
-        image: '/images/home/solution-packaging.jpg',
-        badge: isVi ? 'Giảm 99% lỗi bụi' : isJa ? '塵埃付着99%削減' : '99% Dust Reduction'
-      }
-    ],
-    whyUsTitle: isVi ? 'Vì sao chọn ULINK?' : isJa ? 'なぜULINKを選ぶのか？' : 'Why Choose ULINK?',
-    whyUsList: isVi
-      ? [
-          'Sản phẩm đạt tiêu chuẩn chất lượng cao',
-          'Kiểm soát chất lượng nghiêm ngặt',
-          'Chuỗi cung ứng ổn định toàn cầu',
-          'Hỗ trợ kỹ thuật và tùy chỉnh theo yêu cầu'
-        ]
-      : isJa
-      ? [
-          '高品質基準を満たす製品',
-          '厳格な品質管理プロセス',
-          '安定したグローバルサプライチェーン',
-          '技術サポート và 個別要望への対応'
-        ]
-      : [
-          'Products meeting high quality standards',
-          'Strict quality control processes',
-          'Stable global supply chain',
-          'Technical support & custom tailoring'
-        ],
-    standardsTitle: isVi ? 'Chứng nhận & tiêu chuẩn áp dụng' : isJa ? '適用される認証＆規格' : 'Certifications & Standards',
-    standards: standardsList,
-    resourcesTitle: isVi ? 'Tài liệu liên quan' : isJa ? '関連資料' : 'Related Resources',
-    catalogue: {
-      title: isVi ? `Catalogue giải pháp ngành ${name}` : isJa ? `${name}向けカタログ` : `Solutions Catalogue for ${name}`,
-      info: 'PDF / 5.8MB',
-      url: '#'
-    }
-  };
+    };
+  }
+
+  return null;
 }
 
 export async function generateMetadata({ params: { locale, slug } }: IndustryPageProps): Promise<Metadata> {
@@ -461,7 +712,7 @@ export default async function IndustryDetailPage({ params: { locale, slug } }: I
   // Fetch real products belonging to this industry slug
   const { products } = await fetchProducts({
     industry: actualSlug,
-    limit: 6
+    limit: 8
   });
 
   const isVi = locale === 'vi';
@@ -492,7 +743,8 @@ export default async function IndustryDetailPage({ params: { locale, slug } }: I
       locale={locale}
       currentSlug={slug}
       translations={translations}
-    />
+    >
+      <CtaBanner containerClassName="max-w-[1440px] px-4 sm:px-8 lg:px-16" />
+    </IndustryDetailClient>
   );
 }
-
