@@ -10,6 +10,8 @@ import {
   Clock,
   Copy,
   ArrowLeft,
+  Search,
+  AlertCircle,
   ChevronRight,
   FileText
 } from 'lucide-react';
@@ -18,20 +20,24 @@ import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import type { AuthUser } from '@/lib/auth-helpers';
 
-interface OrderConfirmationClientProps {
+interface OrderTrackingClientProps {
   user: AuthUser | null;
   locale: string;
   dbProductMap?: Record<string, { hero: string | null; slug: string }>;
 }
 
-export default function OrderConfirmationClient({
+export default function OrderTrackingClient({
   user,
   locale,
   dbProductMap = {}
-}: OrderConfirmationClientProps) {
-  const t = useTranslations('orderConfirmationPage');
+}: OrderTrackingClientProps) {
+  const t = useTranslations('orderTrackingPage');
   const DIRECTUS_URL = getDirectusUrlClient();
 
+  const [inputCode, setInputCode] = useState('');
+  const [inputEmail, setInputEmail] = useState('');
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [trackedOrder, setTrackedOrder] = useState<any | null>(null);
   const [copiedTracking, setCopiedTracking] = useState(false);
 
   function getDirectusUrlClient() {
@@ -51,20 +57,124 @@ export default function OrderConfirmationClient({
     setTimeout(() => setCopiedTracking(false), 2000);
   };
 
+  const handleTrackSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMsg(null);
+
+    const cleanCode = inputCode.trim().toUpperCase();
+    const cleanEmail = inputEmail.trim().toLowerCase();
+
+    if (!cleanCode || !cleanEmail) {
+      setErrorMsg(locale === 'vi' ? 'Vui lòng nhập đầy đủ thông tin.' : 'Please fill in all fields.');
+      return;
+    }
+
+    if (cleanCode === 'ULK-2026-98745' && cleanEmail === 'purchasing@ulink-partner.vn') {
+      setTrackedOrder({
+        code: 'ULK-2026-98745',
+        date: '14/03/2026'
+      });
+    } else {
+      setErrorMsg(t('invalidCode'));
+    }
+  };
+
+  const handleBackSearch = () => {
+    setTrackedOrder(null);
+    setInputCode('');
+    setInputEmail('');
+    setErrorMsg(null);
+  };
+
+  // State 1: Form search
+  if (!trackedOrder) {
+    return (
+      <div className="mx-auto max-w-md w-full px-4 text-slate-800 my-8">
+        <div className="bg-white border border-slate-200 p-6 sm:p-8 rounded-lg shadow-sm space-y-6 text-left">
+          <div className="flex flex-col items-center text-center space-y-2">
+            <div className="h-12 w-12 rounded-full bg-[#E0F2FE] text-[#0284C7] flex items-center justify-center">
+              <Search className="h-6 w-6" />
+            </div>
+            <h2 className="text-xl font-extrabold text-slate-900 tracking-tight">
+              {t('searchTitle')}
+            </h2>
+            <p className="text-xs text-slate-400 leading-relaxed max-w-sm">
+              {t('searchDesc')}
+            </p>
+          </div>
+
+          {/* Test suggestion alert */}
+          <div className="bg-blue-50 border border-blue-100 p-3.5 rounded text-[11px] leading-relaxed text-blue-800 flex gap-2">
+            <AlertCircle className="h-4.5 w-4.5 text-blue-500 shrink-0 mt-0.5" />
+            <div>
+              <p className="font-bold">Gợi ý tài khoản tra cứu thử nghiệm:</p>
+              <p className="mt-1">Mã đơn hàng: <strong className="font-mono bg-blue-100 px-1 py-0.5 rounded">ULK-2026-98745</strong></p>
+              <p className="mt-0.5">Email doanh nghiệp: <strong className="font-mono bg-blue-100 px-1 py-0.5 rounded">purchasing@ulink-partner.vn</strong></p>
+            </div>
+          </div>
+
+          <form onSubmit={handleTrackSubmit} className="space-y-4 pt-2">
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500" htmlFor="trackCode">
+                {t('orderCodeLabel')}
+              </label>
+              <input
+                type="text"
+                id="trackCode"
+                placeholder="ULK-2026-98745"
+                value={inputCode}
+                onChange={(e) => setInputCode(e.target.value)}
+                className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand font-semibold"
+              />
+            </div>
+
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-500" htmlFor="trackEmail">
+                {t('emailLabel')}
+              </label>
+              <input
+                type="email"
+                id="trackEmail"
+                placeholder="purchasing@ulink-partner.vn"
+                value={inputEmail}
+                onChange={(e) => setInputEmail(e.target.value)}
+                className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand"
+              />
+            </div>
+
+            {errorMsg && (
+              <div className="bg-rose-50 border border-rose-100 p-3 rounded text-xs text-rose-600 leading-relaxed font-medium">
+                {errorMsg}
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="w-full inline-flex items-center justify-center rounded bg-brand text-white hover:bg-brand/95 py-3 text-sm font-bold shadow transition-all text-center"
+            >
+              {t('btnSubmit')}
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // State 2: Tracking journey details (matches confirmation dashboard perfectly!)
   return (
     <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 sm:px-8 lg:px-16 text-slate-800 text-left">
       
       {/* Breadcrumbs */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
-        <Link href="/" className="hover:text-brand transition-colors">
+        <span className="hover:text-brand transition-colors cursor-pointer" onClick={handleBackSearch}>
           Trang chủ
-        </Link>
+        </span>
         <ChevronRight className="h-3 w-3 opacity-60" />
-        <Link href="/order-tracking" className="hover:text-brand transition-colors">
+        <span className="hover:text-brand transition-colors cursor-pointer" onClick={handleBackSearch}>
           Đơn hàng của tôi
-        </Link>
+        </span>
         <ChevronRight className="h-3 w-3 opacity-60" />
-        <span className="text-slate-600 font-semibold">Chi tiết đơn hàng ULK-2026-98745</span>
+        <span className="text-slate-600 font-semibold">Chi tiết đơn hàng {trackedOrder.code}</span>
       </nav>
 
       {/* Header Row */}
@@ -72,7 +182,7 @@ export default function OrderConfirmationClient({
         <div className="space-y-1">
           <div className="flex flex-wrap items-center gap-3">
             <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
-              Đơn hàng ULK-2026-98745
+              Đơn hàng {trackedOrder.code}
             </h2>
             <span className="inline-flex items-center bg-blue-50 text-blue-600 text-[10.5px] font-bold px-2.5 py-0.5 rounded-full border border-blue-100">
               Đang vận chuyển
@@ -86,16 +196,16 @@ export default function OrderConfirmationClient({
             </Link>
           </div>
           <p className="text-xs text-slate-400 font-medium">
-            Đặt ngày 14/03/2026 • 15:20 | Cập nhật lần cuối: 5 phút trước
+            Đặt ngày {trackedOrder.date} • 15:20 | Cập nhật lần cuối: 5 phút trước
           </p>
         </div>
-        <Link
-          href="/order-tracking"
+        <button
+          onClick={handleBackSearch}
           className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-brand transition-all md:self-center"
         >
           <ArrowLeft className="h-4 w-4" />
-          Quay lại danh sách đơn hàng
-        </Link>
+          {t('backSearch')}
+        </button>
       </div>
 
       {/* Progress Timeline Header */}
@@ -193,7 +303,6 @@ export default function OrderConfirmationClient({
             <div className="relative pl-6 border-l border-slate-200 space-y-6 text-xs">
               {/* Event 1 */}
               <div className="relative">
-                {/* Active blue marker circle */}
                 <div className="absolute -left-[31px] top-0 h-4.5 w-4.5 rounded-full bg-blue-100 border border-brand flex items-center justify-center">
                   <div className="h-2 w-2 rounded-full bg-brand" />
                 </div>
@@ -208,7 +317,6 @@ export default function OrderConfirmationClient({
 
               {/* Event 2 */}
               <div className="relative">
-                {/* Gray marker circle */}
                 <div className="absolute -left-[30px] top-0 h-4 w-4 rounded-full bg-white border border-slate-300 flex items-center justify-center">
                   <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />
                 </div>
@@ -223,7 +331,6 @@ export default function OrderConfirmationClient({
 
               {/* Event 3 */}
               <div className="relative">
-                {/* Gray marker circle */}
                 <div className="absolute -left-[30px] top-0 h-4 w-4 rounded-full bg-white border border-slate-300 flex items-center justify-center">
                   <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />
                 </div>
@@ -238,7 +345,6 @@ export default function OrderConfirmationClient({
 
               {/* Event 4 */}
               <div className="relative">
-                {/* Gray marker circle */}
                 <div className="absolute -left-[30px] top-0 h-4 w-4 rounded-full bg-white border border-slate-300 flex items-center justify-center">
                   <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />
                 </div>
