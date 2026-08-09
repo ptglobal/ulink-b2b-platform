@@ -10,6 +10,23 @@ import { api } from '@/lib/api';
 
 export { ApiError as AuthError };
 
+/**
+ * Helper to check whether a given user object has admin privileges.
+ * Safe for both Client and Server components.
+ */
+export function isAdminUser(user?: { role?: string | null; email?: string | null } | null): boolean {
+  if (!user) return false;
+  const role = (user.role ?? '').toLowerCase();
+  const email = (user.email ?? '').toLowerCase();
+  return (
+    role === 'administrator' ||
+    role === 'admin' ||
+    role.includes('admin') ||
+    email.startsWith('admin@') ||
+    email.includes('admin')
+  );
+}
+
 // ─── Session shape ───────────────────────────────────────────────────────────
 
 export interface MeResponse {

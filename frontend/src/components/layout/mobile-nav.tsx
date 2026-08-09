@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, UserRound, LogOut, FileText, Package, ClipboardList } from 'lucide-react';
+import { Menu, X, UserRound, LogOut, FileText, Package, ClipboardList, ShieldCheck } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useAuth } from '@/lib/auth-context';
 import { useTranslations } from 'next-intl';
+import { isAdminUser } from '@/lib/auth';
 
 interface MobileNavProps {
   items: { href: string; label: string }[];
@@ -14,6 +15,7 @@ export function MobileNav({ items }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const t = useTranslations('nav');
   const { status, user, logout } = useAuth();
+  const isAdmin = isAdminUser(user);
 
   return (
     <>
@@ -66,6 +68,16 @@ export function MobileNav({ items }: MobileNavProps) {
                   <div className="py-3 text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-4">
                     {t('account')}
                   </div>
+                  {isAdmin && (
+                    <Link
+                      href="/admin"
+                      onClick={() => setOpen(false)}
+                      className="flex items-center gap-2 border-b border-border py-3 text-sm font-bold text-[#0D4397] transition-colors hover:text-brand"
+                    >
+                      <ShieldCheck className="h-4 w-4 text-[#0D4397]" aria-hidden="true" />
+                      {t('adminDashboard')}
+                    </Link>
+                  )}
                   <Link
                     href="/rfqs"
                     onClick={() => setOpen(false)}

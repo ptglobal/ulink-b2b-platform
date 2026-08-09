@@ -1,13 +1,15 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { UserRound, LogOut, ChevronDown, FileText, Package, ClipboardList } from 'lucide-react';
+import { UserRound, LogOut, ChevronDown, FileText, Package, ClipboardList, ShieldCheck } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { useAuth } from '@/lib/auth-context';
+import { isAdminUser } from '@/lib/auth';
 
 export function HeaderAuthButton() {
   const t = useTranslations('nav');
   const { status, user, logout } = useAuth();
+  const isAdmin = isAdminUser(user);
 
   // Still loading — render placeholder to avoid layout shift
   if (status === 'idle' || status === 'loading') {
@@ -34,7 +36,16 @@ export function HeaderAuthButton() {
         </button>
 
         {/* Dropdown */}
-        <div className="invisible absolute right-0 top-full z-50 mt-1 min-w-[160px] rounded-lg border border-border bg-card py-1 shadow-lg opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+        <div className="invisible absolute right-0 top-full z-50 mt-1 min-w-[180px] rounded-lg border border-border bg-card py-1 shadow-lg opacity-0 transition-all group-hover:visible group-hover:opacity-100">
+          {isAdmin && (
+            <Link
+              href="/admin"
+              className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#0D4397] transition-colors hover:bg-blue-50 border-b border-slate-100"
+            >
+              <ShieldCheck className="h-4 w-4 text-[#0D4397]" aria-hidden="true" />
+              {t('adminDashboard')}
+            </Link>
+          )}
           <Link
             href="/rfqs"
             className="flex items-center gap-2 px-4 py-2 text-sm text-foreground transition-colors hover:bg-muted"

@@ -81,6 +81,8 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   }
 }
 
+export { isAdminUser } from './auth';
+
 /**
  * Forward a Request's cookies to Directus and return the upstream Response.
  * Used by route handlers that need to call Directus on behalf of the user

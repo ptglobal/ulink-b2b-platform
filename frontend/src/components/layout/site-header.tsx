@@ -7,12 +7,16 @@ import { MobileNav } from './mobile-nav';
 import { HeaderAuthButton } from './header-auth-button';
 import { CartBadge } from './cart-badge';
 
+import { getCurrentUser, isAdminUser } from '@/lib/auth-helpers';
+
 /**
  * Header trang chủ — bám sát thiết kế Figma (node 2071:1118):
  * logo · menu (có chevron) · tìm kiếm · giỏ hàng (badge) · Đặt hàng nhanh · Đăng nhập.
  */
 export async function SiteHeader() {
   const t = await getTranslations('nav');
+  const user = await getCurrentUser();
+  const isAdmin = isAdminUser(user);
 
   const items = [
     { href: '/regional-hubs', label: t('hubs') },
@@ -21,7 +25,8 @@ export async function SiteHeader() {
     { href: '/resources', label: t('resources') },
     { href: '/about', label: t('about') },
     { href: '/about/careers', label: t('careers') },
-    { href: '/contact', label: t('contact') }
+    { href: '/contact', label: t('contact') },
+    ...(isAdmin ? [{ href: '/admin', label: t('adminDashboard') }] : [])
   ];
 
   return (
