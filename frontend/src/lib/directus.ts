@@ -285,8 +285,9 @@ const url = getDirectusUrl();
  * Next.js App Router caches GET responses according to `next.revalidate`,
  * so Directus reads are served from cache and refreshed every hour.
  */
+// Tạm thời tắt cache ISR trong môi trường dev
 const isrFetch: typeof globalThis.fetch = (input, init) =>
-  globalThis.fetch(input, { ...init, next: { revalidate: 3600 } });
+  globalThis.fetch(input, { ...init, cache: 'no-store' /* next: { revalidate: 3600 } */ });
 
 /**
  * Uncached fetch for auth, mutations, and data that must always be fresh.

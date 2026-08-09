@@ -62,7 +62,7 @@ export async function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
+                <Link href="/about/careers" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
                   {t('aboutCareers')}
                 </Link>
               </li>

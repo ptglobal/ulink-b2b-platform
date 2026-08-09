@@ -14,7 +14,7 @@ import {
 } from '@/components/home';
 
 /** ISR — revalidate every hour; on-demand revalidation via content webhooks */
-export const revalidate = 3600;
+// export const revalidate = 3600;
 
 export default async function HomePage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);

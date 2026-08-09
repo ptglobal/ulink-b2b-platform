@@ -19,7 +19,9 @@ export async function SiteHeader() {
     { href: '/solutions', label: t('solutions') },
     { href: '/industries', label: t('industries') },
     { href: '/resources', label: t('resources') },
-    { href: '/about', label: t('about') }
+    { href: '/about', label: t('about') },
+    { href: '/about/careers', label: t('careers') },
+    { href: '/contact', label: t('contact') }
   ];
 
   return (

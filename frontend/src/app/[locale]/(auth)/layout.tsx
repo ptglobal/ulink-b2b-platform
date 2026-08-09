@@ -1,12 +1,10 @@
 import { setRequestLocale } from 'next-intl/server';
-import { AuthHero } from '@/components/auth/auth-hero';
-import { AuthTabs } from '@/components/auth/auth-tabs';
-import { LocaleSwitcher } from '@/components/layout/locale-switcher';
+import { SiteHeader } from '@/components/layout/site-header';
+import { SiteFooter } from '@/components/layout/site-footer';
 
 /**
  * Layout dùng chung cho các trang auth (login, register, forgot-password).
- * Bố cục: nền phía sau + hai block tách biệt (ảnh | đăng nhập) canh giữa,
- * giới hạn max-width và chiều cao để không bị thu nhỏ quá mức khi resize.
+ * Tích hợp Header & Footer tiêu chuẩn đồng bộ với toàn bộ hệ thống ULink.
  */
 export default function AuthLayout({
   children,
@@ -18,24 +16,14 @@ export default function AuthLayout({
   setRequestLocale(locale);
 
   return (
-    <div className="flex h-screen flex-col overflow-hidden lg:flex-row">
-      {/* Block 1 — Ảnh thương hiệu (full height) */}
-      <AuthHero />
-
-      {/* Block 2 — Khung đăng nhập */}
-      <div className="flex h-screen w-full flex-col bg-card lg:w-1/2">
-        {/* Top bar */}
-        <div className="flex shrink-0 items-center justify-end px-6 pt-5 sm:px-10 lg:px-12">
-          <LocaleSwitcher />
+    <div className="flex min-h-screen w-full flex-col bg-slate-50/50">
+      <SiteHeader />
+      <main className="flex-1 py-8">
+        <div className="mx-auto max-w-[1440px] px-4 sm:px-8 lg:px-16">
+          {children}
         </div>
-
-        <div className="flex flex-1 flex-col overflow-y-auto px-6 pb-6 pt-1 sm:px-10 lg:px-12">
-          <div className="m-auto w-full max-w-md py-4">
-            <AuthTabs />
-            {children}
-          </div>
-        </div>
-      </div>
+      </main>
+      <SiteFooter />
     </div>
   );
 }

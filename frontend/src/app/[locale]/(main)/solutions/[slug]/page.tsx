@@ -27,7 +27,7 @@ import ProductTabs from '@/components/product/product-tabs';
 import RequestSampleButton from '@/components/sample-request/request-sample-button';
 import type { Product, Industry, Standard, ProductSku, DirectusFile } from '@/lib/directus';
 
-export const revalidate = 60;
+// export const revalidate = 60;
 
 interface ProductDetailPageProps {
   params: { locale: string; slug: string };
