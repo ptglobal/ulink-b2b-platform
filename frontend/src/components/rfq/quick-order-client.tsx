@@ -704,7 +704,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                     {t('emptyCart')}
                   </p>
                   <Link
-                    href="/solutions"
+                    href="/solutions/categories/cleanroom-consumables"
                     className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-brand/90 transition-all shadow"
                   >
                     {t('viewProducts')}
@@ -773,7 +773,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
               )}
 
               <Link
-                href="/solutions"
+                href="/solutions/categories/cleanroom-consumables"
                 className="inline-flex items-center gap-1.5 text-sm font-medium text-brand hover:text-brand/80 transition-colors"
               >
                 <Plus className="h-4 w-4" />

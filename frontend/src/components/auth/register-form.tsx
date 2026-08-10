@@ -282,7 +282,7 @@ export function RegisterForm() {
         </button>
       </form>
 
-      <SocialAuth mode="register" />
+
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         {t('haveAccount')}{' '}

@@ -188,8 +188,9 @@
   },
   "nav": {
     "home": "Home",
-    "hubs": "Clusters/IZ",
-    "solutions": "Solutions/Products",
+    "hubs": "Regional Hubs",
+    "solutions": "Solutions",
+    "products": "Products",
     "industries": "Industries",
     "resources": "Resources",
     "quickOrder": "Submit RFQ",

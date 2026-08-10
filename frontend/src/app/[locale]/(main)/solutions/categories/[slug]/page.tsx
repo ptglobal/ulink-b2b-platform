@@ -132,7 +132,7 @@ export default async function CategoryProductsPage({ params }: PageProps) {
   setRequestLocale(locale);
 
   // 1. Fetch real DB products & categories directly from Directus / PostgreSQL DB
-  const { products: dbProducts } = await fetchProducts({ category: slug, limit: 100 });
+  const { products: dbProducts } = await fetchProducts({ limit: 100 });
   const dbCategories = await fetchProductCategories();
 
   // 2. Find matching DB category if available

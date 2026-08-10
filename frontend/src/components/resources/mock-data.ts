@@ -243,7 +243,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       ja: '標準的なクリーンルーム清掃手順は、管理された environment を維持し、交差汚染のリスクを最小限に抑えるのに役立ちます。'
     },
     date: '18/05/2026',
-    image: '/images/home/product-wipes.jpg',
+    image: '/images/industries/electronics_hero.webp',
     industryId: 'pharmaceutical',
     topicId: 'cleanroom',
     contentType: 'tech-doc',
@@ -300,7 +300,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       ja: '複数の産業におけるニトリル手袋の重要な基準と実用的な用途を探ります。'
     },
     date: '16/05/2026',
-    image: '/images/home/product-gloves.jpg',
+    image: '/images/industries/electronics_hero.webp',
     industryId: 'electronics',
     topicId: 'cleanroom',
     contentType: 'article',
@@ -357,7 +357,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       ja: '医薬品製造におけるGMP WHO規格を満たすクリーンルームの設計および運用原則について説明します。'
     },
     date: '15/05/2026',
-    image: '/images/home/product-wipes.jpg',
+    image: '/images/industries/electronics_hero.webp',
     industryId: 'pharmaceutical',
     topicId: 'cleanroom',
     contentType: 'certificate',
@@ -414,7 +414,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       ja: '輸送中の部品欠陥率を0.1%未満に抑えるのに役立った、カスタムESDパッケージング設計に関する詳細なプロジェクト。'
     },
     date: '10/05/2026',
-    image: '/images/home/product-gloves.jpg',
+    image: '/images/industries/electronics_hero.webp',
     industryId: 'electronics',
     topicId: 'esd',
     contentType: 'article',
@@ -471,7 +471,7 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       ja: '優れた防湿性、発塵ゼロを備え、医薬品や高級食品の包装に特化した次世代アルミ袋製品ライン。'
     },
     date: '05/05/2026',
-    image: '/images/home/product-wipes.jpg',
+    image: '/images/industries/electronics_hero.webp',
     industryId: 'food',
     topicId: 'packaging',
     contentType: 'article',

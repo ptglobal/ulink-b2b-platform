@@ -19,12 +19,12 @@ export async function SiteHeader() {
   const isAdmin = isAdminUser(user);
 
   const items = [
-    { href: '/regional-hubs', label: t('hubs') },
     { href: '/solutions', label: t('solutions') },
+    { href: '/solutions/categories/cleanroom-consumables', label: t('products') },
     { href: '/industries', label: t('industries') },
+    { href: '/regional-hubs', label: t('hubs') },
     { href: '/resources', label: t('resources') },
     { href: '/about', label: t('about') },
-    { href: '/about/careers', label: t('careers') },
     { href: '/contact', label: t('contact') },
     ...(isAdmin ? [{ href: '/admin', label: t('adminDashboard') }] : [])
   ];

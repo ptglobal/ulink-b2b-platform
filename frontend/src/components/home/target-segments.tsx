@@ -67,7 +67,7 @@ export async function TargetSegments() {
           {/* ROW 2: BUTTON ROW (Full Width Centered, Unaffected by Text Padding) */}
           <div className="flex w-full items-center justify-center px-6 pb-8 pt-4 sm:pb-10">
             <Link
-              href="/solutions/fdi"
+              href="/solutions/categories/cleanroom-consumables"
               className="inline-flex items-center gap-2 rounded bg-white px-8 py-3 text-[14px] font-bold text-[#4A6FA5] shadow transition-transform hover:scale-102 hover:bg-white/95 sm:text-[15px]"
             >
               {t('targetSegments.viewDetail')}
@@ -114,7 +114,7 @@ export async function TargetSegments() {
           {/* ROW 2: BUTTON ROW (Full Width Centered, Unaffected by Text Padding) */}
           <div className="flex w-full items-center justify-center px-6 pb-8 pt-4 sm:pb-10">
             <Link
-              href="/solutions/sme"
+              href="/solutions/categories/cleanroom-consumables"
               className="inline-flex items-center gap-2 rounded-lg bg-brand px-8 py-3 text-[14px] font-bold text-white shadow transition-transform hover:scale-102 hover:bg-brand-strong sm:text-[15px]"
             >
               {t('targetSegments.viewDetail')}

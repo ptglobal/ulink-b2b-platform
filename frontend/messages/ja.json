@@ -188,8 +188,9 @@
   },
   "nav": {
     "home": "ホーム",
-    "hubs": "工業団地クラスター",
-    "solutions": "ソリューション/製品",
+    "hubs": "地域ハブ",
+    "solutions": "Solutions",
+    "products": "Products",
     "industries": "業界",
     "resources": "リソース",
     "quickOrder": "RFQを送信",

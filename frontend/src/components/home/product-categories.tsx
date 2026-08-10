@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { ArrowRight, ShieldCheck, Layers, Package, Zap, Sparkles, Shirt, FlaskConical, Hand } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
@@ -8,20 +8,76 @@ import { SectionHeader } from './section-header';
 export async function ProductCategories() {
   const t = await getTranslations('home');
 
-  const allCategories = [
-    { name: 'Vật tư phòng sạch', slug: 'cleanroom-consumables', href: '/solutions/categories/cleanroom-consumables', icon: ShieldCheck, count: '120+ Sản phẩm' },
-    { name: 'Găng tay phòng sạch', slug: 'cleanroom-gloves', href: '/solutions/categories/cleanroom-gloves', icon: Hand, count: '45+ Loại' },
-    { name: 'Khăn lau phòng sạch', slug: 'cleanroom-wipers', href: '/solutions/categories/cleanroom-wipers', icon: Layers, count: '30+ Quy cách' },
-    { name: 'Quần áo phòng sạch', slug: 'cleanroom-apparel', href: '/solutions/categories/cleanroom-apparel', icon: Shirt, count: '25+ Mẫu' },
-    { name: 'Khẩu trang phòng sạch', slug: 'cleanroom-masks', href: '/solutions/categories/cleanroom-masks', icon: Sparkles, count: '15+ Loại' },
-    { name: 'Bao bì công nghiệp', slug: 'industrial-packaging', href: '/solutions/categories/industrial-packaging', icon: Package, count: '80+ Mã' },
-    { name: 'Vật tư ESD', slug: 'esd-supplies', href: '/solutions/categories/esd-supplies', icon: Zap, count: '60+ Thiết bị' },
-    { name: 'Hóa chất phòng sạch', slug: 'cleanroom-chemicals', href: '/solutions/categories/cleanroom-chemicals', icon: FlaskConical, count: '20+ Dòng' }
+  const topTwoCards = [
+    {
+      id: 'cleanroom',
+      title: 'Giải pháp - Sản phẩm Phòng sạch',
+      description: 'Sản phẩm bảo vệ và kiểm soát bụi, ô nhiễm cho phòng sạch tại các nhà sản xuất: Điện tử, Thực phẩm, Dược phẩm, Y tế.',
+      href: '/solutions/categories/cleanroom-consumables',
+      image: ASSETS.home.productCutGloves,
+      accentBorder: 'border-l-[#0D4397]',
+      diamondColor: 'text-[#0D4397]',
+      items: [
+        { label: 'Găng tay Nitrile/Latex', href: '/solutions/categories/cleanroom-gloves' },
+        { label: 'Trang phục phòng sạch', href: '/solutions/categories/cleanroom-apparel' },
+        { label: 'Khăn lau / Cleanroom Wiper', href: '/solutions/categories/cleanroom-wipers' },
+        { label: 'Khẩu trang Y tế', href: '/solutions/categories/cleanroom-masks' },
+        { label: 'Sticky Mat/Thảm phòng sạch', href: '/solutions/categories/cleanroom-consumables' },
+        { label: 'Thiết bị đo lường', href: '/solutions/categories/esd-supplies' },
+      ]
+    },
+    {
+      id: 'packaging',
+      title: 'Giải pháp - Sản phẩm Bao bì',
+      description: 'Sản phẩm sản xuất theo yêu cầu và đơn đặt hàng của khách hàng — phục vụ các nhà sản xuất trong ngành Điện tử, Thực phẩm, Dược phẩm và Y tế.',
+      href: '/solutions/categories/industrial-packaging',
+      image: ASSETS.home.solutionPackaging,
+      accentBorder: 'border-l-amber-600',
+      diamondColor: 'text-amber-600',
+      items: [
+        { label: 'Màng co PE/Shrink film', href: '/solutions/categories/industrial-packaging' },
+        { label: 'Màng bọc thực phẩm', href: '/solutions/categories/industrial-packaging' },
+        { label: 'Màng quấn PE Pallet', href: '/solutions/categories/industrial-packaging' },
+        { label: 'Màng/Túi nhôm', href: '/solutions/categories/industrial-packaging' },
+        { label: 'Túi PE/PP/Shield Bag', href: '/solutions/categories/industrial-packaging' },
+        { label: 'Băng Keo', href: '/solutions/categories/industrial-packaging' },
+      ]
+    }
+  ];
+
+  const bottomThreeCards = [
+    {
+      id: 'cut-protection',
+      title: 'Chống cắt - Chống cắt chuyên dụng',
+      description: 'Được thiết kế chuyên dụng để bảo vệ đôi tay khỏi các vật liệu sắc cạnh trong môi trường công nghiệp như: tấm kim loại, kính nhôm, linh kiện cơ khí và các công việc bảo trì. Phù hợp cho thao tác trong sản xuất kho vận, lắp đặt và bảo trì công nghiệp',
+      href: '/solutions/categories/cleanroom-gloves',
+      image: ASSETS.home.productCutGloves,
+      accentBorder: 'border-l-[#0D4397]',
+      diamondColor: 'text-[#0D4397]'
+    },
+    {
+      id: 'hvac-tape',
+      title: 'Băng Keo Nhôm - Ứng dụng trong HVAC',
+      description: 'Băng keo nhôm - Vật tư chuyên dụng dùng để dán kín mối nối, bề mặt bảo ôn và hệ thống gió HVAC. Với cấu trúc bề mặt nhôm, keo acrylic chất lượng cao, sản phẩm giúp tăng hiệu quả làm kín, chống thoát nhiệt và hỗ trợ giải pháp tổng thể tùy chỉnh theo yêu cầu kỹ thuật.',
+      href: '/solutions/categories/esd-supplies',
+      image: ASSETS.home.productHvacTape,
+      accentBorder: 'border-l-[#0D4397]',
+      diamondColor: 'text-[#0D4397]'
+    },
+    {
+      id: 'custom-packaging',
+      title: 'Bao bì - sản xuất theo yêu cầu',
+      description: 'ULink Industries chuyên sản xuất các sản phẩm bao bì chất lượng cao bao gồm: màng co PE bảo vệ hàng hóa, màng quấn pallet giúp cố định và bảo vệ hàng trong vận chuyển, túi PE theo yêu cầu phù hợp với mọi nhu cầu đóng gói của khách hàng.',
+      href: '/solutions/categories/industrial-packaging',
+      image: ASSETS.home.productCustomPkg,
+      accentBorder: 'border-l-amber-600',
+      diamondColor: 'text-amber-600'
+    }
   ];
 
   return (
     <section className="mx-auto w-full max-w-[1800px] px-4 py-8 lg:py-12">
-      {/* ── HÀNG 1: SECTION HEADER BAR ── */}
+      {/* SECTION HEADER BAR */}
       <SectionHeader
         title={t('categories.sectionTitle')}
         subtitle={t('categories.sectionSubTitle')}
@@ -29,207 +85,94 @@ export async function ProductCategories() {
         viewAllLabel={t('categories.viewAll')}
       />
 
-      {/* ── HÀNG 1.5: LƯỚI 8 DANH MỤC SẢN PHẨM TRỰC QUAN ── */}
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
-        {allCategories.map((cat) => (
-          <Link
-            key={cat.slug}
-            href={cat.href}
-            className="group flex flex-col items-center justify-between rounded-2xl border border-slate-200/80 bg-white p-3.5 text-center shadow-sm transition-all hover:-translate-y-1 hover:border-brand hover:shadow-md"
+      {/* TOP ROW: 2 BIG SOLUTION CARDS */}
+      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+        {topTwoCards.map((card) => (
+          <div
+            key={card.id}
+            className={`group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white border-l-4 sm:border-l-[5px] ${card.accentBorder} shadow-sm transition-all duration-300 hover:shadow-md`}
           >
-            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-brand transition-colors group-hover:bg-brand group-hover:text-white shrink-0 mt-1">
-              <cat.icon className="h-5 w-5" />
+            {/* Top Image Banner */}
+            <div className="relative h-[220px] w-full overflow-hidden bg-slate-50 sm:h-[260px]">
+              <Image
+                src={card.image}
+                alt={card.title}
+                fill
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
-            <div className="my-2">
-              <span className="text-xs font-bold text-slate-800 transition-colors group-hover:text-brand line-clamp-2 leading-tight">
-                {cat.name}
-              </span>
-              <span className="mt-1 block text-[10px] font-semibold text-slate-400">
-                {cat.count}
-              </span>
+
+            {/* Card Content Body */}
+            <div className="flex flex-1 flex-col p-6 sm:p-8">
+              <h3 className="flex items-center gap-2 text-[18px] font-bold text-slate-900 sm:text-[20px]">
+                <span className={card.diamondColor}>◇</span> {card.title}
+              </h3>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
+                {card.description}
+              </p>
+
+              {/* 2-Column List of Sub-Items */}
+              <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                {card.items.map((item, idx) => (
+                  <Link
+                    key={idx}
+                    href={item.href}
+                    className="flex items-center gap-2 text-xs text-slate-700 hover:text-[#0D4397] transition-colors sm:text-sm font-medium"
+                  >
+                    <span className={`${card.diamondColor} text-[10px] shrink-0`}>🔹</span>
+                    <span className="truncate">{item.label}</span>
+                  </Link>
+                ))}
+              </div>
+
+              {/* Bottom Right Action Link */}
+              <div className="mt-8 flex justify-end pt-3 border-t border-slate-100">
+                <Link
+                  href={card.href}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0D4397] transition-colors hover:underline sm:text-sm"
+                >
+                  <span>{t('categories.viewDetail')}</span>
+                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                </Link>
+              </div>
             </div>
-            <span className="text-[10px] font-bold text-brand group-hover:underline inline-flex items-center gap-0.5">
-              Xem ngay <ArrowRight className="h-2.5 w-2.5" />
-            </span>
-          </Link>
+          </div>
         ))}
       </div>
 
-      {/* ── HÀNG 2: 2 THẺ GIẢI PHÁP LỚN (GRID 2 COLUMNS) ── */}
-      <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Card 1: Phòng sạch */}
-        <div className="group flex flex-col overflow-hidden rounded-2xl border border-border border-l-4 border-l-brand sm:border-l-[6px]  shadow-sm transition-all hover:shadow-md">
-          <div className="relative h-[240px] w-full overflow-hidden bg-slate-50 sm:h-[280px]">
-            <Image
-              src={ASSETS.home.solutionCleanroom}
-              alt="Phòng sạch"
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-          <div className="flex flex-1 flex-col p-6 sm:p-8">
-            <h3 className="flex items-center gap-2 text-[18px] font-bold text-primary sm:text-[20px]">
-              <span className="text-brand">◇</span> {t('categories.cleanroomTitle')}
-            </h3>
-            <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">
-              {t('categories.cleanroomDesc')}
-            </p>
-
-            {/* 6 Sub-features grid */}
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {[
-                t('categories.cleanroomItem1'),
-                t('categories.cleanroomItem2'),
-                t('categories.cleanroomItem3'),
-                t('categories.cleanroomItem4'),
-                t('categories.cleanroomItem5'),
-                t('categories.cleanroomItem6'),
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2 text-[13px] text-foreground sm:text-[14px]">
-                  <span className="text-brand text-[10px]">🔹</span>
-                  <span>{item}</span>
-                </div>
-              ))}
+      {/* BOTTOM ROW: 3 FEATURE CARDS */}
+      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
+        {bottomThreeCards.map((card) => (
+          <div
+            key={card.id}
+            className={`group flex flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white border-l-4 sm:border-l-[5px] ${card.accentBorder} shadow-sm transition-all duration-300 hover:shadow-md`}
+          >
+            {/* Top Image Banner */}
+            <div className="relative h-[180px] w-full overflow-hidden bg-slate-50 sm:h-[200px]">
+              <Image
+                src={card.image}
+                alt={card.title}
+                fill
+                sizes="(max-width: 768px) 100vw, 33vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-105"
+              />
             </div>
 
-            <div className="mt-6 flex justify-end pt-2">
-              <Link
-                href="/solutions/cleanroom"
-                className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand transition-colors hover:text-brand-strong sm:text-[14px]"
-              >
-                {t('categories.viewDetail')}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
+            {/* Card Content Body */}
+            <div className="flex flex-1 flex-col p-6 sm:p-7 justify-between">
+              <div>
+                <h3 className="text-[17px] font-bold text-slate-900 leading-snug sm:text-[18px]">
+                  {card.title}
+                </h3>
+                <div className="my-3 border-b border-dashed border-slate-300" />
+                <p className="text-xs leading-relaxed text-slate-600 sm:text-sm">
+                  {card.description}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-
-        {/* Card 2: Bao bì */}
-        <div className="group flex flex-col overflow-hidden rounded-2xl border border-border border-l-4 border-l-amber-600 sm:border-l-[6px]  shadow-sm transition-all hover:shadow-md">
-          <div className="relative h-[240px] w-full overflow-hidden bg-slate-50 sm:h-[280px]">
-            <Image
-              src={ASSETS.home.solutionPackaging}
-              alt="Bao bì"
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-          <div className="flex flex-1 flex-col p-6 sm:p-8">
-            <h3 className="flex items-center gap-2 text-[18px] font-bold text-primary sm:text-[20px]">
-              <span className="text-amber-600">◇</span> {t('categories.packagingTitle')}
-            </h3>
-            <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">
-              {t('categories.packagingDesc')}
-            </p>
-
-            {/* 6 Sub-features grid */}
-            <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-              {[
-                t('categories.packagingItem1'),
-                t('categories.packagingItem2'),
-                t('categories.packagingItem3'),
-                t('categories.packagingItem4'),
-                t('categories.packagingItem5'),
-                t('categories.packagingItem6'),
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2 text-[13px] text-foreground sm:text-[14px]">
-                  <span className="text-brand text-[10px]">🔹</span>
-                  <span>{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className="mt-6 flex justify-end pt-2">
-              <Link
-                href="/solutions/packaging"
-                className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-brand transition-colors hover:text-brand-strong sm:text-[14px]"
-              >
-                {t('categories.viewDetail')}
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* ── HÀNG 3: 3 THẺ NỔI BẬT BÊN DƯỚI (GRID 3 COLUMNS) ── */}
-      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3">
-        {/* Sub-Card 1: Chống cắt */}
-        <Link
-          href="/solutions/cleanroom"
-          className="group flex flex-col overflow-hidden rounded-2xl border border-border border-l-4 border-l-brand shadow-sm transition-all hover:shadow-md hover:border-brand"
-        >
-          <div className="relative h-[200px] w-full overflow-hidden bg-slate-50">
-            <Image
-              src={ASSETS.home.productCutGloves}
-              alt="Chống cắt"
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-          <div className="border-b border-dashed border-border" />
-          <div className="flex flex-1 flex-col p-6">
-            <h4 className="text-[16px] font-bold text-primary transition-colors group-hover:text-brand sm:text-[18px]">
-              {t('categories.cutResistantTitle')}
-            </h4>
-            <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">
-              {t('categories.cutResistantDesc')}
-            </p>
-          </div>
-        </Link>
-
-        {/* Sub-Card 2: Băng keo nhôm HVAC */}
-        <Link
-          href="/solutions/cleanroom"
-          className="group flex flex-col overflow-hidden rounded-2xl border border-border border-l-4 border-l-brand shadow-sm transition-all hover:shadow-md hover:border-brand"
-        >
-          <div className="relative h-[200px] w-full overflow-hidden bg-slate-50">
-            <Image
-              src={ASSETS.home.productHvacTape}
-              alt="Băng Keo Nhôm HVAC"
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-          <div className="border-b border-dashed border-border" />
-          <div className="flex flex-1 flex-col p-6">
-            <h4 className="text-[16px] font-bold text-primary transition-colors group-hover:text-brand sm:text-[18px]">
-              {t('categories.hvacTapeTitle')}
-            </h4>
-            <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">
-              {t('categories.hvacTapeDesc')}
-            </p>
-          </div>
-        </Link>
-
-        {/* Sub-Card 3: Bao bì sản xuất theo yêu cầu */}
-        <Link
-          href="/solutions/packaging"
-          className="group flex flex-col overflow-hidden rounded-2xl border border-border border-l-4 border-l-amber-600 shadow-sm transition-all hover:shadow-md hover:border-amber-600"
-        >
-          <div className="relative h-[200px] w-full overflow-hidden bg-slate-50">
-            <Image
-              src={ASSETS.home.productCustomPkg}
-              alt="Bao bì theo yêu cầu"
-              fill
-              sizes="(max-width: 768px) 100vw, 33vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </div>
-          <div className="border-b border-dashed border-border" />
-          <div className="flex flex-1 flex-col p-6">
-            <h4 className="text-[16px] font-bold text-primary transition-colors group-hover:text-amber-600 sm:text-[18px]">
-              {t('categories.customPkgTitle')}
-            </h4>
-            <p className="mt-3 text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">
-              {t('categories.customPkgDesc')}
-            </p>
-          </div>
-        </Link>
+        ))}
       </div>
     </section>
   );
