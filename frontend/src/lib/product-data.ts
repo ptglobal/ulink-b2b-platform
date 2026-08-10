@@ -1,5 +1,7 @@
 import { getDirectusUrl } from './directus-runtime.mjs';
-import type { Product, ProductCategory, Industry, Standard } from './directus';
+import type { Product, ProductCategory, Industry, Standard, ProductSku } from './directus';
+
+export type { Product, ProductSku };
 
 export interface ProductListParams {
   search?: string;
@@ -80,21 +82,9 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pro
   if (category) {
     const slugs = category.split(',').filter(Boolean);
     if (slugs.length === 1) {
-      filter._and = filter._and || [];
-      (filter._and as Array<any>).push({
-        _or: [
-          { category: { slug: { _eq: slugs[0] } } },
-          { category: { parent: { slug: { _eq: slugs[0] } } } }
-        ]
-      });
+      filter.category = { slug: { _eq: slugs[0] } };
     } else {
-      filter._and = filter._and || [];
-      (filter._and as Array<any>).push({
-        _or: [
-          { category: { slug: { _in: slugs } } },
-          { category: { parent: { slug: { _in: slugs } } } }
-        ]
-      });
+      filter.category = { slug: { _in: slugs } };
     }
   }
 
@@ -207,7 +197,7 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
     for (const f of fields) url.searchParams.append('fields[]', f);
     url.searchParams.set('limit', '1');
 
-    const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
+    const res = await fetch(url.toString(), { cache: 'no-store' });
     if (!res.ok) return getFallbackProduct(slug);
     const json = await res.json() as { data: Product[] };
     return json.data?.[0] ?? getFallbackProduct(slug);
@@ -235,7 +225,7 @@ function getFallbackProduct(slug: string): Product {
       'Đóng gói': 'Tiêu chuẩn nhà máy công nghiệp',
       'Xuất xứ': 'Chính hãng ULink'
     },
-    hero: '/images/industries/electronics_hero.webp',
+    hero: null,
     status: 'published',
     category: {
       id: 1,
@@ -314,6 +304,23 @@ export async function fetchProductCategories(): Promise<ProductCategory[]> {
     console.error('Failed to fetch product categories:', error);
     return [];
   }
+}
+
+export function getProductPricing(slug: string, locale: string = 'vi') {
+  const isVi = locale === 'vi';
+  const pricingMap: Record<string, { price: number; unit: string }> = {
+    'nitrile-cleanroom-gloves': { price: 2500, unit: isVi ? 'đôi' : 'pair' },
+    'polyester-cleanroom-wipers': { price: 250000, unit: isVi ? 'gói' : 'pack' },
+    'tyvek-cleanroom-coverall': { price: 180000, unit: isVi ? 'bộ' : 'pcs' },
+    'cleanroom-face-mask-3ply': { price: 75000, unit: isVi ? 'hộp' : 'box' },
+    'esd-wrist-strap': { price: 45000, unit: isVi ? 'cái' : 'pcs' },
+    'esd-table-mat-2layer': { price: 1200000, unit: isVi ? 'cuộn' : 'roll' },
+    'ipa-cleanroom-grade-999': { price: 95000, unit: isVi ? 'chai' : 'bottle' },
+    'sticky-mat-30-layers': { price: 150000, unit: isVi ? 'tấm' : 'sheet' },
+    'esd-shielding-bag': { price: 3500, unit: isVi ? 'túi' : 'bag' },
+    'sterile-latex-cleanroom-gloves': { price: 4500, unit: isVi ? 'đôi' : 'pair' }
+  };
+  return pricingMap[slug] || { price: 41500, unit: isVi ? 'kg' : 'kg' };
 }
 
 export async function fetchIndustryProductCounts(): Promise<Record<string, number>> {
@@ -412,22 +419,21 @@ export interface CategoryWithProducts {
  */
 export async function fetchTopCategoriesWithProducts(
   productsPerCategory = 4,
-  maxCategories = 3
+  maxCategories = 8
 ): Promise<CategoryWithProducts[]> {
   try {
     const categories = await fetchProductCategories();
-    const topCategories = categories
-      .filter((c) => !c.parent)
-      .slice(0, maxCategories);
 
     const results: CategoryWithProducts[] = [];
-    for (const cat of topCategories) {
+    for (const cat of categories.slice(0, maxCategories)) {
       const { products } = await fetchProducts({
         category: cat.slug,
         limit: productsPerCategory,
         sort: 'newest',
       });
-      results.push({ category: cat, products });
+      if (products.length > 0) {
+        results.push({ category: cat, products });
+      }
     }
     return results;
   } catch (error) {

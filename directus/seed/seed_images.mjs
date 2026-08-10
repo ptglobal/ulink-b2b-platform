@@ -130,6 +130,47 @@ export async function seedProductImages() {
         console.error(`[Seeder] Failed to seed image for ${item.slug}:`, err);
       }
     }
+
+    // 2. Populate multiple gallery images for ALL products in DB via products_files junction table
+    try {
+      const allProductsRes = await dbClient.query("SELECT id, slug, hero FROM products");
+      const allFilesRes = await dbClient.query("SELECT id FROM directus_files WHERE type LIKE 'image/%'");
+      const availableImageUuids = allFilesRes.rows.map(r => r.id);
+
+      if (availableImageUuids.length > 0) {
+        console.log(`[Seeder] Seeding multiple gallery images for ${allProductsRes.rows.length} products...`);
+        for (let idx = 0; idx < allProductsRes.rows.length; idx++) {
+          const p = allProductsRes.rows[idx];
+          const heroUuid = p.hero || availableImageUuids[idx % availableImageUuids.length];
+          
+          // Set hero if missing
+          if (!p.hero) {
+            await dbClient.query("UPDATE products SET hero = $1 WHERE id = $2", [heroUuid, p.id]);
+          }
+
+          // Pick 3 complementary gallery image UUIDs
+          const galleryUuids = availableImageUuids
+            .filter(id => id !== heroUuid)
+            .slice(idx % 5, (idx % 5) + 3);
+
+          for (const gUuid of galleryUuids) {
+            const checkJunction = await dbClient.query(
+              "SELECT id FROM products_files WHERE products_id = $1 AND directus_files_id = $2",
+              [p.id, gUuid]
+            );
+            if (checkJunction.rows.length === 0) {
+              await dbClient.query(
+                "INSERT INTO products_files (products_id, directus_files_id) VALUES ($1, $2)",
+                [p.id, gUuid]
+              );
+            }
+          }
+        }
+        console.log('[Seeder] Successfully populated multiple gallery images in products_files table for all products.');
+      }
+    } catch (galleryErr) {
+      console.error('[Seeder] Failed to seed gallery junction images:', galleryErr.message);
+    }
   });
 
   console.log('Product and SKU images seeded successfully.');

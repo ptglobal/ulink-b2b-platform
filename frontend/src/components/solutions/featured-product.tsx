@@ -110,7 +110,7 @@ export default async function FeaturedProduct({ locale }: FeaturedProductProps) 
             </p>
             <div className="mt-8">
               <Link
-                href={`/${locale}/solutions?category=industrial-packaging`}
+                href={`/${locale}/solutions/categories/industrial-packaging`}
                 className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors"
               >
                 {t('featuredProduct.learnMore')}

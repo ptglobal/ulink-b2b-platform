@@ -269,7 +269,7 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
 
             <div className="mt-8">
               <Link
-                href={`/rfq`}
+                href="/contact"
                 className="inline-flex items-center justify-center rounded-lg border-2 border-white text-white hover:bg-white/10 px-5 py-2.5 text-xs sm:text-sm font-bold tracking-wide transition-colors"
               >
                 {isVi ? 'Liên hệ với Chúng tôi' : isJa ? 'お問い合わせ' : 'Contact Us'}
@@ -309,25 +309,31 @@ export default async function IndustriesPage({ params: { locale } }: Props) {
                 className="group bg-white rounded-2xl border border-slate-100 overflow-hidden shadow-sm hover:shadow-md transition-shadow flex flex-col"
               >
                 {/* Top Image */}
-                <div className="relative aspect-[16/10] w-full bg-slate-50 overflow-hidden">
+                <Link
+                  href={`/industries/${ind.slug}`}
+                  className="relative aspect-[16/10] w-full bg-slate-50 overflow-hidden block"
+                >
                   <Image
                     src={ind.image}
                     alt={ind.name}
                     fill
-                    className="object-cover transition-transform group-hover:scale-102 duration-300"
+                    className="object-cover transition-transform group-hover:scale-105 duration-300"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
-                </div>
+                </Link>
 
                 {/* Card Body */}
                 <div className="p-6 flex flex-col flex-1">
                   {/* Icon & Title */}
-                  <div className="flex items-center gap-2.5 mb-4">
+                  <Link
+                    href={`/industries/${ind.slug}`}
+                    className="flex items-center gap-2.5 mb-4 group/title"
+                  >
                     <IconComponent className="h-5.5 w-5.5 text-blue-600 shrink-0" />
-                    <h3 className="text-base sm:text-lg font-bold text-[#0F1E36] leading-tight">
+                    <h3 className="text-base sm:text-lg font-bold text-[#0F1E36] group-hover/title:text-blue-600 leading-tight transition-colors">
                       {ind.name}
                     </h3>
-                  </div>
+                  </Link>
 
                   {/* Description */}
                   <p className="text-xs sm:text-sm text-slate-500 mb-6 leading-relaxed flex-1 font-medium">

@@ -20,7 +20,7 @@ export async function SiteHeader() {
 
   const items = [
     { href: '/solutions', label: t('solutions') },
-    { href: '/solutions/categories/cleanroom-consumables', label: t('products') },
+    { href: '/products', label: t('products') },
     { href: '/industries', label: t('industries') },
     { href: '/regional-hubs', label: t('hubs') },
     { href: '/resources', label: t('resources') },
@@ -59,22 +59,9 @@ export async function SiteHeader() {
 
         {/* Hành động bên phải */}
         <div className="flex items-center gap-1.5 sm:gap-2 md:gap-3">
-          <button
-            type="button"
-            aria-label={t('search')}
-            className="flex h-9 w-9 items-center justify-center text-brand transition-colors hover:bg-muted sm:h-10 sm:w-10"
-          >
-            <Search className="h-5 w-5 sm:h-[22px] sm:w-[22px]" aria-hidden="true" />
-          </button>
 
-          <Link
-            href="/cart"
-            aria-label={t('cart')}
-            className="relative flex h-9 w-9 items-center justify-center text-brand transition-colors hover:bg-muted sm:h-10 sm:w-10"
-          >
-            <ShoppingCart className="h-5 w-5 sm:h-[22px] sm:w-[22px]" aria-hidden="true" />
-            <CartBadge />
-          </Link>
+
+
 
           <Link
             href="/quick-order"

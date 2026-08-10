@@ -187,7 +187,7 @@ export default function TestimonialsCapabilities({ locale }: TestimonialsCapabil
           {/* CTA Order Button */}
           <div className="mt-16 flex justify-center">
             <Link
-              href={`/${locale}/rfq`}
+              href={`/${locale}/quick-order`}
               className="inline-flex items-center gap-2 rounded-lg bg-blue-600 text-white px-6 py-3 text-sm font-bold shadow-md hover:bg-blue-700 transition-colors"
             >
               {t('testimonialsCapabilities.order')}

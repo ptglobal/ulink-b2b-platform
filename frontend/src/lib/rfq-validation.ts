@@ -25,16 +25,16 @@ export interface NormalizedRfqPayload {
 export type RfqValidationResult =
   | { ok: true; value: NormalizedRfqPayload }
   | {
-      ok: false;
-      error: {
-        code: 'UNPROCESSABLE_ENTITY';
-        message: string;
-        details: {
-          missingFields?: string[];
-          invalidFields?: Record<string, string[]>;
-        };
+    ok: false;
+    error: {
+      code: 'UNPROCESSABLE_ENTITY';
+      message: string;
+      details: {
+        missingFields?: string[];
+        invalidFields?: Record<string, string[]>;
       };
     };
+  };
 
 interface ValidationState {
   missingFields: string[];
@@ -246,7 +246,7 @@ function normalizeDeliveryDate(value: unknown, scheduled: boolean, state: Valida
   const year = parseInt(yStr, 10);
   const month = parseInt(mStr, 10) - 1;
   const day = parseInt(dStr, 10);
-  
+
   const date = new Date(year, month, day);
   if (date.getFullYear() !== year || date.getMonth() !== month || date.getDate() !== day) {
     addInvalid(state, 'requested_delivery_date', 'INVALID_DATE');
@@ -255,7 +255,7 @@ function normalizeDeliveryDate(value: unknown, scheduled: boolean, state: Valida
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  
+
   const parsedDate = new Date(year, month, day);
   if (parsedDate.getTime() < today.getTime()) {
     addInvalid(state, 'requested_delivery_date', 'PAST_DATE');
@@ -302,7 +302,7 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
   const hub = normalizeHub(record.hub, state);
   const items = Array.isArray(record.items) ? normalizeItems(record.items, state) : undefined;
   const industry = normalizeSlug(record.industry, state, 'industry');
-  
+
   const message = cleanString(record.message);
 
   const scheduledDelivery = normalizeScheduledDelivery(record.scheduled_delivery);

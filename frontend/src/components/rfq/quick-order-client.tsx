@@ -521,7 +521,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
             <h3 className="text-lg sm:text-xl font-bold text-[#0F1E36]">
               Có thể Quý khách quan tâm
             </h3>
-            
+
             {/* Suggested horizontal products grid */}
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
               {meta.products.slice(0, 4).map((product) => {
@@ -772,13 +772,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                 </div>
               )}
 
-              <Link
-                href="/solutions/categories/cleanroom-consumables"
-                className="inline-flex items-center gap-1.5 text-sm font-medium text-brand hover:text-brand/80 transition-colors"
-              >
-                <Plus className="h-4 w-4" />
-                {t('addProductRow')}
-              </Link>
+
             </div>
 
             {/* ── Section 3: Additional Requirements & Delivery ── */}
@@ -897,58 +891,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
               </div>
             </div>
 
-            {/* ── Section 4: File Upload ── */}
-            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-5">
-              <h3 className={sectionHeadCls}>{t('sectionAttachments')}</h3>
 
-              {/* Drop zone */}
-              <div
-                onClick={() => fileInputRef.current?.click()}
-                onDragOver={(e) => { e.preventDefault(); setDragActive(true); }}
-                onDragLeave={() => setDragActive(false)}
-                onDrop={handleDrop}
-                className={cn(
-                  'flex flex-col items-center justify-center gap-2 py-10 px-6 rounded-xl border-2 border-dashed cursor-pointer transition-all',
-                  dragActive
-                    ? 'border-brand'
-                    : 'border-border/60 hover:border-brand/40'
-                )}
-              >
-                <Upload className="h-8 w-8 text-brand/60" />
-                <p className="text-sm font-medium text-foreground">{t('uploadDragDrop')}</p>
-                <p className="text-xs text-muted-foreground">{t('uploadFormats')}</p>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  multiple
-                  accept=".pdf,.docx,.xlsx,.png,.jpg,.jpeg"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </div>
-
-              {/* Uploaded files list */}
-              {uploadedFiles.length > 0 && (
-                <div className="space-y-2">
-                  {uploadedFiles.map((file, idx) => (
-                    <div key={idx} className="flex items-center gap-3 rounded-lg border border-border/60 px-4 py-2.5">
-                      <FileText className="h-5 w-5 text-brand shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-foreground truncate">{file.name}</p>
-                        <p className="text-xs text-muted-foreground">{formatFileSize(file.size)} · {t('uploadComplete')}</p>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveFile(idx)}
-                        className="rounded-lg p-1 text-muted-foreground hover:text-rose-600 transition-all"
-                      >
-                        <X className="h-4 w-4" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
 
             {/* ── Actions ── */}
             <div className="flex items-center gap-4 pt-2">
@@ -979,83 +922,83 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
           </form>
         </div>
 
-      {/* ════════ RIGHT: Sidebar ════════ */}
-      <div className="lg:col-span-4">
-        <div className="sticky top-24 space-y-6">
-          {/* Why ULink */}
-          <div className="rounded-2xl border border-border p-6 shadow-sm space-y-5">
-            <h3 className="text-lg font-bold text-foreground">{t('sidebarWhyTitle')}</h3>
+        {/* ════════ RIGHT: Sidebar ════════ */}
+        <div className="lg:col-span-4">
+          <div className="sticky top-24 space-y-6">
+            {/* Why ULink */}
+            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-5">
+              <h3 className="text-lg font-bold text-foreground">{t('sidebarWhyTitle')}</h3>
 
-            {[
-              { icon: Shield, titleKey: 'sidebarBenefit1Title' as const, descKey: 'sidebarBenefit1Desc' as const, color: 'text-orange-500' },
-              { icon: Headphones, titleKey: 'sidebarBenefit2Title' as const, descKey: 'sidebarBenefit2Desc' as const, color: 'text-blue-500' },
-              { icon: Truck, titleKey: 'sidebarBenefit3Title' as const, descKey: 'sidebarBenefit3Desc' as const, color: 'text-emerald-500' },
-              { icon: Award, titleKey: 'sidebarBenefit4Title' as const, descKey: 'sidebarBenefit4Desc' as const, color: 'text-purple-500' }
-            ].map(({ icon: Icon, titleKey, descKey, color }, idx) => (
-              <div key={idx} className="flex gap-3">
-                <div className={cn('mt-0.5 shrink-0', color)}>
-                  <Icon className="h-5 w-5" />
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-foreground">{t(titleKey)}</p>
-                  <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{t(descKey)}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* RFQ Process */}
-          <div className="rounded-2xl border border-border p-6 shadow-sm space-y-4">
-            <h3 className="text-lg font-bold text-foreground">{t('sidebarProcessTitle')}</h3>
-
-            <div className="space-y-3">
               {[
-                { step: 1, key: 'sidebarStep1' as const, color: 'bg-brand text-white' },
-                { step: 2, key: 'sidebarStep2' as const, color: 'bg-blue-500 text-white' },
-                { step: 3, key: 'sidebarStep3' as const, color: 'bg-emerald-500 text-white' },
-                { step: 4, key: 'sidebarStep4' as const, color: 'bg-orange-500 text-white' }
-              ].map(({ step, key, color }) => (
-                <div key={step} className="flex items-start gap-3">
-                  <div className={cn('flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold', color)}>
-                    {step}
+                { icon: Shield, titleKey: 'sidebarBenefit1Title' as const, descKey: 'sidebarBenefit1Desc' as const, color: 'text-orange-500' },
+                { icon: Headphones, titleKey: 'sidebarBenefit2Title' as const, descKey: 'sidebarBenefit2Desc' as const, color: 'text-blue-500' },
+                { icon: Truck, titleKey: 'sidebarBenefit3Title' as const, descKey: 'sidebarBenefit3Desc' as const, color: 'text-emerald-500' },
+                { icon: Award, titleKey: 'sidebarBenefit4Title' as const, descKey: 'sidebarBenefit4Desc' as const, color: 'text-purple-500' }
+              ].map(({ icon: Icon, titleKey, descKey, color }, idx) => (
+                <div key={idx} className="flex gap-3">
+                  <div className={cn('mt-0.5 shrink-0', color)}>
+                    <Icon className="h-5 w-5" />
                   </div>
-                  <p className="text-sm text-foreground leading-relaxed pt-0.5">{t(key)}</p>
+                  <div>
+                    <p className="text-sm font-semibold text-foreground">{t(titleKey)}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{t(descKey)}</p>
+                  </div>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Urgent Support */}
-          <div className="rounded-2xl border border-border p-6 shadow-sm space-y-4">
-            <h3 className="text-lg font-bold text-foreground">{t('sidebarUrgentTitle')}</h3>
-            <p className="text-xs text-muted-foreground leading-relaxed">{t('sidebarUrgentDesc')}</p>
+            {/* RFQ Process */}
+            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-4">
+              <h3 className="text-lg font-bold text-foreground">{t('sidebarProcessTitle')}</h3>
 
-            <div className="space-y-2.5">
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">Hotline:</span>
-                <a href={`tel:${t('sidebarHotline').replace(/\s/g, '')}`} className="text-lg font-bold text-brand hover:underline">
-                  {t('sidebarHotline')}
-                </a>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-muted-foreground">Email:</span>
-                <a href={`mailto:${t('sidebarEmail')}`} className="text-sm font-medium text-brand hover:underline">
-                  {t('sidebarEmail')}
-                </a>
+              <div className="space-y-3">
+                {[
+                  { step: 1, key: 'sidebarStep1' as const, color: 'bg-brand text-white' },
+                  { step: 2, key: 'sidebarStep2' as const, color: 'bg-blue-500 text-white' },
+                  { step: 3, key: 'sidebarStep3' as const, color: 'bg-emerald-500 text-white' },
+                  { step: 4, key: 'sidebarStep4' as const, color: 'bg-orange-500 text-white' }
+                ].map(({ step, key, color }) => (
+                  <div key={step} className="flex items-start gap-3">
+                    <div className={cn('flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold', color)}>
+                      {step}
+                    </div>
+                    <p className="text-sm text-foreground leading-relaxed pt-0.5">{t(key)}</p>
+                  </div>
+                ))}
               </div>
             </div>
 
-            <a
-              href={`tel:${t('sidebarHotline').replace(/\s/g, '')}`}
-              className="flex items-center justify-center gap-2 w-full rounded-xl border-2 border-rose-500 px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-all"
-            >
-              <Phone className="h-4 w-4" />
-              {t('sidebarCtaCall')}
-            </a>
+            {/* Urgent Support */}
+            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-4">
+              <h3 className="text-lg font-bold text-foreground">{t('sidebarUrgentTitle')}</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">{t('sidebarUrgentDesc')}</p>
+
+              <div className="space-y-2.5">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">Hotline:</span>
+                  <a href={`tel:${t('sidebarHotline').replace(/\s/g, '')}`} className="text-lg font-bold text-brand hover:underline">
+                    {t('sidebarHotline')}
+                  </a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">Email:</span>
+                  <a href={`mailto:${t('sidebarEmail')}`} className="text-sm font-medium text-brand hover:underline">
+                    {t('sidebarEmail')}
+                  </a>
+                </div>
+              </div>
+
+              <a
+                href={`tel:${t('sidebarHotline').replace(/\s/g, '')}`}
+                className="flex items-center justify-center gap-2 w-full rounded-xl border-2 border-rose-500 px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-all"
+              >
+                <Phone className="h-4 w-4" />
+                {t('sidebarCtaCall')}
+              </a>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
   );
 }

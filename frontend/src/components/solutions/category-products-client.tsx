@@ -11,10 +11,14 @@ import {
   X,
   RotateCcw,
   ChevronRight,
-  Boxes
+  Boxes,
+  Plus,
+  Check,
+  CheckCircle2
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
+import { readCart, persistCart } from '../rfq/cart-types';
 
 export interface CategoryInfo {
   id: number;
@@ -54,9 +58,11 @@ export function CategoryProductsClient({
   allCategories,
   locale
 }: CategoryProductsClientProps) {
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>(category.slug || 'all');
   const [sortBy, setSortBy] = useState<string>('popular');
   const [mobileFilterOpen, setMobileFilterOpen] = useState<boolean>(false);
+  const [addedToast, setAddedToast] = useState<string | null>(null);
+  const [addedProductIds, setAddedProductIds] = useState<Set<number>>(new Set());
 
   // Compute category counts
   const categoryCounts = useMemo(() => {
@@ -69,11 +75,21 @@ export function CategoryProductsClient({
     return counts;
   }, [initialProducts]);
 
-  // Filter products ONLY by Category
+  // Filter products by Category & Subcategories
   const filteredProducts = useMemo(() => {
+    const subSlugs = category.subCategories?.map((s) => s.slug) || [];
     let result = initialProducts.filter((product) => {
-      return selectedCategory === 'all' || product.categorySlug === selectedCategory;
+      if (selectedCategory === 'all') return true;
+      if (product.categorySlug === selectedCategory) return true;
+      if (selectedCategory === category.slug && (subSlugs.includes(product.categorySlug) || !product.categorySlug)) {
+        return true;
+      }
+      return false;
     });
+
+    if (result.length === 0 && initialProducts.length > 0) {
+      result = [...initialProducts];
+    }
 
     // Sorting logic
     if (sortBy === 'name_asc') {
@@ -85,7 +101,7 @@ export function CategoryProductsClient({
     }
 
     return result;
-  }, [initialProducts, selectedCategory, sortBy]);
+  }, [initialProducts, selectedCategory, category, sortBy]);
 
   // Active category display name
   const currentCategoryName = useMemo(() => {
@@ -94,8 +110,40 @@ export function CategoryProductsClient({
     return found ? found.name : category.name;
   }, [selectedCategory, allCategories, category.name]);
 
+  // Add product to RFQ cart
+  const handleAddToCart = (e: React.MouseEvent, product: ProductItem) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const cart = readCart();
+    const existingIndex = cart.findIndex(
+      (item) => item.product_name === product.name || item.sku === product.slug
+    );
+
+    if (existingIndex >= 0) {
+      cart[existingIndex].quantity += 1;
+    } else {
+      cart.push({
+        sku: product.slug,
+        product_name: product.name,
+        spec: product.specs?.join(', ') || '',
+        unit: product.unit || 'cái',
+        quantity: 1,
+        note: ''
+      });
+    }
+
+    persistCart(cart);
+
+    setAddedProductIds((prev) => new Set(prev).add(product.id));
+    setAddedToast(product.name);
+    setTimeout(() => {
+      setAddedToast(null);
+    }, 4000);
+  };
+
   return (
-    <div className="min-h-screen bg-slate-50/70 pb-20 pt-6">
+    <div className="min-h-screen bg-slate-50/70 pb-20 pt-6 relative">
       {/* ── BREADCRUMB HEADER ── */}
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mb-4 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-500">
@@ -103,8 +151,8 @@ export function CategoryProductsClient({
             Trang chủ
           </Link>
           <ChevronRight className="h-3 w-3 text-slate-400" />
-          <Link href="/solutions" className="hover:text-blue-600 transition-colors">
-            Giải pháp & Sản phẩm
+          <Link href="/products" className="hover:text-blue-600 transition-colors">
+            Sản phẩm & Vật tư
           </Link>
           <ChevronRight className="h-3 w-3 text-slate-400" />
           <span className="text-slate-900 font-bold">{currentCategoryName}</span>
@@ -174,7 +222,7 @@ export function CategoryProductsClient({
                 {/* All Categories Option */}
                 <button
                   onClick={() => setSelectedCategory('all')}
-                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left font-semibold transition-all ${
+                  className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left font-semibold transition-all cursor-pointer ${
                     selectedCategory === 'all'
                       ? 'bg-blue-600 text-white font-extrabold shadow-sm'
                       : 'text-slate-700 hover:bg-slate-100 font-semibold'
@@ -196,7 +244,7 @@ export function CategoryProductsClient({
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.slug)}
-                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left transition-all ${
+                      className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-left transition-all cursor-pointer ${
                         isSelected
                           ? 'bg-blue-600 text-white font-extrabold shadow-sm'
                           : 'text-slate-700 hover:bg-slate-100 font-semibold'
@@ -285,7 +333,7 @@ export function CategoryProductsClient({
                   >
                     {/* Product Image Area */}
                     <Link
-                      href={`/solutions/${product.slug}`}
+                      href={`/products/${product.slug}`}
                       className="relative aspect-[4/3] w-full bg-slate-50 overflow-hidden border-b border-slate-100 block"
                     >
                       <Image
@@ -328,7 +376,7 @@ export function CategoryProductsClient({
                         </span>
 
                         {/* Title */}
-                        <Link href={`/solutions/${product.slug}`} className="block mt-1">
+                        <Link href={`/products/${product.slug}`} className="block mt-1">
                           <h3 className="text-sm font-extrabold text-[#0F1E36] line-clamp-2 leading-snug group-hover:text-blue-600 transition-colors">
                             {product.name}
                           </h3>
@@ -342,15 +390,37 @@ export function CategoryProductsClient({
                         )}
                       </div>
 
-                      {/* Action Button Link */}
-                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
+                      {/* Action Buttons: Xem chi tiết & ADD TO RFQ */}
+                      <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-2">
                         <Link
-                          href={`/solutions/${product.slug}`}
-                          className="text-xs font-bold text-blue-600 hover:text-blue-800 inline-flex items-center gap-1 transition-colors"
+                          href={`/products/${product.slug}`}
+                          className="text-xs font-bold text-slate-500 hover:text-blue-600 inline-flex items-center gap-1 transition-colors"
                         >
-                          Xem chi tiết sản phẩm
-                          <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-1 transition-transform" />
+                          Chi tiết
+                          <ArrowRight className="h-3.5 w-3.5" />
                         </Link>
+
+                        <button
+                          type="button"
+                          onClick={(e) => handleAddToCart(e, product)}
+                          className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-extrabold transition-all shadow-2xs cursor-pointer ${
+                            addedProductIds.has(product.id)
+                              ? 'bg-emerald-600 text-white hover:bg-emerald-700'
+                              : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02]'
+                          }`}
+                        >
+                          {addedProductIds.has(product.id) ? (
+                            <>
+                              <Check className="h-3.5 w-3.5 stroke-[2.5]" />
+                              Đã thêm
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
+                              Thêm vào RFQ
+                            </>
+                          )}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -360,6 +430,27 @@ export function CategoryProductsClient({
           </main>
         </div>
       </div>
+
+      {/* ════════════════════════════════════════════════════════════
+          FLOATING TOAST NOTIFICATION ON ADD TO RFQ
+         ════════════════════════════════════════════════════════════ */}
+      {addedToast && (
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-slate-900 text-white p-4 rounded-2xl shadow-2xl border border-slate-800 animate-in slide-in-from-bottom duration-300">
+          <div className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 shrink-0">
+            <CheckCircle2 className="h-5 w-5" />
+          </div>
+          <div className="text-xs min-w-0">
+            <p className="font-extrabold text-white">Đã thêm vào Yêu cầu Báo giá!</p>
+            <p className="text-slate-300 truncate max-w-[220px] font-medium mt-0.5">{addedToast}</p>
+          </div>
+          <Link
+            href="/quick-order"
+            className="ml-2 px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-xs rounded-xl transition-colors shrink-0 shadow-sm"
+          >
+            Xem RFQ &gt;
+          </Link>
+        </div>
+      )}
 
       {/* ════════════════════════════════════════════════════════════
           MOBILE FILTER DRAWER / MODAL

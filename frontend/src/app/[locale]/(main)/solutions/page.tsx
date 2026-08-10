@@ -71,17 +71,7 @@ export default async function SolutionsPage({ params: { locale } }: SolutionsPag
         </div>
       </section>
 
-      {/* Search Section */}
-      <SearchSection
-        locale={locale}
-        labels={{
-          eyebrow: t('searchSection.eyebrow'),
-          title: t('searchSection.title'),
-          subtitle: t('searchSection.subtitle'),
-          placeholder: t('searchSection.placeholder'),
-          buttonText: t('searchSection.buttonText'),
-        }}
-      />
+
 
       {/* === SECTION: Production SKU & Materials === */}
       <section className="w-full bg-white border-t border-gray-150 py-16 lg:py-24">
@@ -138,7 +128,7 @@ export default async function SolutionsPage({ params: { locale } }: SolutionsPag
                 {/* Blue Button */}
                 <div className="mt-8">
                   <Link
-                    href={`/${locale}/solutions?category=cleanroom-consumables`}
+                    href={`/${locale}/solutions/categories/cleanroom-wipers`}
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors w-full sm:w-auto"
                   >
                     {t('skuSection.cta')}
@@ -182,7 +172,7 @@ export default async function SolutionsPage({ params: { locale } }: SolutionsPag
                 {/* Gray Button */}
                 <div className="mt-8">
                   <Link
-                    href={`/${locale}/solutions?category=cleanroom-consumables`}
+                    href={`/${locale}/solutions/categories/cleanroom-consumables`}
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-gray-200 transition-colors w-full sm:w-auto"
                   >
                     {t('skuSection.cta')}
@@ -226,7 +216,7 @@ export default async function SolutionsPage({ params: { locale } }: SolutionsPag
                 {/* Gray Button */}
                 <div className="mt-8">
                   <Link
-                    href={`/${locale}/solutions?category=industrial-packaging`}
+                    href={`/${locale}/solutions/categories/industrial-packaging`}
                     className="inline-flex items-center justify-center gap-2 rounded-lg bg-gray-100 px-5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-gray-200 transition-colors w-full sm:w-auto"
                   >
                     {t('skuSection.cta')}

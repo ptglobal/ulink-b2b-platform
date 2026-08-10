@@ -107,16 +107,7 @@ export default async function MarketNews({ locale }: MarketNewsProps) {
         ))}
       </div>
 
-      {/* View More Button */}
-      <div className="flex justify-center mt-12">
-        <Link
-          href="/resources"
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-8 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition-colors"
-        >
-          {t('marketNews.viewMore')}
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      </div>
+
     </section>
   );
 }

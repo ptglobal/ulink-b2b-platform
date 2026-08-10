@@ -53,13 +53,13 @@ export default async function HubAndPartner({ locale }: HubAndPartnerProps) {
               
               <div className="mt-8 flex flex-wrap items-center gap-4 w-full sm:w-auto">
                 <Link
-                  href={`/${locale}/solutions`}
+                  href={`/${locale}/about`}
                   className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors w-full sm:w-auto text-center"
                 >
                   {t('hubPartner.learnMore')}
                 </Link>
                 <Link
-                  href={`/${locale}/rfq`}
+                  href={`/${locale}/contact`}
                   className="inline-flex items-center justify-center rounded-lg border border-blue-600 text-blue-600 bg-white hover:bg-blue-50 px-6 py-3 text-sm font-semibold transition-colors w-full sm:w-auto text-center"
                 >
                   {t('hubPartner.connectUs')}

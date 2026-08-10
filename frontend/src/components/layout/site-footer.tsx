@@ -42,22 +42,22 @@ export async function SiteFooter() {
             </Link>
             <ul className="mt-4 space-y-2.5">
               <li>
-                <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
+                <Link href="/regional-hubs" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
                   {t('aboutHub')}
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
+                <Link href="/about/quality" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
                   {t('aboutQuality')}
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
+                <Link href="/about/sustainability" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
                   {t('aboutSustainability')}
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
+                <Link href="/about/standards" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
                   {t('aboutSupply')}
                 </Link>
               </li>
@@ -110,7 +110,7 @@ export async function SiteFooter() {
           {/* Col 4: SẢN PHẨM (2/12 COLS) */}
           <div className="lg:col-span-2">
             <Link
-              href="/products"
+              href="/solutions"
               className="group inline-flex items-center gap-1 text-[15px] font-bold uppercase tracking-wide text-slate-900 transition-colors hover:text-brand sm:text-[16px]"
             >
               {t('productsTitle')}
@@ -118,17 +118,17 @@ export async function SiteFooter() {
             </Link>
             <ul className="mt-4 space-y-2.5">
               <li>
-                <Link href="/products/cleanroom" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
+                <Link href="/solutions/categories/cleanroom-consumables" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
                   {t('prodCleanroom')}
                 </Link>
               </li>
               <li>
-                <Link href="/products/packaging" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
+                <Link href="/solutions/categories/industrial-packaging" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
                   {t('prodPackaging')}
                 </Link>
               </li>
               <li>
-                <Link href="/products/hvac" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
+                <Link href="/solutions/categories/esd-supplies" className="text-[13px] text-slate-600 transition-colors hover:text-brand sm:text-[14px]">
                   {t('prodHvac')}
                 </Link>
               </li>

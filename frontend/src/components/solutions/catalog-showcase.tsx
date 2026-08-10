@@ -6,6 +6,8 @@ import { getTranslations } from 'next-intl/server';
 import { fetchTopCategoriesWithProducts } from '@/lib/product-data';
 import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
 import { getTranslatedName } from '@/lib/i18n-content';
+import { ASSETS } from '@/lib/assets';
+import { AddToCartButton } from './add-to-cart-button';
 import type { Product } from '@/lib/directus';
 
 interface CatalogShowcaseProps {
@@ -52,7 +54,7 @@ export default async function CatalogShowcase({ locale }: CatalogShowcaseProps) 
                     </h3>
                   </div>
                   <Link
-                    href={`/${locale}/solutions?category=${catData.category.slug}`}
+                    href={`/${locale}/solutions/categories/${catData.category.slug}`}
                     className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors"
                   >
                     {t('catalogSection.viewAll')}
@@ -69,6 +71,17 @@ export default async function CatalogShowcase({ locale }: CatalogShowcaseProps) 
                     const packSize = firstSku?.pack_size ?? '';
                     const unit = firstSku?.unit ?? '';
 
+                    const catSlug = catData.category.slug || '';
+                    const productImage = product.hero
+                      ? `${directusUrl}/assets/${product.hero}`
+                      : catSlug.includes('glove')
+                      ? ASSETS.home.productCutGloves
+                      : catSlug.includes('packaging') || catSlug.includes('pkg')
+                      ? ASSETS.home.productCustomPkg
+                      : catSlug.includes('cleanroom') || catSlug.includes('wiper') || catSlug.includes('apparel')
+                      ? ASSETS.home.solutionCleanroom
+                      : ASSETS.home.productHvacTape;
+
                     return (
                       <div
                         key={product.id}
@@ -79,19 +92,13 @@ export default async function CatalogShowcase({ locale }: CatalogShowcaseProps) 
                           href={`/${locale}/solutions/${product.slug}`}
                           className="relative aspect-[4/3] w-full bg-slate-50 overflow-hidden"
                         >
-                          {product.hero ? (
-                            <Image
-                              src={`${directusUrl}/assets/${product.hero}`}
-                              alt={productName}
-                              fill
-                              className="object-contain p-4 transition-transform group-hover:scale-103 duration-300"
-                              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                            />
-                          ) : (
-                            <div className="flex items-center justify-center h-full">
-                              <Package className="h-16 w-16 text-gray-200" />
-                            </div>
-                          )}
+                          <Image
+                            src={productImage}
+                            alt={productName}
+                            fill
+                            className="object-contain p-4 transition-transform group-hover:scale-105 duration-300"
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                          />
                           {/* Stock status badge */}
                           {stockStatus !== 'in_stock' && (
                             <span className={`absolute top-2 right-2 text-[10px] font-semibold px-2 py-0.5 rounded-full ${
@@ -145,20 +152,25 @@ export default async function CatalogShowcase({ locale }: CatalogShowcaseProps) 
                             <span>{t('catalogSection.hanam')}, {t('catalogSection.vietnam')}</span>
                           </div>
 
-                          {/* Order and Bookmark buttons */}
-                          <div className="mt-4 flex items-center gap-2">
+                          {/* Action Buttons: Xem chi tiết & Add to RFQ */}
+                          <div className="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
                             <Link
-                              href={`/${locale}/rfq`}
-                              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-lg text-xs transition-colors text-center shadow-sm"
+                              href={`/${locale}/solutions/${product.slug}`}
+                              className="text-xs font-bold text-slate-500 hover:text-blue-600 inline-flex items-center gap-1 transition-colors"
                             >
-                              {t('catalogSection.order')}
+                              Chi tiết
+                              <ArrowRight className="h-3.5 w-3.5" />
                             </Link>
-                            <button
-                              className="bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-100 p-2 rounded-lg transition-colors flex items-center justify-center shrink-0"
-                              title="Bookmark"
-                            >
-                              <Bookmark className="h-4 w-4" />
-                            </button>
+
+                            <AddToCartButton
+                              product={{
+                                id: product.id,
+                                name: productName,
+                                slug: product.slug,
+                                brand: product.brand,
+                                unit: unit || 'cái'
+                              }}
+                            />
                           </div>
                         </div>
                       </div>
