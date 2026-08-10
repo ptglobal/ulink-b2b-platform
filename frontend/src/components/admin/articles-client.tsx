@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useTransition, useRef } from 'react';
-import { Plus, Search, Edit, Trash, FileText, X, AlertTriangle, Upload, Image as ImageIcon, Globe, Calendar, User } from 'lucide-react';
+import { Plus, Search, Edit, Trash, FileText, X, AlertTriangle, Upload, Image as ImageIcon, Globe, Calendar, User, Home } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import { getTranslatedField } from '@/lib/i18n-content';
 import { saveArticle, deleteArticle, uploadImage } from '@/app/[locale]/admin/articles/actions';
@@ -152,26 +153,35 @@ export function ArticlesClient({
           </p>
         </div>
 
-        <button
-          onClick={() => {
-            setActiveArticle({
-              status: 'draft',
-              title: '',
-              body: '',
-              slug: '',
-              author: '',
-              published_at: new Date().toISOString().substring(0, 16),
-              meta_title: '',
-              meta_description: '',
-              cover: null
-            });
-            setModalOpen(true);
-          }}
-          className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition-colors shrink-0"
-        >
-          <Plus className="h-4 w-4" />
-          Viết bài mới
-        </button>
+        <div className="flex items-center gap-3 shrink-0">
+          <Link
+            href="/"
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-xs sm:text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 hover:border-slate-300 transition-colors"
+          >
+            <Home className="h-4 w-4 text-blue-600" />
+            Về Trang chủ
+          </Link>
+          <button
+            onClick={() => {
+              setActiveArticle({
+                status: 'draft',
+                title: '',
+                body: '',
+                slug: '',
+                author: '',
+                published_at: new Date().toISOString().substring(0, 16),
+                meta_title: '',
+                meta_description: '',
+                cover: null
+              });
+              setModalOpen(true);
+            }}
+            className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition-colors"
+          >
+            <Plus className="h-4 w-4" />
+            Viết bài mới
+          </button>
+        </div>
       </div>
 
       {/* Error Alert Banner */}

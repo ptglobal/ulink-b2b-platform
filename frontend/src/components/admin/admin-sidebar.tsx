@@ -20,7 +20,8 @@ import {
   FolderTree,
   Sliders,
   MapPin,
-  Mail
+  Mail,
+  Home
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -120,22 +121,40 @@ export function AdminSidebar() {
         )}
       >
         {/* Header Branding */}
-        <div className="p-6 border-b border-slate-800 flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white tracking-wider text-base shadow-inner">
-            U
+        <div className="p-6 border-b border-slate-800 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center font-black text-white tracking-wider text-base shadow-inner">
+              U
+            </div>
+            <div className="flex flex-col">
+              <span className="font-extrabold text-sm tracking-tight text-white">
+                ULink Industries
+              </span>
+              <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest mt-0.5">
+                Control Panel
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="font-extrabold text-sm tracking-tight text-white">
-              ULink Industries
-            </span>
-            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-widest mt-0.5">
-              Control Panel
-            </span>
-          </div>
+          <Link
+            href="/"
+            title="Quay lại trang chủ website"
+            className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-slate-300 hover:bg-blue-600 hover:text-white transition-colors"
+          >
+            <Home className="h-4 w-4" />
+          </Link>
         </div>
 
         {/* Navigation Items */}
         <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-1">
+          <Link
+            href="/"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center gap-3.5 px-4 py-2.5 rounded-lg text-xs font-bold text-blue-400 bg-blue-950/40 hover:bg-blue-900/60 hover:text-white border border-blue-800/40 transition-all mb-4"
+          >
+            <Home className="h-4 w-4 text-blue-400" />
+            <span>Về Trang chủ Website</span>
+          </Link>
+
           {menuItems.map((item) => {
             const isActive = item.exact
               ? pathname === item.href
