@@ -28,6 +28,16 @@ export function ProductsClient({ initialProducts, categories, globalAttributes }
   const [skuModalOpen, setSkuModalOpen] = useState(false);
   const [activeSku, setActiveSku] = useState<Partial<ProductSku> & { productId?: number } | null>(null);
 
+  const generateSlug = (value: string) =>
+    value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9\s-]/g, '')
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-');
+
   // Quick Inline Status Update for SKU
   const handleSkuStockChange = async (skuId: number, newStock: 'in_stock' | 'low_stock' | 'out_of_stock') => {
     // Optimistic UI update
@@ -430,7 +440,14 @@ export function ProductsClient({ initialProducts, categories, globalAttributes }
                     type="text"
                     required
                     value={activeProduct.name || ''}
-                    onChange={(e) => setActiveProduct({ ...activeProduct, name: e.target.value })}
+                    onChange={(e) => {
+                      const name = e.target.value;
+                      setActiveProduct((prev) => ({
+                        ...prev,
+                        name,
+                        slug: prev?.id ? prev.slug : generateSlug(name)
+                      }));
+                    }}
                     placeholder="Ví dụ: Găng tay Nitrile chống hóa chất"
                     className="px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-medium focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                   />
@@ -443,7 +460,8 @@ export function ProductsClient({ initialProducts, categories, globalAttributes }
                     type="text"
                     required
                     value={activeProduct.slug || ''}
-                    onChange={(e) => setActiveProduct({ ...activeProduct, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                    readOnly={!activeProduct.id}
+                    onChange={(e) => setActiveProduct({ ...activeProduct, slug: generateSlug(e.target.value) })}
                     placeholder="Ví dụ: gang-tay-nitrile-chong-hoa-chat"
                     className="px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-medium focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                   />

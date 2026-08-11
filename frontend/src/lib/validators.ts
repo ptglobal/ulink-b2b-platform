@@ -162,7 +162,7 @@ export type RfqInput = z.infer<typeof rfqSchema>;
 export const contactSchema = z.object({
   name: z.string().min(1, 'required'),
   email: z.string().min(1, 'required').email('invalid_email'),
-  phone: z.string().optional(),
+  phone: z.string().min(1, 'required'),
   subject: z.string().min(1, 'required'),
   message: z.string().min(1, 'required')
 });

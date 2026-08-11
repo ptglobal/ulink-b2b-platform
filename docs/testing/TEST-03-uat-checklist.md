@@ -46,6 +46,11 @@ verifiable check. Release requires all **must-pass** items and zero open S1.
 - [ ] Duplicate submit inside the dedupe window is rejected with 409.
 - [ ] Too many submits from one IP are rejected with 429.
 
+## E. Contact form smoke checks - must-pass
+- [ ] Contact form on `/contact` submits successfully and redirects to `/about/contact-success`.
+- [ ] Contact form on `/about` submits successfully and redirects to `/about/contact-success`.
+- [ ] Contact submission creates a `contact_requests` record with `full_name`, `email`, `phone`, `subject`, `message`, and `created_at`.
+
 ## E. Handover artifacts present (§2.3)
 - [ ] Design System · Source code · API docs · Deployment Guide · UAT results ·
   SEO setup · User Guide · Training delivered.

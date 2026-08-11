@@ -929,6 +929,39 @@ export const COLLECTION_DEFS = [
     ]
   },
   {
+    collection: 'contact_requests',
+    meta: { icon: 'contact_mail', note: 'Contact Requests' },
+    schema: {},
+    fields: [
+      ID_FIELD,
+      { field: 'full_name', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'email', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'phone', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'subject', type: 'string', meta: { interface: 'input', required: true } },
+      { field: 'message', type: 'text', meta: { interface: 'textarea', required: true } },
+      {
+        field: 'status',
+        type: 'string',
+        meta: {
+          interface: 'select-dropdown',
+          options: {
+            choices: [
+              { text: 'Chưa đọc', value: 'unread' },
+              { text: 'Đã đọc', value: 'read' }
+            ]
+          }
+        },
+        schema: { default_value: 'unread' }
+      },
+      {
+        field: 'created_at',
+        type: 'timestamp',
+        meta: { interface: 'datetime', readonly: true },
+        schema: { default_value: 'CURRENT_TIMESTAMP' }
+      }
+    ]
+  },
+  {
     collection: 'newsletter_subscribers',
     meta: { icon: 'mail', note: 'Email Newsletter Subscribers' },
     schema: {},

@@ -226,6 +226,17 @@ export interface NewsletterSubscriber {
   created_at?: string;
 }
 
+export interface ContactRequest {
+  id?: number | string;
+  full_name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+  status?: 'unread' | 'read';
+  created_at?: string;
+}
+
 export interface SampleRequest {
   id?: number | string;
   contact_name: string;
@@ -274,6 +285,7 @@ export interface Schema {
   directus_notifications: DirectusNotification[];
   integration_events: IntegrationEvent[];
   newsletter_subscribers: NewsletterSubscriber[];
+  contact_requests: ContactRequest[];
   sample_requests: SampleRequest[];
   iso_certifications: IsoCertification[];
 }

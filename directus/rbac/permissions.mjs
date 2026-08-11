@@ -86,6 +86,13 @@ export function buildPermissionDefs() {
     },
     {
       policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'contact_requests',
+      action: 'create',
+      permissions: {},
+      fields: ['full_name', 'email', 'phone', 'subject', 'message', 'status']
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
       collection: 'rfq_requests',
       action: 'create',
       permissions: {},
@@ -599,6 +606,23 @@ export function buildPermissionDefs() {
         fields: ['*']
       });
     }
+  }
+
+  for (const policy of [SALES_POLICY_ID, EDITOR_POLICY_ID]) {
+    permissions.push({
+      policy,
+      collection: 'contact_requests',
+      action: 'read',
+      permissions: {},
+      fields: ['*']
+    });
+    permissions.push({
+      policy,
+      collection: 'contact_requests',
+      action: 'update',
+      permissions: {},
+      fields: ['status']
+    });
   }
 
   return permissions;

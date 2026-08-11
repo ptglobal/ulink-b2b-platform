@@ -47,6 +47,7 @@ blog_posts   case_studies   iso_certifications   pages   hero_banners   partners
 | deliveries | m2o | orders, regional_hubs | scheduled delivery |
 | rfq_requests | m2o | regional_hubs, directus_users (assigned_sales) | line_items JSON |
 | rfq_assignment_rules | m2o | regional_hubs, industries, directus_users (assigned_sales) | editable routing matrix |
+| contact_requests | none | none | public contact submissions created by the app server; status = unread/read |
 
 ## Access model (row-level)
 | Collection | Customer | Sales | Editor | Admin |
@@ -58,10 +59,13 @@ blog_posts   case_studies   iso_certifications   pages   hero_banners   partners
 | rfq_requests | read own; submit through `/api/rfq` | CRUD | – | CRUD |
 | rfq_assignment_rules | – | CRUD | – | CRUD |
 | customers | read/update own | CRUD | – | CRUD |
+| contact_requests | – | read/update status | – | CRUD |
 
 "Own" = Directus permission filter `{ customer: { user: { _eq: "$CURRENT_USER" } } }`.
 
 Visitor and customer RFQ submission is application-mediated: `POST /api/rfq` writes with a server token; Directus visitor/customer roles do not create `rfq_requests` directly. Exact duplicate submissions reuse the first RFQ id via the application idempotency key.
+
+Public contact submission is application-mediated too: `POST /api/contact` writes with the frontend service token; visitors and customers do not create `contact_requests` directly.
 
 ## Conventions
 - **PK:** auto-increment integer `id` (UUID for files/users per Directus default).

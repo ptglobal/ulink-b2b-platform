@@ -11,6 +11,7 @@ import {
   PlusCircle,
   FileText,
   Users,
+  Mail,
   TrendingUp,
   ArrowRight
 } from 'lucide-react';
@@ -27,20 +28,23 @@ export default async function AdminDashboardPage({ params: { locale } }: Props) 
   const stats = {
     rfqs: 12,
     sampleRequests: 4,
+    contacts: 0,
     products: 48,
     users: 5
   };
 
   try {
     const client = createWriteDirectusClient();
-    const [rfqRes, sampleRes, productRes, usersRes] = await Promise.all([
+    const [rfqRes, sampleRes, contactRes, productRes, usersRes] = await Promise.all([
       client.request(readItems('rfq_requests', { fields: ['id'] })),
       client.request(readItems('sample_requests', { fields: ['id'] })),
+      client.request(readItems('contact_requests', { fields: ['id'] })),
       client.request(readItems('products', { fields: ['id'] })),
       client.request(readUsers({ fields: ['id'] }))
     ]);
     if (rfqRes) stats.rfqs = rfqRes.length;
     if (sampleRes) stats.sampleRequests = sampleRes.length;
+    if (contactRes) stats.contacts = contactRes.length;
     if (productRes) stats.products = productRes.length;
     if (usersRes) stats.users = usersRes.length;
   } catch (err) {
@@ -63,6 +67,14 @@ export default async function AdminDashboardPage({ params: { locale } }: Props) 
       icon: FileCheck,
       color: 'bg-orange-500/10 text-orange-600 border-orange-100',
       href: '/admin/sample-requests'
+    },
+    {
+      label: 'Liên hệ gửi về',
+      value: stats.contacts,
+      desc: 'Tin nhắn từ form liên hệ',
+      icon: Mail,
+      color: 'bg-cyan-500/10 text-cyan-600 border-cyan-100',
+      href: '/admin/contact-requests'
     },
     {
       label: 'Sản phẩm đang bán',
@@ -100,7 +112,7 @@ export default async function AdminDashboardPage({ params: { locale } }: Props) 
       </div>
 
       {/* Grid of KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
         {kpis.map((kpi, idx) => (
           <Link
             key={idx}
@@ -161,6 +173,16 @@ export default async function AdminDashboardPage({ params: { locale } }: Props) 
               <div className="flex items-center gap-3">
                 <Users className="h-4.5 w-4.5 text-blue-600" />
                 <span>Quản lý tài khoản User</span>
+              </div>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link
+              href="/admin/contact-requests"
+              className="flex items-center justify-between p-3.5 rounded-lg border border-slate-50 hover:bg-slate-50 text-slate-700 hover:text-[#0F1E36] text-xs sm:text-sm font-bold transition-colors"
+            >
+              <div className="flex items-center gap-3">
+                <Mail className="h-4.5 w-4.5 text-cyan-600" />
+                <span>Hộp thư liên hệ</span>
               </div>
               <ArrowRight className="h-4 w-4" />
             </Link>

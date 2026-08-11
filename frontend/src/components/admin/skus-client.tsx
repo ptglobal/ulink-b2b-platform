@@ -171,8 +171,9 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
   // Filter list
   const filteredSkus = skus.filter((sku) => {
     const q = searchQuery.toLowerCase();
-    const productName = typeof sku.product === 'object' ? (sku.product as any).name : '';
-    const productSlug = typeof sku.product === 'object' ? (sku.product as any).slug : '';
+    const product = sku.product && typeof sku.product === 'object' ? (sku.product as any) : null;
+    const productName = product?.name ?? '';
+    const productSlug = product?.slug ?? '';
     
     const matchesSearch =
       sku.sku_code.toLowerCase().includes(q) ||
@@ -182,7 +183,7 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
     const matchesStock =
       selectedStockStatus === 'all' || sku.stock_status === selectedStockStatus;
 
-    const parentId = typeof sku.product === 'object' ? String((sku.product as any).id) : String(sku.product);
+    const parentId = product ? String(product.id) : String(sku.product ?? '');
     const matchesProduct =
       selectedProduct === 'all' || parentId === selectedProduct;
 
@@ -295,8 +296,9 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
               </thead>
               <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
                 {filteredSkus.map((sku) => {
-                  const parentName = typeof sku.product === 'object' ? (sku.product as any).name : 'Sản phẩm không khả dụng';
-                  const parentSlug = typeof sku.product === 'object' ? (sku.product as any).slug : '';
+                  const parent = sku.product && typeof sku.product === 'object' ? (sku.product as any) : null;
+                  const parentName = parent?.name ?? 'Sản phẩm không khả dụng';
+                  const parentSlug = parent?.slug ?? '';
                   return (
                     <tr key={sku.id} className="hover:bg-slate-50/30 transition-colors">
                       {/* SKU Code */}
@@ -363,7 +365,9 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                           {/* Edit SKU */}
                           <button
                             onClick={() => {
-                              const pId = typeof sku.product === 'object' ? (sku.product as any).id : Number(sku.product);
+                              const pId = sku.product && typeof sku.product === 'object'
+                                ? (sku.product as any).id
+                                : Number(sku.product);
                               const p = products.find((prod) => prod.id === pId);
 
                               // Reconstruct selectedOptions from sku.attributes JSON

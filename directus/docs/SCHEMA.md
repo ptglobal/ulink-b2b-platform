@@ -71,6 +71,7 @@ SEO defaults live in singleton `site_settings`. Current bootstrap only adds
 | `deliveries` | `order`, `hub`, `scheduled_date`, `delivered_date`, `status`, `tracking_ref`, `erp_ref` | Scheduled and delivered shipments |
 | `rfq_requests` | `company`, `contact_name`, `email`, `phone`, `industry`, `hub`, `line_items`, `message`, `status`, `assigned_sales`, `source`, `user` | RFQ intake and triage |
 | `rfq_assignment_rules` | `hub`, `industry`, `assigned_sales`, `priority`, `is_default` | Editable RFQ routing rules used by the internal notifier |
+| `contact_requests` | `full_name`, `email`, `phone`, `subject`, `message`, `status`, `created_at` | Public contact form submissions from `/contact` and `/about` |
 
 Re-order remains an application action that clones prior `order_items` into a new
 RFQ cart or order flow.
@@ -101,6 +102,7 @@ RFQ cart or order flow.
 | `rfq_assignment_rules.hub` | m2o | `regional_hubs` | Routing hub rule |
 | `rfq_assignment_rules.industry` | m2o | `industries` | Routing industry rule |
 | `rfq_assignment_rules.assigned_sales` | m2o | `directus_users` | Sales assignee / inbox owner |
+| `contact_requests` | none | none | stored by the app server via `/api/contact` |
 | `products_industries.products_id` | m2o | `products` | Product side of m2m |
 | `products_industries.industries_id` | m2o | `industries` | Industry side of m2m |
 | `products_files.products_id` | m2o | `products` | Product side of gallery m2m |
@@ -116,10 +118,11 @@ RFQ cart or order flow.
 |---|---|
 | **Admin** | Full Directus admin access |
 | **Editor** | CRUD on all content collections, singletons `site_settings`, `homepage`, `hub_industrial_zones`, `hub_team_members` |
-| **Sales** | Read all content and singletons; full CRUD on `customers`, `orders`, `order_items`, `invoices`, `deliveries`, `rfq_requests`, `rfq_assignment_rules`; read `hub_industrial_zones`, `hub_team_members` |
+| **Sales** | Read all content and singletons; full CRUD on `customers`, `orders`, `order_items`, `invoices`, `deliveries`, `rfq_requests`, `rfq_assignment_rules`; read/update `contact_requests.status`; read `hub_industrial_zones`, `hub_team_members` |
 | **Customer** | Read published content; read singletons; read/update own `customers`; read own `orders`, `order_items`, `invoices`, `deliveries`; read own `rfq_requests`; read `hub_industrial_zones`, `hub_team_members` |
 
 Visitor/public users may read published content directly from Directus. RFQ submission for visitors and customers goes through `POST /api/rfq`; Directus visitor/customer roles do not create `rfq_requests` directly. Exact duplicate RFQ payloads reuse the first `rfq_requests` id instead of inserting a second row.
+Public contact submission is application-mediated: `POST /api/contact` writes with the frontend service token; visitor/customer roles do not create `contact_requests` directly.
 
 Customer onboarding contract:
 - Self-register creates `directus_users` active and `customers` active.

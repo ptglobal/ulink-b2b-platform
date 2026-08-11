@@ -95,6 +95,25 @@ Purpose: persist an RFQ and route to Sales.
 - **502** -> normalized error envelope with code `BAD_GATEWAY` when persistence fails for another reason.
 - The handler writes to Directus with `DIRECTUS_TOKEN`; visitor and customer roles do not create `rfq_requests` directly.
 
+### 2.3 `POST /api/contact` - contact submission
+Purpose: persist a public contact request for Sales follow-up.
+- **Validation:** `name`, `email`, `phone`, `subject`, and `message` are required. `email` must be valid.
+- **Body:**
+```json
+{
+  "name": "Nguyen Van A",
+  "email": "a@company.com",
+  "phone": "0901234567",
+  "subject": "Yeu cau bao gia",
+  "message": "Vui long lien he..."
+}
+```
+- **201** -> normalized success envelope with created request id in `data.id`.
+- **400** -> normalized error envelope with code `BAD_REQUEST` for invalid JSON.
+- **422** -> normalized error envelope with code `UNPROCESSABLE_ENTITY` for missing or invalid fields.
+- **502** -> normalized error envelope with code `BAD_GATEWAY` when persistence fails.
+- The handler writes to Directus `contact_requests` with the frontend service token.
+
 ### 2.5 `POST /api/internal/rfq-notify` - Directus RFQ notify webhook
 Purpose: assign a new RFQ and send the sales notification after Directus creates the record.
 - **Auth:** `Authorization: Bearer ${INTERNAL_API_TOKEN}`

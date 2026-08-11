@@ -56,6 +56,8 @@ test('upcoming events keep localized fields and concrete assets', () => {
     assert.ok(event.location.vi.trim().length > 0, `${event.id} vi location`);
     assert.ok(event.location.en.trim().length > 0, `${event.id} en location`);
     assert.ok(event.location.ja.trim().length > 0, `${event.id} ja location`);
+    assert.ok(event.link.startsWith('/events/'), `${event.id} event link`);
+    assert.ok(event.link.endsWith('/register'), `${event.id} event register route`);
     assert.ok(assetPathExists(event.image), `${event.id} missing image: ${event.image}`);
   }
 });

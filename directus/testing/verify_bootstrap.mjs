@@ -71,6 +71,7 @@ async function verify() {
     'deliveries',
     'integration_events',
     'rfq_requests',
+    'contact_requests',
     'rfq_assignment_rules',
     'products_industries',
     'products_files',

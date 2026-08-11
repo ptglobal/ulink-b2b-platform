@@ -727,7 +727,7 @@ export const UPCOMING_EVENTS: EventItem[] = [
       en: 'Zoom Online Meeting & ULink Ha Nam Hall',
       ja: 'Zoomオンライン会議 & ULink河南省ホール'
     },
-    link: '/contact'
+    link: '/events/ev-001/register'
   },
   {
     id: 'EV-002',
@@ -744,7 +744,7 @@ export const UPCOMING_EVENTS: EventItem[] = [
       en: 'Crowne Plaza Hotel, 36 Le Duc Tho, Hanoi',
       ja: 'クラウンプラザホテル、36レ・ドゥック・ト、ハノイ'
     },
-    link: '/contact'
+    link: '/events/ev-002/register'
   },
   {
     id: 'EV-003',
@@ -761,7 +761,7 @@ export const UPCOMING_EVENTS: EventItem[] = [
       en: 'ULink Representative Office, District 1, HCMC',
       ja: 'ULink代表事務所、1区、ホーチミン市'
     },
-    link: '/contact'
+    link: '/events/ev-003/register'
   }
 ];
 

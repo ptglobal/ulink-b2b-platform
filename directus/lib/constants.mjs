@@ -37,7 +37,7 @@ export const CUSTOMER_POLICY_ID = 'b11b0e50-3030-410c-9999-000000000003';
 
 // Scoped policy for the Next.js frontend service token (DIRECTUS_TOKEN =
 // the frontend-api user's static token). Grants ONLY the server-side writes
-// the frontend performs: create newsletter_subscribers + rfq_requests.
+// the frontend performs: create newsletter_subscribers + contact_requests + rfq_requests.
 export const FRONTEND_SERVICE_POLICY_ID = 'b11b0e50-f0f0-410c-9999-0000000000f5';
 
 // Prefix used for verified tokens issued by our OTP endpoint. The frontend

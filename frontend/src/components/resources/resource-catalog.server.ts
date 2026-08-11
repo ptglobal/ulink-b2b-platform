@@ -1,6 +1,6 @@
 import { readItems } from '@directus/sdk';
 import { publicDirectus } from '@/lib/directus';
-import { MOCK_RESOURCES } from './mock-data';
+import { MOCK_RESOURCES, MOST_VIEWED_ARTICLES } from './mock-data';
 import { ResourceItem } from './types';
 
 function currentDateLabel() {
@@ -15,7 +15,7 @@ function mapDocumentToResource(doc: any): ResourceItem {
     title: { vi: doc.title || '', en: doc.title || '', ja: doc.title || '' },
     description: { vi: '', en: '', ja: '' },
     date: currentDateLabel(),
-    image: '/images/home/product-gloves-box.webp',
+    image: '/images/solutions/nitrile_gloves.png',
     contentType: 'tech-doc',
     author: { name: { vi: 'ULink', en: 'ULink', ja: 'ULink' }, role: { vi: '', en: '', ja: '' }, avatar: '' },
     readTime: { vi: '', en: '', ja: '' },
@@ -78,7 +78,7 @@ export async function loadResourceCatalog() {
   const directusDocs = documentsRes.map(mapDocumentToResource);
   const directusIsos = isoRes.map(mapIsoToResource);
 
-  return [...directusDocs, ...directusIsos, ...MOCK_RESOURCES];
+  return [...directusDocs, ...directusIsos, ...MOCK_RESOURCES, ...MOST_VIEWED_ARTICLES];
 }
 
 export async function loadResourceBySlug(slug: string) {

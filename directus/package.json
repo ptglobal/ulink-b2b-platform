@@ -9,6 +9,7 @@
     "verify": "node testing/verify_bootstrap.mjs",
     "verify:commercial-import": "node testing/verify_commercial_data_import.mjs",
     "verify:onboarding": "node testing/verify_onboarding.mjs",
+    "verify:contact-requests": "node testing/verify_contact_requests.mjs",
     "verify:reset-password": "node testing/verify_password_reset.mjs",
     "verify:change-password": "node testing/verify_password_change.mjs",
     "verify:rfq-notify": "node --import ../frontend/node_modules/tsx/dist/loader.mjs testing/verify_rfq_notification_flow.mjs",

@@ -109,6 +109,7 @@ export function ResourcesClient({
     mostViewed: { vi: 'Bài viết được xem nhiều', en: 'Most Viewed Articles', ja: 'よく読まれている記事' },
     upcomingEvents: { vi: 'Sự kiện sắp diễn ra', en: 'Upcoming Events', ja: '近日開催予定のイベント' },
     registerEvent: { vi: 'Đăng ký tham gia', en: 'Register', ja: '参加登録' },
+    viewDetails: { vi: 'Xem chi tiết', en: 'View details', ja: '詳細を見る' },
     prev: { vi: 'Trước', en: 'Prev', ja: '前へ' },
     next: { vi: 'Sau', en: 'Next', ja: '次へ' },
     seeAll: { vi: 'Xem tất cả', en: 'See all', ja: 'すべて見る' }
@@ -290,7 +291,7 @@ export function ResourcesClient({
               <Link
                 key={art.id}
                 href={getResourceHref(art)}
-                className="flex flex-col bg-white border border-slate-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group"
+                className="flex flex-col bg-white border border-slate-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 group cursor-pointer"
               >
                 <div className="relative aspect-[16/10] w-full bg-slate-50 overflow-hidden">
                   <Image
@@ -315,8 +316,10 @@ export function ResourcesClient({
                     </h3>
                   </div>
                   <div className="mt-4 flex items-center justify-between text-[11px] text-blue-600 font-semibold group-hover:underline">
-                    <span>{L.readDetails[locale]}</span>
-                    <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    <span className="inline-flex items-center gap-1">
+                      <span>{L.readDetails[locale]}</span>
+                      <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                    </span>
                   </div>
                 </div>
               </Link>
@@ -338,8 +341,9 @@ export function ResourcesClient({
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
             {UPCOMING_EVENTS.map((event) => (
-              <div
+              <Link
                 key={event.id}
+                href={`/events/${event.id.toLowerCase()}`}
                 className="bg-white border border-slate-150 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 flex flex-col justify-between group"
               >
                 <div>
@@ -370,15 +374,12 @@ export function ResourcesClient({
                 </div>
 
                 <div className="px-5 pb-5 pt-2">
-                  <Link
-                    href={event.link}
-                    className="w-full inline-flex justify-center items-center gap-1.5 bg-[#1769E2] hover:bg-[#1257bd] text-white font-bold text-xs py-2.5 rounded-lg transition-colors shadow-sm"
-                  >
-                    {L.registerEvent[locale]}
+                  <span className="w-full inline-flex justify-center items-center gap-1.5 bg-[#1769E2] hover:bg-[#1257bd] text-white font-bold text-xs py-2.5 rounded-lg transition-colors shadow-sm">
+                    {L.viewDetails[locale]}
                     <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
+                  </span>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         </div>
