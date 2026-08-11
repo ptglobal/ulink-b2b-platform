@@ -1100,7 +1100,7 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                     {(activeRfq.line_items || []).length === 0 && (
                       <div className="text-center py-8 text-xs text-slate-400 italic bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
-                        Chưa có sản phẩm nào. Nhấp "+ Thêm sản phẩm" ở trên để tiếp tục.
+                        Chưa có sản phẩm nào. Nhấp &quot;+ Thêm sản phẩm&quot; ở trên để tiếp tục.
                       </div>
                     )}
                   </div>

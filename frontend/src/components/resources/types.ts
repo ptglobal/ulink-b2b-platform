@@ -25,7 +25,7 @@ export interface Author {
 
 export interface ResourceItem {
   id: string;
-  category: 'industry' | 'product' | 'guide' | 'standard' | 'case-study' | 'news';
+  category: 'industry' | 'product' | 'guide' | 'standard' | 'case-study' | 'news' | 'event';
   badge: TranslatedString;
   title: TranslatedString;
   description: TranslatedString;

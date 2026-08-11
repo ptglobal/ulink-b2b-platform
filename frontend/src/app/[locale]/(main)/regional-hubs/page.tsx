@@ -34,6 +34,9 @@ import SolutionCarousel from '@/components/regional-hubs/solution-carousel';
 import TestimonialCarousel from '@/components/regional-hubs/testimonial-carousel';
 import WorkingProcess from '@/components/regional-hubs/working-process';
 import { ResourcesNews, CtaBanner } from '@/components/home';
+import { Link } from '@/i18n/navigation';
+import { fetchProducts } from '@/lib/product-data';
+import ProductCard from '@/components/product/product-card';
 
 export default async function RegionalHubsPage({
   params: { locale }
@@ -44,6 +47,14 @@ export default async function RegionalHubsPage({
   const t = await getTranslations('regionalHubs');
 
   const hubs = await fetchRegionalHubs();
+  
+  // Fetch up to 12 products from Directus
+  const { products: dbProducts } = await fetchProducts({ limit: 12 });
+  
+  // Randomly select 3 products to display in the Featured Products section
+  const randomProducts = [...dbProducts]
+    .sort(() => 0.5 - Math.random())
+    .slice(0, 3);
 
   // Parse coordinates for map markers
   const mapClusters: ClusterMarker[] = hubs
@@ -366,265 +377,25 @@ export default async function RegionalHubsPage({
                 </p>
               </div>
             </div>
-            <a
+            <Link
               href="/solutions"
               className="group text-[13px] font-semibold text-[#1769E2] flex items-center gap-1 transition-colors hover:text-[#1257bd] shrink-0"
             >
               {t('featuredProducts.viewAll')}
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-            </a>
+            </Link>
           </div>
 
           {/* Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card 1: Glove */}
-            <div className="group flex flex-col bg-white rounded-xl border border-slate-100 hover:border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
-              {/* Product Image */}
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/home/section2/product-cut-gloves.webp"
-                  alt="Găng tay công nghiệp"
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-                  <span className="text-[16px] font-bold text-white tracking-wide uppercase">PROTECH GLOVE</span>
-                </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-5 flex flex-1 flex-col justify-between">
-                <div>
-                  <span className="text-[10px] font-bold text-[#1769E2] tracking-wider uppercase block mb-1">
-                    {t('featuredProducts.glove.category')}
-                  </span>
-                  <h3 className="text-[15px] font-bold text-slate-900 leading-snug mb-1">
-                    {t('featuredProducts.glove.title')}
-                  </h3>
-                  <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
-                    {t('featuredProducts.glove.desc')}
-                  </p>
-
-                  {/* Specifications Grid */}
-                  <div className="grid grid-cols-4 gap-2 bg-[#F8FAFC] p-3 rounded-lg mb-4 text-center">
-                    <div className="flex flex-col items-center">
-                      <ShieldCheck className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.glove.feat1')}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <Sparkles className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.glove.feat2')}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <ShieldAlert className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.glove.feat3')}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <Activity className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.glove.feat4')}</span>
-                    </div>
-                  </div>
-
-                  {/* Tags */}
-                  <div className="mb-4">
-                    <span className="text-[9px] text-slate-400 block mb-1.5 uppercase font-medium tracking-wider">
-                      {t('featuredProducts.mainProducts')}
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {['Nitrile', 'PU', 'ESD', 'Latex'].map((tag) => (
-                        <span key={tag} className="bg-blue-50 text-blue-600 rounded-sm px-2 py-0.5 text-[9px] font-bold">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actions Row */}
-                <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 mt-2">
-                  <a
-                    href="/contact"
-                    className="flex-1 bg-[#1769E2] text-white text-[12px] font-semibold py-2 px-3 rounded-md flex items-center justify-center gap-1.5 hover:bg-[#1257bd] transition-colors"
-                  >
-                    {t('featuredProducts.rfqButton')}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
-                  <a
-                    href="/contact"
-                    className="text-[12px] text-slate-500 hover:text-[#1769E2] font-semibold flex items-center gap-1 transition-colors shrink-0"
-                  >
-                    {t('featuredProducts.catalogue')}
-                    <Download className="h-3.5 w-3.5" />
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 2: Film */}
-            <div className="group flex flex-col bg-white rounded-xl border border-slate-100 hover:border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
-              {/* Product Image */}
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/home/section2/product-custom-pkg.webp"
-                  alt="Màng co PE - Shrink Film"
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-                  <span className="text-[16px] font-bold text-white tracking-wide uppercase">SHRINK FILM</span>
-                </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-5 flex flex-1 flex-col justify-between">
-                <div>
-                  <span className="text-[10px] font-bold text-[#1769E2] tracking-wider uppercase block mb-1">
-                    {t('featuredProducts.film.category')}
-                  </span>
-                  <h3 className="text-[15px] font-bold text-slate-900 leading-snug mb-1">
-                    {t('featuredProducts.film.title')}
-                  </h3>
-                  <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
-                    {t('featuredProducts.film.desc')}
-                  </p>
-
-                  {/* Specifications Grid */}
-                  <div className="grid grid-cols-4 gap-2 bg-[#F8FAFC] p-3 rounded-lg mb-4 text-center">
-                    <div className="flex flex-col items-center">
-                      <Layers className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.film.feat1')}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <Bookmark className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.film.feat2')}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <Eye className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.film.feat3')}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <Settings className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.film.feat4')}</span>
-                    </div>
-                  </div>
-
-                  {/* Tags */}
-                  <div className="mb-4">
-                    <span className="text-[9px] text-slate-400 block mb-1.5 uppercase font-medium tracking-wider">
-                      {t('featuredProducts.mainProducts')}
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {['LDPE', 'PVC', 'ESD', 'POF'].map((tag) => (
-                        <span key={tag} className="bg-blue-50 text-blue-600 rounded-sm px-2 py-0.5 text-[9px] font-bold">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actions Row */}
-                <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 mt-2">
-                  <a
-                    href="/contact"
-                    className="flex-1 bg-[#1769E2] text-white text-[12px] font-semibold py-2 px-3 rounded-md flex items-center justify-center gap-1.5 hover:bg-[#1257bd] transition-colors"
-                  >
-                    {t('featuredProducts.rfqButton')}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
-                  <a
-                    href="/contact"
-                    className="text-[12px] text-slate-500 hover:text-[#1769E2] font-semibold flex items-center gap-1 transition-colors shrink-0"
-                  >
-                    {t('featuredProducts.catalogue')}
-                    <Download className="h-3.5 w-3.5" />
-                  </a>
-                </div>
-              </div>
-            </div>
-
-            {/* Card 3: Tape */}
-            <div className="group flex flex-col bg-white rounded-xl border border-slate-100 hover:border-slate-200/80 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden">
-              {/* Product Image */}
-              <div className="relative aspect-[16/9] w-full overflow-hidden bg-slate-100">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src="/images/home/section2/product-hvac-tape.webp"
-                  alt="Băng keo nhôm - HVAC"
-                  className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-4">
-                  <span className="text-[16px] font-bold text-white tracking-wide uppercase">ALUMINUM TAPE</span>
-                </div>
-              </div>
-
-              {/* Card Body */}
-              <div className="p-5 flex flex-1 flex-col justify-between">
-                <div>
-                  <span className="text-[10px] font-bold text-[#1769E2] tracking-wider uppercase block mb-1">
-                    {t('featuredProducts.tape.category')}
-                  </span>
-                  <h3 className="text-[15px] font-bold text-slate-900 leading-snug mb-1">
-                    {t('featuredProducts.tape.title')}
-                  </h3>
-                  <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
-                    {t('featuredProducts.tape.desc')}
-                  </p>
-
-                  {/* Specifications Grid */}
-                  <div className="grid grid-cols-4 gap-2 bg-[#F8FAFC] p-3 rounded-lg mb-4 text-center">
-                    <div className="flex flex-col items-center">
-                      <Layers className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.tape.feat1')}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <Ruler className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.tape.feat2')}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <Thermometer className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.tape.feat3')}</span>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <Paperclip className="h-4 w-4 text-[#1769E2] mb-1" />
-                      <span className="text-[9px] text-slate-500 font-medium">{t('featuredProducts.tape.feat4')}</span>
-                    </div>
-                  </div>
-
-                  {/* Tags */}
-                  <div className="mb-4">
-                    <span className="text-[9px] text-slate-400 block mb-1.5 uppercase font-medium tracking-wider">
-                      {t('featuredProducts.mainProducts')}
-                    </span>
-                    <div className="flex flex-wrap gap-1.5">
-                      {['Alu Foil', 'FSK', 'Woven Fabric', 'Glass fiber'].map((tag) => (
-                        <span key={tag} className="bg-blue-50 text-blue-600 rounded-sm px-2 py-0.5 text-[9px] font-bold">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                {/* Actions Row */}
-                <div className="flex items-center justify-between gap-4 border-t border-slate-100 pt-4 mt-2">
-                  <a
-                    href="/contact"
-                    className="flex-1 bg-[#1769E2] text-white text-[12px] font-semibold py-2 px-3 rounded-md flex items-center justify-center gap-1.5 hover:bg-[#1257bd] transition-colors"
-                  >
-                    {t('featuredProducts.rfqButton')}
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </a>
-                  <a
-                    href="/contact"
-                    className="text-[12px] text-slate-500 hover:text-[#1769E2] font-semibold flex items-center gap-1 transition-colors shrink-0"
-                  >
-                    {t('featuredProducts.catalogue')}
-                    <Download className="h-3.5 w-3.5" />
-                  </a>
-                </div>
-              </div>
-            </div>
+            {randomProducts.map((prod) => (
+              <ProductCard key={prod.id} product={prod} locale={locale} />
+            ))}
+            {randomProducts.length === 0 && (
+              <p className="text-sm text-slate-400 text-center col-span-3 py-12">
+                {locale === 'vi' ? 'Không có sản phẩm nổi bật nào.' : 'No featured products available.'}
+              </p>
+            )}
           </div>
         </div>
       </section>
@@ -664,13 +435,13 @@ export default async function RegionalHubsPage({
                   <p className="text-[12px] text-slate-500 leading-relaxed mb-4">
                     {t('capabilities.manufacturing.desc')}
                   </p>
-                  <a
+                  <Link
                     href="/solutions"
                     className="group text-[12px] font-semibold text-[#1769E2] inline-flex items-center gap-1 hover:text-[#1257bd] transition-colors mt-auto"
                   >
                     {t('capabilities.learnMore')}
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </a>
+                  </Link>
                 </div>
 
                 {/* Card 2: Supply Chain */}
@@ -684,13 +455,13 @@ export default async function RegionalHubsPage({
                   <p className="text-[12px] text-slate-500 leading-relaxed mb-4">
                     {t('capabilities.supplyChain.desc')}
                   </p>
-                  <a
+                  <Link
                     href="/about"
                     className="group text-[12px] font-semibold text-[#1769E2] inline-flex items-center gap-1 hover:text-[#1257bd] transition-colors mt-auto"
                   >
                     {t('capabilities.learnMore')}
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </a>
+                  </Link>
                 </div>
 
                 {/* Card 3: Quality Control */}
@@ -704,13 +475,13 @@ export default async function RegionalHubsPage({
                   <p className="text-[12px] text-slate-500 leading-relaxed mb-4">
                     {t('capabilities.quality.desc')}
                   </p>
-                  <a
+                  <Link
                     href="/about/quality"
                     className="group text-[12px] font-semibold text-[#1769E2] inline-flex items-center gap-1 hover:text-[#1257bd] transition-colors mt-auto"
                   >
                     {t('capabilities.learnMore')}
                     <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
-                  </a>
+                  </Link>
                 </div>
 
               </div>
@@ -743,20 +514,20 @@ export default async function RegionalHubsPage({
 
           {/* CTA Buttons */}
           <div className="mt-8 flex flex-wrap justify-center items-center gap-4">
-            <a
+            <Link
               href="/contact"
               className="bg-[#1769E2] text-white text-[13px] font-semibold py-3 px-6 rounded-md flex items-center gap-2 hover:bg-[#1257bd] transition-colors"
             >
               {t('hanamIntro.contactSales')}
               <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
+            </Link>
+            <Link
               href="/about"
               className="border border-[#1769E2] text-[#1769E2] text-[13px] font-semibold py-3 px-6 rounded-md hover:bg-blue-50 transition-colors flex items-center gap-2"
             >
               {t('hanamIntro.learnMore')}
               <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
           </div>
 
           {/* Large Image Showcase */}

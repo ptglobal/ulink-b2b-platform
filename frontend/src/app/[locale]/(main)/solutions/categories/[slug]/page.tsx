@@ -139,13 +139,23 @@ export default async function CategoryProductsPage({ params }: PageProps) {
   const currentDbCat = dbCategories.find((c) => c.slug === slug);
 
   // 3. Resolve Category Info
-  const categoryInfo: CategoryInfo = {
-    id: currentDbCat?.id ?? CATEGORIES_MASTER[slug]?.id ?? 99,
-    name: (currentDbCat ? getTranslatedName(currentDbCat, locale) : null) || currentDbCat?.name || CATEGORIES_MASTER[slug]?.name || 'Danh mục Sản phẩm',
-    slug,
-    description: CATEGORIES_MASTER[slug]?.description || 'Danh mục các sản phẩm vật tư công nghiệp tiêu chuẩn phòng sạch & ESD ULink.',
-    subCategories: CATEGORIES_MASTER[slug]?.subCategories
-  };
+  const isAll = slug === 'all';
+  const categoryInfo: CategoryInfo = isAll
+    ? {
+        id: 0,
+        name: locale === 'vi' ? 'Tất cả sản phẩm' : 'All Products',
+        slug: 'all',
+        description: locale === 'vi'
+          ? 'Toàn bộ danh mục vật tư công nghiệp, phòng sạch & ESD của ULink Industries.'
+          : 'Complete catalog of industrial supplies, cleanroom & ESD products by ULink Industries.',
+      }
+    : {
+        id: currentDbCat?.id ?? CATEGORIES_MASTER[slug]?.id ?? 99,
+        name: (currentDbCat ? getTranslatedName(currentDbCat, locale) : null) || currentDbCat?.name || CATEGORIES_MASTER[slug]?.name || 'Danh mục Sản phẩm',
+        slug,
+        description: CATEGORIES_MASTER[slug]?.description || 'Danh mục các sản phẩm vật tư công nghiệp tiêu chuẩn phòng sạch & ESD ULink.',
+        subCategories: CATEGORIES_MASTER[slug]?.subCategories
+      };
 
   // 4. Map Products ONLY from Database
   const products: ProductItem[] = dbProducts.map((p) => {
@@ -173,10 +183,12 @@ export default async function CategoryProductsPage({ params }: PageProps) {
     };
   });
 
-  // 5. Dynamic Categories list from DB
-  const categoriesList = dbCategories.length > 0
+  // 5. Dynamic Categories list from DB — prepend "All" entry
+  const allEntry = { id: 0, name: locale === 'vi' ? 'Tất cả sản phẩm' : 'All Products', slug: 'all' };
+  const dbCatList = dbCategories.length > 0
     ? dbCategories.map((c) => ({ id: c.id, name: getTranslatedName(c, locale) || c.name, slug: c.slug }))
     : ALL_CATEGORIES_LIST;
+  const categoriesList = [allEntry, ...dbCatList];
 
   return (
     <CategoryProductsClient

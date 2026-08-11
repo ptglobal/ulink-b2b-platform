@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { ArrowRight, Truck, Activity, ShieldCheck, Thermometer, Layers, Settings, Package } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
 
 interface SlideItem {
   eyebrow: string;
@@ -165,19 +166,19 @@ export default function SolutionCarousel({ slides, labels }: SolutionCarouselPro
 
               {/* Action Buttons */}
               <div className="flex flex-wrap items-center gap-4">
-                <a
-                  href="/contact"
+                <Link
+                  href="/quick-order"
                   className="bg-[#1769E2] text-white text-[13px] font-semibold py-3 px-6 rounded-md flex items-center gap-2 hover:bg-[#1257bd] transition-colors"
                 >
                   {labels.rfqButton}
                   <ArrowRight className="h-4 w-4" />
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/solutions"
                   className="border border-[#1769E2] text-[#1769E2] text-[13px] font-semibold py-3 px-6 rounded-md hover:bg-blue-50 transition-colors"
                 >
                   {labels.learnMore}
-                </a>
+                </Link>
               </div>
             </div>
 

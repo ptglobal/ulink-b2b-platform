@@ -992,7 +992,7 @@ export function SampleRequestsClient({ initialRequests, salesTeam, skus, locale,
 
                     {(activeReq.skus || []).length === 0 && (
                       <div className="text-center py-8 text-xs text-slate-400 italic bg-slate-50/50 rounded-xl border border-dashed border-slate-200">
-                        Chưa chọn sản phẩm mẫu nào. Nhấp "+ Thêm SKU mẫu" để chọn hàng.
+                        Chưa chọn sản phẩm mẫu nào. Nhấp &quot;+ Thêm SKU mẫu&quot; để chọn hàng.
                       </div>
                     )}
                   </div>

@@ -7,8 +7,7 @@ import {
   Calendar,
   User,
   Clock,
-  Download,
-  Share2,
+    Share2,
   FileText,
   CheckCircle2,
   BookOpen,
@@ -129,37 +128,6 @@ export function ResourceDetailClient({ data }: ResourceDetailClientProps) {
           {/* Main Column */}
           <div className="lg:col-span-8 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/80 shadow-sm">
             
-            {/* Download Card Callout if PDF Available */}
-            {data.pdfUrl && (
-              <div className="mb-8 p-6 rounded-2xl bg-gradient-to-r from-blue-900 to-[#0D4397] text-white shadow-md">
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="p-3 rounded-xl bg-white/10 text-white shrink-0 mt-0.5">
-                      <FileText className="h-6 w-6" />
-                    </div>
-                    <div>
-                      <h3 className="text-base font-extrabold text-white">Tải về Tài liệu Kỹ thuật chính thức</h3>
-                      <p className="text-xs text-white/80 mt-1">
-                        Tệp PDF đầy đủ bảng thông số kỹ thuật, chứng nhận tiêu chuẩn ISO & MSDS.
-                      </p>
-                      <span className="inline-block text-[11px] font-mono text-blue-200 mt-2 bg-white/10 px-2 py-0.5 rounded">
-                        Dung lượng: {data.pdfSize || '2.4 MB'} • Định dạng PDF
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-5 pt-4 border-t border-white/15 flex justify-end">
-                  <a
-                    href={data.pdfUrl}
-                    download
-                    className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white text-[#0D4397] text-xs font-extrabold shadow-sm hover:bg-slate-50 transition-colors"
-                  >
-                    <Download className="h-4 w-4" />
-                    Tải về ngay
-                  </a>
-                </div>
-              </div>
-            )}
 
             {/* Highlights list if any */}
             {data.highlights && data.highlights.length > 0 && (
