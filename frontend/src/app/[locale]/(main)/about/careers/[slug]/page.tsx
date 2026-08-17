@@ -7,7 +7,7 @@ import { JobDetailProcess } from '@/components/about/careers/detail/job-detail-p
 import { JobDetailRelated } from '@/components/about/careers/detail/job-detail-related';
 
 export default async function JobDetailPage({
-  params: { locale },
+  params: { locale }
 }: {
   params: { locale: string; slug: string };
 }) {

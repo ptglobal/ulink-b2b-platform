@@ -2,18 +2,18 @@ const steps = [
   {
     badge: 'BƯỚC 01',
     title: 'Xác nhận & Phân tích',
-    desc: 'Hệ thống CRM chuyển hồ sơ trực tiếp đến kỹ thuật viên chuyên ngành vật tư của ULink Industries để bóc tách quy cách kỹ thuật.',
+    desc: 'Hệ thống CRM chuyển hồ sơ trực tiếp đến kỹ thuật viên chuyên ngành vật tư của ULink Industries để bóc tách quy cách kỹ thuật.'
   },
   {
     badge: 'BƯỚC 02',
     title: 'Tư vấn & Báo giá chuyên sâu',
-    desc: 'Chuyên viên Kinh doanh liên hệ để làm rõ các yêu cầu về tiêu chuẩn sản phẩm, số lượng đơn hàng, lịch trình giao hàng và đề xuất phương án tối ưu.',
+    desc: 'Chuyên viên Kinh doanh liên hệ để làm rõ các yêu cầu về tiêu chuẩn sản phẩm, số lượng đơn hàng, lịch trình giao hàng và đề xuất phương án tối ưu.'
   },
   {
     badge: 'BƯỚC 03',
     title: 'Ký kết & Sản xuất - Cung ứng',
-    desc: 'Thực hiện hợp đồng cung ứng thông qua HUB Hà Nam, đảm bảo nguồn cung ổn định, liên tục và tối ưu hóa chi phí vận hành.',
-  },
+    desc: 'Thực hiện hợp đồng cung ứng thông qua HUB Hà Nam, đảm bảo nguồn cung ổn định, liên tục và tối ưu hóa chi phí vận hành.'
+  }
 ];
 
 export function ContactNextSteps() {
@@ -32,17 +32,13 @@ export function ContactNextSteps() {
         {steps.map((item, idx) => (
           <div
             key={idx}
-            className="flex flex-col rounded-xl bg-white p-6 shadow-sm border border-slate-100 transition-all hover:shadow-md hover:-translate-y-0.5"
+            className="flex flex-col rounded-xl bg-white p-6 shadow-sm border border-slate-100 transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:shadow-md hover:-translate-y-0.5"
           >
             <span className="inline-flex w-fit items-center rounded-md bg-blue-600 px-2.5 py-1 text-[10px] font-extrabold text-white mb-4">
               {item.badge}
             </span>
-            <h3 className="text-base font-bold text-slate-900 mb-2">
-              {item.title}
-            </h3>
-            <p className="text-xs leading-relaxed text-slate-600">
-              {item.desc}
-            </p>
+            <h3 className="text-base font-bold text-slate-900 mb-2">{item.title}</h3>
+            <p className="text-xs leading-relaxed text-slate-600">{item.desc}</p>
           </div>
         ))}
       </div>

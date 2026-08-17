@@ -18,10 +18,10 @@ walk(path.join(__dirname, '..', 'src'), (filePath) => {
   if (!/\.(tsx?|ts)$/.test(filePath)) return;
   const content = fs.readFileSync(filePath, 'utf8');
   if (!content.includes('.png')) return;
-  
+
   // Replace /images/...png with /images/...webp (in both single and double quotes)
   const updated = content.replace(/(\/images\/[^'"]+)\.png/g, '$1.webp');
-  
+
   if (updated !== content) {
     fs.writeFileSync(filePath, updated);
     count++;

@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight } from '@/components/icons';
 
 const solutions = [
   {
@@ -8,22 +8,22 @@ const solutions = [
     title: 'Phòng sạch',
     desc: 'Giải pháp vật tư phòng sạch đạt chuẩn ISO, đảm bảo môi trường kiểm soát nhiễm cho ngành dược phẩm & điện tử.',
     image: '/images/about/quality-hero-bg.webp',
-    href: '/industries/electronics',
+    href: '/industries/electronics'
   },
   {
     id: 'packaging',
     title: 'Bao bì Công nghiệp',
     desc: 'Cung cấp các loại bao bì chuyên dụng cho vận chuyển, bảo quản hàng hóa công nghiệp an toàn & hiệu quả.',
     image: '/images/about/op-warehouse.webp',
-    href: '/industries/logistics',
+    href: '/industries/logistics'
   },
   {
     id: 'hvac',
     title: 'Băng keo nhôm HVAC',
     desc: 'Các sản phẩm băng keo nhôm chịu nhiệt cao, chống ẩm, dùng cho hệ thống HVAC, ống gió và cách nhiệt công nghiệp.',
     image: '/images/about/op-wms.webp',
-    href: '/industries/construction',
-  },
+    href: '/industries/construction'
+  }
 ];
 
 export function ContactFeaturedSolutions() {
@@ -42,13 +42,14 @@ export function ContactFeaturedSolutions() {
         {solutions.map((item) => (
           <div
             key={item.id}
-            className="flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm transition-all hover:shadow-md group"
+            className="flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:shadow-md group"
           >
             <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
               <Image
                 src={item.image}
                 alt={item.title}
                 fill
+                sizes="(max-width: 767px) 100vw, 33vw"
                 className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
             </div>
@@ -56,9 +57,7 @@ export function ContactFeaturedSolutions() {
               <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                 {item.title}
               </h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600 flex-1">
-                {item.desc}
-              </p>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600 flex-1">{item.desc}</p>
               <div className="mt-4 pt-3 border-t border-slate-100 flex justify-end">
                 <Link
                   href={item.href}

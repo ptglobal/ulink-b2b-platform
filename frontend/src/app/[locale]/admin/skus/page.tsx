@@ -50,7 +50,9 @@ export default async function AdminSkusPage({ params: { locale } }: Props) {
         readItems('products', {
           filter: { status: { _in: ['published', 'draft'] } },
           fields: [
-            'id', 'name', 'slug',
+            'id',
+            'name',
+            'slug',
             'assigned_attributes.product_attributes_id.id',
             'assigned_attributes.product_attributes_id.name',
             'assigned_attributes.product_attributes_id.slug',

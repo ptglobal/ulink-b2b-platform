@@ -41,8 +41,8 @@ function getIndustryDetails(slug: string, locale: string) {
           ? '電子部品の品質と信頼性を確保するために、汚染管理と包装プロセスを最適化します。'
           : 'Optimize contamination control and packaging processes to ensure the quality and reliability of electronic components.',
       iconName: 'Cpu',
-      gradient: 'from-blue-600 to-indigo-900',
-      bannerImage: '/images/industries/electronics_hero.webp',
+      gradient: 'from-brand-deep to-brand',
+      bannerImage: '/images/brand/ulink-industry-electronics-royal-v1.webp',
       valueProps: [
         {
           title: isVi ? 'Đảm bảo chất lượng cao' : isJa ? '高品質の保証' : 'High Quality Assurance',
@@ -153,8 +153,8 @@ function getIndustryDetails(slug: string, locale: string) {
           ? 'ULink Industriesは、GMP、ISO 14644、およびFDA規格に準拠した無菌PPEクリーンルーム用品、保護包装用フィルム、および最適な交差汚染防止ソリューションを提供します。'
           : 'ULink Industries provides sterile PPE cleanroom supplies, protective packaging films, and optimal anti-cross contamination solutions complying with GMP, ISO 14644, and FDA standards.',
       iconName: 'Activity',
-      gradient: 'from-emerald-600 to-teal-900',
-      bannerImage: '/images/industries/electronics_hero.webp',
+      gradient: 'from-brand-deep to-brand',
+      bannerImage: '/images/brand/ulink-industry-pharma-royal-v1.webp',
       valueProps: [
         {
           title: isVi ? 'Chuẩn vô trùng tối đa' : isJa ? '最大レベルの無菌' : 'Max Sterility Level',
@@ -264,8 +264,8 @@ function getIndustryDetails(slug: string, locale: string) {
           ? '食品加工では、最大限の塵埃管理と安全な直接接触包装資材が必要です。厳格な食品衛生安全性を確保します。'
           : 'Food processing requires maximum contamination control and food-contact safe packaging supplies. Strict hygiene and food safety assurance.',
       iconName: 'Utensils',
-      gradient: 'from-amber-500 to-orange-800',
-      bannerImage: '/images/industries/electronics_hero.webp',
+      gradient: 'from-brand-deep to-brand',
+      bannerImage: '/images/brand/ulink-industry-food-royal-v1.webp',
       valueProps: [
         {
           title: isVi ? 'Đạt chuẩn FDA' : isJa ? 'FDA適合' : 'FDA Certified',
@@ -366,8 +366,8 @@ function getIndustryDetails(slug: string, locale: string) {
           ? '専用のパレットラッピングフィルム、防湿・耐衝撃包装ソリューションにより、倉庫保管、輸送、および流通プロセスを最適化します。'
           : 'Optimize warehousing, transport, and distribution processes with specialized pallet wrap film, moisture-proof, and anti-impact packaging solutions.',
       iconName: 'Warehouse',
-      gradient: 'from-slate-700 to-slate-900',
-      bannerImage: '/images/industries/electronics_hero.webp',
+      gradient: 'from-brand-deep to-brand',
+      bannerImage: '/images/brand/ulink-industry-logistics-royal-v1.webp',
       valueProps: [
         {
           title: isVi ? 'Tối ưu lưu kho & vận chuyển' : isJa ? '保管・輸送の最適化' : 'Storage & Transport Optimization',
@@ -457,8 +457,8 @@ function getIndustryDetails(slug: string, locale: string) {
           ? '高級家具の製造、輸送、設置プロセス全体において、木材、皮革、布地、金属の表面を包括的に保護します。'
           : 'Comprehensive protection for wood, leather, fabric, and metal surfaces throughout the manufacturing, transport, and installation of premium furniture.',
       iconName: 'Armchair',
-      gradient: 'from-amber-700 to-yellow-900',
-      bannerImage: '/images/industries/electronics_hero.webp',
+      gradient: 'from-brand-deep to-brand',
+      bannerImage: '/images/brand/ulink-industry-furniture-royal-v1.webp',
       valueProps: [
         {
           title: isVi ? 'Bảo vệ bề mặt cao cấp' : isJa ? '高級表面保護' : 'Premium Surface Protection',
@@ -531,8 +531,8 @@ function getIndustryDetails(slug: string, locale: string) {
           ? '産業用空調・換気システム向けに、機械資材、銅管継手、制御バルブ、および純正HVAC機器を提供します。'
           : 'Providing engineering materials, copper pipe fittings, control valves, and genuine HVAC equipment for industrial air conditioning and ventilation systems.',
       iconName: 'Wrench',
-      gradient: 'from-cyan-700 to-blue-900',
-      bannerImage: '/images/industries/electronics_hero.webp',
+      gradient: 'from-brand-deep to-brand',
+      bannerImage: '/images/brand/ulink-industry-hvac-royal-v1.webp',
       valueProps: [
         {
           title: isVi ? 'Cách nhiệt & Tiết kiệm năng lượng' : isJa ? '断熱＆省エネ' : 'Insulation & Energy Saving',

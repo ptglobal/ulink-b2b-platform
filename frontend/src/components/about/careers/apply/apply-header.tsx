@@ -15,7 +15,9 @@ export function ApplyHeader() {
       </h1>
 
       <p className="mt-2 text-xs sm:text-sm text-slate-600 leading-relaxed max-w-3xl">
-        Cảm ơn bạn đã quan tâm đến cơ hội nghề nghiệp tại ULink Industries. Vui lòng hoàn thành biểu mẫu thông tin dưới đây, Đội ngũ Tuyển dụng sẽ phản hồi hồ sơ của bạn trong vòng 3 ngày làm việc.
+        Cảm ơn bạn đã quan tâm đến cơ hội nghề nghiệp tại ULink Industries. Vui lòng hoàn thành biểu
+        mẫu thông tin dưới đây, Đội ngũ Tuyển dụng sẽ phản hồi hồ sơ của bạn trong vòng 3 ngày làm
+        việc.
       </p>
     </section>
   );

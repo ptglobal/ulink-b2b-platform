@@ -1,4 +1,4 @@
-import { regenerateSkusForProduct } from './service.js';
+import { assertProductHasAssignedAttributes, regenerateSkusForProduct } from './service.js';
 
 const DEBOUNCE_MS = 2000;
 const pendingProducts = new Map(); // productId → timeoutId
@@ -90,6 +90,60 @@ export default ({ filter, action }, extensionContext) => {
     pendingProducts.set(productId, timeoutId);
   }
 
+  async function ensureSkuCanBeSaved(payload, meta, context) {
+    if ((meta?.collection ?? null) !== 'product_skus') return payload;
+
+    const { services, getSchema } = extensionContext;
+    const schema = await getSchema();
+    const { ItemsService } = services;
+    const serviceOpts = {
+      schema,
+      accountability: { admin: true },
+      knex: context.database
+    };
+
+    let productId = payload?.product ?? null;
+    let productSlug = '';
+
+    const productsService = new ItemsService('products', serviceOpts);
+    const skusService = new ItemsService('product_skus', serviceOpts);
+
+    if (!productId && meta?.key) {
+      try {
+        const existingSku = await skusService.readOne(meta.key, { fields: ['product'] });
+        productId = existingSku?.product ?? null;
+      } catch {
+        productId = null;
+      }
+    }
+
+    if (!productId) {
+      throw new Error('SKU product is required before saving.');
+    }
+
+    try {
+      const product = await productsService.readOne(productId, { fields: ['id', 'slug'] });
+      productSlug = product?.slug ?? '';
+    } catch {
+      productSlug = '';
+    }
+
+    const junctionService = new ItemsService('products_product_attributes', serviceOpts);
+    const junctions = await junctionService.readByQuery({
+      filter: { products_id: { _eq: productId } },
+      fields: ['id'],
+      limit: 1
+    });
+
+    assertProductHasAssignedAttributes({
+      productId,
+      productSlug,
+      assignedAttributeCount: junctions.length
+    });
+
+    return payload;
+  }
+
   // ─── FILTER: Pre-delete — capture product IDs before item is removed ────────
   filter('items.delete', async (keys, meta, context) => {
     if (!WATCHED_COLLECTIONS.includes(meta?.collection)) return keys;
@@ -110,6 +164,16 @@ export default ({ filter, action }, extensionContext) => {
   });
 
   // ─── ACTION: items.create — new attribute or option added ──────────────────
+  filter('items.create', async (payload, meta, context) => {
+    if ((meta?.collection ?? null) !== 'product_skus') return payload;
+    return ensureSkuCanBeSaved(payload, meta, context);
+  });
+
+  filter('items.update', async (payload, meta, context) => {
+    if ((meta?.collection ?? null) !== 'product_skus') return payload;
+    return ensureSkuCanBeSaved(payload, meta, context);
+  });
+
   action('items.create', async (meta, context) => {
     if (!WATCHED_COLLECTIONS.includes(meta?.collection)) return;
 

@@ -2,7 +2,7 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { Filter, X, ChevronDown } from 'lucide-react';
+import { Filter, X, ChevronDown } from '@/components/icons';
 
 interface FilterGroup {
   key: string;
@@ -76,7 +76,9 @@ export default function ProductFilter({ groups, totalCount = 0, labels }: Produc
   }
 
   return (
-    <div className={`rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden ${isPending ? 'opacity-70' : ''}`}>
+    <div
+      className={`rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden ${isPending ? 'opacity-70' : ''}`}
+    >
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
         <div className="flex items-center gap-2">
@@ -141,7 +143,9 @@ export default function ProductFilter({ groups, totalCount = 0, labels }: Produc
                   className="mt-2 text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-0.5"
                 >
                   {isExpanded ? 'Thu gọn' : (labels?.showMore ?? 'Xem thêm')}
-                  <ChevronDown className={`h-3 w-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+                  <ChevronDown
+                    className={`h-3 w-3 transition-transform ${isExpanded ? 'rotate-180' : ''}`}
+                  />
                 </button>
               )}
             </div>
@@ -168,7 +172,9 @@ export default function ProductFilter({ groups, totalCount = 0, labels }: Produc
       {/* Apply button */}
       <div className="px-5 pb-5">
         <button
-          onClick={() => {/* filters already applied on change */}}
+          onClick={() => {
+            /* filters already applied on change */
+          }}
           className="w-full flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
         >
           <Filter className="h-4 w-4" />

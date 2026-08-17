@@ -1,20 +1,28 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { UserRound, LogOut, ChevronDown, FileText, Package, ClipboardList, ShieldCheck } from 'lucide-react';
+import {
+  UserRound,
+  LogOut,
+  ChevronDown,
+  FileText,
+  Package,
+  ClipboardList
+} from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 import { useAuth } from '@/lib/auth-context';
-import { isAdminUser } from '@/lib/auth';
 
 export function HeaderAuthButton() {
   const t = useTranslations('nav');
   const { status, user, logout } = useAuth();
-  const isAdmin = isAdminUser(user);
 
   // Still loading — render placeholder to avoid layout shift
   if (status === 'idle' || status === 'loading') {
     return (
-      <div className="flex h-9 w-9 animate-pulse rounded-lg bg-muted sm:h-[38px] sm:w-[100px]" />
+      <div className="flex h-[45px] w-[135px] items-center justify-center gap-2.5 rounded-[3px] border-[1.25px] border-[#1769e2] bg-white px-4 text-[#1769e2]">
+        <UserRound className="h-4 w-4" aria-hidden="true" />
+        <span className="text-[13px] font-medium">{t('login')}</span>
+      </div>
     );
   }
 
@@ -28,48 +36,42 @@ export function HeaderAuthButton() {
       <div className="group relative flex">
         <button
           type="button"
-          className="flex h-9 w-9 items-center justify-center gap-1.5 rounded-lg border border-border bg-card text-foreground transition-colors hover:border-brand hover:text-brand sm:h-[38px] sm:w-auto sm:px-3"
+          className="flex h-[45px] w-[135px] items-center justify-center gap-2.5 rounded-[3px] border-[1.25px] border-[#1769e2] bg-white px-4 text-[#1769e2] hover:bg-[#edf3ff]"
         >
           <UserRound className="h-4 w-4" aria-hidden="true" />
-          <span className="hidden max-w-[120px] truncate sm:inline">{displayName}</span>
-          <ChevronDown className="hidden h-3.5 w-3.5 text-muted-foreground sm:inline" aria-hidden="true" />
+          <span className="max-w-[82px] truncate text-[13px] font-medium">{displayName}</span>
+          <ChevronDown
+            className="h-3.5 w-3.5 text-[#5f6b82]"
+            aria-hidden="true"
+          />
         </button>
 
         {/* Dropdown */}
-        <div className="invisible absolute right-0 top-full z-50 mt-1 min-w-[180px] rounded-lg border border-border bg-card py-1 shadow-lg opacity-0 transition-all group-hover:visible group-hover:opacity-100">
-          {isAdmin && (
-            <Link
-              href="/admin"
-              className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-[#0D4397] transition-colors hover:bg-blue-50 border-b border-slate-100"
-            >
-              <ShieldCheck className="h-4 w-4 text-[#0D4397]" aria-hidden="true" />
-              {t('adminDashboard')}
-            </Link>
-          )}
+        <div className="invisible absolute right-0 top-[calc(100%+8px)] z-50 min-w-[240px] border border-[#dfe5ef] bg-white p-1 text-[#0f1e36] shadow-overlay opacity-0 transition-[opacity,visibility,transform] group-hover:visible group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:visible group-focus-within:translate-y-0 group-focus-within:opacity-100">
           <Link
             href="/rfqs"
-            className="flex items-center gap-2 px-4 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+            className="flex items-center gap-2 px-3 py-3 text-sm hover:bg-[#edf2ff]"
           >
             <FileText className="h-4 w-4" aria-hidden="true" />
             {t('rfqs')}
           </Link>
           <Link
             href="/my-rfqs"
-            className="flex items-center gap-2 px-4 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+            className="flex items-center gap-2 px-3 py-3 text-sm hover:bg-[#edf2ff]"
           >
             <ClipboardList className="h-4 w-4" aria-hidden="true" />
             {t('myRfqs')}
           </Link>
           <Link
             href="/sample-requests"
-            className="flex items-center gap-2 px-4 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+            className="flex items-center gap-2 px-3 py-3 text-sm hover:bg-[#edf2ff]"
           >
             <Package className="h-4 w-4" aria-hidden="true" />
             {t('sampleRequests')}
           </Link>
           <Link
             href="/settings"
-            className="flex items-center gap-2 px-4 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+            className="flex items-center gap-2 px-3 py-3 text-sm hover:bg-[#edf2ff]"
           >
             <UserRound className="h-4 w-4" aria-hidden="true" />
             {t('settings')}
@@ -77,7 +79,7 @@ export function HeaderAuthButton() {
           <button
             type="button"
             onClick={() => logout()}
-            className="flex w-full items-center gap-2 px-4 py-2 text-sm text-foreground transition-colors hover:bg-muted"
+            className="flex w-full items-center gap-2 px-3 py-3 text-sm text-destructive hover:bg-destructive/10"
           >
             <LogOut className="h-4 w-4" aria-hidden="true" />
             {t('logout')}
@@ -91,10 +93,10 @@ export function HeaderAuthButton() {
   return (
     <Link
       href="/login"
-      className="flex h-9 w-9 items-center justify-center gap-1.5 rounded-md border border-brand bg-background text-brand transition-colors hover:bg-brand/10 sm:h-[38px] sm:w-auto sm:px-4"
+      className="flex h-[45px] w-[135px] items-center justify-center gap-2.5 rounded-[3px] border-[1.25px] border-[#1769e2] bg-white px-4 text-[#1769e2] transition-colors hover:bg-[#edf3ff]"
     >
       <UserRound className="h-4 w-4" aria-hidden="true" />
-      <span className="hidden sm:inline text-[13px] font-medium">{t('login')}</span>
+      <span className="text-[13px] font-medium">{t('login')}</span>
     </Link>
   );
 }

@@ -19,7 +19,7 @@ import {
   FileBox,
   Calendar,
   Hash
-} from 'lucide-react';
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import type { SampleRequest } from '@/lib/directus';
 
@@ -77,7 +77,10 @@ export function MySampleRequestDetail({ id, locale }: Props) {
     );
   }
 
-  const statusConfig: Record<string, { label: string; icon: typeof Clock; classes: string; bgClasses: string; borderColor: string }> = {
+  const statusConfig: Record<
+    string,
+    { label: string; icon: typeof Clock; classes: string; bgClasses: string; borderColor: string }
+  > = {
     pending: {
       label: t('pending'),
       icon: Clock,
@@ -108,7 +111,7 @@ export function MySampleRequestDetail({ id, locale }: Props) {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-indigo-900 via-indigo-800 to-blue-700 overflow-hidden">
+      <section className="relative bg-gradient-to-r from-brand-deep via-brand-strong to-brand overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-repeat" />
         </div>
@@ -145,7 +148,12 @@ export function MySampleRequestDetail({ id, locale }: Props) {
             </div>
 
             {/* Status badge */}
-            <div className={cn('inline-flex items-center gap-2 rounded-xl border px-5 py-2.5', sc?.bgClasses)}>
+            <div
+              className={cn(
+                'inline-flex items-center gap-2 rounded-xl border px-5 py-2.5',
+                sc?.bgClasses
+              )}
+            >
               <StatusIcon className={cn('h-5 w-5', sc?.classes)} />
               <span className={cn('text-sm font-bold', sc?.classes)}>{sc?.label}</span>
             </div>
@@ -158,24 +166,35 @@ export function MySampleRequestDetail({ id, locale }: Props) {
         <div className="space-y-5">
           {/* Status message (approval note or reject reason) */}
           {status === 'approved' && request.approval_note && (
-            <div className={cn('rounded-xl border border-l-4 p-5 bg-emerald-50 border-emerald-200', sc?.borderColor)}>
+            <div
+              className={cn(
+                'rounded-xl border p-5 bg-emerald-50 border-emerald-200',
+                sc?.borderColor
+              )}
+            >
               <div className="flex items-start gap-3">
                 <CheckCircle2 className="h-5 w-5 text-emerald-600 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-800">{t('approvalNote')}</p>
-                  <p className="text-sm text-emerald-700 mt-1 leading-relaxed">{request.approval_note}</p>
+                  <p className="text-sm text-emerald-700 mt-1 leading-relaxed">
+                    {request.approval_note}
+                  </p>
                 </div>
               </div>
             </div>
           )}
 
           {status === 'rejected' && request.reject_reason && (
-            <div className={cn('rounded-xl border border-l-4 p-5 bg-rose-50 border-rose-200', sc?.borderColor)}>
+            <div
+              className={cn('rounded-xl border p-5 bg-rose-50 border-rose-200', sc?.borderColor)}
+            >
               <div className="flex items-start gap-3">
                 <XCircle className="h-5 w-5 text-rose-600 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-sm font-semibold text-rose-800">{t('rejectReason')}</p>
-                  <p className="text-sm text-rose-700 mt-1 leading-relaxed">{request.reject_reason}</p>
+                  <p className="text-sm text-rose-700 mt-1 leading-relaxed">
+                    {request.reject_reason}
+                  </p>
                 </div>
               </div>
             </div>
@@ -233,7 +252,9 @@ export function MySampleRequestDetail({ id, locale }: Props) {
                     <h2 className="text-sm font-semibold text-gray-900">{t('message')}</h2>
                   </div>
                   <div className="px-5 py-4">
-                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{request.message}</p>
+                    <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">
+                      {request.message}
+                    </p>
                   </div>
                 </div>
               )}
@@ -249,16 +270,24 @@ export function MySampleRequestDetail({ id, locale }: Props) {
                 </div>
                 <div className="px-5 py-4 space-y-3">
                   <div>
-                    <p className="text-[11px] uppercase tracking-wide text-gray-400 font-medium">{t('province')}</p>
+                    <p className="text-[11px] uppercase tracking-wide text-gray-400 font-medium">
+                      {t('province')}
+                    </p>
                     <p className="text-sm font-medium text-gray-900 mt-0.5">{request.province}</p>
                   </div>
                   <div>
-                    <p className="text-[11px] uppercase tracking-wide text-gray-400 font-medium">{t('district')}</p>
+                    <p className="text-[11px] uppercase tracking-wide text-gray-400 font-medium">
+                      {t('district')}
+                    </p>
                     <p className="text-sm font-medium text-gray-900 mt-0.5">{request.district}</p>
                   </div>
                   <div className="pt-2 border-t border-gray-100">
-                    <p className="text-[11px] uppercase tracking-wide text-gray-400 font-medium">{t('addressDetail')}</p>
-                    <p className="text-sm font-medium text-gray-900 mt-0.5">{request.address_detail}</p>
+                    <p className="text-[11px] uppercase tracking-wide text-gray-400 font-medium">
+                      {t('addressDetail')}
+                    </p>
+                    <p className="text-sm font-medium text-gray-900 mt-0.5">
+                      {request.address_detail}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -282,25 +311,17 @@ export function MySampleRequestDetail({ id, locale }: Props) {
                     <TimelineStep
                       icon={Clock}
                       label={t('processing')}
-                      active={status === 'pending' || status === 'approved' || status === 'rejected'}
+                      active={
+                        status === 'pending' || status === 'approved' || status === 'rejected'
+                      }
                       current={status === 'pending'}
                     />
                     {/* Result */}
                     {status === 'approved' && (
-                      <TimelineStep
-                        icon={CheckCircle2}
-                        label={t('approved')}
-                        active
-                        success
-                      />
+                      <TimelineStep icon={CheckCircle2} label={t('approved')} active success />
                     )}
                     {status === 'rejected' && (
-                      <TimelineStep
-                        icon={XCircle}
-                        label={t('rejected')}
-                        active
-                        error
-                      />
+                      <TimelineStep icon={XCircle} label={t('rejected')} active error />
                     )}
                   </div>
                 </div>
@@ -313,7 +334,15 @@ export function MySampleRequestDetail({ id, locale }: Props) {
   );
 }
 
-function InfoItem({ icon: Icon, label, value }: { icon: typeof User; label: string; value: string }) {
+function InfoItem({
+  icon: Icon,
+  label,
+  value
+}: {
+  icon: typeof User;
+  label: string;
+  value: string;
+}) {
   return (
     <div className="flex items-start gap-3">
       <div className="shrink-0 w-8 h-8 rounded-lg bg-gray-100 flex items-center justify-center mt-0.5">
@@ -346,28 +375,29 @@ function TimelineStep({
 }) {
   return (
     <div className="flex items-center gap-3">
-      <div className={cn(
-        'shrink-0 w-7 h-7 rounded-full flex items-center justify-center border',
-        current && 'bg-amber-50 border-amber-300',
-        success && 'bg-emerald-50 border-emerald-300',
-        error && 'bg-rose-50 border-rose-300',
-        !current && !success && !error && active && 'bg-blue-50 border-blue-300',
-        !active && 'bg-gray-50 border-gray-200'
-      )}>
-        <Icon className={cn(
-          'h-3.5 w-3.5',
-          current && 'text-amber-600',
-          success && 'text-emerald-600',
-          error && 'text-rose-600',
-          !current && !success && !error && active && 'text-blue-600',
-          !active && 'text-gray-300'
-        )} />
+      <div
+        className={cn(
+          'shrink-0 w-7 h-7 rounded-full flex items-center justify-center border',
+          current && 'bg-amber-50 border-amber-300',
+          success && 'bg-emerald-50 border-emerald-300',
+          error && 'bg-rose-50 border-rose-300',
+          !current && !success && !error && active && 'bg-blue-50 border-blue-300',
+          !active && 'bg-gray-50 border-gray-200'
+        )}
+      >
+        <Icon
+          className={cn(
+            'h-3.5 w-3.5',
+            current && 'text-amber-600',
+            success && 'text-emerald-600',
+            error && 'text-rose-600',
+            !current && !success && !error && active && 'text-blue-600',
+            !active && 'text-gray-300'
+          )}
+        />
       </div>
       <div className="flex-1 min-w-0">
-        <p className={cn(
-          'text-xs font-medium',
-          active ? 'text-gray-900' : 'text-gray-400'
-        )}>
+        <p className={cn('text-xs font-medium', active ? 'text-gray-900' : 'text-gray-400')}>
           {label}
         </p>
         {date && (
@@ -380,9 +410,7 @@ function TimelineStep({
           </p>
         )}
       </div>
-      {current && (
-        <span className="shrink-0 w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-      )}
+      {current && <span className="shrink-0 w-2 h-2 rounded-full bg-amber-400 animate-pulse" />}
     </div>
   );
 }

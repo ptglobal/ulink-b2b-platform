@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState, type Dispatch, type SetStateAction } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2 } from 'lucide-react';
+import { Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2 } from '@/components/icons';
 import { Link, useRouter } from '@/i18n/navigation';
 import { resetPassword, AuthError } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -30,7 +30,9 @@ function readStoredNumber(key: string): number | null {
     if (v == null) return null;
     const n = Number(v);
     return Number.isFinite(n) ? n : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 /** Read the highest (furthest-in-future) lockout from both form keys. */
@@ -45,7 +47,9 @@ function writeStorage(key: string, value: number | null) {
   try {
     if (value == null) sessionStorage.removeItem(key);
     else sessionStorage.setItem(key, String(value));
-  } catch { /* quota / SSR */ }
+  } catch {
+    /* quota / SSR */
+  }
 }
 
 /** Write lockout to both keys so the sibling form sees it immediately. */
@@ -135,15 +139,21 @@ function ResetPasswordFormInner() {
           // Not locked yet but has prior failures — show the amber hint
           setAttemptsLeft(d.remaining);
         }
-      } catch { /* aborted or network error — non-fatal */ }
+      } catch {
+        /* aborted or network error — non-fatal */
+      }
     })();
     return () => controller.abort();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenFromUrl]);
 
   // Persist lockout state changes to sessionStorage
-  useEffect(() => { writeStorage(STORAGE_KEY_ATTEMPTS, attemptsLeft); }, [attemptsLeft]);
-  useEffect(() => { writeLockedUntil(lockedUntil); }, [lockedUntil]);
+  useEffect(() => {
+    writeStorage(STORAGE_KEY_ATTEMPTS, attemptsLeft);
+  }, [attemptsLeft]);
+  useEffect(() => {
+    writeLockedUntil(lockedUntil);
+  }, [lockedUntil]);
 
   // Tick `now` once per second while a lockout is active so the MM:SS
   // countdown re-renders. The interval is mounted only on demand and
@@ -199,12 +209,22 @@ function ResetPasswordFormInner() {
   // where the user thinks they must reload to try again.
   function handlePasswordChange(v: string) {
     setPassword(v);
-    if (fieldErrors.password) setFieldErrors((cur) => { const next = { ...cur }; delete next.password; return next; });
+    if (fieldErrors.password)
+      setFieldErrors((cur) => {
+        const next = { ...cur };
+        delete next.password;
+        return next;
+      });
     if (formError && lockedUntil == null) setFormError(null);
   }
   function handleConfirmChange(v: string) {
     setConfirm(v);
-    if (fieldErrors.confirm_password) setFieldErrors((cur) => { const next = { ...cur }; delete next.confirm_password; return next; });
+    if (fieldErrors.confirm_password)
+      setFieldErrors((cur) => {
+        const next = { ...cur };
+        delete next.confirm_password;
+        return next;
+      });
     if (formError && lockedUntil == null) setFormError(null);
   }
 
@@ -230,7 +250,11 @@ function ResetPasswordFormInner() {
     const fe: Record<string, string> = {};
     if (password.length > 128) fe.password = t('passwordTooLong');
     if (confirm.length > 128) fe.confirm_password = t('passwordTooLong');
-    if (Object.keys(fe).length) { setFieldErrors(fe); setLoading(false); return; }
+    if (Object.keys(fe).length) {
+      setFieldErrors(fe);
+      setLoading(false);
+      return;
+    }
     setFieldErrors({});
 
     setLoading(true);
@@ -333,14 +357,15 @@ function ResetPasswordFormInner() {
       <h2 className="text-2xl font-bold tracking-tight text-foreground">
         {t('resetPasswordTitle')}
       </h2>
-      <p className="mt-2 text-sm text-muted-foreground">
-        {t('resetPasswordDesc')}
-      </p>
+      <p className="mt-2 text-sm text-muted-foreground">{t('resetPasswordDesc')}</p>
 
       {/* Generic form error — hidden when the lockout banner is active
           (the lockout banner already shows the title + countdown). */}
       {formError && !(lockedUntil != null && lockedUntil > now) && (
-        <p role="alert" className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+        >
           {formError}
         </p>
       )}
@@ -357,17 +382,16 @@ function ResetPasswordFormInner() {
           <p className="mt-1 text-xs">
             {t('resetPasswordLockedWithCountdown', {
               mm: String(Math.max(0, Math.floor((lockedUntil - now) / 60000))).padStart(2, '0'),
-              ss: String(Math.max(0, Math.floor(((lockedUntil - now) % 60000) / 1000))).padStart(2, '0')
+              ss: String(Math.max(0, Math.floor(((lockedUntil - now) % 60000) / 1000))).padStart(
+                2,
+                '0'
+              )
             })}
           </p>
         </div>
       )}
 
-      <form
-        className="mt-6 space-y-3.5"
-        onSubmit={onSubmit}
-        noValidate
-      >
+      <form className="mt-6 space-y-3.5" onSubmit={onSubmit} noValidate>
         <PasswordFields
           inputBase={inputBase}
           showPassword={showPassword}
@@ -443,7 +467,10 @@ function PasswordFields({
           {t('passwordLabel')}
         </label>
         <div className="relative">
-          <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+          <Lock
+            className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
           <input
             id="password"
             name="password"
@@ -453,7 +480,11 @@ function PasswordFields({
             onChange={(e) => setPassword(e.target.value)}
             placeholder={t('passwordPlaceholder')}
             aria-invalid={!!fieldErrors.password}
-            className={cn(inputBase, 'pr-11', fieldErrors.password ? 'border-destructive' : 'border-border')}
+            className={cn(
+              inputBase,
+              'pr-11',
+              fieldErrors.password ? 'border-destructive' : 'border-border'
+            )}
           />
           <button
             type="button"
@@ -482,7 +513,10 @@ function PasswordFields({
           {t('confirmPasswordLabel')}
         </label>
         <div className="relative">
-          <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+          <Lock
+            className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
           <input
             id="confirm_password"
             name="confirm_password"
@@ -492,7 +526,10 @@ function PasswordFields({
             onChange={(e) => setConfirm(e.target.value)}
             placeholder={t('confirmPasswordPlaceholder')}
             aria-invalid={!!fieldErrors.confirm_password}
-            className={cn(inputBase, fieldErrors.confirm_password ? 'border-destructive' : 'border-border')}
+            className={cn(
+              inputBase,
+              fieldErrors.confirm_password ? 'border-destructive' : 'border-border'
+            )}
           />
         </div>
         {fieldErrors.confirm_password && (

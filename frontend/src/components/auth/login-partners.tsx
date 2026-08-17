@@ -1,36 +1,16 @@
-const partnerLogos = [
-  { name: 'SAMSUNG', color: 'text-blue-700 font-extrabold' },
-  { name: 'Canon', color: 'text-red-600 font-extrabold italic' },
-  { name: 'Panasonic', color: 'text-blue-800 font-bold' },
-  { name: 'IBM', color: 'text-blue-600 font-extrabold tracking-widest' },
-  { name: 'Traphaco', color: 'text-emerald-600 font-bold' },
-  { name: 'Coca-Cola', color: 'text-red-600 font-serif italic' },
-  { name: 'VINFAST', color: 'text-slate-800 font-extrabold' },
-  { name: 'LG', color: 'text-rose-600 font-bold' },
-  { name: 'Amkor Technology', color: 'text-blue-900 font-semibold' },
-  { name: 'Vinamilk', color: 'text-blue-700 font-extrabold' },
-  { name: '3M', color: 'text-red-600 font-black' },
-  { name: 'BYD', color: 'text-red-700 font-bold tracking-widest' },
-];
+import Image from 'next/image';
+import { ASSETS } from '@/lib/assets';
+
+const partners = [
+  ['Samsung', ASSETS.home.partnerSamsung], ['Canon', ASSETS.home.partnerCanon], ['Panasonic', ASSETS.home.partnerPanasonic], ['IBM', ASSETS.home.partnerIbm], ['Traphaco', ASSETS.home.partnerTraphaco], ['Coca-Cola', ASSETS.home.partnerCocaCola], ['VinFast', ASSETS.home.partnerVinfast], ['LG', ASSETS.home.partnerLg], ['Amkor', ASSETS.home.partnerAmkor], ['Vinamilk', ASSETS.home.partnerVinamilk], ['3M', ASSETS.home.partner3m], ['BYD', ASSETS.home.partnerByd]
+] as const;
 
 export function LoginPartners() {
   return (
-    <section className="py-12 my-8 border-t border-slate-100">
-      <div className="flex flex-col items-center text-center mb-8">
-        <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">
-          HƠN 300 DOANH NGHIỆP FDI & TẬP ĐOÀN DƯỢC PHẨM ĐỒNG HÀNH CÙNG ULINK INDUSTRIES
-        </span>
-      </div>
-
-      <div className="grid grid-cols-3 gap-6 sm:grid-cols-4 md:grid-cols-6 items-center justify-items-center opacity-85">
-        {partnerLogos.map((p, idx) => (
-          <div
-            key={idx}
-            className="flex h-16 w-full items-center justify-center rounded-xl bg-slate-50 p-3 text-lg sm:text-xl transition-all hover:bg-white hover:shadow-md hover:scale-105"
-          >
-            <span className={p.color}>{p.name}</span>
-          </div>
-        ))}
+    <section className="border-y border-[#e2e7f0] bg-white px-4 py-14 sm:px-8 lg:px-16">
+      <p className="text-center text-[11px] font-bold uppercase tracking-[.08em] text-[#68758c]">Hơn 300 doanh nghiệp FDI & tập đoàn dược phẩm đồng hành cùng ULink Industries</p>
+      <div className="mx-auto mt-9 grid max-w-[1120px] grid-cols-3 gap-x-8 gap-y-7 sm:grid-cols-4 lg:grid-cols-6">
+        {partners.map(([name, src]) => <div key={name} className="flex h-12 items-center justify-center"><Image src={src} alt={name} width={120} height={46} className="max-h-9 w-auto max-w-[110px] object-contain" /></div>)}
       </div>
     </section>
   );

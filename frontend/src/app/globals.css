@@ -4,51 +4,520 @@
 
 @layer base {
   :root {
-    /* ULink Brand Color System */
-    --background: 0 0% 96%;              /* Off-White #F5F5F5 */
-    --foreground: 0 0% 8%;              /* Deep Onyx #141414 — body text */
-
-    --card: 0 0% 96%;                   /* Off-White #F5F5F5 */
-    --card-foreground: 0 0% 8%;         /* Deep Onyx */
-
-    --primary: 210 49% 19%;             /* Dark Navy #1A2D49 — headings, nav */
+    --background: 225 38% 98%;
+    --foreground: 224 71% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71% 15%;
+    --primary: 225 73% 57%;
     --primary-foreground: 0 0% 100%;
-
-    --accent: 214 78% 49%;             /* ULink Blue #1769E2 — key accent */
+    --accent: 225 73% 57%;
     --accent-foreground: 0 0% 100%;
-
-    --brand: 214 78% 49%;              /* ULink Blue #1769E2 — CTA, links */
-    --brand-strong: 214 78% 42%;       /* Darker blue — hover/press */
+    --brand: 225 73% 57%;
+    --brand-strong: 227 59% 50%;
+    --brand-deep: 224 69% 29%;
+    --brand-soft: 222 62% 96%;
     --brand-foreground: 0 0% 100%;
-
-    --muted: 0 0% 96%;                 /* Off-White #F5F5F5 */
-    --muted-foreground: 210 10% 40%;   /* Secondary text */
-
-    --border: 216 16% 76%;             /* Industrial Silver #B8C0CC */
-    --input: 216 16% 76%;
-    --ring: 214 78% 49%;               /* ULink Blue */
-
-    --destructive: 0 84% 60%;          /* Red #EF4444 — errors, validation */
+    --evidence: 225 78% 28%;
+    --evidence-foreground: 0 0% 100%;
+    --muted: 225 31% 94%;
+    --muted-foreground: 222 24% 39%;
+    --border: 224 26% 86%;
+    --input: 224 19% 64%;
+    --ring: 225 73% 57%;
+    --destructive: 352 81% 46%;
     --destructive-foreground: 0 0% 100%;
-
-    --silver: 216 16% 76%;             /* Industrial Silver #B8C0CC */
-    --onyx: 0 0% 8%;                   /* Deep Onyx #141414 */
-
-    --radius: 0.25rem;
-
-    --font-sans: 'Inter', system-ui, sans-serif;
-    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --success: 140 100% 25%;
+    --warning: 27 100% 31%;
+    --silver: 224 16% 66%;
+    --onyx: 224 71% 15%;
+    --radius-detail: 0.125rem;
+    --radius-control: 0.25rem;
+    --radius: 0.5rem;
+    --font-sans: 'Archivo Variable', 'Noto Sans Variable', 'Segoe UI', sans-serif;
+    --font-mono: 'IBM Plex Mono', 'Menlo', monospace;
+    --header-height: 4rem;
+    --content-max: 90rem;
+    --grid-gutter: clamp(2rem, 5vw, 10rem);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-out-quint: cubic-bezier(0.23, 1, 0.32, 1);
+    --cds-background-brand: #4169e1;
+    --cds-button-primary: #4169e1;
+    --cds-button-primary-hover: #3458c9;
+    --cds-button-primary-active: #2947a8;
+    --cds-focus: #4169e1;
+    --cds-interactive: #4169e1;
+    --cds-link-primary: #4169e1;
+    --cds-link-primary-hover: #3458c9;
   }
-}
 
-@layer base {
   * {
     @apply border-border;
   }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-height) + 1rem);
+  }
+
+  @media (min-width: 40rem) {
+    :root {
+      --header-height: 5rem;
+    }
+  }
+
+  @media (min-width: 90rem) {
+    :root {
+      --header-height: 6.25rem;
+    }
+  }
+
+  html:lang(ja) {
+    --font-sans: 'Noto Sans JP Variable', 'Archivo Variable', 'Yu Gothic UI', sans-serif;
+  }
+
   body {
     @apply bg-background text-foreground;
+    min-width: 0;
+    overflow-x: clip;
+    background-image: none;
     font-feature-settings:
       'rlig' 1,
       'calt' 1;
+    text-rendering: optimizeLegibility;
+  }
+
+  img,
+  picture,
+  video,
+  canvas,
+  svg {
+    max-width: 100%;
+  }
+
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.018em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: hsl(var(--brand) / 0.18);
+    color: hsl(var(--foreground));
+  }
+
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 3px;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 1;
+  }
+
+  button,
+  a,
+  input,
+  textarea,
+  select,
+  summary {
+    transition-duration: 110ms;
+    transition-timing-function: cubic-bezier(0.2, 0, 0.38, 0.9);
+  }
+
+  button,
+  [role='button'],
+  summary {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button:active:not(:disabled),
+  [role='button']:active:not([aria-disabled='true']) {
+    transform: scale(0.98);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  .ulink-container {
+    width: min(calc(100% - var(--grid-gutter)), var(--content-max));
+    margin-inline: auto;
+  }
+
+  .ulink-section {
+    padding-block: clamp(3rem, 6.5vw, 6.5rem);
+  }
+
+  .ulink-display {
+    max-width: 15ch;
+    font-size: clamp(2.5rem, 5vw, 4.75rem);
+    font-weight: 400;
+    line-height: 1.04;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+
+  .ulink-prose {
+    max-width: 68ch;
+    color: hsl(var(--muted-foreground));
+    font-size: clamp(1rem, 1.2vw, 1.125rem);
+    line-height: 1.7;
+  }
+
+  .ulink-surface {
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
+    background: hsl(var(--card));
+  }
+
+  .ulink-data {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .ulink-skip-link {
+    position: fixed;
+    top: 0.75rem;
+    left: 0.75rem;
+    z-index: 100;
+    transform: translateY(-200%);
+    border-radius: var(--radius-control);
+    background: hsl(var(--foreground));
+    color: hsl(var(--background));
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+  }
+
+  .ulink-skip-link:focus {
+    transform: translateY(0);
+  }
+
+  .ulink-hairline {
+    height: 1px;
+    background: hsl(var(--border));
+  }
+
+  .ulink-hit-target {
+    min-height: 2.75rem;
+    min-width: 2.75rem;
+  }
+
+  .ulink-pressable {
+    transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+    transition-duration: 160ms;
+    transition-timing-function: var(--ease-out-quint);
+    will-change: transform;
+  }
+
+  .ulink-pressable:active {
+    transform: scale(0.98);
+  }
+
+  .ulink-safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  .ulink-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .ulink-media-zoom img {
+    transition: transform 280ms var(--ease-out-quint);
+  }
+
+  .ulink-hero-media img {
+    animation: ulink-hero-media-in 900ms var(--ease-out-expo) both;
+  }
+
+  .ulink-hero-panel {
+    animation: ulink-hero-panel-in 720ms 70ms var(--ease-out-expo) both;
+  }
+
+  .ulink-hero-panel > * {
+    animation: ulink-hero-copy-in 620ms var(--ease-out-expo) both;
+  }
+
+  .ulink-hero-panel > :nth-child(2) {
+    animation-delay: 80ms;
+  }
+
+  .ulink-hero-panel > :nth-child(3) {
+    animation-delay: 130ms;
+  }
+
+  .ulink-hero-panel > :nth-child(4) {
+    animation-delay: 180ms;
+  }
+
+  @keyframes ulink-hero-media-in {
+    from {
+      opacity: 0.72;
+      transform: scale(1.025);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes ulink-hero-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes ulink-hero-copy-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .ulink-media-zoom:hover img {
+      transform: scale(1.025);
+    }
+  }
+
+  @media (min-width: 80rem) {
+    .ulink-system [class~='lg:px-16'] {
+      padding-left: 5rem !important;
+      padding-right: 5rem !important;
+    }
+  }
+
+  .ulink-system [class~='top-[72px]'] {
+    top: var(--header-height) !important;
+  }
+
+  .ulink-system [class~='bg-white'] {
+    background-color: hsl(var(--card));
+  }
+
+  .ulink-system [class~='bg-slate-50'],
+  .ulink-system [class~='bg-slate-50/30'],
+  .ulink-system [class~='bg-slate-50/50'],
+  .ulink-system [class~='bg-slate-50/60'],
+  .ulink-system [class~='bg-background'],
+  .ulink-system [class~='bg-background'] {
+    background-color: hsl(var(--background));
+  }
+
+  .ulink-system [class~='bg-slate-100'],
+  .ulink-system [class~='bg-gray-100'] {
+    background-color: hsl(var(--muted));
+  }
+
+  .ulink-system [class~='text-foreground'],
+  .ulink-system [class~='text-slate-900'],
+  .ulink-system [class~='text-slate-800'],
+  .ulink-system [class~='text-slate-700'],
+  .ulink-system [class~='text-gray-900'],
+  .ulink-system [class~='text-gray-800'],
+  .ulink-system [class~='text-gray-700'] {
+    color: hsl(var(--foreground));
+  }
+
+  .ulink-system [class~='text-slate-650'],
+  .ulink-system [class~='text-slate-600'],
+  .ulink-system [class~='text-slate-500'],
+  .ulink-system [class~='text-slate-450'],
+  .ulink-system [class~='text-slate-400'],
+  .ulink-system [class~='text-slate-350'],
+  .ulink-system [class~='text-gray-600'],
+  .ulink-system [class~='text-gray-500'],
+  .ulink-system [class~='text-gray-400'] {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .ulink-system [class~='border-slate-50'],
+  .ulink-system [class~='border-slate-100'],
+  .ulink-system [class~='border-slate-200'],
+  .ulink-system [class~='border-slate-300'],
+  .ulink-system [class~='border-gray-100'],
+  .ulink-system [class~='border-gray-200'],
+  .ulink-system [class~='border-gray-300'] {
+    border-color: hsl(var(--border));
+  }
+
+  .ulink-system [class~='text-blue-500'],
+  .ulink-system [class~='text-blue-600'],
+  .ulink-system [class~='text-blue-700'],
+  .ulink-system [class~='text-sky-500'],
+  .ulink-system [class~='text-sky-600'],
+  .ulink-system [class~='text-sky-700'],
+  .ulink-system [class~='text-blue-800'],
+  .ulink-system [class~='text-blue-900'],
+  .ulink-system [class~='text-brand'] {
+    color: hsl(var(--brand));
+  }
+
+  .ulink-system [class~='text-indigo-200'],
+  .ulink-system [class~='text-indigo-300'] {
+    color: hsl(var(--brand-soft));
+  }
+
+  .ulink-system [class~='bg-blue-50'],
+  .ulink-system [class~='bg-indigo-50'],
+  .ulink-system [class~='bg-indigo-100'],
+  .ulink-system [class~='bg-cyan-50'],
+  .ulink-system [class~='bg-cyan-100'],
+  .ulink-system [class~='bg-purple-50'],
+  .ulink-system [class~='bg-purple-100'],
+  .ulink-system [class~='bg-sky-50'],
+  .ulink-system [class~='bg-sky-100'] {
+    background-color: hsl(var(--brand) / 0.09);
+  }
+
+  .ulink-system [class~='border-blue-100'],
+  .ulink-system [class~='border-blue-200'],
+  .ulink-system [class~='border-indigo-100'],
+  .ulink-system [class~='border-indigo-200'],
+  .ulink-system [class~='border-cyan-100'],
+  .ulink-system [class~='border-cyan-200'],
+  .ulink-system [class~='border-purple-100'],
+  .ulink-system [class~='border-purple-200'],
+  .ulink-system [class~='border-sky-100'],
+  .ulink-system [class~='border-sky-200'] {
+    border-color: hsl(var(--brand) / 0.22);
+  }
+
+  .ulink-system [class~='text-cyan-500'],
+  .ulink-system [class~='text-cyan-600'],
+  .ulink-system [class~='text-cyan-700'],
+  .ulink-system [class~='text-indigo-500'],
+  .ulink-system [class~='text-indigo-600'],
+  .ulink-system [class~='text-indigo-700'],
+  .ulink-system [class~='text-purple-500'],
+  .ulink-system [class~='text-purple-600'],
+  .ulink-system [class~='text-purple-700'],
+  .ulink-system [class~='text-purple-800'] {
+    color: hsl(var(--brand-strong));
+  }
+
+  .ulink-system [class~='bg-blue-500'],
+  .ulink-system [class~='bg-blue-600'],
+  .ulink-system [class~='bg-blue-700'],
+  .ulink-system [class~='bg-indigo-500'],
+  .ulink-system [class~='bg-indigo-600'],
+  .ulink-system [class~='bg-sky-500'],
+  .ulink-system [class~='bg-sky-600'],
+  .ulink-system [class~='bg-cyan-500'],
+  .ulink-system [class~='bg-cyan-600'] {
+    background-color: hsl(var(--brand));
+  }
+
+  .ulink-system [class~='hover:bg-blue-600']:hover,
+  .ulink-system [class~='hover:bg-blue-700']:hover,
+  .ulink-system [class~='hover:bg-indigo-600']:hover,
+  .ulink-system [class~='hover:bg-sky-600']:hover {
+    background-color: hsl(var(--brand-strong));
+  }
+
+  .ulink-system [class~='border-blue-500'],
+  .ulink-system [class~='border-blue-600'],
+  .ulink-system [class~='border-blue-700'],
+  .ulink-system [class~='border-indigo-500'],
+  .ulink-system [class~='border-indigo-600'],
+  .ulink-system [class~='border-sky-500'],
+  .ulink-system [class~='border-sky-600'] {
+    border-color: hsl(var(--brand));
+  }
+
+  .ulink-system [class~='rounded-xl'] {
+    border-radius: var(--radius);
+  }
+
+  .ulink-system [class~='rounded-2xl'],
+  .ulink-system [class~='rounded-3xl'] {
+    border-radius: var(--radius);
+  }
+
+  .ulink-system [class~='shadow-sm'],
+  .ulink-system [class~='shadow-md'] {
+    box-shadow: 0 1px 2px hsl(var(--foreground) / 0.05);
+  }
+
+  .ulink-system [class~='shadow-lg'],
+  .ulink-system [class~='shadow-xl'],
+  .ulink-system [class~='shadow-2xl'] {
+    box-shadow: 0 12px 32px hsl(var(--foreground) / 0.13);
+  }
+
+  .carbon-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 1rem;
+  }
+
+  .carbon-tile {
+    min-height: 16rem;
+    border-top: 1px solid hsl(var(--border));
+    background: hsl(var(--card));
+    padding: 1rem;
+    transition: background-color 110ms cubic-bezier(0.2, 0, 0.38, 0.9);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .carbon-tile:hover {
+      background: hsl(var(--muted));
+    }
+  }
+
+  .carbon-section-lead {
+    max-width: 38rem;
+    font-size: clamp(2.25rem, 4.2vw, 4.25rem);
+    font-weight: 300;
+    line-height: 1.08;
+    letter-spacing: -0.018em;
+  }
+
+  @media (min-width: 66rem) {
+    .carbon-grid {
+      grid-template-columns: repeat(16, minmax(0, 1fr));
+      column-gap: 2rem;
+    }
+  }
+
+  .admin-canvas table {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .admin-canvas thead {
+    background: hsl(var(--muted) / 0.7);
+  }
+
+  .admin-canvas tbody tr:hover {
+    background: hsl(var(--muted) / 0.45);
   }
 }

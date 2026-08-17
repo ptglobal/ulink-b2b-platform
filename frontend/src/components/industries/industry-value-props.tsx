@@ -1,19 +1,19 @@
 'use client';
 
 import React from 'react';
-import { 
-  ShieldCheck, 
-  Cpu, 
-  Activity, 
-  Utensils, 
-  Settings, 
-  Globe, 
-  Zap, 
-  Sparkles, 
-  Truck, 
-  CheckCircle2, 
-  Factory 
-} from 'lucide-react';
+import {
+  ShieldCheck,
+  Cpu,
+  Activity,
+  Utensils,
+  Settings,
+  Globe,
+  Zap,
+  Sparkles,
+  Truck,
+  CheckCircle2,
+  Factory
+} from '@/components/icons';
 import { ValueProp } from './types';
 
 // Map icon names to Lucide icons
@@ -42,20 +42,16 @@ export function IndustryValueProps({ valueProps }: IndustryValuePropsProps) {
         {valueProps.map((prop, idx) => {
           const PropIcon = iconMap[prop.iconName] || ShieldCheck;
           return (
-            <div 
-              key={idx} 
-              className="bg-white border border-slate-200/60 shadow-lg hover:shadow-xl transition-all duration-300 p-6 flex items-start gap-4"
+            <div
+              key={idx}
+              className="bg-white border border-slate-200/60 shadow-lg hover:shadow-xl transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 p-6 flex items-start gap-4"
             >
               <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-blue-50 text-blue-600">
                 <PropIcon className="h-6 w-6" />
               </div>
               <div className="space-y-1">
-                <h3 className="text-sm font-extrabold text-[#0F1E36] leading-snug">
-                  {prop.title}
-                </h3>
-                <p className="text-xs text-slate-500 font-medium leading-relaxed">
-                  {prop.desc}
-                </p>
+                <h3 className="text-sm font-extrabold text-foreground leading-snug">{prop.title}</h3>
+                <p className="text-xs text-slate-500 font-medium leading-relaxed">{prop.desc}</p>
               </div>
             </div>
           );

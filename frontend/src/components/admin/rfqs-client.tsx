@@ -1,9 +1,35 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { Search, FileSpreadsheet, Eye, CheckCircle2, XCircle, User, Calendar, MapPin, Phone, Mail, Building, Clock, X, AlertTriangle, Plus, Trash2, Edit, Save, PlusCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
+import {
+  Search,
+  FileSpreadsheet,
+  Eye,
+  CheckCircle2,
+  XCircle,
+  User,
+  Calendar,
+  MapPin,
+  Phone,
+  Mail,
+  Building,
+  Clock,
+  X,
+  AlertTriangle,
+  Plus,
+  Trash2,
+  Edit,
+  Save,
+  PlusCircle
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
-import { updateRfqStatus, assignRfqSales, saveRfq, deleteRfq } from '@/app/[locale]/admin/rfqs/actions';
+import {
+  updateRfqStatus,
+  assignRfqSales,
+  saveRfq,
+  deleteRfq
+} from '@/app/[locale]/admin/rfqs/actions';
 
 interface SalesUser {
   id: string;
@@ -67,7 +93,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
   // Detail Modal State
   const [selectedRfq, setSelectedRfq] = useState<RfqRequest | null>(null);
   const [actionType, setActionType] = useState<'approve' | 'reject' | null>(null);
-  
+  const [formError, setFormError] = useState('');
+  const [detailError, setDetailError] = useState('');
+
   // Handling inputs for details modal
   const [approvalNote, setApprovalNote] = useState('');
   const [rejectReason, setRejectReason] = useState('');
@@ -93,7 +121,7 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
   // Handle Quick Re-assign Salesman
   const handleAssignSales = async (rfqId: number, salesId: string) => {
     const parsedSalesId = salesId === '' ? null : salesId;
-    
+
     startTransition(async () => {
       const res = await assignRfqSales(rfqId, parsedSalesId);
       if (res.success) {
@@ -105,7 +133,11 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
               return {
                 ...r,
                 assigned_sales: salesObj
-                  ? { id: salesObj.id, first_name: salesObj.first_name, last_name: salesObj.last_name }
+                  ? {
+                      id: salesObj.id,
+                      first_name: salesObj.first_name,
+                      last_name: salesObj.last_name
+                    }
                   : null
               };
             }
@@ -115,15 +147,24 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
         // Sync selectedRfq if open
         if (selectedRfq && selectedRfq.id === rfqId) {
           const salesObj = salesTeam.find((s) => s.id === salesId);
-          setSelectedRfq((prev) => prev ? {
-            ...prev,
-            assigned_sales: salesObj
-              ? { id: salesObj.id, first_name: salesObj.first_name, last_name: salesObj.last_name }
+          setSelectedRfq((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  assigned_sales: salesObj
+                    ? {
+                        id: salesObj.id,
+                        first_name: salesObj.first_name,
+                        last_name: salesObj.last_name
+                      }
+                    : null
+                }
               : null
-          } : null);
+          );
         }
+        toast.success('Đã gán nhân viên phụ trách thành công.');
       } else {
-        alert('Không thể gán nhân viên phụ trách: ' + res.error);
+        toast.error('Không thể gán nhân viên phụ trách: ' + res.error);
       }
     });
   };
@@ -133,8 +174,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
     e.preventDefault();
     if (!selectedRfq) return;
 
+    setDetailError('');
     if (actionType === 'reject' && !rejectReason.trim()) {
-      alert('Vui lòng nhập lý do từ chối yêu cầu.');
+      setDetailError('Vui lòng nhập lý do từ chối yêu cầu.');
       return;
     }
 
@@ -149,10 +191,35 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
       });
 
       if (res.success) {
-        // Update state locally or reload
+        setDetailError('');
         window.location.reload();
       } else {
-        alert('Thao tác thất bại: ' + res.error);
+        setDetailError(res.error || 'Thao tác thất bại. Vui lòng thử lại.');
+      }
+    });
+  };
+
+  const handleDirectStatusUpdate = async (statusValue: 'approved' | 'rejected') => {
+    if (!selectedRfq) return;
+
+    setDetailError('');
+    startTransition(async () => {
+      const res = await updateRfqStatus({
+        id: selectedRfq.id,
+        status: statusValue,
+        assigned_sales_id: selectedRfq.assigned_sales?.id || null
+      });
+
+      if (res.success) {
+        // Update local state
+        setRfqs((prev) =>
+          prev.map((r) => (r.id === selectedRfq.id ? { ...r, status: statusValue } : r))
+        );
+        setSelectedRfq((prev) => (prev ? { ...prev, status: statusValue } : null));
+        setActionType(null);
+        setDetailError('');
+      } else {
+        setDetailError(res.error || 'Thao tác thất bại. Vui lòng thử lại.');
       }
     });
   };
@@ -175,6 +242,7 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
       requested_delivery_date: ''
     });
     setRfqFormOpen(true);
+    setFormError('');
   };
 
   const handleOpenEditRfq = (rfq: RfqRequest) => {
@@ -187,9 +255,10 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
       address: rfq.address,
       industry: rfq.industry || '',
       hubId: rfq.hub?.id || null,
-      line_items: rfq.line_items && rfq.line_items.length > 0
-        ? rfq.line_items.map(li => ({ sku: li.sku, qty: li.qty || 1, note: li.note || '' }))
-        : [{ sku: skus[0]?.sku_code || '', qty: 1, note: '' }],
+      line_items:
+        rfq.line_items && rfq.line_items.length > 0
+          ? rfq.line_items.map((li) => ({ sku: li.sku, qty: li.qty || 1, note: li.note || '' }))
+          : [{ sku: skus[0]?.sku_code || '', qty: 1, note: '' }],
       message: rfq.message || '',
       status: rfq.status,
       assigned_sales_id: rfq.assigned_sales?.id || '',
@@ -197,17 +266,20 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
       requested_delivery_date: rfq.requested_delivery_date || ''
     });
     setRfqFormOpen(true);
+    setFormError('');
   };
 
   const handleDeleteRfq = async (id: number) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa yêu cầu báo giá này? Thao tác này không thể hoàn tác.')) return;
+    if (!confirm('Bạn có chắc chắn muốn xóa yêu cầu báo giá này? Thao tác này không thể hoàn tác.'))
+      return;
 
     startTransition(async () => {
       const res = await deleteRfq(id);
       if (res.success) {
         setRfqs((prev) => prev.filter((r) => r.id !== id));
+        toast.success('Đã xóa yêu cầu báo giá thành công.');
       } else {
-        alert('Không thể xóa yêu cầu báo giá: ' + res.error);
+        toast.error('Không thể xóa yêu cầu báo giá: ' + res.error);
       }
     });
   };
@@ -216,8 +288,15 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
     e.preventDefault();
     if (!activeRfq) return;
 
-    if (!activeRfq.company || !activeRfq.contact_name || !activeRfq.email || !activeRfq.phone || !activeRfq.address) {
-      alert('Vui lòng điền đầy đủ các thông tin bắt buộc.');
+    setFormError('');
+    if (
+      !activeRfq.company ||
+      !activeRfq.contact_name ||
+      !activeRfq.email ||
+      !activeRfq.phone ||
+      !activeRfq.address
+    ) {
+      setFormError('Vui lòng điền đầy đủ các thông tin bắt buộc.');
       return;
     }
 
@@ -245,9 +324,10 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
       if (res.success) {
         setRfqFormOpen(false);
         setActiveRfq(null);
+        setFormError('');
         window.location.reload();
       } else {
-        alert('Không thể lưu yêu cầu báo giá: ' + res.error);
+        setFormError(res.error || 'Không thể lưu yêu cầu báo giá. Vui lòng thử lại.');
       }
     });
   };
@@ -284,11 +364,12 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
           <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
             Chăm sóc khách hàng B2B
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
             Xử lý Yêu cầu Báo giá (RFQs)
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
-            Xem và xử lý thông tin yêu cầu báo giá hàng loạt của doanh nghiệp, phê duyệt và điều phối nhân viên sales chăm sóc.
+            Xem và xử lý thông tin yêu cầu báo giá hàng loạt của doanh nghiệp, phê duyệt và điều
+            phối nhân viên sales chăm sóc.
           </p>
         </div>
 
@@ -351,7 +432,7 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
         {filteredRfqs.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <FileSpreadsheet className="h-12 w-12 text-slate-300 mb-3" />
-            <span className="text-sm font-extrabold text-[#0F1E36]">
+            <span className="text-sm font-extrabold text-foreground">
               Không có yêu cầu báo giá nào
             </span>
             <span className="text-xs text-slate-400 mt-1">
@@ -375,7 +456,8 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
               <tbody className="divide-y divide-slate-100 text-xs sm:text-sm text-slate-700">
                 {filteredRfqs.map((rfq) => {
                   const salesName = rfq.assigned_sales
-                    ? `${rfq.assigned_sales.first_name || ''} ${rfq.assigned_sales.last_name || ''}`.trim() || 'Salesperson'
+                    ? `${rfq.assigned_sales.first_name || ''} ${rfq.assigned_sales.last_name || ''}`.trim() ||
+                      'Salesperson'
                     : 'Chưa phân công';
 
                   return (
@@ -383,7 +465,7 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                       {/* Company & Name */}
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className="font-extrabold text-[#0F1E36] leading-tight">
+                          <span className="font-extrabold text-foreground leading-tight">
                             {rfq.company}
                           </span>
                           <span className="text-[10px] text-slate-400 font-semibold mt-1">
@@ -396,7 +478,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                       <td className="px-6 py-4">
                         <div className="flex flex-col gap-0.5">
                           <span className="text-slate-650 font-medium">{rfq.email}</span>
-                          <span className="text-slate-400 font-medium text-[11px]">{rfq.phone}</span>
+                          <span className="text-slate-400 font-medium text-[11px]">
+                            {rfq.phone}
+                          </span>
                         </div>
                       </td>
 
@@ -411,15 +495,19 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                       <td className="px-6 py-4">
                         <span
                           className={cn(
-                            "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold",
+                            'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold',
                             rfq.status === 'approved'
-                              ? "bg-emerald-50 text-emerald-700"
+                              ? 'bg-emerald-50 text-emerald-700'
                               : rfq.status === 'rejected'
-                              ? "bg-rose-50 text-rose-700"
-                              : "bg-amber-50 text-amber-700"
+                                ? 'bg-rose-50 text-rose-700'
+                                : 'bg-amber-50 text-amber-700'
                           )}
                         >
-                          {rfq.status === 'approved' ? 'Đã duyệt' : rfq.status === 'rejected' ? 'Đã từ chối' : 'Đang chờ'}
+                          {rfq.status === 'approved'
+                            ? 'Đã duyệt'
+                            : rfq.status === 'rejected'
+                              ? 'Đã từ chối'
+                              : 'Đang chờ'}
                         </span>
                       </td>
 
@@ -437,7 +525,8 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                             <option value="">-- Chưa gán --</option>
                             {salesTeam.map((sales) => (
                               <option key={sales.id} value={sales.id}>
-                                {`${sales.first_name || ''} ${sales.last_name || ''}`.trim() || sales.email}
+                                {`${sales.first_name || ''} ${sales.last_name || ''}`.trim() ||
+                                  sales.email}
                               </option>
                             ))}
                           </select>
@@ -473,7 +562,7 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                           <button
                             type="button"
                             onClick={() => handleOpenEditRfq(rfq)}
-                            className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-[#0F1E36] transition-colors"
+                            className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-foreground transition-colors"
                             title="Sửa yêu cầu"
                           >
                             <Edit className="h-4 w-4" />
@@ -504,18 +593,20 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div>
-                <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36] flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-extrabold text-foreground flex items-center gap-2">
                   <FileSpreadsheet className="h-5 w-5 text-blue-500" />
                   Chi tiết Yêu cầu báo giá #{selectedRfq.id}
                 </h2>
                 <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
-                  Gửi từ nguồn: <span className="uppercase text-slate-500 font-bold">{selectedRfq.source}</span>
+                  Gửi từ nguồn:{' '}
+                  <span className="uppercase text-slate-500 font-bold">{selectedRfq.source}</span>
                 </p>
               </div>
               <button
                 onClick={() => {
                   setSelectedRfq(null);
                   setActionType(null);
+                  setDetailError('');
                 }}
                 className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-650"
               >
@@ -525,20 +616,29 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
             {/* Modal Content */}
             <div className="p-6 max-h-[70vh] overflow-y-auto flex flex-col gap-6">
-              
+              {detailError && (
+                <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200">
+                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                  <span>{detailError}</span>
+                </div>
+              )}
               {/* Top Section: Information grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/50 p-5 rounded-2xl border border-slate-100">
                 <div className="flex flex-col gap-3">
-                  <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-150 pb-2">
+                  <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-150 pb-2">
                     <Building className="h-4 w-4 text-blue-500" />
                     Thông tin doanh nghiệp
                   </h3>
                   <div className="grid grid-cols-3 gap-y-2 text-xs">
                     <span className="text-slate-400 font-bold">Doanh nghiệp:</span>
-                    <span className="col-span-2 text-[#0F1E36] font-extrabold">{selectedRfq.company}</span>
+                    <span className="col-span-2 text-foreground font-extrabold">
+                      {selectedRfq.company}
+                    </span>
 
                     <span className="text-slate-400 font-bold">Liên hệ:</span>
-                    <span className="col-span-2 text-slate-700 font-semibold">{selectedRfq.contact_name}</span>
+                    <span className="col-span-2 text-slate-700 font-semibold">
+                      {selectedRfq.contact_name}
+                    </span>
 
                     <span className="text-slate-400 font-bold">Địa chỉ:</span>
                     <span className="col-span-2 text-slate-600 font-semibold flex items-center gap-1">
@@ -549,14 +649,16 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                     {selectedRfq.industry && (
                       <>
                         <span className="text-slate-400 font-bold">Ngành nghề:</span>
-                        <span className="col-span-2 text-slate-600 font-semibold">{selectedRfq.industry}</span>
+                        <span className="col-span-2 text-slate-600 font-semibold">
+                          {selectedRfq.industry}
+                        </span>
                       </>
                     )}
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-150 pb-2">
+                  <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-150 pb-2">
                     <Phone className="h-4 w-4 text-blue-500" />
                     Liên hệ & Giao hàng
                   </h3>
@@ -574,7 +676,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                     </span>
 
                     <span className="text-slate-400 font-bold">Khu vực (Hub):</span>
-                    <span className="col-span-2 text-blue-600 font-bold">{selectedRfq.hub?.name || 'Chưa chọn'}</span>
+                    <span className="col-span-2 text-blue-600 font-bold">
+                      {selectedRfq.hub?.name || 'Chưa chọn'}
+                    </span>
 
                     <span className="text-slate-400 font-bold">Giao hàng:</span>
                     <span className="col-span-2 text-slate-700 font-semibold flex items-center gap-1">
@@ -589,13 +693,13 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
               {/* Middle Section: Line Items list */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
                   <FileSpreadsheet className="h-4 w-4 text-blue-500" />
                   Danh sách sản phẩm yêu cầu báo giá
                 </h3>
-                
+
                 {selectedRfq.line_items && selectedRfq.line_items.length > 0 ? (
-                  <div className="overflow-hidden border border-slate-100 rounded-xl">
+                  <div className="overflow-x-auto rounded-xl border border-slate-100">
                     <table className="w-full border-collapse text-left text-xs sm:text-sm">
                       <thead>
                         <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-450 uppercase tracking-wider">
@@ -610,7 +714,7 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                             <td className="px-5 py-3 font-mono font-extrabold text-blue-650 select-all">
                               {item.sku}
                             </td>
-                            <td className="px-5 py-3 font-extrabold text-[#0F1E36]">
+                            <td className="px-5 py-3 font-extrabold text-foreground">
                               {item.qty || 1}
                             </td>
                             <td className="px-5 py-3 text-slate-500 italic">
@@ -631,7 +735,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
               {/* Message from client */}
               {selectedRfq.message && (
                 <div className="flex flex-col gap-2">
-                  <span className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tin nhắn từ khách hàng</span>
+                  <span className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                    Tin nhắn từ khách hàng
+                  </span>
                   <div className="px-4 py-3 bg-slate-50 rounded-xl border border-slate-100 text-xs sm:text-sm text-slate-650 leading-relaxed whitespace-pre-wrap">
                     {selectedRfq.message}
                   </div>
@@ -642,18 +748,24 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
               <div className="border-t border-slate-100 pt-5 flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-slate-500 uppercase">Trạng thái hiện tại:</span>
+                    <span className="text-xs font-bold text-slate-500 uppercase">
+                      Trạng thái hiện tại:
+                    </span>
                     <span
                       className={cn(
-                        "inline-flex items-center px-2.5 py-1 rounded-full text-xs font-extrabold",
+                        'inline-flex items-center px-2.5 py-1 rounded-full text-xs font-extrabold',
                         selectedRfq.status === 'approved'
-                          ? "bg-emerald-50 text-emerald-800 border border-emerald-100"
+                          ? 'bg-emerald-50 text-emerald-800 border border-emerald-100'
                           : selectedRfq.status === 'rejected'
-                          ? "bg-rose-50 text-rose-800 border border-rose-100"
-                          : "bg-amber-50 text-amber-800 border border-amber-100"
+                            ? 'bg-rose-50 text-rose-800 border border-rose-100'
+                            : 'bg-amber-50 text-amber-800 border border-amber-100'
                       )}
                     >
-                      {selectedRfq.status === 'approved' ? 'Đã phê duyệt' : selectedRfq.status === 'rejected' ? 'Đã từ chối' : 'Đang chờ xử lý'}
+                      {selectedRfq.status === 'approved'
+                        ? 'Đã phê duyệt'
+                        : selectedRfq.status === 'rejected'
+                          ? 'Đã từ chối'
+                          : 'Đang chờ xử lý'}
                     </span>
                   </div>
 
@@ -662,19 +774,18 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                     <div className="flex items-center gap-2">
                       <button
                         type="button"
-                        onClick={() => setActionType('reject')}
-                        className="inline-flex h-9 items-center justify-center gap-1 rounded-lg border border-rose-200 px-4 text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors shadow-sm bg-white"
+                        onClick={() => handleDirectStatusUpdate('rejected')}
+                        disabled={isPending}
+                        className="inline-flex h-9 items-center justify-center gap-1 rounded-lg border border-rose-200 px-4 text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors shadow-sm bg-white disabled:opacity-50"
                       >
                         <XCircle className="h-4 w-4" />
                         Từ chối yêu cầu
                       </button>
                       <button
                         type="button"
-                        onClick={() => {
-                          setActionType('approve');
-                          setSelectedSalesId(selectedRfq.assigned_sales?.id || '');
-                        }}
-                        className="inline-flex h-9 items-center justify-center gap-1 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition-colors"
+                        onClick={() => handleDirectStatusUpdate('approved')}
+                        disabled={isPending}
+                        className="inline-flex h-9 items-center justify-center gap-1 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition-colors disabled:opacity-50"
                       >
                         <CheckCircle2 className="h-4 w-4" />
                         Phê duyệt & Điều phối
@@ -685,10 +796,15 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                 {/* Status-specific processing form */}
                 {actionType && (
-                  <form onSubmit={handleProcessSubmit} className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-200">
+                  <form
+                    onSubmit={handleProcessSubmit}
+                    className="p-4 rounded-xl border border-slate-100 bg-slate-50/50 flex flex-col gap-4 animate-in fade-in slide-in-from-top-2 duration-200"
+                  >
                     <div className="flex items-center justify-between border-b border-slate-150 pb-2 mb-1">
-                      <h4 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider">
-                        {actionType === 'approve' ? 'Phê duyệt & Gán nhân viên sales' : 'Từ chối yêu cầu báo giá'}
+                      <h4 className="text-xs font-extrabold text-foreground uppercase tracking-wider">
+                        {actionType === 'approve'
+                          ? 'Phê duyệt & Gán nhân viên sales'
+                          : 'Từ chối yêu cầu báo giá'}
                       </h4>
                       <button
                         type="button"
@@ -703,7 +819,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Assigned Sales dropdown */}
                         <div className="flex flex-col gap-1.5">
-                          <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Chọn nhân viên Sales phụ trách *</label>
+                          <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                            Chọn nhân viên Sales phụ trách *
+                          </label>
                           <select
                             required
                             value={selectedSalesId}
@@ -713,7 +831,8 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                             <option value="">-- Chọn Salesman --</option>
                             {salesTeam.map((sales) => (
                               <option key={sales.id} value={sales.id}>
-                                {`${sales.first_name || ''} ${sales.last_name || ''}`.trim() || sales.email}
+                                {`${sales.first_name || ''} ${sales.last_name || ''}`.trim() ||
+                                  sales.email}
                               </option>
                             ))}
                           </select>
@@ -721,7 +840,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                         {/* Approval Note */}
                         <div className="flex flex-col gap-1.5">
-                          <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Ghi chú phê duyệt</label>
+                          <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                            Ghi chú phê duyệt
+                          </label>
                           <input
                             type="text"
                             value={approvalNote}
@@ -735,7 +856,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                     {actionType === 'reject' && (
                       <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Lý do từ chối yêu cầu *</label>
+                        <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                          Lý do từ chối yêu cầu *
+                        </label>
                         <textarea
                           required
                           rows={2}
@@ -759,11 +882,17 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                         type="submit"
                         disabled={isPending}
                         className={cn(
-                          "px-4 py-1.5 rounded-lg text-xs font-bold text-white shadow-sm transition-colors",
-                          actionType === 'approve' ? "bg-emerald-600 hover:bg-emerald-700" : "bg-rose-600 hover:bg-rose-700"
+                          'px-4 py-1.5 rounded-lg text-xs font-bold text-white shadow-sm transition-colors',
+                          actionType === 'approve'
+                            ? 'bg-emerald-600 hover:bg-emerald-700'
+                            : 'bg-rose-600 hover:bg-rose-700'
                         )}
                       >
-                        {isPending ? 'Đang thực hiện...' : actionType === 'approve' ? 'Xác nhận duyệt' : 'Xác nhận từ chối'}
+                        {isPending
+                          ? 'Đang thực hiện...'
+                          : actionType === 'approve'
+                            ? 'Xác nhận duyệt'
+                            : 'Xác nhận từ chối'}
                       </button>
                     </div>
                   </form>
@@ -773,15 +902,22 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                 {selectedRfq.status === 'approved' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-emerald-50/30 p-4 rounded-xl border border-emerald-100/50 text-xs">
                     <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-bold text-emerald-700 uppercase">Ghi chú phê duyệt:</span>
-                      <span className="text-emerald-900 font-semibold">{selectedRfq.approval_note || 'Không có ghi chú.'}</span>
+                      <span className="text-[10px] font-bold text-emerald-700 uppercase">
+                        Ghi chú phê duyệt:
+                      </span>
+                      <span className="text-emerald-900 font-semibold">
+                        {selectedRfq.approval_note || 'Không có ghi chú.'}
+                      </span>
                     </div>
                     <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-bold text-emerald-700 uppercase">Sales chăm sóc:</span>
+                      <span className="text-[10px] font-bold text-emerald-700 uppercase">
+                        Sales chăm sóc:
+                      </span>
                       <span className="text-emerald-900 font-extrabold flex items-center gap-1">
                         <User className="h-3.5 w-3.5 text-emerald-600" />
                         {selectedRfq.assigned_sales
-                          ? `${selectedRfq.assigned_sales.first_name || ''} ${selectedRfq.assigned_sales.last_name || ''}`.trim() || 'Salesperson'
+                          ? `${selectedRfq.assigned_sales.first_name || ''} ${selectedRfq.assigned_sales.last_name || ''}`.trim() ||
+                            'Salesperson'
                           : 'Chưa phân công'}
                       </span>
                     </div>
@@ -790,12 +926,15 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                 {selectedRfq.status === 'rejected' && (
                   <div className="bg-rose-50/30 p-4 rounded-xl border border-rose-100/50 text-xs flex flex-col gap-1">
-                    <span className="text-[10px] font-bold text-rose-700 uppercase">Lý do từ chối:</span>
-                    <span className="text-rose-900 font-semibold">{selectedRfq.reject_reason || 'Không có lý do rõ ràng.'}</span>
+                    <span className="text-[10px] font-bold text-rose-700 uppercase">
+                      Lý do từ chối:
+                    </span>
+                    <span className="text-rose-900 font-semibold">
+                      {selectedRfq.reject_reason || 'Không có lý do rõ ràng.'}
+                    </span>
                   </div>
                 )}
               </div>
-
             </div>
 
             {/* Modal Footer */}
@@ -822,9 +961,11 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div>
-                <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36] flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-extrabold text-foreground flex items-center gap-2">
                   <FileSpreadsheet className="h-5 w-5 text-blue-500" />
-                  {activeRfq.id ? `Cập nhật yêu cầu báo giá #${activeRfq.id}` : 'Tạo yêu cầu báo giá mới'}
+                  {activeRfq.id
+                    ? `Cập nhật yêu cầu báo giá #${activeRfq.id}`
+                    : 'Tạo yêu cầu báo giá mới'}
                 </h2>
                 <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
                   Điền các thông tin liên hệ và danh sách sản phẩm yêu cầu báo giá.
@@ -834,6 +975,7 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                 onClick={() => {
                   setRfqFormOpen(false);
                   setActiveRfq(null);
+                  setFormError('');
                 }}
                 className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-650"
               >
@@ -842,19 +984,30 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
             </div>
 
             {/* Modal Body: Form */}
-            <form onSubmit={handleFormSubmit} className="flex flex-col max-h-[70vh] overflow-hidden">
-              <div className="p-6 overflow-y-auto flex-1 bg-white grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                
+            <form
+              onSubmit={handleFormSubmit}
+              className="flex flex-col max-h-[70vh] overflow-hidden"
+            >
+              <div className="p-6 overflow-y-auto flex-1 bg-white">
+                {formError && (
+                  <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200 mb-6">
+                    <AlertTriangle className="h-4 w-4 shrink-0" />
+                    <span>{formError}</span>
+                  </div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 {/* Left Column: Customer Details */}
                 <div className="flex flex-col gap-4">
-                  <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-1">
+                  <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-1">
                     <Building className="h-4 w-4 text-blue-500" />
                     Thông tin liên hệ
                   </h3>
 
                   {/* Company */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tên doanh nghiệp *</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Tên doanh nghiệp *
+                    </label>
                     <input
                       type="text"
                       required
@@ -867,7 +1020,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                   {/* Contact Name */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Người liên hệ *</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Người liên hệ *
+                    </label>
                     <input
                       type="text"
                       required
@@ -881,7 +1036,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                   {/* Email & Phone */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Email *</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Email *
+                      </label>
                       <input
                         type="email"
                         required
@@ -892,7 +1049,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Điện thoại *</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Điện thoại *
+                      </label>
                       <input
                         type="text"
                         required
@@ -906,7 +1065,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                   {/* Address */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Địa chỉ giao hàng *</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Địa chỉ giao hàng *
+                    </label>
                     <input
                       type="text"
                       required
@@ -920,7 +1081,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                   {/* Industry & Hub */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Ngành nghề</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Ngành nghề
+                      </label>
                       <input
                         type="text"
                         value={activeRfq.industry || ''}
@@ -930,11 +1093,18 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Khu vực (Hub) *</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Khu vực (Hub) *
+                      </label>
                       <select
                         required
                         value={activeRfq.hubId || ''}
-                        onChange={(e) => setActiveRfq({ ...activeRfq, hubId: e.target.value ? Number(e.target.value) : null })}
+                        onChange={(e) =>
+                          setActiveRfq({
+                            ...activeRfq,
+                            hubId: e.target.value ? Number(e.target.value) : null
+                          })
+                        }
                         className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none bg-white"
                       >
                         <option value="">-- Chọn Hub --</option>
@@ -953,21 +1123,30 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                       type="checkbox"
                       id="scheduled_delivery"
                       checked={!!activeRfq.scheduled_delivery}
-                      onChange={(e) => setActiveRfq({ ...activeRfq, scheduled_delivery: e.target.checked })}
+                      onChange={(e) =>
+                        setActiveRfq({ ...activeRfq, scheduled_delivery: e.target.checked })
+                      }
                       className="rounded border-slate-300 text-blue-600 focus:ring-blue-500 h-4 w-4"
                     />
-                    <label htmlFor="scheduled_delivery" className="text-xs font-bold text-slate-700 select-none">
+                    <label
+                      htmlFor="scheduled_delivery"
+                      className="text-xs font-bold text-slate-700 select-none"
+                    >
                       Lên lịch giao hàng (Scheduled Delivery)
                     </label>
                   </div>
 
                   {activeRfq.scheduled_delivery && (
                     <div className="flex flex-col gap-1.5 animate-in fade-in duration-200">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Ngày giao hàng mong muốn</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Ngày giao hàng mong muốn
+                      </label>
                       <input
                         type="date"
                         value={activeRfq.requested_delivery_date || ''}
-                        onChange={(e) => setActiveRfq({ ...activeRfq, requested_delivery_date: e.target.value })}
+                        onChange={(e) =>
+                          setActiveRfq({ ...activeRfq, requested_delivery_date: e.target.value })
+                        }
                         className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-650 focus:border-blue-650 bg-white"
                       />
                     </div>
@@ -976,7 +1155,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                   {/* Status & Assigned Sales */}
                   <div className="grid grid-cols-2 gap-4 border-t border-slate-100 pt-4 mt-1">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Trạng thái xử lý</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Trạng thái xử lý
+                      </label>
                       <select
                         value={activeRfq.status || 'pending'}
                         onChange={(e) => setActiveRfq({ ...activeRfq, status: e.target.value })}
@@ -988,16 +1169,21 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                       </select>
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Sales phụ trách</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Sales phụ trách
+                      </label>
                       <select
                         value={activeRfq.assigned_sales_id || ''}
-                        onChange={(e) => setActiveRfq({ ...activeRfq, assigned_sales_id: e.target.value || null })}
+                        onChange={(e) =>
+                          setActiveRfq({ ...activeRfq, assigned_sales_id: e.target.value || null })
+                        }
                         className="px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none bg-white shadow-sm"
                       >
                         <option value="">-- Chưa gán --</option>
                         {salesTeam.map((sales) => (
                           <option key={sales.id} value={sales.id}>
-                            {`${sales.first_name || ''} ${sales.last_name || ''}`.trim() || sales.email}
+                            {`${sales.first_name || ''} ${sales.last_name || ''}`.trim() ||
+                              sales.email}
                           </option>
                         ))}
                       </select>
@@ -1006,7 +1192,9 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                   {/* Message / Customer Request */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tin nhắn đính kèm</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Tin nhắn đính kèm
+                    </label>
                     <textarea
                       rows={3}
                       value={activeRfq.message || ''}
@@ -1020,7 +1208,7 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                 {/* Right Column: Line Items configuration */}
                 <div className="flex flex-col gap-4">
                   <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-1">
-                    <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5">
+                    <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5">
                       <FileSpreadsheet className="h-4 w-4 text-blue-500" />
                       Danh sách sản phẩm ({activeRfq.line_items?.length || 0})
                     </h3>
@@ -1036,7 +1224,10 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                   <div className="flex flex-col gap-3 max-h-[45vh] overflow-y-auto pr-1">
                     {(activeRfq.line_items || []).map((item: any, idx: number) => (
-                      <div key={idx} className="p-4 border border-slate-150 rounded-xl bg-slate-50/30 flex flex-col gap-3 relative animate-in fade-in duration-150">
+                      <div
+                        key={idx}
+                        className="p-4 border border-slate-150 rounded-xl bg-slate-50/30 flex flex-col gap-3 relative animate-in fade-in duration-150"
+                      >
                         {/* Remove item button */}
                         <button
                           type="button"
@@ -1054,12 +1245,14 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                         <div className="grid grid-cols-3 gap-3">
                           {/* SKU select */}
                           <div className="col-span-2 flex flex-col gap-1">
-                            <label className="text-[9px] font-bold text-slate-450 uppercase">Mã SKU *</label>
+                            <label className="text-[9px] font-bold text-slate-450 uppercase">
+                              Mã SKU *
+                            </label>
                             <select
                               required
                               value={item.sku}
                               onChange={(e) => handleUpdateFormItem(idx, 'sku', e.target.value)}
-                              className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-mono font-bold text-[#0F1E36] bg-white focus:outline-none"
+                              className="px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-mono font-bold text-foreground bg-white focus:outline-none"
                             >
                               <option value="">-- Chọn sản phẩm --</option>
                               {skus.map((skuOption) => (
@@ -1072,21 +1265,27 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
 
                           {/* Quantity */}
                           <div className="flex flex-col gap-1">
-                            <label className="text-[9px] font-bold text-slate-450 uppercase">Số lượng *</label>
+                            <label className="text-[9px] font-bold text-slate-450 uppercase">
+                              Số lượng *
+                            </label>
                             <input
                               type="number"
                               required
                               min={1}
                               value={item.qty || 1}
-                              onChange={(e) => handleUpdateFormItem(idx, 'qty', Number(e.target.value))}
-                              className="px-2 py-1.5 rounded-lg border border-slate-200 text-xs font-bold text-[#0F1E36] focus:outline-none text-center"
+                              onChange={(e) =>
+                                handleUpdateFormItem(idx, 'qty', Number(e.target.value))
+                              }
+                              className="px-2 py-1.5 rounded-lg border border-slate-200 text-xs font-bold text-foreground focus:outline-none text-center"
                             />
                           </div>
                         </div>
 
                         {/* Item note */}
                         <div className="flex flex-col gap-1">
-                          <label className="text-[9px] font-bold text-slate-450 uppercase">Ghi chú mặt hàng</label>
+                          <label className="text-[9px] font-bold text-slate-450 uppercase">
+                            Ghi chú mặt hàng
+                          </label>
                           <input
                             type="text"
                             value={item.note || ''}
@@ -1105,8 +1304,8 @@ export function RfqsClient({ initialRfqs, salesTeam, hubs, skus, error }: RfqsCl
                     )}
                   </div>
                 </div>
-
               </div>
+            </div>
 
               {/* Submit Buttons */}
               <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">

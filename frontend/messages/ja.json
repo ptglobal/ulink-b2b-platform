@@ -29,6 +29,7 @@
     "noAccount": "アカウントをお持ちでない方",
     "registerNow": "新規登録",
     "loggingIn": "ログイン中…",
+    "loginSupport": "ログインでお困りの場合は、ホットラインまでご連絡ください",
     "emailRequired": "メールアドレスを入力してください。",
     "emailInvalid": "メールアドレスが正しくありません。",
     "emailTooLong": "メールアドレスが長すぎます（最大254文字）。",
@@ -188,12 +189,12 @@
   },
   "nav": {
     "home": "ホーム",
-    "hubs": "地域ハブ",
+    "hubs": "産業団地",
     "solutions": "Solutions",
     "products": "Products",
     "industries": "業界",
     "resources": "リソース",
-    "quickOrder": "RFQを送信",
+    "quickOrder": "注文 / RFQ",
     "about": "私たちについて",
     "careers": "採用情報",
     "contact": "お問い合わせ",
@@ -206,7 +207,10 @@
     "myRfqs": "見積履歴",
     "logout": "ログアウト",
     "search": "検索",
-    "cart": "カート"
+    "cart": "カート",
+    "menu": "メニュー",
+    "closeMenu": "メニューを閉じる",
+    "skipToContent": "メインコンテンツへ移動"
   },
   "home": {
     "hero": {
@@ -218,9 +222,17 @@
       "ctaSolutions": "ソリューションを見る",
       "eyebrowTop": "産業資材の製造・販売メーカー",
       "eyebrowSub": "クリーンルーム用品および梱包資材",
-      "title": "生産のための産業消耗品ソリューション。",
+      "title": "生産を止めない、産業資材。",
       "ctaRfq": "見積もり依頼",
-      "ctaCatalogue": "カタログをダウンロード"
+      "ctaCatalogue": "カタログをダウンロード",
+      "cataloguePending": "カタログドキュメントは準備中です",
+      "assurance": "技術相談、SKU照合、材料資料を一つの調達フローでつなぎます。",
+      "imageAlt": "ULinkのオペレーション拠点で包装済み資材を確認するクリーンルーム担当者",
+      "flowTitle": "要件から納品までを一つの明確な流れに",
+      "flowRequirement": "要件を確認",
+      "flowSku": "SKUを照合",
+      "flowQuote": "サンプル・見積",
+      "flowDelivery": "地域配送"
     },
     "trust": {
       "globalTitle": "グローバル対応",
@@ -467,11 +479,11 @@
       "newsSectionTitle": "最新ニュース",
       "viewAllNews": "ニュース一覧を見る",
       "card1Date": "2026年7月22日",
-      "card1Title": "最適化された産業用梱包ソリューション - ケース梱包の効率化と物流コスト削減のご紹介。",
+      "card1Title": "半導体クリーンルームの粒子管理：資材承認前に確認すべき5項目。",
       "card2Date": "2026年7月20日",
-      "card2Title": "最適化された産業用梱包ソリューション - ケース梱包の効率化と物流コスト削減のご紹介。",
+      "card2Title": "PEパレットフィルム検査：厚み、粘着性能、輸送荷重の確認。",
       "card3Date": "2026年7月22日",
-      "card3Title": "最適化された産業用梱包ソリューション - ケース梱包の効率化と物流コスト削減のご紹介。",
+      "card3Title": "ESD作業台監査：リストストラップからシールドバッグまで。",
       "readMore": "続きを読む",
       "docsTitle": "資料・カタログ",
       "doc1Category": "カタログ",
@@ -510,6 +522,9 @@
     "indElectronics": "電子・半導体",
     "indPharma": "医薬品・医療機器",
     "indFood": "食品・飲料",
+    "indLogistics": "倉庫・物流",
+    "indFurniture": "家具・木材",
+    "indHvac": "産業設備・HVAC",
     "indMachinery": "機械・金型",
     "indLab": "QA/QC・試験室",
     "productsTitle": "取扱製品",
@@ -527,6 +542,10 @@
     "eyebrow": "工業団地クラスター",
     "title": "ベトナムの主要工業団地をつなぐ",
     "description": "ULINK INDUSTRIESは全国の工業団地にソリューションとサービスを提供し、サプライチェーンを最適化し、企業の生産効率を向上させます",
+    "hubsSection": {
+      "title": "地域ハブネットワーク",
+      "subtitle": "ハブを選択して対応地域を確認、または地域別RFQを送信できます"
+    },
     "stats": {
       "distanceLabel": "平均サービス距離",
       "distanceValue": "15",
@@ -586,7 +605,9 @@
       "error": "エラーが発生しました。もう一度お試しください。",
       "required": "必須項目",
       "invalidEmail": "無効なメールアドレス",
-      "invalidPhone": "電話番号は10〜11桁で入力してください"
+      "invalidPhone": "電話番号は10〜11桁で入力してください",
+      "cancel": "キャンセル",
+      "close": "閉じる"
     },
     "featuredProducts": {
       "title": "注目の製品",
@@ -752,6 +773,7 @@
     "description": "製品仕様、数量、納品時期をお知らせください。ULink Industriesの営業チームが24時間以内に見積もり、サンプル手配、仕様提案をお返しします。",
     "ctaRfq": "見積もりを依頼する",
     "ctaCatalogue": "カタログをダウンロード",
+    "cataloguePending": "カタログドキュメントは準備中です",
     "directContactTitle": "直接お問い合わせ",
     "phone": "0247.309.9899",
     "phoneHours": "月曜日 - 土曜日 8:00 - 17:30",
@@ -759,6 +781,35 @@
     "emailSla": "24時間以内に回答",
     "izConnect": "北部主要工業団地ネットワーク",
     "izList": "河南省、バクニン省、ハイフォン市..."
+  },
+  "aboutContact": {
+    "label": "法人向けサポート窓口",
+    "heading": "ULink Industries チームにご相談ください",
+    "description": "技術要件、資材調達、供給計画についてお送りください。1営業日以内に担当者よりご連絡します。",
+    "formTitle": "ご相談内容を送信",
+    "nameLabel": "お名前",
+    "namePlaceholder": "山田 太郎",
+    "phoneLabel": "電話番号",
+    "phonePlaceholder": "0912 345 678",
+    "emailLabel": "法人メールアドレス",
+    "emailPlaceholder": "contact@company.com",
+    "subjectLabel": "件名",
+    "subjectPlaceholder": "件名を選択",
+    "subjectRfq": "資材の見積依頼",
+    "subjectSupply": "供給パートナーシップ",
+    "subjectTechnical": "技術ソリューション相談",
+    "subjectOther": "その他のお問い合わせ",
+    "messageLabel": "ご相談内容",
+    "messagePlaceholder": "製品、規格、数量、納期など必要なサポートをご記入ください…",
+    "submit": "送信する",
+    "submitting": "送信中…",
+    "submitErrorTitle": "送信できませんでした",
+    "contactDetailsLabel": "ULink Industries 連絡先",
+    "officeLabel": "ハナム事務所・物流拠点",
+    "hotlineLabel": "相談ホットライン",
+    "emailContactLabel": "メール",
+    "mapTitle": "ULink Industries ハナム拠点の所在地",
+    "addressFallback": "Lot CN05, Dong Van IV Industrial Park, Dai Cuong, Kim Bang, Ha Nam, Vietnam"
   },
   "aboutSidebar": {
     "heading": "私たちについて",
@@ -829,6 +880,7 @@
       "desc1": "ULink Industriesは包括的な品質管理システムを構築し、国際基準に準拠して製品とサービスの最高の信頼性を確保しています。",
       "desc2": "お客様とパートナーに持続可能な価値を提供するため、絶え間なく改善を続けています。",
       "downloadBtn": "品質ポリシーをダウンロード",
+      "policyPending": "品質方針ドキュメントは準備中です",
       "pillars": {
         "safety": {
           "title": "安全",
@@ -853,6 +905,7 @@
       "subtitle": "ULink Industriesは管理と運営において国際基準を適用・維持しています。",
       "viewAll": "すべての認証を見る",
       "downloadCert": "認証をダウンロード",
+      "certPending": "証明書は準備中です",
       "certs": {
         "iso9001": {
           "title": "ISO 9001:2015",

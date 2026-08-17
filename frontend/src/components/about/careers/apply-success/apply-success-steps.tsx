@@ -2,18 +2,18 @@ const steps = [
   {
     num: '1',
     title: 'Xác nhận hồ sơ',
-    desc: 'Hệ thống tự động gửi email xác nhận đã nhận CV đầy đủ đến email của bạn.',
+    desc: 'Hệ thống tự động gửi email xác nhận đã nhận CV đầy đủ đến email của bạn.'
   },
   {
     num: '2',
     title: 'Đánh giá năng lực',
-    desc: 'Chuyên viên tuyển dụng ULink đánh giá kinh nghiệm và độ phù hợp trong 3 ngày làm việc.',
+    desc: 'Chuyên viên tuyển dụng ULink đánh giá kinh nghiệm và độ phù hợp trong 3 ngày làm việc.'
   },
   {
     num: '3',
     title: 'Liên hệ phỏng vấn',
-    desc: 'Nếu CV phù hợp, chúng tôi sẽ gọi điện trực tiếp để đặt lịch phỏng vấn chính thức.',
-  },
+    desc: 'Nếu CV phù hợp, chúng tôi sẽ gọi điện trực tiếp để đặt lịch phỏng vấn chính thức.'
+  }
 ];
 
 export function ApplySuccessSteps() {
@@ -32,7 +32,7 @@ export function ApplySuccessSteps() {
         {steps.map((item) => (
           <div
             key={item.num}
-            className="flex flex-col rounded-xl bg-slate-50 p-6 border border-slate-100 shadow-sm transition-all hover:bg-white hover:shadow-md"
+            className="flex flex-col rounded-xl bg-slate-50 p-6 border border-slate-100 shadow-sm transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:bg-white hover:shadow-md"
           >
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-xs font-extrabold text-white mb-4 shadow-sm">
               {item.num}

@@ -18,7 +18,7 @@ function formatError(err: any): string {
         errors: err.errors,
         status: err.status,
         code: err.code,
-        extensions: err.extensions,
+        extensions: err.extensions
       };
       return JSON.stringify(errorObj, null, 2);
     } catch {
@@ -39,8 +39,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -79,7 +81,7 @@ export async function updateSampleRequestStatus(data: {
 
   try {
     const client = await getSessionClient();
-    
+
     const payload: Record<string, any> = {
       status: data.status
     };
@@ -116,7 +118,7 @@ export async function assignSampleRequestSales(requestId: number, salesId: strin
 
   try {
     const client = await getSessionClient();
-    
+
     await client.request(
       updateItem('sample_requests' as any, requestId, {
         assigned_sales: salesId

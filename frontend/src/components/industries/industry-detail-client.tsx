@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  ArrowRight, 
-  AlertCircle, 
-  FileDown, 
-  Download, 
+import {
+  ArrowRight,
+  AlertCircle,
+  FileDown,
+  Download,
   ChevronRight,
   Cpu,
   Activity,
@@ -19,10 +19,12 @@ import {
   CheckCircle2,
   Factory,
   Package,
-  User
-} from 'lucide-react';
+  User,
+  Clock
+} from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
+import { BrandedMedia } from '@/components/media/branded-media';
 import { ASSETS } from '@/lib/assets';
 import { IndustryDetailClientProps } from './types';
 import { IndustryValueProps } from './industry-value-props';
@@ -63,6 +65,12 @@ const partnerLogos = [
   { name: 'BYD', src: ASSETS.home.partnerByd }
 ];
 
+const caseMedia = [
+  '/images/industries/case_cleanroom.webp',
+  '/images/industries/case_packaging.webp',
+  '/images/industries/case_supplier.webp'
+];
+
 // Helper to generate realistic high-fidelity bullet points for category items
 function getCategoryBullets(catName: string, locale: string): string[] {
   const nameLower = catName.toLowerCase();
@@ -70,74 +78,74 @@ function getCategoryBullets(catName: string, locale: string): string[] {
   const isJa = locale === 'ja';
 
   if (nameLower.includes('quần áo') || nameLower.includes('wear') || nameLower.includes('suit')) {
-    return isVi 
+    return isVi
       ? ['Vải chống tĩnh điện ESD cao cấp', 'Hạn chế tối đa phát tán xơ vải', 'Đạt tiêu chuẩn ISO Class 5 (Class 100)']
       : isJa
-      ? ['高級ESD帯電防止生地', '繊維ゴミ・発塵を最小限に抑える', 'ISO Class 5（Class 100）基準適合']
-      : ['Premium ESD anti-static fabric', 'Minimizes lint and fiber shedding', 'ISO Class 5 (Class 100) compliant'];
+        ? ['高級ESD帯電防止生地', '繊維ゴミ・発塵を最小限に抑える', 'ISO Class 5（Class 100）基準適合']
+        : ['Premium ESD anti-static fabric', 'Minimizes lint and fiber shedding', 'ISO Class 5 (Class 100) compliant'];
   }
   if (nameLower.includes('găng tay') || nameLower.includes('gloves')) {
-    return isVi 
+    return isVi
       ? ['Nitrile cao cấp không bột mịn', 'Độ đàn hồi cao & chống trượt tốt', 'Kháng dung môi và hóa chất nhẹ']
       : isJa
-      ? ['粉なし高級ニトリルゴム', '優れた伸縮性と滑り止め加工', '軽度な溶剤・化学薬品に対応']
-      : ['Powder-free premium Nitrile', 'High elasticity & non-slip grip', 'Resistant to light solvents & chemicals'];
+        ? ['粉なし高級ニトリルゴム', '優れた伸縮性と滑り止め加工', '軽度な溶剤・化学薬品に対応']
+        : ['Powder-free premium Nitrile', 'High elasticity & non-slip grip', 'Resistant to light solvents & chemicals'];
   }
   if (nameLower.includes('khẩu trang') || nameLower.includes('mask')) {
-    return isVi 
+    return isVi
       ? ['Màng lọc khuẩn hiệu suất cao', 'Thiết kế ôm khít, thông thoáng', 'Tiệt trùng và đóng gói riêng biệt']
       : isJa
-      ? ['高効率細菌ろ過フィルター', 'フィット感が高く通気性に優れる', '個別滅菌パック包装']
-      : ['High-efficiency bacterial filter', 'Snug fit with high breathability', 'Individually sterilized & packed'];
+        ? ['高効率細菌ろ過フィルター', 'フィット感が高く通気性に優れる', '個別滅菌パック包装']
+        : ['High-efficiency bacterial filter', 'Snug fit with high breathability', 'Individually sterilized & packed'];
   }
   if (nameLower.includes('thảm') || nameLower.includes('mat')) {
-    return isVi 
+    return isVi
       ? ['Độ bám dính hạt bụi đế giày cao', 'Lớp keo phân tầng đánh số 1-30', 'Chất liệu Polyethylene thân thiện']
       : isJa
-      ? ['靴底の塵埃を強力吸着', '1〜30までの積層剥離タイプ', '環境に優しいポリエチレン製']
-      : ['High adhesive dust trapping', 'Numbered layers from 1 to 30', 'Eco-friendly polyethylene material'];
+        ? ['靴底の塵埃を強力吸着', '1〜30までの積層剥離タイプ', '環境に優しいポリエチレン製']
+        : ['High adhesive dust trapping', 'Numbered layers from 1 to 30', 'Eco-friendly polyethylene material'];
   }
   if (nameLower.includes('khăn') || nameLower.includes('wiper') || nameLower.includes('lau')) {
-    return isVi 
+    return isVi
       ? ['Thấm hút chất lỏng & dung môi cực tốt', 'Không để lại sợi tơ bụi sau khi lau', 'Cắt mép bằng công nghệ siêu âm']
       : isJa
-      ? ['液体や溶剤の吸液性に優れる', '拭き取り跡の繊維くずが残らない', '超音波端面カット加工']
-      : ['Excellent absorption of solvents', 'No lint residue left after wiping', 'Ultrasonic heat-sealed edges'];
+        ? ['液体や溶剤の吸液性に優れる', '拭き取り跡の繊維くずが残らない', '超音波端面カット加工']
+        : ['Excellent absorption of solvents', 'No lint residue left after wiping', 'Ultrasonic heat-sealed edges'];
   }
   if (nameLower.includes('nhôm') || nameLower.includes('barrier') || nameLower.includes('túi nhôm')) {
-    return isVi 
+    return isVi
       ? ['Chống ẩm, oxy và tia cực tím tuyệt đối', 'Độ bền dai cơ học cao, khó rách', 'Hỗ trợ hàn kín nhiệt mép túi tốt']
       : isJa
-      ? ['湿気、酸素、紫外線を遮断', '引き裂きに強い高い機械的強度', '優れた熱シール性']
-      : ['Blocks moisture, oxygen & UV', 'High mechanical strength against tears', 'Excellent heat-sealability'];
+        ? ['湿気、酸素、紫外線を遮断', '引き裂きに強い高い機械的強度', '優れた熱シール性']
+        : ['Blocks moisture, oxygen & UV', 'High mechanical strength against tears', 'Excellent heat-sealability'];
   }
   if (nameLower.includes('tĩnh điện') || nameLower.includes('esd') || nameLower.includes('shielding')) {
-    return isVi 
+    return isVi
       ? ['Ngăn sóng điện từ & dòng điện tích', 'Bảo vệ bo mạch nhạy cảm an toàn', 'Độ dày màng nhựa tối ưu']
       : isJa
-      ? ['電磁波や静電荷を遮断', '敏感な回路基板の安全な保護', '最適なプラスチックフィルム厚']
-      : ['Shields electromagnetic & static', 'Safe protection for sensitive PCBs', 'Optimal plastic film thickness'];
+        ? ['電磁波や静電荷を遮断', '敏感な回路基板の安全な保護', '最適なプラスチックフィルム厚']
+        : ['Shields electromagnetic & static', 'Safe protection for sensitive PCBs', 'Optimal plastic film thickness'];
   }
   if (nameLower.includes('khay') || nameLower.includes('tray')) {
-    return isVi 
+    return isVi
       ? ['Nhựa PET/PS định hình chắc chắn', 'Điện trở bề mặt chuẩn tĩnh điện', 'Thiết kế và gia công khuôn theo yêu cầu']
       : isJa
-      ? ['頑丈な成形PET/PSプラスチック', '標準的な表面抵抗値', '金型のカスタム設計・加工に対応']
-      : ['Sturdy molded PET/PS plastic', 'Standard surface resistivity', 'Custom mold design & processing'];
+        ? ['頑丈な成形PET/PSプラスチック', '標準的な表面抵抗値', '金型のカスタム設計・加工に対応']
+        : ['Sturdy molded PET/PS plastic', 'Standard surface resistivity', 'Custom mold design & processing'];
   }
   if (nameLower.includes('pe') || nameLower.includes('film') || nameLower.includes('màng pe')) {
-    return isVi 
+    return isVi
       ? ['Lực co giãn và độ bám dính cực tốt', 'Bảo vệ pallet hàng khi lưu kho lạnh', 'Chống bụi bẩn, nước và va đập nhẹ']
       : isJa
-      ? ['優れた自己粘着性と延伸性', '冷凍倉庫保管時のパレット保護', 'チリ、湿気、軽微な衝撃から保護']
-      : ['Excellent stretch and cling force', 'Protects pallets in cold storage', 'Shields from dust, moisture & minor impacts'];
+        ? ['優れた自己粘着性と延伸性', '冷凍倉庫保管時のパレット保護', 'チリ、湿気、軽微な衝撃から保護']
+        : ['Excellent stretch and cling force', 'Protects pallets in cold storage', 'Shields from dust, moisture & minor impacts'];
   }
 
-  return isVi 
+  return isVi
     ? ['Đạt tiêu chuẩn an toàn kỹ thuật cao', 'Đầy đủ chứng nhận chất lượng CO/CQ', 'Tối ưu hóa chi phí vận hành cho nhà máy']
     : isJa
-    ? ['高度な技術安全基準に準拠', 'CO/CQ品質証明書を完備', '工場の運用コストを最適化']
-    : ['Complies with high safety standards', 'Complete quality CO/CQ certification', 'Optimizes factory operational costs'];
+      ? ['高度な技術安全基準に準拠', 'CO/CQ品質証明書を完備', '工場の運用コストを最適化']
+      : ['Complies with high safety standards', 'Complete quality CO/CQ certification', 'Optimizes factory operational costs'];
 }
 
 export default function IndustryDetailClient({
@@ -149,7 +157,16 @@ export default function IndustryDetailClient({
   children
 }: IndustryDetailClientProps & { children?: React.ReactNode }) {
   const [activeTab, setActiveTab] = useState<string>('overview');
+  const [showToast, setShowToast] = useState(false);
   const observerRef = useRef<IntersectionObserver | null>(null);
+
+  const handleCatalogueClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+    }, 3000);
+  };
 
   // Tabs definitions
   const tabs = [
@@ -163,52 +180,52 @@ export default function IndustryDetailClient({
   // Construct dynamic cleanroom items from DB products array if present, or fallback to static list
   const displayCleanroomItems = (products && products.length > 0)
     ? products.slice(0, 4).map((p) => {
-        const pName = getTranslatedName(p, locale) || p.name;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const heroImg = (p as any).hero;
-        const imageSrc = heroImg
-          ? (heroImg.startsWith('http') || heroImg.startsWith('/') ? heroImg : `${getDirectusUrl()}/assets/${heroImg}`)
-          : '/images/industries/electronics_hero.webp';
+      const pName = getTranslatedName(p, locale) || p.name;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const heroImg = (p as any).hero;
+      const imageSrc = heroImg
+        ? (heroImg.startsWith('http') || heroImg.startsWith('/') ? heroImg : `${getDirectusUrl()}/assets/${heroImg}`)
+        : '';
 
-        const catSlug = (p.category as any)?.slug || 'cleanroom-consumables';
-        return {
-          name: pName,
-          image: imageSrc,
-          href: `/solutions/categories/${catSlug}`,
-          bullets: getCategoryBullets(pName, locale)
-        };
-      })
+      const catSlug = (p.category as any)?.slug || 'cleanroom-consumables';
+      return {
+        name: pName,
+        image: imageSrc,
+        href: `/solutions/categories/${catSlug}`,
+        bullets: getCategoryBullets(pName, locale)
+      };
+    })
     : industryData.cleanroomCategories.map((cat) => ({
-        name: cat.name,
-        image: cat.image,
-        href: `/solutions/categories/${cat.slug || 'cleanroom-consumables'}`,
-        bullets: getCategoryBullets(cat.name, locale)
-      }));
+      name: cat.name,
+      image: cat.image,
+      href: `/solutions/categories/${cat.slug || 'cleanroom-consumables'}`,
+      bullets: getCategoryBullets(cat.name, locale)
+    }));
 
   // Construct dynamic packaging items from DB products array if present, or fallback to static list
   const displayPackagingItems = (products && products.length > 4)
     ? products.slice(4, 8).map((p) => {
-        const pName = getTranslatedName(p, locale) || p.name;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const heroImg = (p as any).hero;
-        const imageSrc = heroImg
-          ? (heroImg.startsWith('http') || heroImg.startsWith('/') ? heroImg : `${getDirectusUrl()}/assets/${heroImg}`)
-          : '/images/industries/electronics_hero.webp';
+      const pName = getTranslatedName(p, locale) || p.name;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const heroImg = (p as any).hero;
+      const imageSrc = heroImg
+        ? (heroImg.startsWith('http') || heroImg.startsWith('/') ? heroImg : `${getDirectusUrl()}/assets/${heroImg}`)
+        : '';
 
-        const catSlug = (p.category as any)?.slug || 'industrial-packaging';
-        return {
-          name: pName,
-          image: imageSrc,
-          href: `/solutions/categories/${catSlug}`,
-          bullets: getCategoryBullets(pName, locale)
-        };
-      })
+      const catSlug = (p.category as any)?.slug || 'industrial-packaging';
+      return {
+        name: pName,
+        image: imageSrc,
+        href: `/solutions/categories/${catSlug}`,
+        bullets: getCategoryBullets(pName, locale)
+      };
+    })
     : industryData.packagingCategories.map((cat) => ({
-        name: cat.name,
-        image: cat.image,
-        href: `/solutions/categories/${cat.slug || 'industrial-packaging'}`,
-        bullets: getCategoryBullets(cat.name, locale)
-      }));
+      name: cat.name,
+      image: cat.image,
+      href: `/solutions/categories/${cat.slug || 'industrial-packaging'}`,
+      bullets: getCategoryBullets(cat.name, locale)
+    }));
 
   // Set up Scrollspy using Intersection Observer
   useEffect(() => {
@@ -262,30 +279,32 @@ export default function IndustryDetailClient({
   // Breadcrumbs text helper
   const isVi = locale === 'vi';
   const isJa = locale === 'ja';
-  
+
   const currentBreadcrumb = industryData.name;
   const industryCategoryName = isVi ? 'Ngành nghề' : isJa ? '業界別' : 'Industries';
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans">
-      
+    <div className="min-h-screen bg-background text-slate-900 font-sans">
+
       {/* ── SECTION 1: HERO BANNER (Full Width) ── */}
-      <section className="relative w-full overflow-hidden bg-slate-950 flex flex-col justify-center min-h-[460px] md:min-h-[500px]">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src={industryData.bannerImage}
-            alt={industryData.title}
-            fill
-            className="object-cover opacity-60"
-            priority
-          />
-          {/* Linear gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-900/60 to-slate-950/85 z-10" />
+      <section className="relative flex min-h-[460px] w-full flex-col justify-center overflow-hidden bg-brand-deep md:min-h-[500px]">
+        <BrandedMedia
+          src={industryData.bannerImage}
+          alt={industryData.title}
+          className="absolute inset-0"
+          imageClassName="object-cover"
+          sizes="100vw"
+          priority
+        />
+        <div className="absolute inset-0 bg-brand-deep/70" aria-hidden="true" />
+        <div className="pointer-events-none absolute inset-0 grid grid-cols-4 opacity-30 md:grid-cols-8 lg:grid-cols-16" aria-hidden="true">
+          {Array.from({ length: 16 }).map((_, index) => (
+            <span key={index} className="border-r border-white/10" />
+          ))}
         </div>
 
         {/* Content Container */}
-        <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16 z-20 pt-28 pb-20 relative flex flex-col items-start justify-center h-full">
+        <div className="relative z-20 mx-auto flex h-full w-full max-w-[1440px] flex-col items-start justify-center px-4 pb-20 pt-28 sm:px-8 lg:px-16">
           {/* Breadcrumbs inside Hero Banner */}
           <nav className="flex items-center gap-1.5 text-xs text-white/70 font-semibold mb-6">
             <Link href="/" className="hover:text-white transition-colors">
@@ -301,6 +320,7 @@ export default function IndustryDetailClient({
 
           {/* Heading and Description */}
           <div className="max-w-4xl space-y-4">
+            <Factory className="mb-8 h-10 w-10 text-brand-soft" aria-hidden="true" />
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
               {industryData.title}
             </h1>
@@ -313,7 +333,8 @@ export default function IndustryDetailClient({
           <div className="mt-8">
             <Link
               href={industryData.catalogue.url}
-              className="inline-flex h-11 items-center justify-center gap-2 border border-white bg-transparent hover:bg-white hover:text-slate-900 text-white font-extrabold text-sm px-6 py-2.5 transition-all duration-300 rounded-none shadow-sm"
+              onClick={handleCatalogueClick}
+              className="inline-flex h-11 items-center justify-center gap-2 border border-white bg-transparent hover:bg-white hover:text-slate-900 text-white font-extrabold text-sm px-6 py-2.5 transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 rounded-none shadow-sm"
             >
               <Download className="h-4 w-4" />
               {isVi ? 'Tải hồ sơ năng lực' : isJa ? '機能プロファイルをダウンロード' : 'Download Capability Profile'}
@@ -326,7 +347,7 @@ export default function IndustryDetailClient({
       <IndustryValueProps valueProps={industryData.valueProps} />
 
       {/* ── STICKY TABS NAVIGATION ── */}
-      <div className="sticky top-[72px] z-30 bg-white border-b border-slate-200/80 shadow-md transition-all duration-300 mt-12">
+      <div className="sticky top-[72px] z-30 bg-white border-b border-slate-200/80 shadow-md transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 mt-12">
         <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16">
           <div className="flex overflow-x-auto no-scrollbar py-0.5 gap-8 scroll-smooth">
             {tabs.map((tab) => (
@@ -334,11 +355,10 @@ export default function IndustryDetailClient({
                 key={tab.id}
                 href={`#${tab.id}`}
                 onClick={(e) => handleTabClick(e, tab.id)}
-                className={`py-4.5 text-xs sm:text-sm font-bold transition-all relative border-b-2 whitespace-nowrap leading-none ${
-                  activeTab === tab.id
-                    ? 'border-[#1769E2] text-[#1769E2]'
+                className={`py-4.5 text-xs sm:text-sm font-bold transition-[color,background-color,border-color,box-shadow,opacity,transform] relative border-b-2 whitespace-nowrap leading-none ${activeTab === tab.id
+                    ? 'border-brand text-brand'
                     : 'border-transparent text-slate-400 hover:text-slate-600'
-                }`}
+                  }`}
               >
                 {tab.label}
               </a>
@@ -350,22 +370,22 @@ export default function IndustryDetailClient({
       {/* ── SECTION 2: TỔNG QUAN GIẢI PHÁP & VÌ SAO CHỌN ULINK (Overview) ── */}
       <section id="overview" className="scroll-mt-36 py-16 lg:py-20 w-full bg-white">
         <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16 grid grid-cols-1 lg:grid-cols-3 gap-12 items-start">
-          
+
           {/* Left Column (2/3) - Text & Large Image */}
           <div className="lg:col-span-2 space-y-6">
             <div className="space-y-2">
               <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block">
                 {isVi ? 'Tổng quan giải pháp' : isJa ? 'ソリューション概要' : 'Solution Overview'}
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36]">
-                {industryData.slug === 'pharmaceutical-cosmetics' 
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+                {industryData.slug === 'pharmaceutical-cosmetics'
                   ? (isVi ? 'Đảm bảo tiêu chuẩn vô trùng khắt khe nhất' : isJa ? '最も厳格な無菌基準を保証' : 'Ensure the strictest sterility standards')
                   : industryData.slug === 'electronics'
-                  ? (isVi ? 'Kiểm soát ô nhiễm & tĩnh điện tối ưu' : isJa ? '汚染管理と静電気対策の最適化' : 'Optimize contamination & electrostatic control')
-                  : (isVi ? 'Quy trình chuẩn hóa và an toàn vệ sinh' : isJa ? '衛生管理とプロセスの標準化' : 'Hygiene control & process standardization')}
+                    ? (isVi ? 'Kiểm soát ô nhiễm & tĩnh điện tối ưu' : isJa ? '汚染管理と静電気対策の最適化' : 'Optimize contamination & electrostatic control')
+                    : (isVi ? 'Quy trình chuẩn hóa và an toàn vệ sinh' : isJa ? '衛生管理とプロセスの標準化' : 'Hygiene control & process standardization')}
               </h2>
             </div>
-            
+
             <div className="text-sm text-slate-600 font-medium leading-relaxed space-y-4 max-w-4xl">
               {industryData.slug === 'pharmaceutical-cosmetics' ? (
                 <>
@@ -397,21 +417,23 @@ export default function IndustryDetailClient({
               )}
             </div>
 
-            {/* Large Image representing production line */}
-            <div className="relative w-full aspect-[21/9] min-h-[220px] overflow-hidden border border-slate-200/50 shadow-md">
-              <Image
-                src="/images/industries/electronics_hero.webp"
-                alt="Production Line Facility"
-                fill
-                className="object-cover"
-              />
+            <div className="grid min-h-[220px] w-full border-y border-border bg-brand/[0.06] sm:grid-cols-2 lg:grid-cols-4">
+              {industryData.standards.slice(0, 4).map((standard, index) => (
+                <div key={standard.name} className="flex min-h-40 flex-col justify-between border-b border-r border-border p-5 sm:border-b-0">
+                  <span className="font-mono text-xs text-brand">{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <p className="text-base font-medium text-foreground">{standard.name}</p>
+                    <p className="mt-2 line-clamp-2 text-xs leading-5 text-muted-foreground">{standard.detail}</p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           {/* Right Column (1/3) - Why Choose ULINK Card */}
-          <div className="bg-[#F8FAFC] border border-slate-200/80 p-8 shadow-sm space-y-6 flex flex-col justify-between h-full">
+          <div className="bg-background border border-slate-200/80 p-8 shadow-sm space-y-6 flex flex-col justify-between h-full">
             <div className="space-y-5">
-              <h3 className="text-lg font-extrabold text-[#0F1E36] border-b pb-4 flex items-center gap-2">
+              <h3 className="text-lg font-extrabold text-foreground border-b pb-4 flex items-center gap-2">
                 <ShieldCheck className="h-5.5 w-5.5 text-blue-600" />
                 {industryData.whyUsTitle}
               </h3>
@@ -424,11 +446,11 @@ export default function IndustryDetailClient({
                 ))}
               </ul>
             </div>
-            
+
             <div className="pt-6">
               <Link
                 href="/contact"
-                className="w-full bg-[#1769E2] hover:bg-[#1769E2]/90 text-white font-extrabold text-sm h-11 inline-flex items-center justify-center transition-colors shadow-md rounded-none"
+                className="w-full bg-brand hover:bg-brand/90 text-white font-extrabold text-sm h-11 inline-flex items-center justify-center transition-colors shadow-md rounded-none"
               >
                 {isVi ? 'Liên hệ ngay' : isJa ? '今すぐ連絡' : 'Contact Now'}
               </Link>
@@ -445,7 +467,7 @@ export default function IndustryDetailClient({
             <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block">
               {translations.cleanroomSol}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36]">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
               {isVi ? 'Nhóm sản phẩm chuyên dụng phòng sạch' : isJa ? 'クリーンルーム専用製品グループ' : 'Cleanroom Specialized Products'}
             </h2>
             <p className="text-sm text-slate-400 font-semibold leading-relaxed">
@@ -457,24 +479,32 @@ export default function IndustryDetailClient({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {displayCleanroomItems.map((item, idx) => {
               return (
-                <div 
-                  key={idx} 
-                  className="group bg-white border border-slate-200/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full"
+                <div
+                  key={idx}
+                  className="group bg-white border border-slate-200/50 shadow-sm hover:shadow-xl transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 flex flex-col justify-between h-full"
                 >
                   <div>
                     {/* Square Image container */}
                     <Link href={item.href} className="block relative aspect-square w-full bg-slate-50 overflow-hidden border-b border-slate-100 p-1">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="object-cover p-1 group-hover:scale-105 transition-transform duration-500"
-                      />
+                      {item.image ? (
+                        <BrandedMedia
+                          src={item.image}
+                          alt={item.name}
+                          className="absolute inset-0"
+                          imageClassName="object-contain p-4 transition-transform duration-300 group-hover:scale-[1.02]"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          compactBrand
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-brand/[0.06]">
+                          <Package className="h-12 w-12 text-brand" aria-hidden="true" />
+                        </div>
+                      )}
                     </Link>
                     {/* Content */}
                     <div className="p-5 space-y-3">
                       <Link href={item.href} className="block">
-                        <h4 className="text-sm sm:text-base font-extrabold text-[#0F1E36] line-clamp-1 leading-snug hover:text-blue-600 transition-colors" title={item.name}>
+                        <h4 className="text-sm sm:text-base font-extrabold text-foreground line-clamp-1 leading-snug hover:text-blue-600 transition-colors" title={item.name}>
                           {item.name}
                         </h4>
                       </Link>
@@ -514,7 +544,7 @@ export default function IndustryDetailClient({
             <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block">
               {translations.packagingSol}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36]">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
               {isVi ? 'Bao bì & Đóng gói công nghiệp' : isJa ? '工業用包装＆パッケージング' : 'Industrial Packaging & Wrapping'}
             </h2>
             <p className="text-sm text-slate-400 font-semibold leading-relaxed">
@@ -526,24 +556,32 @@ export default function IndustryDetailClient({
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {displayPackagingItems.map((item, idx) => {
               return (
-                <div 
-                  key={idx} 
-                  className="group bg-white border border-slate-200/50 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between h-full"
+                <div
+                  key={idx}
+                  className="group bg-white border border-slate-200/50 shadow-sm hover:shadow-xl transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 flex flex-col justify-between h-full"
                 >
                   <div>
                     {/* Square Image container */}
                     <Link href={item.href} className="block relative aspect-square w-full bg-slate-50 overflow-hidden border-b border-slate-100 p-1">
-                      <Image
-                        src={item.image}
-                        alt={item.name}
-                        fill
-                        className="object-cover p-1 group-hover:scale-105 transition-transform duration-500"
-                      />
+                      {item.image ? (
+                        <BrandedMedia
+                          src={item.image}
+                          alt={item.name}
+                          className="absolute inset-0"
+                          imageClassName="object-contain p-4 transition-transform duration-300 group-hover:scale-[1.02]"
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                          compactBrand
+                        />
+                      ) : (
+                        <div className="flex h-full items-center justify-center bg-brand/[0.06]">
+                          <Package className="h-12 w-12 text-brand" aria-hidden="true" />
+                        </div>
+                      )}
                     </Link>
                     {/* Content */}
                     <div className="p-5 space-y-3">
                       <Link href={item.href} className="block">
-                        <h4 className="text-sm sm:text-base font-extrabold text-[#0F1E36] line-clamp-1 leading-snug hover:text-blue-600 transition-colors" title={item.name}>
+                        <h4 className="text-sm sm:text-base font-extrabold text-foreground line-clamp-1 leading-snug hover:text-blue-600 transition-colors" title={item.name}>
                           {item.name}
                         </h4>
                       </Link>
@@ -583,15 +621,15 @@ export default function IndustryDetailClient({
             <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block">
               {industryData.standardsTitle}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36]">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
               {isVi ? 'Tiêu chuẩn chất lượng khắt khe nhất' : isJa ? '最も厳格な品質管理基準' : 'Strict Quality Standards'}
             </h2>
             <p className="text-xs sm:text-sm text-slate-500 font-semibold leading-relaxed">
-              {isVi 
-                ? `Tất cả sản phẩm dành cho ngành ${industryData.name} của ULink đều được kiểm định và đạt các tiêu chuẩn quốc tế uy tín nhất.` 
-                : isJa 
-                ? `ULinkの${industryData.name}向け製品はすべて検査を受け、最も信頼性の高い国際基準に適合しています。` 
-                : `All ULink products for ${industryData.name} are inspected and meet the most prestigious international standards.`}
+              {isVi
+                ? `Tất cả sản phẩm dành cho ngành ${industryData.name} của ULink đều được kiểm định và đạt các tiêu chuẩn quốc tế uy tín nhất.`
+                : isJa
+                  ? `ULinkの${industryData.name}向け製品はすべて検査を受け、最も信頼性の高い国際基準に適合しています。`
+                  : `All ULink products for ${industryData.name} are inspected and meet the most prestigious international standards.`}
             </p>
           </div>
 
@@ -602,15 +640,15 @@ export default function IndustryDetailClient({
               const IconComp = icons[idx % icons.length];
 
               return (
-                <div 
-                  key={idx} 
-                  className="bg-white border border-slate-200/80 rounded-xl p-6 text-center space-y-4 flex flex-col items-center hover:shadow-lg transition-all duration-300"
+                <div
+                  key={idx}
+                  className="bg-white border border-slate-200/80 rounded-xl p-6 text-center space-y-4 flex flex-col items-center hover:shadow-lg transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300"
                 >
                   <div className="flex h-14 w-14 items-center justify-center rounded-full bg-blue-100/70 text-blue-600 border border-blue-200/50">
                     <IconComp className="h-6 w-6 stroke-[2.2]" />
                   </div>
                   <div className="space-y-2">
-                    <h4 className="text-base font-extrabold text-[#0F1E36] leading-snug">
+                    <h4 className="text-base font-extrabold text-foreground leading-snug">
                       {std.name}
                     </h4>
                     <p className="text-xs text-slate-500 font-medium leading-relaxed">
@@ -631,7 +669,7 @@ export default function IndustryDetailClient({
             <span className="text-xs font-extrabold text-blue-600 uppercase tracking-widest block">
               {translations.cases}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36]">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
               {industryData.casesTitle}
             </h2>
           </div>
@@ -639,18 +677,19 @@ export default function IndustryDetailClient({
           {/* Grid of 3 columns */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {industryData.cases.map((cs, idx) => (
-              <div 
-                key={idx} 
-                className="group bg-white border border-slate-200/50 overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col justify-between"
+              <div
+                key={idx}
+                className="group bg-white border border-slate-200/50 overflow-hidden shadow-sm hover:shadow-lg transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 flex flex-col justify-between"
               >
                 <div>
                   {/* Image wrapper */}
                   <div className="relative aspect-[16/10] w-full bg-slate-50 overflow-hidden border-b border-slate-100">
-                    <Image
-                      src={cs.image}
+                    <BrandedMedia
+                      src={caseMedia[idx % caseMedia.length]}
                       alt={cs.title}
-                      fill
-                      className="object-cover group-hover:scale-103 transition-transform duration-500"
+                      className="absolute inset-0"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      compactBrand
                     />
                     {/* Badge */}
                     <div className="absolute bottom-3 left-3 bg-blue-600 text-white text-[10px] font-extrabold px-3 py-1 uppercase tracking-wider">
@@ -659,7 +698,7 @@ export default function IndustryDetailClient({
                   </div>
                   {/* Content */}
                   <div className="p-6 space-y-2">
-                    <h4 className="text-sm sm:text-base font-extrabold text-[#0F1E36] line-clamp-2 leading-snug">
+                    <h4 className="text-sm sm:text-base font-extrabold text-foreground line-clamp-2 leading-snug">
                       {cs.title}
                     </h4>
                     <p className="text-xs text-slate-500 font-medium leading-relaxed">
@@ -677,21 +716,21 @@ export default function IndustryDetailClient({
       <section className="py-16 w-full bg-slate-50 border-t border-b border-slate-100">
         <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16 space-y-10">
           <div className="text-center max-w-xl mx-auto space-y-2">
-            <h3 className="text-sm font-extrabold text-[#0F1E36] uppercase tracking-widest">
-              {isVi 
-                ? 'Được tin cậy bởi các tập đoàn và nhà máy sản xuất quy mô' 
-                : isJa 
-                ? '主要メーカーおよび大手工場からの信頼' 
-                : 'Trusted by leading corporations and large manufacturing factories'}
+            <h3 className="text-sm font-extrabold text-foreground uppercase tracking-widest">
+              {isVi
+                ? 'Được tin cậy bởi các tập đoàn và nhà máy sản xuất quy mô'
+                : isJa
+                  ? '主要メーカーおよび大手工場からの信頼'
+                  : 'Trusted by leading corporations and large manufacturing factories'}
             </h3>
             <div className="h-0.5 w-16 bg-blue-600 mx-auto" />
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-8 items-center">
             {partnerLogos.map((logo, idx) => (
-              <div 
-                key={idx} 
-                className="flex h-16 items-center justify-center p-2 bg-white border border-slate-200/50 shadow-sm transition-all duration-300 grayscale opacity-65 hover:grayscale-0 hover:opacity-100"
+              <div
+                key={idx}
+                className="flex h-16 items-center justify-center p-2 bg-white border border-slate-200/50 shadow-sm transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 grayscale opacity-65 hover:grayscale-0 hover:opacity-100"
               >
                 <Image
                   src={logo.src}
@@ -709,6 +748,15 @@ export default function IndustryDetailClient({
       {/* ── BOTTOM CTA BANNER ── */}
       {children}
 
+      {/* Toast Notification */}
+      {showToast && (
+        <div className="fixed bottom-5 right-5 z-50 flex items-center gap-2.5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800 shadow-lg animate-in fade-in slide-in-from-bottom-5 duration-300 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-500/20">
+          <Clock className="h-5 w-5 text-amber-500 shrink-0 animate-pulse" />
+          <span className="text-sm font-semibold">
+            {isVi ? 'Tài liệu đang chờ cập nhật' : isJa ? 'カタログドキュメントは準備中です' : 'The document is pending update'}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

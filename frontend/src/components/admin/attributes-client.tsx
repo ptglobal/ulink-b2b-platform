@@ -1,7 +1,19 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { Plus, Search, Edit, Trash, Settings2, Sliders, X, Tag, ListChecks, AlertTriangle } from 'lucide-react';
+import toast from 'react-hot-toast';
+import {
+  Plus,
+  Search,
+  Edit,
+  Trash,
+  Settings2,
+  Sliders,
+  X,
+  Tag,
+  ListChecks,
+  AlertTriangle
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import {
   saveAttribute,
@@ -41,26 +53,28 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
   // Modals state
   const [attrModalOpen, setAttrModalOpen] = useState(false);
   const [activeAttr, setActiveAttr] = useState<Partial<Attribute> | null>(null);
+  const [attrFormError, setAttrFormError] = useState('');
 
   const [optModalOpen, setOptModalOpen] = useState(false);
-  const [activeOpt, setActiveOpt] = useState<Partial<Option> & { attributeId: number } | null>(null);
+  const [activeOpt, setActiveOpt] = useState<(Partial<Option> & { attributeId: number }) | null>(
+    null
+  );
+  const [optFormError, setOptFormError] = useState('');
 
   const selectedAttr = attributes.find((a) => a.id === selectedAttrId);
 
   // Filter attributes by search
   const filteredAttributes = attributes.filter((attr) => {
     const q = searchQuery.toLowerCase();
-    return (
-      attr.name.toLowerCase().includes(q) ||
-      attr.slug.toLowerCase().includes(q)
-    );
+    return attr.name.toLowerCase().includes(q) || attr.slug.toLowerCase().includes(q);
   });
 
   // Handle Attribute Submit
   const handleAttrSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setAttrFormError('');
     if (!activeAttr?.name || !activeAttr?.slug) {
-      alert('Vui lòng điền tên thuộc tính và slug.');
+      setAttrFormError('Vui lòng điền tên thuộc tính và slug.');
       return;
     }
 
@@ -75,16 +89,19 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
       if (res.success) {
         setAttrModalOpen(false);
         setActiveAttr(null);
+        setAttrFormError('');
         window.location.reload();
       } else {
-        alert('Không thể lưu thuộc tính: ' + res.error);
+        setAttrFormError(res.error || 'Không thể lưu thuộc tính. Vui lòng thử lại.');
       }
     });
   };
 
   // Handle Delete Attribute
   const handleDeleteAttr = async (id: number) => {
-    if (confirm('Bạn có chắc chắn muốn xóa thuộc tính này? Toàn bộ tùy chọn liên quan sẽ bị xóa.')) {
+    if (
+      confirm('Bạn có chắc chắn muốn xóa thuộc tính này? Toàn bộ tùy chọn liên quan sẽ bị xóa.')
+    ) {
       startTransition(async () => {
         const res = await deleteAttribute(id);
         if (res.success) {
@@ -93,8 +110,9 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
             const remaining = attributes.filter((a) => a.id !== id);
             setSelectedAttrId(remaining.length > 0 ? remaining[0].id : null);
           }
+          toast.success('Đã xóa thuộc tính thành công.');
         } else {
-          alert(res.error);
+          toast.error('Không thể xóa thuộc tính: ' + res.error);
         }
       });
     }
@@ -103,8 +121,9 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
   // Handle Option Submit
   const handleOptSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setOptFormError('');
     if (!activeOpt?.value || !activeOpt?.sku_suffix) {
-      alert('Vui lòng điền giá trị tùy chọn và hậu tố SKU.');
+      setOptFormError('Vui lòng điền giá trị tùy chọn và hậu tố SKU.');
       return;
     }
 
@@ -120,9 +139,10 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
       if (res.success) {
         setOptModalOpen(false);
         setActiveOpt(null);
+        setOptFormError('');
         window.location.reload();
       } else {
-        alert('Không thể lưu tùy chọn: ' + res.error);
+        setOptFormError(res.error || 'Không thể lưu tùy chọn. Vui lòng thử lại.');
       }
     });
   };
@@ -133,9 +153,10 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
       startTransition(async () => {
         const res = await deleteAttributeOption(optId);
         if (res.success) {
+          toast.success('Đã xóa tùy chọn thành công.');
           window.location.reload();
         } else {
-          alert(res.error);
+          toast.error('Không thể xóa tùy chọn: ' + res.error);
         }
       });
     }
@@ -148,11 +169,12 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
         <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
           Cơ cấu sản phẩm
         </span>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
           Quản lý Thuộc tính & Tùy chọn (Attributes & Options)
         </h1>
         <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
-          Định nghĩa các thuộc tính phân loại (Size, Color...) và thiết lập bộ giá trị tương ứng để tự sinh SKU.
+          Định nghĩa các thuộc tính phân loại (Size, Color...) và thiết lập bộ giá trị tương ứng để
+          tự sinh SKU.
         </p>
       </div>
 
@@ -176,7 +198,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
         {/* Left Column: Attributes List */}
         <div className="lg:col-span-1 bg-white border border-slate-100 rounded-xl shadow-sm overflow-hidden p-5">
           <div className="flex items-center justify-between gap-4 mb-4">
-            <h2 className="text-sm font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5">
+            <h2 className="text-sm font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5">
               <Sliders className="h-4 w-4 text-blue-500" />
               Thuộc tính toàn cục
             </h2>
@@ -184,6 +206,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
               onClick={() => {
                 setActiveAttr({ sort: 1 });
                 setAttrModalOpen(true);
+                setAttrFormError('');
               }}
               className="p-1.5 rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors"
               title="Thêm thuộc tính"
@@ -216,10 +239,10 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
                   key={attr.id}
                   onClick={() => setSelectedAttrId(attr.id)}
                   className={cn(
-                    "flex items-center justify-between p-3 rounded-lg border text-xs sm:text-sm font-bold cursor-pointer transition-all",
+                    'flex items-center justify-between p-3 rounded-lg border text-xs sm:text-sm font-bold cursor-pointer transition-all',
                     selectedAttrId === attr.id
-                      ? "bg-blue-50/50 border-blue-200 text-blue-700 shadow-sm"
-                      : "bg-white border-slate-100 text-[#0F1E36] hover:bg-slate-50/60"
+                      ? 'bg-blue-50/50 border-blue-200 text-blue-700 shadow-sm'
+                      : 'bg-white border-slate-100 text-foreground hover:bg-slate-50/60'
                   )}
                 >
                   <div className="flex flex-col">
@@ -235,6 +258,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
                         e.stopPropagation();
                         setActiveAttr(attr);
                         setAttrModalOpen(true);
+                        setAttrFormError('');
                       }}
                       className="p-1 rounded hover:bg-slate-200/50 text-slate-500"
                     >
@@ -264,7 +288,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-slate-100 pb-4 mb-6 gap-4">
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36]">
+                    <h2 className="text-base sm:text-lg font-extrabold text-foreground">
                       Tùy chọn cho thuộc tính: {selectedAttr.name}
                     </h2>
                     <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 text-slate-650">
@@ -280,6 +304,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
                   onClick={() => {
                     setActiveOpt({ attributeId: selectedAttr.id, sort: 1 });
                     setOptModalOpen(true);
+                    setOptFormError('');
                   }}
                   className="inline-flex h-9 items-center justify-center gap-1.5 rounded-lg bg-blue-600 px-4 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition-colors"
                 >
@@ -300,7 +325,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
                   </span>
                 </div>
               ) : (
-                <div className="overflow-hidden border border-slate-100 rounded-lg">
+                <div className="overflow-x-auto rounded-lg border border-slate-100">
                   <table className="w-full border-collapse text-left text-xs sm:text-sm">
                     <thead>
                       <tr className="bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-450 uppercase tracking-wider">
@@ -316,7 +341,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
                         .map((opt) => (
                           <tr key={opt.id} className="hover:bg-slate-50/20 transition-colors">
                             {/* Value */}
-                            <td className="px-5 py-3.5 font-extrabold text-[#0F1E36]">
+                            <td className="px-5 py-3.5 font-extrabold text-foreground">
                               {opt.value}
                             </td>
 
@@ -326,9 +351,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
                             </td>
 
                             {/* Sort */}
-                            <td className="px-5 py-3.5 font-medium text-slate-400">
-                              {opt.sort}
-                            </td>
+                            <td className="px-5 py-3.5 font-medium text-slate-400">{opt.sort}</td>
 
                             {/* Actions */}
                             <td className="px-5 py-3.5 text-right">
@@ -343,6 +366,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
                                       sort: opt.sort
                                     });
                                     setOptModalOpen(true);
+                                    setOptFormError('');
                                   }}
                                   className="p-1 rounded hover:bg-slate-100 text-slate-500"
                                 >
@@ -379,13 +403,14 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36]">
+              <h2 className="text-base sm:text-lg font-extrabold text-foreground">
                 {activeAttr.id ? 'Cập nhật thuộc tính' : 'Tạo thuộc tính mới'}
               </h2>
               <button
                 onClick={() => {
                   setAttrModalOpen(false);
                   setActiveAttr(null);
+                  setAttrFormError('');
                 }}
                 className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
               >
@@ -394,8 +419,16 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
             </div>
 
             <form onSubmit={handleAttrSubmit} className="p-6 flex flex-col gap-4.5">
+              {attrFormError && (
+                <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200">
+                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                  <span>{attrFormError}</span>
+                </div>
+              )}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Tên thuộc tính *</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Tên thuộc tính *
+                </label>
                 <input
                   type="text"
                   required
@@ -416,23 +449,32 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Slug Key (Dùng trong SKU JSON) *</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Slug Key (Dùng trong SKU JSON) *
+                </label>
                 <input
                   type="text"
                   required
                   readOnly={!!activeAttr.id}
                   value={activeAttr.slug || ''}
-                  onChange={(e) => setActiveAttr({ ...activeAttr, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                  onChange={(e) =>
+                    setActiveAttr({
+                      ...activeAttr,
+                      slug: e.target.value.toLowerCase().replace(/\s+/g, '-')
+                    })
+                  }
                   placeholder="size, color, material"
                   className={cn(
-                    "px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-mono focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600",
-                    activeAttr.id && "bg-slate-100 cursor-not-allowed text-slate-400"
+                    'px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-mono focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600',
+                    activeAttr.id && 'bg-slate-100 cursor-not-allowed text-slate-400'
                   )}
                 />
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Thứ tự hiển thị</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Thứ tự hiển thị
+                </label>
                 <input
                   type="number"
                   value={activeAttr.sort || 1}
@@ -447,6 +489,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
                   onClick={() => {
                     setAttrModalOpen(false);
                     setActiveAttr(null);
+                    setAttrFormError('');
                   }}
                   className="px-4 py-2.5 rounded-lg border border-slate-200 text-xs sm:text-sm font-bold text-slate-500 hover:bg-slate-50"
                 >
@@ -470,13 +513,14 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm">
           <div className="w-full max-w-md bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36]">
+              <h2 className="text-base sm:text-lg font-extrabold text-foreground">
                 {activeOpt.id ? 'Cập nhật tùy chọn' : 'Thêm tùy chọn mới'}
               </h2>
               <button
                 onClick={() => {
                   setOptModalOpen(false);
                   setActiveOpt(null);
+                  setOptFormError('');
                 }}
                 className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600"
               >
@@ -485,8 +529,16 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
             </div>
 
             <form onSubmit={handleOptSubmit} className="p-6 flex flex-col gap-4.5">
+              {optFormError && (
+                <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200">
+                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                  <span>{optFormError}</span>
+                </div>
+              )}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Giá trị hiển thị *</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Giá trị hiển thị *
+                </label>
                 <input
                   type="text"
                   required
@@ -504,12 +556,19 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Hậu tố SKU Code *</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Hậu tố SKU Code *
+                </label>
                 <input
                   type="text"
                   required
                   value={activeOpt.sku_suffix || ''}
-                  onChange={(e) => setActiveOpt({ ...activeOpt, sku_suffix: e.target.value.toUpperCase().replace(/\s+/g, '') })}
+                  onChange={(e) =>
+                    setActiveOpt({
+                      ...activeOpt,
+                      sku_suffix: e.target.value.toUpperCase().replace(/\s+/g, '')
+                    })
+                  }
                   placeholder="Ví dụ: S, RED, MATT"
                   className="px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-mono focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                 />
@@ -531,6 +590,7 @@ export function AttributesClient({ initialAttributes, error }: AttributesClientP
                   onClick={() => {
                     setOptModalOpen(false);
                     setActiveOpt(null);
+                    setOptFormError('');
                   }}
                   className="px-4 py-2.5 rounded-lg border border-slate-200 text-xs sm:text-sm font-bold text-slate-500 hover:bg-slate-50"
                 >

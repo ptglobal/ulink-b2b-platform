@@ -3,10 +3,42 @@
  * Xem quy ước tại public/images/README.md. Ảnh nội dung (sản phẩm, hub…) đến từ Directus.
  */
 export const ASSETS = {
+  brand: {
+    procurementHero: '/images/brand/ulink-procurement-hero-v2.webp',
+    materialSystem: '/images/brand/ulink-material-system-v2.webp',
+    regionalFulfillment: '/images/brand/ulink-regional-fulfillment-v2.webp',
+    securePortal: '/images/brand/ulink-secure-portal-ops-v1.webp',
+    corporateCapability: '/images/brand/ulink-corporate-capability-v1.webp',
+    materialApplications: '/images/brand/ulink-material-applications-v1.webp',
+    qualityLab: '/images/brand/ulink-quality-lab-v1.webp',
+    industries: {
+      electronics: '/images/brand/ulink-industry-card-electronics-royal-v1.webp',
+      pharmaceutical: '/images/brand/ulink-industry-card-pharma-royal-v1.webp',
+      food: '/images/brand/ulink-industry-card-food-royal-v1.webp',
+      logistics: '/images/brand/ulink-industry-card-logistics-royal-v1.webp',
+      furniture: '/images/brand/ulink-industry-card-furniture-royal-v1.webp',
+      hvac: '/images/brand/ulink-industry-card-hvac-royal-v1.webp'
+    },
+    products: {
+      cleanroomWipers: '/images/brand/ulink-product-cleanroom-wipers-royal-v1.webp',
+      esdWristStrap: '/images/brand/ulink-product-esd-wrist-strap-royal-v1.webp',
+      esdTableMat: '/images/brand/ulink-product-esd-table-mat-royal-v1.webp',
+      ipaCleanroom: '/images/brand/ulink-product-ipa-cleanroom-royal-v1.webp',
+      sterileLatexGloves: '/images/brand/ulink-product-sterile-latex-gloves-royal-v1.webp'
+    },
+    operations: {
+      wms: '/images/brand/ulink-operations-wms-royal-v1.webp',
+      inbound: '/images/brand/ulink-operations-inbound-royal-v1.webp',
+      dispatch: '/images/brand/ulink-operations-dispatch-royal-v1.webp',
+      team: '/images/brand/ulink-operations-team-royal-v1.webp'
+    },
+    sustainability: '/images/brand/ulink-sustainability-royal-v1.webp',
+    careersTraining: '/images/brand/ulink-careers-training-royal-v1.webp'
+  },
   logo: {
     full: '/images/logo/ulink_logo.webp',
     mark: '/images/logo/ulink-mark.svg',
-    white: '/images/logo/ulink_logo.webp',
+    white: '/images/logo/ulink-logo-white.svg',
     main: '/images/home/logo.webp'
   },
   banners: {
@@ -59,8 +91,8 @@ export const ASSETS = {
     certSgs: '/images/home/section5/sgs.webp',
     certRohs: '/images/home/section5/RoHS-Logo.webp',
     certMsds: '/images/home/section5/mdsss.webp',
-    /** Placeholder */
-    factory: '/images/banners/login-hero.webp'
+    /** Legacy factory key retained for compatibility; do not use for new content. */
+    factory: '/images/home/section4/companyu.webp'
   },
   /** Footer assets */
   footer: {

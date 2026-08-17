@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Check, ArrowLeft } from 'lucide-react';
+import { Check, ArrowLeft } from '@/components/icons';
 
 export function ContactSuccessHero() {
   return (
@@ -16,7 +16,9 @@ export function ContactSuccessHero() {
 
       {/* Description */}
       <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl">
-        Yêu cầu tư vấn kỹ thuật & báo giá của doanh nghiệp đã được gửi đến hệ thống CRM của ULink Industries. Chúng tôi sẽ phân tích kỹ lưỡng nhu cầu vật tư của bạn và phản hồi trong thời gian sớm nhất.
+        Yêu cầu tư vấn kỹ thuật & báo giá của doanh nghiệp đã được gửi đến hệ thống CRM của ULink
+        Industries. Chúng tôi sẽ phân tích kỹ lưỡng nhu cầu vật tư của bạn và phản hồi trong thời
+        gian sớm nhất.
       </p>
 
       {/* Reference Code Box */}
@@ -33,7 +35,7 @@ export function ContactSuccessHero() {
       <div className="mt-8">
         <Link
           href="/"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-all hover:shadow-lg"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3 text-sm font-semibold text-white shadow-md hover:bg-blue-700 transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:shadow-lg"
         >
           <ArrowLeft className="h-4 w-4" /> Quay về Trang chủ
         </Link>

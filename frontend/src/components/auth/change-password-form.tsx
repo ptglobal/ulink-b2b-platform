@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
-import { Lock, Eye, EyeOff, Loader2, CheckCircle2, Mail } from 'lucide-react';
+import { Lock, Eye, EyeOff, Loader2, CheckCircle2, Mail } from '@/components/icons';
 import { useRouter } from '@/i18n/navigation';
 import { changePasswordInSession, changePasswordByToken, logout, AuthError } from '@/lib/auth';
 import { PASSWORD_REGEX } from '@/lib/validators';
@@ -25,7 +25,9 @@ function readStoredNumber(key: string): number | null {
     if (v == null) return null;
     const n = Number(v);
     return Number.isFinite(n) ? n : null;
-  } catch { return null; }
+  } catch {
+    return null;
+  }
 }
 
 /** Read the highest (furthest-in-future) lockout from both form keys. */
@@ -40,7 +42,9 @@ function writeStorage(key: string, value: number | null) {
   try {
     if (value == null) sessionStorage.removeItem(key);
     else sessionStorage.setItem(key, String(value));
-  } catch { /* quota / SSR */ }
+  } catch {
+    /* quota / SSR */
+  }
 }
 
 /** Write lockout to both keys so the sibling form sees it immediately. */
@@ -117,8 +121,12 @@ function ChangePasswordFormInner() {
   }, []);
 
   // Persist lockout state changes to sessionStorage
-  useEffect(() => { writeStorage(STORAGE_KEY_ATTEMPTS, attemptsLeft); }, [attemptsLeft]);
-  useEffect(() => { writeLockedUntil(lockedUntil); }, [lockedUntil]);
+  useEffect(() => {
+    writeStorage(STORAGE_KEY_ATTEMPTS, attemptsLeft);
+  }, [attemptsLeft]);
+  useEffect(() => {
+    writeLockedUntil(lockedUntil);
+  }, [lockedUntil]);
 
   function set(field: Fields, value: string) {
     setValues((v) => ({ ...v, [field]: value }));
@@ -179,10 +187,12 @@ function ChangePasswordFormInner() {
         } else if (typeof d.remaining === 'number' && d.remaining < 3) {
           setAttemptsLeft(d.remaining);
         }
-      } catch { /* aborted or network error — non-fatal */ }
+      } catch {
+        /* aborted or network error — non-fatal */
+      }
     })();
     return () => controller.abort();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tokenFromUrl]);
 
   // Tick `now` once per second while a lockout is active so the MM:SS
@@ -212,7 +222,12 @@ function ChangePasswordFormInner() {
   // where the user thinks they must reload to try again.
   function handleFieldChange(field: Fields, value: string) {
     set(field, value);
-    if (errors[field]) setErrors((cur) => { const next = { ...cur }; delete next[field]; return next; });
+    if (errors[field])
+      setErrors((cur) => {
+        const next = { ...cur };
+        delete next[field];
+        return next;
+      });
     if (formError && lockedUntil == null) setFormError(null);
   }
 
@@ -363,7 +378,11 @@ function ChangePasswordFormInner() {
             if (err.status === 422 && err.details) {
               const next: Partial<Record<Fields, string>> = {};
               for (const [field, msgs] of Object.entries(err.details)) {
-                if (field === 'current_password' || field === 'new_password' || field === 'confirm_new_password') {
+                if (
+                  field === 'current_password' ||
+                  field === 'new_password' ||
+                  field === 'confirm_new_password'
+                ) {
                   next[field] = (msgs as string[]).join(', ');
                 }
               }
@@ -430,9 +449,7 @@ function ChangePasswordFormInner() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold tracking-tight text-foreground">
-        {t('changePassword')}
-      </h2>
+      <h2 className="text-2xl font-bold tracking-tight text-foreground">{t('changePassword')}</h2>
       <p className="mt-2 text-sm text-muted-foreground">
         {viaEmail ? t('changePasswordEmailDesc') : t('changePasswordDesc')}
       </p>
@@ -477,7 +494,10 @@ function ChangePasswordFormInner() {
           <p className="mt-1 text-xs">
             {t('currentPasswordLockedWithCountdown', {
               mm: String(Math.max(0, Math.floor((lockedUntil - now) / 60000))).padStart(2, '0'),
-              ss: String(Math.max(0, Math.floor(((lockedUntil - now) % 60000) / 1000))).padStart(2, '0')
+              ss: String(Math.max(0, Math.floor(((lockedUntil - now) % 60000) / 1000))).padStart(
+                2,
+                '0'
+              )
             })}
           </p>
         </div>
@@ -490,7 +510,10 @@ function ChangePasswordFormInner() {
             {t('currentPasswordLabel')}
           </label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Lock
+              className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <input
               id="current_password"
               name="current_password"
@@ -501,7 +524,11 @@ function ChangePasswordFormInner() {
               placeholder={t('currentPasswordPlaceholder')}
               aria-invalid={!!errors.current_password}
               aria-describedby={errors.current_password ? 'current_password-error' : undefined}
-              className={cn(inputBase, 'pr-11', errors.current_password ? 'border-destructive' : 'border-border')}
+              className={cn(
+                inputBase,
+                'pr-11',
+                errors.current_password ? 'border-destructive' : 'border-border'
+              )}
             />
             <button
               type="button"
@@ -532,7 +559,10 @@ function ChangePasswordFormInner() {
             {t('newPasswordLabel')}
           </label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Lock
+              className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <input
               id="new_password"
               name="new_password"
@@ -543,7 +573,11 @@ function ChangePasswordFormInner() {
               placeholder={t('newPasswordPlaceholder')}
               aria-invalid={!!errors.new_password}
               aria-describedby={errors.new_password ? 'new_password-error' : undefined}
-              className={cn(inputBase, 'pr-11', errors.new_password ? 'border-destructive' : 'border-border')}
+              className={cn(
+                inputBase,
+                'pr-11',
+                errors.new_password ? 'border-destructive' : 'border-border'
+              )}
             />
           </div>
           {errors.new_password && (
@@ -560,7 +594,10 @@ function ChangePasswordFormInner() {
             {t('confirmNewPasswordLabel')}
           </label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Lock
+              className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <input
               id="confirm_new_password"
               name="confirm_new_password"
@@ -570,8 +607,13 @@ function ChangePasswordFormInner() {
               onChange={(e) => handleFieldChange('confirm_new_password', e.target.value)}
               placeholder={t('confirmNewPasswordPlaceholder')}
               aria-invalid={!!errors.confirm_new_password}
-              aria-describedby={errors.confirm_new_password ? 'confirm_new_password-error' : undefined}
-              className={cn(inputBase, errors.confirm_new_password ? 'border-destructive' : 'border-border')}
+              aria-describedby={
+                errors.confirm_new_password ? 'confirm_new_password-error' : undefined
+              }
+              className={cn(
+                inputBase,
+                errors.confirm_new_password ? 'border-destructive' : 'border-border'
+              )}
             />
           </div>
           {errors.confirm_new_password && (

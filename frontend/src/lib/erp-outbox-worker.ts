@@ -1,4 +1,10 @@
-import { buildErpIdempotencyKey, classifyErpResponse, nextErpRetryDelayMinutes, type ErpEntity, type ErpOperation } from './erp-outbound';
+import {
+  buildErpIdempotencyKey,
+  classifyErpResponse,
+  nextErpRetryDelayMinutes,
+  type ErpEntity,
+  type ErpOperation
+} from './erp-outbound';
 
 export type ErpOutboxStatus = 'pending' | 'sent' | 'failed';
 
@@ -44,12 +50,14 @@ function buildEnvelope(row: ErpOutboxRow) {
     record_id: row.record_id,
     erp_ref: row.erp_ref ?? null,
     revision: row.revision,
-    idempotency_key: row.idempotency_key ?? buildErpIdempotencyKey({
-      entity: row.entity,
-      recordId: row.record_id,
-      erpRef: row.erp_ref ?? null,
-      revision: row.revision
-    }),
+    idempotency_key:
+      row.idempotency_key ??
+      buildErpIdempotencyKey({
+        entity: row.entity,
+        recordId: row.record_id,
+        erpRef: row.erp_ref ?? null,
+        revision: row.revision
+      }),
     payload: row.payload
   };
 }
@@ -81,13 +89,17 @@ export async function drainErpOutbox(input: ErpDrainDeps): Promise<ErpDrainSumma
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(process.env.ERP_WEBHOOK_TOKEN ? { Authorization: `Bearer ${process.env.ERP_WEBHOOK_TOKEN}` } : {}),
-          'Idempotency-Key': row.idempotency_key ?? buildErpIdempotencyKey({
-            entity: row.entity,
-            recordId: row.record_id,
-            erpRef: row.erp_ref ?? null,
-            revision: row.revision
-          })
+          ...(process.env.ERP_WEBHOOK_TOKEN
+            ? { Authorization: `Bearer ${process.env.ERP_WEBHOOK_TOKEN}` }
+            : {}),
+          'Idempotency-Key':
+            row.idempotency_key ??
+            buildErpIdempotencyKey({
+              entity: row.entity,
+              recordId: row.record_id,
+              erpRef: row.erp_ref ?? null,
+              revision: row.revision
+            })
         },
         body: JSON.stringify(buildEnvelope(row)),
         signal: AbortSignal.timeout(15_000)

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Loader2, CheckCircle, XCircle, User, MapPin, Box } from 'lucide-react';
+import { ArrowLeft, Loader2, CheckCircle, XCircle, User, MapPin, Box } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
 import { DISTRICTS, getProvinceName } from '@/data/vietnam-provinces';
@@ -56,7 +56,9 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
     setActionLoading(true);
     setActionError(null);
     try {
-      const body: Record<string, string> = { status: actionModal === 'approve' ? 'approved' : 'rejected' };
+      const body: Record<string, string> = {
+        status: actionModal === 'approve' ? 'approved' : 'rejected'
+      };
       if (actionModal === 'approve' && actionNote.trim()) {
         body.approval_note = actionNote.trim();
       }
@@ -84,10 +86,10 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
   }
 
   const provinceName = request?.province
-    ? getProvinceName(request.province) ?? request.province
+    ? (getProvinceName(request.province) ?? request.province)
     : '';
   const districtName = request?.district
-    ? DISTRICTS.find((d) => d.code === request.district)?.name ?? request.district
+    ? (DISTRICTS.find((d) => d.code === request.district)?.name ?? request.district)
     : '';
 
   const statusConfig: Record<string, { label: string; classes: string }> = {
@@ -133,7 +135,12 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
           <h1 className="text-2xl font-bold">{t('detail')}</h1>
           <p className="text-sm text-muted-foreground font-mono">#{request.id}</p>
         </div>
-        <span className={cn('inline-flex items-center rounded-full px-3 py-1 text-sm font-medium', sc?.classes)}>
+        <span
+          className={cn(
+            'inline-flex items-center rounded-full px-3 py-1 text-sm font-medium',
+            sc?.classes
+          )}
+        >
           {sc?.label}
         </span>
       </div>
@@ -184,9 +191,7 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
             {request.skus && request.skus.length > 0 && (
               <InfoRow label="SKUs" value={request.skus.join(', ')} />
             )}
-            {request.message && (
-              <InfoRow label="Message" value={request.message} />
-            )}
+            {request.message && <InfoRow label="Message" value={request.message} />}
           </dl>
         </div>
 
@@ -212,7 +217,11 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
         <div className="flex items-center gap-3 pt-4">
           <button
             type="button"
-            onClick={() => { setActionModal('approve'); setActionNote(''); setActionError(null); }}
+            onClick={() => {
+              setActionModal('approve');
+              setActionNote('');
+              setActionError(null);
+            }}
             className="inline-flex items-center gap-2 rounded-md bg-green-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-green-700 transition-colors"
           >
             <CheckCircle className="h-4 w-4" />
@@ -220,7 +229,11 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
           </button>
           <button
             type="button"
-            onClick={() => { setActionModal('reject'); setActionNote(''); setActionError(null); }}
+            onClick={() => {
+              setActionModal('reject');
+              setActionNote('');
+              setActionError(null);
+            }}
             className="inline-flex items-center gap-2 rounded-md bg-red-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-red-700 transition-colors"
           >
             <XCircle className="h-4 w-4" />
@@ -246,9 +259,7 @@ export function SampleRequestDetail({ id, locale }: SampleRequestDetailProps) {
               className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:outline-none transition-colors resize-y mt-2"
             />
 
-            {actionError && (
-              <p className="mt-2 text-sm text-red-600">{actionError}</p>
-            )}
+            {actionError && <p className="mt-2 text-sm text-red-600">{actionError}</p>}
 
             <div className="flex items-center justify-end gap-3 mt-4">
               <button

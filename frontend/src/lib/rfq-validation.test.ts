@@ -134,7 +134,9 @@ test('validates scheduled delivery fields', () => {
   });
   assert.equal(result3.ok, false);
   assert.ok(result3.error.details.invalidFields);
-  assert.deepEqual(result3.error.details.invalidFields.requested_delivery_date, ['INVALID_DATE_FORMAT']);
+  assert.deepEqual(result3.error.details.invalidFields.requested_delivery_date, [
+    'INVALID_DATE_FORMAT'
+  ]);
 
   // 4. Accepts valid future dates
   const futureYear = new Date().getFullYear() + 1;

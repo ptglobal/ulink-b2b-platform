@@ -1,13 +1,22 @@
 import { errorJson, successJson } from '@/lib/api-response-next';
-import { applySkuCachePlan, parseSkuCacheWebhookPayload, planSkuCacheMutation } from '@/lib/sku-cache';
+import {
+  applySkuCachePlan,
+  parseSkuCacheWebhookPayload,
+  planSkuCacheMutation
+} from '@/lib/sku-cache';
 import { getRedis } from '@/lib/redis';
 
-function requireInternalToken(authorization: string | null | undefined, expected = process.env.INTERNAL_API_TOKEN) {
+function requireInternalToken(
+  authorization: string | null | undefined,
+  expected = process.env.INTERNAL_API_TOKEN
+) {
   if (!expected) {
     throw new Error('INTERNAL_API_TOKEN is required for SKU cache requests.');
   }
 
-  const received = authorization?.startsWith('Bearer ') ? authorization.slice(7) : authorization ?? undefined;
+  const received = authorization?.startsWith('Bearer ')
+    ? authorization.slice(7)
+    : (authorization ?? undefined);
   if (!received || received !== expected) {
     throw new Error('Invalid internal API token.');
   }

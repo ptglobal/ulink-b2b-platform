@@ -20,24 +20,20 @@ export default async function LoginPage({ params: { locale } }: Props) {
   if (user) redirect('/');
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col">
       {/* Main 2-Column Login Hero & Form Section */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-stretch py-2">
+      <div className="grid items-stretch border-b border-[#dfe5ef] bg-white lg:grid-cols-12">
         {/* Left Column: Hero Card (5 Cols) */}
         <div className="lg:col-span-5">
           <LoginHeroCard />
         </div>
 
         {/* Right Column: Form Card (7 Cols) */}
-        <div className="lg:col-span-7 rounded-2xl bg-white p-6 sm:p-10 border border-slate-100 shadow-sm flex flex-col justify-between">
-          <LoginForm />
+        <div className="flex items-center justify-center border-t border-[#dfe5ef] bg-[#f8faff] p-6 sm:p-10 lg:col-span-7 lg:border-l lg:border-t-0 lg:p-16">
+          <div className="w-full max-w-[540px] border border-[#e0e6f0] bg-white p-7 shadow-[0_12px_34px_rgba(32,55,98,.08)] sm:p-10"><LoginForm /></div>
         </div>
       </div>
-
-      {/* Partners Logos Section */}
       <LoginPartners />
-
-      {/* Direct Contact CTA Banner */}
       <LoginCta />
     </div>
   );

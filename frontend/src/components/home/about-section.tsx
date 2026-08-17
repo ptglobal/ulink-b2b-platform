@@ -8,7 +8,7 @@ export async function AboutSection() {
   const t = await getTranslations('home');
 
   return (
-    <section className="mx-auto w-full max-w-[1800px] px-4 py-8 lg:py-12">
+    <section className="mx-auto w-full max-w-[1440px] px-4 py-8 lg:py-12">
       {/* ── SECTION HEADER BAR ── */}
       <SectionHeader
         title={t('about.sectionTitle')}

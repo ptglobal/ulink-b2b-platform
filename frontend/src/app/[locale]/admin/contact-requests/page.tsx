@@ -16,8 +16,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -53,11 +55,23 @@ export default async function AdminContactRequestsPage({ params }: Props) {
   try {
     const client = await getSessionClient();
     const res = await client.request(
-      readItems('contact_requests' as any, {
-        fields: ['id', 'full_name', 'email', 'phone', 'subject', 'message', 'status', 'created_at'],
-        sort: ['-created_at', '-id'],
-        limit: -1
-      } as any)
+      readItems(
+        'contact_requests' as any,
+        {
+          fields: [
+            'id',
+            'full_name',
+            'email',
+            'phone',
+            'subject',
+            'message',
+            'status',
+            'created_at'
+          ],
+          sort: ['-created_at', '-id'],
+          limit: -1
+        } as any
+      )
     );
 
     requests = res || [];

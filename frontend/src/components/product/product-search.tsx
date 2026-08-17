@@ -2,7 +2,15 @@
 
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
-import { Search, ArrowDownUp, Download, LayoutGrid, List, ChevronDown, X } from 'lucide-react';
+import {
+  Search,
+  ArrowDownUp,
+  Download,
+  LayoutGrid,
+  List,
+  ChevronDown,
+  X
+} from '@/components/icons';
 
 interface ProductSearchProps {
   defaultValue?: string;
@@ -22,7 +30,7 @@ export default function ProductSearch({
   defaultValue = '',
   placeholder = 'Tìm sản phẩm, mã SKU hoặc từ khoá...',
   totalCount,
-  labels,
+  labels
 }: ProductSearchProps) {
   const router = useRouter();
   const pathname = usePathname();
@@ -38,10 +46,11 @@ export default function ProductSearch({
     { value: 'popular', label: labels?.sortPopular ?? 'Phổ biến nhất' },
     { value: 'newest', label: labels?.sortNewest ?? 'Mới nhất' },
     { value: 'name_asc', label: labels?.sortNameAZ ?? 'Tên A-Z' },
-    { value: 'name_desc', label: labels?.sortNameZA ?? 'Tên Z-A' },
+    { value: 'name_desc', label: labels?.sortNameZA ?? 'Tên Z-A' }
   ];
 
-  const currentSortLabel = sortOptions.find((o) => o.value === currentSort)?.label ?? sortOptions[0].label;
+  const currentSortLabel =
+    sortOptions.find((o) => o.value === currentSort)?.label ?? sortOptions[0].label;
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -96,7 +105,9 @@ export default function ProductSearch({
   }
 
   return (
-    <div className={`flex flex-col sm:flex-row items-stretch sm:items-center gap-3 ${isPending ? 'opacity-70' : ''}`}>
+    <div
+      className={`flex flex-col sm:flex-row items-stretch sm:items-center gap-3 ${isPending ? 'opacity-70' : ''}`}
+    >
       {/* Search input */}
       <form onSubmit={handleSubmit} className="flex-1 min-w-0">
         <div className="relative">
@@ -131,7 +142,10 @@ export default function ProductSearch({
           className="flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 transition-colors whitespace-nowrap"
         >
           <ArrowDownUp className="h-4 w-4 text-gray-500" />
-          <span>{labels?.sortLabel ?? 'Sắp xếp'}: <span className="font-medium">{currentSortLabel}</span></span>
+          <span>
+            {labels?.sortLabel ?? 'Sắp xếp'}:{' '}
+            <span className="font-medium">{currentSortLabel}</span>
+          </span>
           <ChevronDown className="h-3.5 w-3.5 text-gray-400" />
         </button>
         {sortOpen && (
@@ -143,7 +157,9 @@ export default function ProductSearch({
                   key={opt.value}
                   onClick={() => handleSort(opt.value)}
                   className={`w-full text-left px-4 py-2 text-sm hover:bg-blue-50 transition-colors ${
-                    currentSort === opt.value ? 'text-blue-600 font-medium bg-blue-50/50' : 'text-gray-700'
+                    currentSort === opt.value
+                      ? 'text-blue-600 font-medium bg-blue-50/50'
+                      : 'text-gray-700'
                   }`}
                 >
                   {opt.label}
@@ -158,14 +174,14 @@ export default function ProductSearch({
       <div className="hidden sm:flex items-center rounded-lg border border-gray-200 bg-white overflow-hidden">
         <button
           onClick={() => handleViewMode('grid')}
-          className={`p-2.5 transition-colors ${currentView === 'grid' ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:bg-gray-50'}`}
+          className={`flex h-11 w-11 items-center justify-center transition-colors ${currentView === 'grid' ? 'bg-brand/10 text-brand' : 'text-gray-500 hover:bg-gray-50'}`}
           aria-label="Grid view"
         >
           <LayoutGrid className="h-4 w-4" />
         </button>
         <button
           onClick={() => handleViewMode('list')}
-          className={`p-2.5 transition-colors ${currentView === 'list' ? 'bg-blue-50 text-blue-600' : 'text-gray-500 hover:bg-gray-50'}`}
+          className={`flex h-11 w-11 items-center justify-center transition-colors ${currentView === 'list' ? 'bg-brand/10 text-brand' : 'text-gray-500 hover:bg-gray-50'}`}
           aria-label="List view"
         >
           <List className="h-4 w-4" />
@@ -173,7 +189,7 @@ export default function ProductSearch({
       </div>
 
       {/* Export button */}
-      <button className="hidden lg:flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700 transition-colors whitespace-nowrap">
+      <button className="hidden h-11 items-center gap-2 whitespace-nowrap bg-blue-600 px-4 text-sm font-medium text-white transition-colors hover:bg-blue-700 lg:flex">
         <Download className="h-4 w-4" />
         {labels?.exportList ?? 'Xuất danh sách'}
         {totalCount != null && ` (${totalCount})`}

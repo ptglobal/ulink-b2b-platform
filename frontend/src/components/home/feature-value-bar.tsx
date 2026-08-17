@@ -6,7 +6,7 @@ export async function FeatureValueBar() {
   const t = await getTranslations('home');
 
   return (
-    <section className="mx-auto mt-8 w-full max-w-[1800px] px-4 py-6 sm:mt-10">
+    <section className="mx-auto mt-8 w-full max-w-[1440px] px-4 py-6 sm:mt-10">
       <div className="grid grid-cols-1 divide-y divide-border sm:grid-cols-2 sm:divide-y-0 lg:grid-cols-4 lg:divide-y-0">
         {/* Card 1 */}
         <div className="flex items-center gap-4 p-5 sm:gap-5 sm:p-6 lg:border-r lg:border-border lg:p-7">

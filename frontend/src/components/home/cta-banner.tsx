@@ -1,14 +1,33 @@
-import { ArrowRight, PhoneCall, Mail, Send } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { ArrowRight, PhoneCall, Mail, Send, Clock } from '@/components/icons';
+import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 
-export async function CtaBanner({ containerClassName = 'max-w-[1800px] px-6' }: { containerClassName?: string }) {
-  const tCta = await getTranslations('ctaBanner');
+export function CtaBanner({
+  containerClassName = 'max-w-[1440px] px-6'
+}: {
+  containerClassName?: string;
+}) {
+  const tCta = useTranslations('ctaBanner');
+  const [showToast, setShowToast] = useState(false);
+
+  useEffect(() => {
+    if (!showToast) return;
+    const timeout = window.setTimeout(() => setShowToast(false), 3000);
+    return () => window.clearTimeout(timeout);
+  }, [showToast]);
+
+  const handleCatalogueClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setShowToast(true);
+  };
 
   return (
-    <section className="w-full bg-[#3B82F6] text-white">
-      <div className={`mx-auto w-full py-16 lg:py-20 ${containerClassName}`}>
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+    <section className="w-full bg-[#1769e2] text-white">
+      <div className={`mx-auto w-full py-12 sm:py-16 ${containerClassName}`}>
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-16">
           {/* ── CỘT BÊN TRÁI: BÁO GIÁ NHANH 24H (7/12 COLS) ── */}
           <div className="flex flex-col justify-center lg:col-span-7">
             <p className="text-[14px] font-medium text-white/80 sm:text-[15px]">
@@ -22,17 +41,18 @@ export async function CtaBanner({ containerClassName = 'max-w-[1800px] px-6' }: 
             </p>
 
             {/* Action Buttons Row */}
-            <div className="mt-10 flex flex-wrap items-center gap-6">
+            <div className="mt-8 flex flex-col gap-3 sm:mt-10 sm:flex-row sm:flex-wrap sm:items-center sm:gap-5">
               <Link
                 href="/quick-order"
-                className="inline-flex items-center gap-3 rounded-lg bg-white px-8 py-3.5 text-[15px] font-bold text-brand shadow-lg transition-transform hover:scale-102 hover:bg-slate-50"
+                className="ulink-pressable inline-flex min-h-12 items-center justify-between gap-3 rounded-[3px] bg-white px-6 text-[15px] font-bold text-[#1769e2] hover:bg-[#f5f8fc] sm:w-fit sm:px-8"
               >
                 {tCta('ctaRfq')}
                 <ArrowRight className="h-5 w-5" aria-hidden="true" />
               </Link>
               <Link
                 href="/resources"
-                className="inline-flex items-center gap-3 text-[15px] font-bold text-white transition-opacity hover:opacity-80"
+                onClick={handleCatalogueClick}
+                className="ulink-pressable inline-flex min-h-12 items-center justify-between gap-3 border border-white px-6 text-[15px] font-bold text-white hover:bg-white/10 sm:w-fit sm:border-0 sm:px-3"
               >
                 {tCta('ctaCatalogue')}
                 <ArrowRight className="h-5 w-5" aria-hidden="true" />
@@ -51,7 +71,7 @@ export async function CtaBanner({ containerClassName = 'max-w-[1800px] px-6' }: 
               {/* Item 1: Phone */}
               <div className="flex items-start gap-4 border-b border-white/20 pb-5">
                 <PhoneCall className="h-6 w-6 shrink-0 text-white mt-1" aria-hidden="true" />
-                <div>
+                <div className="min-w-0">
                   <p className="text-[18px] font-extrabold text-white sm:text-[20px]">
                     {tCta('phone')}
                   </p>
@@ -64,8 +84,8 @@ export async function CtaBanner({ containerClassName = 'max-w-[1800px] px-6' }: 
               {/* Item 2: Email */}
               <div className="flex items-start gap-4 border-b border-white/20 pb-5">
                 <Mail className="h-6 w-6 shrink-0 text-white mt-1" aria-hidden="true" />
-                <div>
-                  <p className="text-[18px] font-extrabold text-white sm:text-[20px]">
+                <div className="min-w-0">
+                  <p className="break-all text-[16px] font-extrabold text-white sm:break-normal sm:text-[20px]">
                     {tCta('email')}
                   </p>
                   <p className="mt-1 text-[13px] text-white/75 sm:text-[14px]">
@@ -77,19 +97,28 @@ export async function CtaBanner({ containerClassName = 'max-w-[1800px] px-6' }: 
               {/* Item 3: IZ Connection */}
               <div className="flex items-start gap-4">
                 <Send className="h-6 w-6 shrink-0 text-white mt-1" aria-hidden="true" />
-                <div>
+                <div className="min-w-0">
                   <p className="text-[18px] font-extrabold text-white sm:text-[20px]">
                     {tCta('izConnect')}
                   </p>
-                  <p className="mt-1 text-[13px] text-white/75 sm:text-[14px]">
-                    {tCta('izList')}
-                  </p>
+                  <p className="mt-1 text-[13px] text-white/75 sm:text-[14px]">{tCta('izList')}</p>
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Toast Notification */}
+      {showToast && (
+        <div
+          className="fixed inset-x-4 z-50 flex min-h-12 items-center gap-2.5 border border-amber-200 bg-amber-50 px-4 py-3 text-amber-800 shadow-lg animate-in fade-in slide-in-from-bottom-5 duration-200 sm:inset-x-auto sm:right-5"
+          style={{ bottom: 'max(1rem, env(safe-area-inset-bottom))' }}
+        >
+          <Clock className="h-5 w-5 shrink-0 text-amber-600" />
+          <span className="text-sm font-semibold">{tCta('cataloguePending')}</span>
+        </div>
+      )}
     </section>
   );
 }

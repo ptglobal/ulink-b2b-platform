@@ -62,7 +62,9 @@ function normalizeRecord(record: ProductSku): ProductSku {
     ...record,
     sku_code: normalizeSkuCode(record.sku_code),
     attributes:
-      record.attributes && typeof record.attributes === 'object' && !Array.isArray(record.attributes)
+      record.attributes &&
+      typeof record.attributes === 'object' &&
+      !Array.isArray(record.attributes)
         ? record.attributes
         : null
   };
@@ -127,11 +129,15 @@ export function parseSkuCacheWebhookPayload(
       ...(typeof candidate.product === 'number' || candidate.product === null
         ? { product: candidate.product }
         : {}),
-      ...(typeof candidate.unit === 'string' || candidate.unit === null ? { unit: candidate.unit } : {}),
+      ...(typeof candidate.unit === 'string' || candidate.unit === null
+        ? { unit: candidate.unit }
+        : {}),
       ...(typeof candidate.pack_size === 'string' || candidate.pack_size === null
         ? { pack_size: candidate.pack_size }
         : {}),
-      ...(candidate.attributes && typeof candidate.attributes === 'object' && !Array.isArray(candidate.attributes)
+      ...(candidate.attributes &&
+      typeof candidate.attributes === 'object' &&
+      !Array.isArray(candidate.attributes)
         ? { attributes: candidate.attributes as Record<string, unknown> }
         : candidate.attributes === null
           ? { attributes: null }
@@ -232,9 +238,7 @@ export async function applySkuCachePlan(
 export async function lookupSkuByCode(
   rawCode: string,
   deps: SkuCacheLookupDeps
-): Promise<
-  { ok: true; cache: 'HIT' | 'MISS'; data: ProductSku } | { ok: false; status: 404 }
-> {
+): Promise<{ ok: true; cache: 'HIT' | 'MISS'; data: ProductSku } | { ok: false; status: 404 }> {
   const skuCode = normalizeSkuCode(rawCode);
   if (!skuCode) {
     return { ok: false, status: 404 };

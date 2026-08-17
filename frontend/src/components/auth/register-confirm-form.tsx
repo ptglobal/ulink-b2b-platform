@@ -3,7 +3,7 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import { useRouter } from '@/i18n/navigation';
 import { useTranslations } from 'next-intl';
-import { ArrowRight, Loader2, CheckCircle2, Mail, User, Building2, Phone } from 'lucide-react';
+import { ArrowRight, Loader2, CheckCircle2, Mail, User, Building2, Phone } from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 import { register, AuthError } from '@/lib/auth';
 import { REGISTER_DRAFT_KEY, type RegisterDraft } from '@/components/auth/register-form';
@@ -170,9 +170,7 @@ export function RegisterConfirmForm() {
         <h2 className="text-2xl font-bold tracking-tight text-foreground">
           {t('registerConfirmTitle')}
         </h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t('registerConfirmMissingDraft')}
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{t('registerConfirmMissingDraft')}</p>
         <button
           type="button"
           onClick={startOver}
@@ -203,7 +201,10 @@ export function RegisterConfirmForm() {
 
       <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
         {formError && (
-          <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+          <p
+            role="alert"
+            className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+          >
             {formError}
           </p>
         )}
@@ -239,15 +240,7 @@ export function RegisterConfirmForm() {
   );
 }
 
-function Row({
-  icon: Icon,
-  label,
-  value
-}: {
-  icon: typeof Mail;
-  label: string;
-  value: string;
-}) {
+function Row({ icon: Icon, label, value }: { icon: typeof Mail; label: string; value: string }) {
   return (
     <div className="flex items-start gap-2.5">
       <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />

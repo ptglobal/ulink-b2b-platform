@@ -29,6 +29,7 @@
     "noAccount": "Chưa có tài khoản",
     "registerNow": "Đăng ký ngay",
     "loggingIn": "Đang đăng nhập…",
+    "loginSupport": "Bạn gặp khó khăn khi đăng nhập? Liên hệ hotline",
     "emailRequired": "Vui lòng nhập email.",
     "emailInvalid": "Email không hợp lệ.",
     "emailTooLong": "Email quá dài (tối đa 254 ký tự).",
@@ -188,12 +189,12 @@
   },
   "nav": {
     "home": "Trang chủ",
-    "hubs": "Trung tâm vùng",
+    "hubs": "Cụm/KCN",
     "solutions": "Giải pháp",
     "products": "Sản phẩm",
     "industries": "Ngành nghề",
     "resources": "Tài nguyên",
-    "quickOrder": "Gửi RFQ",
+    "quickOrder": "Đặt hàng/RFQ",
     "about": "Về Chúng tôi",
     "careers": "Cơ hội nghề nghiệp",
     "contact": "Liên hệ",
@@ -206,16 +207,27 @@
     "myRfqs": "Lịch sử báo giá",
     "logout": "Đăng xuất",
     "search": "Tìm kiếm",
-    "cart": "Giỏ hàng"
+    "cart": "Giỏ hàng",
+    "menu": "Danh mục",
+    "closeMenu": "Đóng danh mục",
+    "skipToContent": "Đi đến nội dung chính"
   },
   "home": {
     "hero": {
       "eyebrowTop": "NHÀ SẢN XUẤT VÀ PHÂN PHỐI VẬT TƯ CÔNG NGHIỆP",
       "eyebrowSub": "PHÒNG SẠCH VÀ BAO BÌ ĐÓNG GÓI",
-      "title": "Giải pháp vật tư tiêu hao công nghiệp cho sản xuất.",
+      "title": "Vật tư công nghiệp, sẵn sàng cho sản xuất.",
       "description": "ULINK Industries cung cấp các giải pháp toàn diện và sản phẩm chất lượng cao, đáp ứng nhu cầu sản xuất và đảm bảo chất lượng trong mọi quy trình.",
       "ctaRfq": "Yêu cầu Báo giá",
-      "ctaCatalogue": "Tải catalogue"
+      "ctaCatalogue": "Tải catalogue",
+      "cataloguePending": "Tài liệu đang chờ cập nhật",
+      "assurance": "Tư vấn kỹ thuật, đối chiếu SKU và hồ sơ vật liệu được kết nối trong cùng một quy trình mua hàng.",
+      "imageAlt": "Chuyên viên phòng sạch kiểm tra vật tư đóng gói tại trung tâm vận hành ULink",
+      "flowTitle": "Một luồng rõ ràng từ nhu cầu đến giao hàng",
+      "flowRequirement": "Xác định yêu cầu",
+      "flowSku": "Đối chiếu SKU",
+      "flowQuote": "Mẫu và báo giá",
+      "flowDelivery": "Giao hàng vùng"
     },
     "features": {
       "nationwideTitle": "Phục vụ toàn quốc",
@@ -416,15 +428,15 @@
       "sectionSubTitle": "Câu chuyện triển khai thực tế với các nhà sản xuất",
       "viewAll": "Xem tất cả",
       "card1Category": "Ứng dụng màng co PE trong đóng gói thực phẩm/Bắc Ninh",
-      "card1Title": "Giải pháp đóng gói công nghiệp tối ưu - để cố định cụm nhiều chai nước ngọt, bia, hoặc lốc sữa hộp thành các khối chắc chắn, tiện lợi cho việc lưu kho và phân phối.",
+      "card1Title": "Kiểm soát hạt trong phòng sạch bán dẫn: 5 điểm cần xác minh trước khi nhập vật tư.",
       "card1Metric": "Tăng hiệu vận chuyển",
       "card1Tag": "Shrink film - Thực phẩm",
       "card2Category": "Ứng dụng màng co PE trong đóng gói thực phẩm/Bắc Ninh",
-      "card2Title": "Giải pháp đóng gói công nghiệp tối ưu - để cố định cụm nhiều chai nước ngọt, bia, hoặc lốc sữa hộp thành các khối chắc chắn, tiện lợi cho việc lưu kho và phân phối.",
+      "card2Title": "Kiểm định màng PE quấn pallet: độ dày, độ bám và tải trọng vận chuyển.",
       "card2Metric": "Tăng hiệu vận chuyển",
       "card2Tag": "Shrink film - Thực phẩm",
       "card3Category": "Ứng dụng màng co PE trong đóng gói thực phẩm/Bắc Ninh",
-      "card3Title": "Giải pháp đóng gói công nghiệp tối ưu - để cố định cụm nhiều chai nước ngọt, bia, hoặc lốc sữa hộp thành các khối chắc chắn, tiện lợi cho việc lưu kho và phân phối.",
+      "card3Title": "Audit ESD tại bàn thao tác điện tử: từ vòng đeo tay đến túi shielding.",
       "card3Metric": "Tăng hiệu vận chuyển",
       "card3Tag": "Shrink film - Thực phẩm"
     },
@@ -504,6 +516,9 @@
     "indElectronics": "Điện tử & Bán dẫn",
     "indPharma": "Dược phẩm & Y tế",
     "indFood": "Thực phẩm & Đồ uống",
+    "indLogistics": "Kho vận & Logistics",
+    "indFurniture": "Đồ gỗ & Nội thất",
+    "indHvac": "Cơ khí & HVAC",
     "indMachinery": "Cơ khí & Khuôn mẫu",
     "indLab": "QA/QC & Lab",
     "productsTitle": "SẢN PHẨM",
@@ -521,6 +536,10 @@
     "eyebrow": "Cụm khu công nghiệp",
     "title": "Kết nối các cụm công nghiệp trọng điểm tại Việt Nam",
     "description": "ULINK INDUSTRIES cung cấp giải pháp và dịch vụ cho các cụm công nghiệp trên toàn quốc, tối ưu chuỗi cung ứng và nâng cao hiệu quả sản xuất cho doanh nghiệp",
+    "hubsSection": {
+      "title": "Mạng lưới trung tâm vùng",
+      "subtitle": "Chọn hub để xem phạm vi phục vụ hoặc gửi RFQ theo khu vực"
+    },
     "stats": {
       "distanceLabel": "Khoảng cách phục vụ trung bình",
       "distanceValue": "15",
@@ -580,7 +599,9 @@
       "error": "Có lỗi xảy ra, vui lòng thử lại.",
       "required": "Trường bắt buộc",
       "invalidEmail": "Email không hợp lệ",
-      "invalidPhone": "SĐT phải có 10-11 chữ số"
+      "invalidPhone": "SĐT phải có 10-11 chữ số",
+      "cancel": "Hủy",
+      "close": "Đóng"
     },
     "featuredProducts": {
       "title": "Sản phẩm nổi bật",
@@ -743,6 +764,35 @@
     "desc": "Liên hệ ngay với ULINK để được tư vấn giải pháp tối ưu cho cụm doanh nghiệp của bạn.",
     "button": "Liên hệ ngay"
   },
+  "aboutContact": {
+    "label": "Trung tâm hỗ trợ doanh nghiệp",
+    "heading": "Kết nối với đội ngũ ULink Industries",
+    "description": "Gửi yêu cầu kỹ thuật, nhu cầu vật tư hoặc kế hoạch cung ứng. Đội ngũ ULink sẽ phản hồi trong vòng 24 giờ làm việc.",
+    "formTitle": "Gửi yêu cầu tư vấn",
+    "nameLabel": "Họ và tên",
+    "namePlaceholder": "Nguyễn Văn A",
+    "phoneLabel": "Số điện thoại",
+    "phonePlaceholder": "0912 345 678",
+    "emailLabel": "Email doanh nghiệp",
+    "emailPlaceholder": "contact@company.com",
+    "subjectLabel": "Chủ đề",
+    "subjectPlaceholder": "Chọn chủ đề",
+    "subjectRfq": "Yêu cầu báo giá vật tư",
+    "subjectSupply": "Hợp tác cung ứng",
+    "subjectTechnical": "Tư vấn giải pháp kỹ thuật",
+    "subjectOther": "Yêu cầu khác",
+    "messageLabel": "Nội dung cần tư vấn",
+    "messagePlaceholder": "Mô tả sản phẩm, tiêu chuẩn, số lượng hoặc thời gian giao hàng cần hỗ trợ…",
+    "submit": "Gửi yêu cầu",
+    "submitting": "Đang gửi…",
+    "submitErrorTitle": "Chưa thể gửi yêu cầu",
+    "contactDetailsLabel": "Thông tin liên hệ ULink Industries",
+    "officeLabel": "Văn phòng và Hub Hà Nam",
+    "hotlineLabel": "Hotline tư vấn",
+    "emailContactLabel": "Email",
+    "mapTitle": "Vị trí Hub Hà Nam của ULink Industries",
+    "addressFallback": "Lô CN05 KCN Đồng Văn IV, xã Đại Cương, Kim Bảng, Hà Nam, Việt Nam"
+  },
   "aboutSidebar": {
     "heading": "VỀ CHÚNG TÔI",
     "hub": "Trung tâm phân phối Hà Nam",
@@ -812,6 +862,7 @@
       "desc1": "ULink Industries xây dựng hệ thống quản lý chất lượng toàn diện, tuân thủ các tiêu chuẩn quốc tế nhằm đảm bảo sản phẩm và dịch vụ đạt độ tin cậy cao nhất.",
       "desc2": "Chúng tôi không ngừng cải tiến để mang đến giá trị bền vững cho khách hàng và đối tác.",
       "downloadBtn": "Tải chính sách chất lượng",
+      "policyPending": "Tài liệu chính sách chất lượng đang được cập nhật",
       "pillars": {
         "safety": {
           "title": "An toàn",
@@ -836,6 +887,7 @@
       "subtitle": "ULink Industries áp dụng và duy trì các tiêu chuẩn quốc tế trong quản lý và vận hành.",
       "viewAll": "Xem tất cả chứng chỉ",
       "downloadCert": "Tải chứng chỉ",
+      "certPending": "Chứng chỉ đang được cập nhật",
       "certs": {
         "iso9001": {
           "title": "ISO 9001:2015",
@@ -1074,7 +1126,7 @@
       "sectionSubtitle": "ULINK INDUSTRIES - Đối tác cung cấp vật tư công nghiệp cho các nhà sản xuất",
       "viewDetails": "Xem chi tiết",
       "hubHeading": "Hub Hà Nam — Trung tâm sản xuất & Phân phối",
-      "hubDesc": "Tọaạc tại vị trí chiến lược, Hub Hà Nam là nơi sản xuất, cung ứng các sản phẩm của ULink Industries, đảm bảo nguồn hàng dồi dào, đóng gói chuyên nghiệp và tiến độ phân phối hỏa tốc.",
+      "hubDesc": "Tọa lạc tại vị trí chiến lược, Hub Hà Nam là nơi sản xuất, cung ứng các sản phẩm của ULink Industries, đảm bảo nguồn hàng dồi dào, đóng gói chuyên nghiệp và tiến độ phân phối hỏa tốc.",
       "metric1Val": "10.000 m²",
       "metric1Label": "Diện tích kho hiện đại",
       "metric2Val": "24-48h",
@@ -1272,6 +1324,7 @@
     "description": "Gửi yêu cầu về sản phẩm, số lượng và thời gian giao hàng. Đội ngũ kinh doanh của ULink Industries sẽ phản hồi nhanh với yêu cầu Báo giá, mẫu thử, và đề xuất tiêu chuẩn kỹ thuật chi tiết trong vòng 1 ngày.",
     "ctaRfq": "Yêu cầu Báo giá",
     "ctaCatalogue": "Tải catalogue",
+    "cataloguePending": "Tài liệu đang chờ cập nhật",
     "directContactTitle": "Liên hệ trực tiếp",
     "phone": "0247.309.9899",
     "phoneHours": "Thứ Hai - Thứ Bảy  8h : 00 - 17h : 30",

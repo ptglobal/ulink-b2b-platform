@@ -29,6 +29,7 @@
     "noAccount": "Don't have an account?",
     "registerNow": "Register now",
     "loggingIn": "Signing in…",
+    "loginSupport": "Need help signing in? Contact our hotline",
     "emailRequired": "Please enter your email.",
     "emailInvalid": "Invalid email address.",
     "emailTooLong": "Email is too long (max 254 characters).",
@@ -188,12 +189,12 @@
   },
   "nav": {
     "home": "Home",
-    "hubs": "Regional Hubs",
+    "hubs": "Clusters / IZs",
     "solutions": "Solutions",
     "products": "Products",
     "industries": "Industries",
     "resources": "Resources",
-    "quickOrder": "Submit RFQ",
+    "quickOrder": "Order / RFQ",
     "about": "About Us",
     "careers": "Careers",
     "contact": "Contact",
@@ -206,16 +207,27 @@
     "myRfqs": "RFQ History",
     "logout": "Log out",
     "search": "Search",
-    "cart": "Cart"
+    "cart": "Cart",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "skipToContent": "Skip to main content"
   },
   "home": {
     "hero": {
       "eyebrowTop": "INDUSTRIAL MATERIALS MANUFACTURER & DISTRIBUTOR",
       "eyebrowSub": "CLEANROOM & PACKAGING SOLUTIONS",
-      "title": "Industrial Consumable Materials Solutions for Production.",
+      "title": "Industrial supplies, ready for production.",
       "description": "ULINK Industries provides comprehensive solutions and high-quality products, meeting production needs and ensuring quality in every process.",
       "ctaRfq": "Request Quotation",
-      "ctaCatalogue": "Download Catalogue"
+      "ctaCatalogue": "Download Catalogue",
+      "cataloguePending": "The catalogue document is pending update",
+      "assurance": "Technical advice, SKU matching, and material documentation stay connected in one procurement workflow.",
+      "imageAlt": "Cleanroom specialist inspecting packaged supplies at a ULink operations hub",
+      "flowTitle": "One clear flow from requirement to delivery",
+      "flowRequirement": "Define requirement",
+      "flowSku": "Match the SKU",
+      "flowQuote": "Sample and quote",
+      "flowDelivery": "Regional delivery"
     },
     "features": {
       "nationwideTitle": "Nationwide Service",
@@ -416,15 +428,15 @@
       "sectionSubTitle": "Real-world implementation stories with manufacturers",
       "viewAll": "View all",
       "card1Category": "PE Shrink Film Application in Food Packaging / Bac Ninh",
-      "card1Title": "Optimal industrial packaging solution - securing bottle bundles and beverage cartons into solid blocks for easy warehousing and distribution.",
+      "card1Title": "Semiconductor cleanroom particle control: five checks before material approval.",
       "card1Metric": "Increased shipping efficiency",
       "card1Tag": "Shrink film - Food & Beverage",
       "card2Category": "PE Shrink Film Application in Food Packaging / Bac Ninh",
-      "card2Title": "Optimal industrial packaging solution - securing bottle bundles and beverage cartons into solid blocks for easy warehousing and distribution.",
+      "card2Title": "PE pallet film inspection: thickness, cling performance and transport load.",
       "card2Metric": "Increased shipping efficiency",
       "card2Tag": "Shrink film - Food & Beverage",
       "card3Category": "PE Shrink Film Application in Food Packaging / Bac Ninh",
-      "card3Title": "Optimal industrial packaging solution - securing bottle bundles and beverage cartons into solid blocks for easy warehousing and distribution.",
+      "card3Title": "ESD workstation audit: from wrist straps to shielding bags.",
       "card3Metric": "Increased shipping efficiency",
       "card3Tag": "Shrink film - Food & Beverage"
     },
@@ -504,6 +516,9 @@
     "indElectronics": "Electronics & Semiconductor",
     "indPharma": "Pharmaceutical & Medical",
     "indFood": "Food & Beverage",
+    "indLogistics": "Warehousing & Logistics",
+    "indFurniture": "Furniture & Wood",
+    "indHvac": "Industrial & HVAC",
     "indMachinery": "Machinery & Mold",
     "indLab": "QA/QC & Laboratory",
     "productsTitle": "PRODUCTS",
@@ -521,6 +536,10 @@
     "eyebrow": "Industrial Clusters",
     "title": "Connecting key industrial clusters in Vietnam",
     "description": "ULINK INDUSTRIES provides solutions and services for industrial clusters nationwide, optimizing supply chains and enhancing production efficiency for businesses",
+    "hubsSection": {
+      "title": "Regional hub network",
+      "subtitle": "Choose a hub to review coverage or submit a region-specific RFQ"
+    },
     "stats": {
       "distanceLabel": "Average service distance",
       "distanceValue": "15",
@@ -580,7 +599,9 @@
       "error": "An error occurred, please try again.",
       "required": "Required field",
       "invalidEmail": "Invalid email",
-      "invalidPhone": "Phone must be 10-11 digits"
+      "invalidPhone": "Phone must be 10-11 digits",
+      "cancel": "Cancel",
+      "close": "Close"
     },
     "featuredProducts": {
       "title": "Featured Products",
@@ -743,6 +764,35 @@
     "desc": "Contact ULINK now for advice on the optimal solution for your business cluster.",
     "button": "Contact now"
   },
+  "aboutContact": {
+    "label": "Business support desk",
+    "heading": "Connect with the ULink Industries team",
+    "description": "Send a technical request, material requirement, or supply plan. The ULink team will respond within one business day.",
+    "formTitle": "Send a consultation request",
+    "nameLabel": "Full name",
+    "namePlaceholder": "Nguyen Van A",
+    "phoneLabel": "Phone number",
+    "phonePlaceholder": "0912 345 678",
+    "emailLabel": "Business email",
+    "emailPlaceholder": "contact@company.com",
+    "subjectLabel": "Subject",
+    "subjectPlaceholder": "Select a subject",
+    "subjectRfq": "Material quotation request",
+    "subjectSupply": "Supply partnership",
+    "subjectTechnical": "Technical solution consulting",
+    "subjectOther": "Other request",
+    "messageLabel": "Consultation details",
+    "messagePlaceholder": "Describe the product, standard, quantity, or delivery schedule you need support with…",
+    "submit": "Send request",
+    "submitting": "Sending…",
+    "submitErrorTitle": "Request could not be sent",
+    "contactDetailsLabel": "ULink Industries contact details",
+    "officeLabel": "Ha Nam office and hub",
+    "hotlineLabel": "Consulting hotline",
+    "emailContactLabel": "Email",
+    "mapTitle": "ULink Industries Ha Nam Hub location",
+    "addressFallback": "Lot CN05, Dong Van IV Industrial Park, Dai Cuong, Kim Bang, Ha Nam, Vietnam"
+  },
   "aboutSidebar": {
     "heading": "ABOUT US",
     "hub": "Hà Nam Distribution Center",
@@ -812,6 +862,7 @@
       "desc1": "ULink Industries builds a comprehensive quality management system, complying with international standards to ensure products and services achieve the highest reliability.",
       "desc2": "We continuously improve to bring sustainable value to our customers and partners.",
       "downloadBtn": "Download quality policy",
+      "policyPending": "Quality policy document is pending update",
       "pillars": {
         "safety": {
           "title": "Safety",
@@ -836,6 +887,7 @@
       "subtitle": "ULink Industries applies and maintains international standards in management and operations.",
       "viewAll": "View all certificates",
       "downloadCert": "Download certificate",
+      "certPending": "Certificate document is pending update",
       "certs": {
         "iso9001": {
           "title": "ISO 9001:2015",
@@ -1272,6 +1324,7 @@
     "description": "Send your product requirements, quantity, and delivery timeline. The ULink Industries sales team will promptly respond with quotes, samples, and detailed technical specifications within 1 day.",
     "ctaRfq": "Request Quotation",
     "ctaCatalogue": "Download catalog",
+    "cataloguePending": "The catalogue document is pending update",
     "directContactTitle": "Direct Contact",
     "phone": "0247.309.9899",
     "phoneHours": "Monday - Saturday  8:00 - 17:30",

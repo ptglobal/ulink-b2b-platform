@@ -2,7 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Link } from '@/i18n/navigation';
 import { getTranslations } from 'next-intl/server';
-import { ArrowRight, ThumbsUp } from 'lucide-react';
+import { ArrowRight, Star, ThumbsUp } from '@/components/icons';
 
 interface AboutUsHubProps {
   locale: string;
@@ -31,109 +31,105 @@ export default async function AboutUsHub({ locale }: AboutUsHubProps) {
   ];
 
   return (
-    <section className="w-full mt-16 lg:mt-24 border-t border-slate-100 pt-16">
-      {/* Section Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
-        <div className="flex items-start gap-3">
-          {/* Blue decorative bar */}
-          <div className="w-1.5 h-7 bg-blue-600 rounded-full shrink-0 mt-1" />
-          <div className="space-y-1">
-            <h2 className="text-xl sm:text-2xl font-extrabold text-[#0F1E36] tracking-tight">
-              {t('aboutHub.sectionTitle')}
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
-              {t('aboutHub.sectionSubtitle')}
-            </p>
+    <section className="bg-white py-12 sm:py-14 lg:py-16">
+      <div className="mx-auto w-[calc(100%_-_2rem)] max-w-[80rem] sm:w-[calc(100%_-_4rem)]">
+        <div className="mb-9 flex flex-col gap-4 border-b border-[#e5e9f0] pb-5 md:flex-row md:items-end md:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="mt-1 flex flex-col gap-1" aria-hidden="true">
+              <i className="h-1.5 w-1.5 rounded-full bg-brand" />
+              <i className="h-1.5 w-1.5 rounded-full bg-brand/55" />
+              <i className="h-1.5 w-1.5 rounded-full bg-brand/25" />
+            </span>
+            <div>
+              <h2 className="text-[22px] font-semibold tracking-[-0.02em] text-foreground sm:text-2xl">
+                {t('aboutHub.sectionTitle')}
+              </h2>
+              <p className="mt-2 text-[13px] leading-5 text-muted-foreground">
+                {t('aboutHub.sectionSubtitle')}
+              </p>
+            </div>
           </div>
+
+          <Link
+            href="/about"
+            className="inline-flex min-h-11 shrink-0 items-center gap-2 text-[12px] font-semibold text-brand hover:text-brand-strong md:mb-0"
+          >
+            {t('aboutHub.viewDetails')}
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
         </div>
 
-        <Link
-          href="/about"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 transition-colors shrink-0 md:mb-1"
-        >
-          {t('aboutHub.viewDetails')}
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
-      </div>
+        <div className="grid items-stretch gap-8 lg:grid-cols-2 lg:gap-12">
+          <div className="relative aspect-[4/3] min-h-[19rem] overflow-hidden rounded-[3px] bg-[#eef1f6]">
+            <Image
+              src="/images/industries/Ulink.png"
+              alt={t('aboutHub.hubHeading')}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+            />
+          </div>
 
-      {/* Split Layout Container */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-        {/* Left Side: Modern Building Image */}
-        <div className="lg:col-span-5 relative aspect-[4/3] lg:aspect-auto lg:min-h-[450px] w-full rounded-2xl overflow-hidden shadow-sm border border-slate-100 bg-slate-50">
-          <Image
-            src="/images/industries/Ulink.png"
-            alt={t('aboutHub.hubHeading')}
-            fill
-            className="object-cover"
-            sizes="(max-width: 1024px) 100vw, 40vw"
-            priority
-          />
-        </div>
-
-        {/* Right Side: Metrics & Highlights Panel */}
-        <div className="lg:col-span-7 bg-[#F8FAFC]/65 rounded-2xl border border-slate-100 p-6 sm:p-8 flex flex-col justify-between">
-          <div>
-            {/* Title & Description */}
-            <h3 className="text-xl sm:text-2xl font-extrabold text-[#0F1E36] tracking-tight mb-4">
+          <div className="flex min-w-0 flex-col py-1 lg:py-5">
+            <h3 className="max-w-[22ch] text-[26px] font-semibold leading-[1.15] tracking-[-0.025em] text-foreground sm:text-[30px]">
               {t('aboutHub.hubHeading')}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium mb-8">
+            <p className="mt-4 max-w-[58ch] text-[13px] leading-6 text-muted-foreground">
               {t('aboutHub.hubDesc')}
             </p>
 
-            {/* Metrics 2x2 Grid */}
-            <div className="grid grid-cols-2 gap-6 sm:gap-8 mb-8">
+            <div className="mt-7 grid grid-cols-2 gap-x-8 gap-y-6">
               {metrics.map((metric, idx) => (
-                <div key={idx} className="flex flex-col">
-                  <span className="text-xl sm:text-2.5xl font-extrabold text-blue-600 leading-tight">
+                <div key={idx}>
+                  <span className="block text-[22px] font-semibold leading-tight text-[#263a68] sm:text-2xl">
                     {metric.value}
                   </span>
-                  <span className="text-xs text-slate-500 font-medium mt-1.5 leading-snug">
+                  <span className="mt-1.5 block text-[11px] leading-4 text-muted-foreground">
                     {metric.label}
                   </span>
                 </div>
               ))}
             </div>
-          </div>
 
-          {/* Lower Highlight Cards Bar */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-white rounded-2xl border border-slate-100/80 shadow-sm divide-y sm:divide-y-0 sm:divide-x divide-slate-100">
-            {/* Highlight 1: Pie Chart circle */}
-            <div className="flex items-center gap-2.5 sm:px-2 pt-2 first:pt-0 sm:pt-0">
-              <div className="w-5 h-5 rounded-full border-[3px] border-t-amber-500 border-r-emerald-500 border-b-blue-500 border-l-slate-200 shrink-0" />
-              <span className="text-[10px] sm:text-xs text-slate-600 font-bold leading-tight">
-                {t('aboutHub.highlight1')}
-              </span>
-            </div>
-
-            {/* Highlight 2: Cost Optimization dollar */}
-            <div className="flex items-center gap-2.5 sm:pl-4 pt-2 sm:pt-0">
-              <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
-                <span className="text-blue-600 font-black text-xs">$</span>
+            <div className="mt-auto grid grid-cols-2 border border-[#e0e5ee] bg-white sm:grid-cols-4">
+              {/* Highlight 1: Pie Chart circle */}
+              <div className="flex min-h-16 items-center gap-2.5 border-b border-r border-[#e0e5ee] px-3 sm:border-b-0">
+                <div className="w-5 h-5 rounded-full border-[3px] border-t-amber-500 border-r-emerald-500 border-b-blue-500 border-l-slate-200 shrink-0" />
+                <span className="text-[10px] font-semibold leading-tight text-slate-600">
+                  {t('aboutHub.highlight1')}
+                </span>
               </div>
-              <span className="text-[10px] sm:text-xs text-slate-600 font-bold leading-tight">
-                {t('aboutHub.highlight2')}
-              </span>
-            </div>
 
-            {/* Highlight 3: Quality Star Ratings */}
-            <div className="flex items-center gap-2.5 sm:pl-4 pt-2 sm:pt-0">
-              <div className="flex flex-col items-start gap-0.5 shrink-0">
-                <div className="flex items-center text-[10px] text-amber-400">
-                  <span>★</span><span>★</span><span>★</span><span>★</span><span className="text-slate-300">★</span>
+              {/* Highlight 2: Cost Optimization dollar */}
+              <div className="flex min-h-16 items-center gap-2.5 border-b border-[#e0e5ee] px-3 sm:border-b-0 sm:border-r">
+                <div className="w-5 h-5 rounded-full bg-blue-50 flex items-center justify-center shrink-0">
+                  <span className="text-blue-600 font-black text-xs">$</span>
                 </div>
+                <span className="text-[10px] font-semibold leading-tight text-slate-600">
+                  {t('aboutHub.highlight2')}
+                </span>
               </div>
-              <span className="text-[10px] sm:text-xs text-slate-600 font-bold leading-tight">
-                {t('aboutHub.highlight3')}
-              </span>
-            </div>
 
-            {/* Highlight 4: Thumbs up count */}
-            <div className="flex items-center gap-2.5 sm:pl-4 pt-2 sm:pt-0">
-              <ThumbsUp className="h-4 w-4 text-blue-500 fill-blue-50 shrink-0" />
-              <span className="text-[10px] sm:text-xs text-slate-600 font-bold leading-tight">
-                {t('aboutHub.highlight4')}
-              </span>
+              {/* Highlight 3: Quality Star Ratings */}
+              <div className="flex min-h-16 items-center gap-2.5 border-r border-[#e0e5ee] px-3">
+                <div className="flex shrink-0 items-center text-amber-400">
+                  {[0, 1, 2, 3].map((star) => (
+                    <Star key={star} className="h-2.5 w-2.5 fill-current" aria-hidden="true" />
+                  ))}
+                  <Star className="h-2.5 w-2.5 text-slate-300" aria-hidden="true" />
+                </div>
+                <span className="text-[10px] font-semibold leading-tight text-slate-600">
+                  {t('aboutHub.highlight3')}
+                </span>
+              </div>
+
+              {/* Highlight 4: Thumbs up count */}
+              <div className="flex min-h-16 items-center gap-2.5 px-3">
+                <ThumbsUp className="h-4 w-4 text-blue-500 fill-blue-50 shrink-0" />
+                <span className="text-[10px] font-semibold leading-tight text-slate-600">
+                  {t('aboutHub.highlight4')}
+                </span>
+              </div>
             </div>
           </div>
         </div>

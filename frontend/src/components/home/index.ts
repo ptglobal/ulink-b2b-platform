@@ -1,7 +1,5 @@
 export { SectionHeader } from './section-header';
-export { HeroBanner } from './hero-banner';
 export { FeatureValueBar } from './feature-value-bar';
-export { ProductCategories } from './product-categories';
 export { IndustrySolutions } from './industry-solutions';
 export { AboutSection } from './about-section';
 export { TargetSegments } from './target-segments';

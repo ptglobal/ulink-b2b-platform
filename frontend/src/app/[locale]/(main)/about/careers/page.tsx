@@ -7,13 +7,11 @@ import { CareersGallery } from '@/components/about/careers/careers-gallery';
 import { CareersJobList } from '@/components/about/careers/careers-job-list';
 import { CareersNewsletter } from '@/components/about/careers/careers-newsletter';
 import { CareersContact } from '@/components/about/careers/careers-contact';
+import { getPagePresentation } from '@/lib/page-presentation';
 
-export default async function CareersPage({
-  params: { locale },
-}: {
-  params: { locale: string };
-}) {
+export default async function CareersPage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
+  const presentation = await getPagePresentation('about-careers', locale);
 
   return (
     <div className="w-full bg-white">
@@ -32,10 +30,10 @@ export default async function CareersPage({
         </nav>
 
         {/* 7 Section chính */}
-        <CareersHero />
+        <CareersHero locale={locale} media={presentation?.heroMedia} />
         <CareersCulture />
-        <CareersNews />
-        <CareersGallery />
+        <CareersNews media={presentation?.supportingMedia?.slice(0, 4)} />
+        <CareersGallery media={presentation?.supportingMedia?.slice(4, 10)} />
         <CareersJobList />
         <CareersNewsletter />
         <CareersContact />

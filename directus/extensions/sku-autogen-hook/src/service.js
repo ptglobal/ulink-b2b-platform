@@ -14,6 +14,20 @@ const MAX_COMBINATIONS = 10000;
 const BATCH_SIZE = 100;
 
 /**
+ * Assert that a product has at least one assigned attribute before SKU creation.
+ */
+export function assertProductHasAssignedAttributes({ productId, productSlug, assignedAttributeCount }) {
+  if (!productId) {
+    throw new Error('SKU product is missing.');
+  }
+
+  if (assignedAttributeCount < 1) {
+    const label = productSlug ? `product "${productSlug}"` : `product ${productId}`;
+    throw new Error(`${label} must have at least one assigned attribute before SKUs can be created.`);
+  }
+}
+
+/**
  * Main entry: regenerate SKUs for a given product.
  */
 export async function regenerateSkusForProduct(extensionContext, context, productId) {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { Globe, ChevronDown } from 'lucide-react';
+import { Globe, ChevronDown } from '@/components/icons';
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { routing, type Locale } from '@/i18n/routing';
@@ -41,17 +41,20 @@ export function LocaleSwitcher() {
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-1.5 border border-border bg-card px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+        className="flex h-10 items-center gap-1.5 rounded-md border border-border bg-card px-3 text-sm text-muted-foreground hover:border-silver hover:bg-muted hover:text-foreground"
       >
         <Globe className="h-4 w-4" aria-hidden="true" />
         <span>{LABELS[locale]}</span>
-        <ChevronDown className={cn('h-3.5 w-3.5 transition-transform', open && 'rotate-180')} aria-hidden="true" />
+        <ChevronDown
+          className={cn('h-3.5 w-3.5 transition-transform', open && 'rotate-180')}
+          aria-hidden="true"
+        />
       </button>
 
       {open && (
         <ul
           role="listbox"
-          className="absolute right-0 z-50 mt-1 w-40 overflow-hidden border border-border bg-card py-1 shadow-lg"
+          className="absolute right-0 z-50 mt-2 w-40 overflow-hidden rounded-lg bg-card p-1.5 shadow-overlay"
         >
           {routing.locales.map((l) => (
             <li key={l} role="option" aria-selected={l === locale}>
@@ -59,7 +62,7 @@ export function LocaleSwitcher() {
                 type="button"
                 onClick={() => switchTo(l)}
                 className={cn(
-                  'flex w-full items-center px-3 py-2 text-left text-sm transition-colors hover:bg-muted',
+                  'flex w-full items-center rounded-md px-3 py-2 text-left text-sm hover:bg-muted',
                   l === locale ? 'font-medium text-brand' : 'text-foreground'
                 )}
               >

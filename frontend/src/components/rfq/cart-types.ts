@@ -2,9 +2,9 @@
 export interface CartItem {
   sku: string;
   product_name: string;
-  spec: string;       // Quy cách kỹ thuật
-  unit: string;       // Đơn vị tính (ĐVT)
-  quantity: number;   // Số lượng (MOQ)
+  spec: string; // Quy cách kỹ thuật
+  unit: string; // Đơn vị tính (ĐVT)
+  quantity: number; // Số lượng (MOQ)
   note: string;
 }
 
@@ -22,14 +22,22 @@ export function readCart(): CartItem[] {
     if (!Array.isArray(parsed)) return [];
 
     // Migrate old format { sku, qty } → new format
-    return parsed.map((item: any) => ({
-      sku: item.sku || '',
-      product_name: item.product_name || '',
-      spec: item.spec || '',
-      unit: item.unit || '',
-      quantity: typeof item.quantity === 'number' ? item.quantity : (typeof item.qty === 'number' ? item.qty : 1),
-      note: item.note || ''
-    } as CartItem));
+    return parsed.map(
+      (item: any) =>
+        ({
+          sku: item.sku || '',
+          product_name: item.product_name || '',
+          spec: item.spec || '',
+          unit: item.unit || '',
+          quantity:
+            typeof item.quantity === 'number'
+              ? item.quantity
+              : typeof item.qty === 'number'
+                ? item.qty
+                : 1,
+          note: item.note || ''
+        }) as CartItem
+    );
   } catch {
     return [];
   }
@@ -69,4 +77,3 @@ export function readDraft(): Record<string, unknown> | null {
 export function clearDraft() {
   localStorage.removeItem('rfq-draft');
 }
-

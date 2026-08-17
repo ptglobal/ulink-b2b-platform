@@ -8,20 +8,27 @@ import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
 
 const DIRECTUS_URL = getDirectusUrl();
 
-function readUpstreamError(payload: unknown): { message: string; details?: Record<string, unknown> } {
+function readUpstreamError(payload: unknown): {
+  message: string;
+  details?: Record<string, unknown>;
+} {
   if (payload && typeof payload === 'object') {
     const record = payload as Record<string, unknown>;
     if (typeof record.error === 'string') {
       return {
         message: record.error,
-        ...(record.details && typeof record.details === 'object' ? { details: record.details as Record<string, unknown> } : {})
+        ...(record.details && typeof record.details === 'object'
+          ? { details: record.details as Record<string, unknown> }
+          : {})
       };
     }
 
     if (typeof record.message === 'string') {
       return {
         message: record.message,
-        ...(record.details && typeof record.details === 'object' ? { details: record.details as Record<string, unknown> } : {})
+        ...(record.details && typeof record.details === 'object'
+          ? { details: record.details as Record<string, unknown> }
+          : {})
       };
     }
   }
@@ -58,10 +65,18 @@ async function proxyCommercialImport(req: Request): Promise<Response> {
 
   if (!response.ok) {
     const upstreamError = readUpstreamError(payload);
-    return errorJson(response.status, 'COMMERCIAL_IMPORT_FAILED', upstreamError.message, upstreamError.details);
+    return errorJson(
+      response.status,
+      'COMMERCIAL_IMPORT_FAILED',
+      upstreamError.message,
+      upstreamError.details
+    );
   }
 
-  const data = payload && typeof payload === 'object' && 'data' in payload ? (payload as { data?: CommercialImportSummary }).data : payload;
+  const data =
+    payload && typeof payload === 'object' && 'data' in payload
+      ? (payload as { data?: CommercialImportSummary }).data
+      : payload;
   return successJson(data);
 }
 
@@ -70,6 +85,10 @@ export async function POST(req: Request) {
     return await proxyCommercialImport(req);
   } catch (error) {
     console.error('Commercial import proxy failed', error);
-    return errorJson(400, 'BAD_REQUEST', error instanceof Error ? error.message : 'Commercial import failed.');
+    return errorJson(
+      400,
+      'BAD_REQUEST',
+      error instanceof Error ? error.message : 'Commercial import failed.'
+    );
   }
 }

@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ulink-industries",
+  "account_id": "dca6adb64ed5ab4758cc4a63608e19cd",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-08-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "preview_urls": true,
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "vars": {
+    "DIRECTUS_URL": "http://103.164.35.132.nip.io:8055",
+    "DIRECTUS_PUBLIC_URL": "http://103.164.35.132.nip.io:8055",
+    "NEXT_PUBLIC_DIRECTUS_URL": "http://103.164.35.132.nip.io:8055",
+    "CMS_ADMIN_URL": "http://103.164.35.132.nip.io:8055/admin/",
+    "DIRECTUS_CUSTOMER_ROLE_ID": "e11b0e50-3030-410c-9999-000000000003",
+    "NEXT_PUBLIC_SITE_URL": "https://ulink-industries.lethangg24.workers.dev",
+    "ERP_SYNC_ENABLED": "false"
+  }
+}

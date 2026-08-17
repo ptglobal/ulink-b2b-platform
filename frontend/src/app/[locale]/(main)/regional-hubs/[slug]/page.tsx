@@ -13,7 +13,7 @@ import {
   Phone,
   Layers,
   Sparkles
-} from 'lucide-react';
+} from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 import { fetchRegionalHubBySlug, getHubName, getIndustrialZoneName } from '@/lib/regional-hub-data';
 
@@ -35,9 +35,7 @@ export async function generateMetadata({ params: { locale, slug } }: PageProps) 
   };
 }
 
-export default async function RegionalHubDetailPage({
-  params: { locale, slug }
-}: PageProps) {
+export default async function RegionalHubDetailPage({ params: { locale, slug } }: PageProps) {
   setRequestLocale(locale);
   const hub = await fetchRegionalHubBySlug(slug);
 
@@ -58,29 +56,58 @@ export default async function RegionalHubDetailPage({
     hubCode: isVi ? 'Mã Hub' : isJa ? 'ハブコード' : 'Hub Code',
     address: isVi ? 'Địa chỉ chi tiết' : isJa ? '詳細住所' : 'Address',
     coordinates: isVi ? 'Tọa độ GPS' : isJa ? 'GPS座標' : 'GPS Coordinates',
-    slaTitle: isVi ? 'Cam kết SLA & Hiệu suất Giao nhận' : isJa ? 'SLAコミットメントと配送パフォーマンス' : 'SLA Commitments & Delivery Performance',
+    slaTitle: isVi
+      ? 'Cam kết SLA & Hiệu suất Giao nhận'
+      : isJa
+        ? 'SLAコミットメントと配送パフォーマンス'
+        : 'SLA Commitments & Delivery Performance',
     ordersToday: isVi ? 'Đơn hàng hôm nay' : isJa ? '本日の注文数' : 'Orders Today',
     onTimeRate: isVi ? 'Tỷ lệ đúng giờ' : isJa ? '定時配送率' : 'On-Time Delivery Rate',
     deliveryTime: isVi ? 'Thời gian giao hàng' : isJa ? '配送時間' : 'Delivery Time Timeframe',
     standard: isVi ? 'Chuẩn' : isJa ? '標準' : 'Standard',
     average: isVi ? 'Trung bình' : isJa ? '平均' : 'Average',
-    warehouseTitle: isVi ? 'Hạ tầng & Sức chứa Kho bãi' : isJa ? '倉庫インフラと収容力' : 'Warehouse Infrastructure & Capacity',
+    warehouseTitle: isVi
+      ? 'Hạ tầng & Sức chứa Kho bãi'
+      : isJa
+        ? '倉庫インフラと収容力'
+        : 'Warehouse Infrastructure & Capacity',
     utilizedArea: isVi ? 'Diện tích đã sử dụng' : isJa ? '使用済面積' : 'Utilized Area',
     availableArea: isVi ? 'Diện tích còn trống' : isJa ? '空き面積' : 'Available Area',
     totalArea: isVi ? 'Tổng diện tích' : isJa ? '総面積' : 'Total Area',
     storageCapacity: isVi ? 'Sức chứa lưu kho' : isJa ? '最大保管容量' : 'Storage Capacity',
     pallets: isVi ? 'Số vị trí Pallet' : isJa ? 'パレット位置数' : 'Pallet Slots',
     personInCharge: isVi ? 'Nhân sự phụ trách' : isJa ? '担当者' : 'Person in Charge',
-    personnelCount: isVi ? 'Số lượng nhân sự tại Hub' : isJa ? 'ハブ担当スタッフ数' : 'Hub Personnel Count',
-    industrialZonesTitle: isVi ? 'Khu Công Nghiệp Liên kết' : isJa ? '提携工業団地' : 'Connected Industrial Zones',
-    industrialZonesDesc: isVi ? 'Mạng lưới khu công nghiệp trong phạm vi phục vụ trực tiếp của Hub.' : isJa ? '当ハブが直接サービスを提供する工業団地ネットワーク。' : 'Industrial parks directly serviced by this regional hub.',
-    teamTitle: isVi ? 'Đội ngũ Kỹ thuật & Vận hành' : isJa ? '技術・運用チーム' : 'Technical & Operations Team',
-    teamDesc: isVi ? 'Chuyên gia giàu kinh nghiệm hỗ trợ kỹ thuật và kiểm soát chất lượng tại hiện trường.' : isJa ? '現地での技術サポートおよび品質管理を提供する経験豊富な専門家。' : 'Experienced specialists on-site for technical support and quality control.',
+    personnelCount: isVi
+      ? 'Số lượng nhân sự tại Hub'
+      : isJa
+        ? 'ハブ担当スタッフ数'
+        : 'Hub Personnel Count',
+    industrialZonesTitle: isVi
+      ? 'Khu Công Nghiệp Liên kết'
+      : isJa
+        ? '提携工業団地'
+        : 'Connected Industrial Zones',
+    industrialZonesDesc: isVi
+      ? 'Mạng lưới khu công nghiệp trong phạm vi phục vụ trực tiếp của Hub.'
+      : isJa
+        ? '当ハブが直接サービスを提供する工業団地ネットワーク。'
+        : 'Industrial parks directly serviced by this regional hub.',
+    teamTitle: isVi
+      ? 'Đội ngũ Kỹ thuật & Vận hành'
+      : isJa
+        ? '技術・運用チーム'
+        : 'Technical & Operations Team',
+    teamDesc: isVi
+      ? 'Chuyên gia giàu kinh nghiệm hỗ trợ kỹ thuật và kiểm soát chất lượng tại hiện trường.'
+      : isJa
+        ? '現地での技術サポートおよび品質管理を提供する経験豊富な専門家。'
+        : 'Experienced specialists on-site for technical support and quality control.',
     experience: isVi ? 'năm kinh nghiệm' : isJa ? '年の経験' : 'years exp'
   };
 
   // Directus URL construction
-  const directusUrl = process.env.NEXT_PUBLIC_DIRECTUS_URL || process.env.DIRECTUS_URL || 'http://localhost:8055';
+  const directusUrl =
+    process.env.NEXT_PUBLIC_DIRECTUS_URL || process.env.DIRECTUS_URL || 'http://localhost:8055';
   const getImageUrl = (id: string) => `${directusUrl}/assets/${id}`;
 
   // Utilized area math
@@ -90,9 +117,8 @@ export default async function RegionalHubDetailPage({
   const utilizationPercent = totalArea > 0 ? Math.round((utilizedArea / totalArea) * 100) : 0;
 
   return (
-    <div className="w-full bg-[#F5F5F5] py-8 sm:py-12">
+    <div className="w-full bg-background py-8 sm:py-12">
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16">
-        
         {/* === Back Navigation & Breadcrumbs === */}
         <div className="mb-6 flex items-center justify-between">
           <Link
@@ -115,7 +141,7 @@ export default async function RegionalHubDetailPage({
         </div>
 
         {/* === HERO CONTAINER (Premium Glassmorphism & Navy) === */}
-        <section className="relative overflow-hidden rounded-xl border border-[#B8C0CC] bg-[#1A2D49] p-6 text-white shadow-lg sm:p-8">
+        <section className="relative overflow-hidden rounded-xl border border-border bg-foreground p-6 text-white shadow-lg sm:p-8">
           {/* Subtle glowing backgrounds */}
           <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand/10 blur-3xl" />
           <div className="pointer-events-none absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-emerald-500/10 blur-3xl" />
@@ -128,17 +154,24 @@ export default async function RegionalHubDetailPage({
                   <Sparkles className="h-3 w-3 text-brand" />
                   {hub.hub_code || 'HUB'}
                 </span>
-                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                  hub.operating_status === 'active' 
-                    ? 'bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30' 
-                    : 'bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/30'
-                }`}>
-                  <span className={`h-1.5 w-1.5 rounded-full ${hub.operating_status === 'active' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`} />
+                <span
+                  className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-medium ${
+                    hub.operating_status === 'active'
+                      ? 'bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30'
+                      : 'bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/30'
+                  }`}
+                >
+                  <span
+                    className={`h-1.5 w-1.5 rounded-full ${hub.operating_status === 'active' ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'}`}
+                  />
                   {hub.operating_status === 'active' ? t.active : t.inactive}
                 </span>
               </div>
 
-              <h1 className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[34px] lg:text-[38px]" id="hub_detail_title">
+              <h1
+                className="mt-4 text-[28px] font-extrabold tracking-tight text-white sm:text-[34px] lg:text-[38px]"
+                id="hub_detail_title"
+              >
                 {hubName}
               </h1>
 
@@ -146,7 +179,8 @@ export default async function RegionalHubDetailPage({
                 <div className="flex items-start gap-2.5">
                   <MapPin className="mt-0.5 h-4.5 w-4.5 shrink-0 text-brand" />
                   <p className="text-sm leading-relaxed">
-                    <span className="font-semibold text-white">{t.address}:</span> {hub.detail_address || '---'}
+                    <span className="font-semibold text-white">{t.address}:</span>{' '}
+                    {hub.detail_address || '---'}
                     {hub.district && typeof hub.district === 'object' && `, ${hub.district.name}`}
                     {hub.province && typeof hub.province === 'object' && `, ${hub.province.name}`}
                   </p>
@@ -167,26 +201,42 @@ export default async function RegionalHubDetailPage({
 
             {/* Right Quick stats / Person in Charge */}
             <div className="shrink-0 rounded-lg border border-slate-700/60 bg-slate-800/40 p-5 backdrop-blur-sm md:w-[320px]">
-              <h3 className="text-[11px] font-bold uppercase tracking-wider text-brand">{t.personInCharge}</h3>
+              <h3 className="text-[11px] font-bold uppercase tracking-wider text-brand">
+                {t.personInCharge}
+              </h3>
               <div className="mt-3 flex items-center gap-3">
                 <div className="flex h-11 w-11 items-center justify-center rounded-full bg-brand/10 border border-brand/20 text-brand text-sm font-bold">
-                  {hub.person_in_charge_name ? hub.person_in_charge_name.split(' ').pop()?.charAt(0) : 'PIC'}
+                  {hub.person_in_charge_name
+                    ? hub.person_in_charge_name.split(' ').pop()?.charAt(0)
+                    : 'PIC'}
                 </div>
                 <div>
-                  <p className="text-[14px] font-bold text-white">{hub.person_in_charge_name || '---'}</p>
-                  <p className="text-[11px] text-slate-400">{hub.person_in_charge_title || 'PIC'}</p>
+                  <p className="text-[14px] font-bold text-white">
+                    {hub.person_in_charge_name || '---'}
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    {hub.person_in_charge_title || 'PIC'}
+                  </p>
                 </div>
               </div>
               <div className="mt-4 flex items-center gap-2.5 border-t border-slate-700/50 pt-3.5 text-slate-300">
                 <Phone className="h-4 w-4 text-brand" />
-                <a href={`tel:${hub.person_in_charge_phone || ''}`} className="text-xs font-mono hover:text-white transition-colors">
+                <a
+                  href={`tel:${hub.person_in_charge_phone || ''}`}
+                  className="text-xs font-mono hover:text-white transition-colors"
+                >
                   {hub.person_in_charge_phone || '---'}
                 </a>
               </div>
               {hub.current_personnel_count && (
                 <div className="mt-2.5 flex items-center gap-2.5 text-slate-300">
                   <Users className="h-4 w-4 text-brand" />
-                  <span className="text-xs">{t.personnelCount}: <strong className="text-white font-semibold">{hub.current_personnel_count}</strong></span>
+                  <span className="text-xs">
+                    {t.personnelCount}:{' '}
+                    <strong className="text-white font-semibold">
+                      {hub.current_personnel_count}
+                    </strong>
+                  </span>
                 </div>
               )}
             </div>
@@ -195,9 +245,8 @@ export default async function RegionalHubDetailPage({
 
         {/* === METRICS GRID: SLA & WAREHOUSE === */}
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-12">
-          
           {/* SLA Performance Metrics - 5 Cols */}
-          <div className="flex flex-col rounded-lg border border-[#B8C0CC] bg-white p-5 shadow-sm lg:col-span-5">
+          <div className="flex flex-col rounded-lg border border-border bg-white p-5 shadow-sm lg:col-span-5">
             <h2 className="text-[14px] font-bold text-primary border-b border-slate-100 pb-3 flex items-center gap-2">
               <CheckCircle className="h-4.5 w-4.5 text-brand" />
               {t.slaTitle}
@@ -210,22 +259,27 @@ export default async function RegionalHubDetailPage({
                   <Package className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t.ordersToday}</p>
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t.ordersToday}
+                  </p>
                   <div className="mt-1 flex items-baseline gap-1.5">
                     <span className="text-[24px] font-bold text-primary leading-none">
                       {hub.orders_today ?? '0'}
                     </span>
                     {hub.order_capacity_per_day && (
                       <span className="text-xs text-muted-foreground">
-                        / {hub.order_capacity_per_day} {isVi ? 'đơn tối đa' : isJa ? '最大注文' : 'cap'}
+                        / {hub.order_capacity_per_day}{' '}
+                        {isVi ? 'đơn tối đa' : isJa ? '最大注文' : 'cap'}
                       </span>
                     )}
                   </div>
                   {hub.order_capacity_per_day && (
                     <div className="mt-2 h-1.5 w-full rounded-full bg-slate-100 overflow-hidden">
-                      <div 
-                        className="h-full bg-brand rounded-full" 
-                        style={{ width: `${Math.min(100, Math.round(((hub.orders_today || 0) / hub.order_capacity_per_day) * 100))}%` }}
+                      <div
+                        className="h-full bg-brand rounded-full"
+                        style={{
+                          width: `${Math.min(100, Math.round(((hub.orders_today || 0) / hub.order_capacity_per_day) * 100))}%`
+                        }}
                       />
                     </div>
                   )}
@@ -238,7 +292,9 @@ export default async function RegionalHubDetailPage({
                   <CheckCircle className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t.onTimeRate}</p>
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t.onTimeRate}
+                  </p>
                   <div className="mt-1 flex items-baseline gap-2">
                     <span className="text-[24px] font-bold text-primary leading-none">
                       {hub.on_time_rate ? `${hub.on_time_rate}%` : '---'}
@@ -258,15 +314,25 @@ export default async function RegionalHubDetailPage({
                   <Clock className="h-5 w-5" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">{t.deliveryTime}</p>
+                  <p className="text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                    {t.deliveryTime}
+                  </p>
                   <div className="mt-1 grid grid-cols-2 gap-4">
                     <div>
-                      <span className="block text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{t.standard}</span>
-                      <span className="text-[16px] font-bold text-primary">{hub.standard_delivery_time || '---'}</span>
+                      <span className="block text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                        {t.standard}
+                      </span>
+                      <span className="text-[16px] font-bold text-primary">
+                        {hub.standard_delivery_time || '---'}
+                      </span>
                     </div>
                     <div>
-                      <span className="block text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{t.average}</span>
-                      <span className="text-[16px] font-bold text-primary">{hub.avg_delivery_time || '---'}</span>
+                      <span className="block text-[10px] text-muted-foreground font-medium uppercase tracking-wider">
+                        {t.average}
+                      </span>
+                      <span className="text-[16px] font-bold text-primary">
+                        {hub.avg_delivery_time || '---'}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -275,7 +341,7 @@ export default async function RegionalHubDetailPage({
           </div>
 
           {/* Warehouse Capacity - 7 Cols */}
-          <div className="flex flex-col rounded-lg border border-[#B8C0CC] bg-white p-5 shadow-sm lg:col-span-7">
+          <div className="flex flex-col rounded-lg border border-border bg-white p-5 shadow-sm lg:col-span-7">
             <h2 className="text-[14px] font-bold text-primary border-b border-slate-100 pb-3 flex items-center gap-2">
               <Warehouse className="h-4.5 w-4.5 text-brand" />
               {t.warehouseTitle}
@@ -287,23 +353,29 @@ export default async function RegionalHubDetailPage({
                 <div className="flex items-baseline justify-between mb-2">
                   <div>
                     <span className="text-xs font-bold text-primary">{t.utilizedArea}</span>
-                    <span className="ml-1.5 text-xs font-semibold text-muted-foreground">({utilizationPercent}%)</span>
+                    <span className="ml-1.5 text-xs font-semibold text-muted-foreground">
+                      ({utilizationPercent}%)
+                    </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-xs font-semibold text-muted-foreground">{t.totalArea}:</span>
-                    <span className="ml-1.5 text-sm font-bold text-primary">{totalArea.toLocaleString()} m²</span>
+                    <span className="text-xs font-semibold text-muted-foreground">
+                      {t.totalArea}:
+                    </span>
+                    <span className="ml-1.5 text-sm font-bold text-primary">
+                      {totalArea.toLocaleString()} m²
+                    </span>
                   </div>
                 </div>
-                
+
                 {/* Visual Bar */}
                 <div className="relative h-4 w-full rounded-full bg-slate-100 overflow-hidden flex border border-slate-200/50 shadow-inner">
-                  <div 
-                    className="h-full bg-brand transition-all" 
+                  <div
+                    className="h-full bg-brand transition-[color,background-color,border-color,box-shadow,opacity,transform]"
                     style={{ width: `${utilizationPercent}%` }}
                     title={`${t.utilizedArea}: ${utilizedArea.toLocaleString()} m²`}
                   />
-                  <div 
-                    className="h-full bg-emerald-500/25 transition-all" 
+                  <div
+                    className="h-full bg-emerald-500/25 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
                     style={{ width: `${100 - utilizationPercent}%` }}
                     title={`${t.availableArea}: ${availableArea.toLocaleString()} m²`}
                   />
@@ -313,11 +385,15 @@ export default async function RegionalHubDetailPage({
                 <div className="flex items-center gap-4 mt-3">
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <span className="h-3 w-3 rounded bg-brand" />
-                    <span>{t.utilizedArea}: <strong>{utilizedArea.toLocaleString()} m²</strong></span>
+                    <span>
+                      {t.utilizedArea}: <strong>{utilizedArea.toLocaleString()} m²</strong>
+                    </span>
                   </div>
                   <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
                     <span className="h-3 w-3 rounded bg-emerald-500/35 border border-emerald-500/10" />
-                    <span>{t.availableArea}: <strong>{availableArea.toLocaleString()} m²</strong></span>
+                    <span>
+                      {t.availableArea}: <strong>{availableArea.toLocaleString()} m²</strong>
+                    </span>
                   </div>
                 </div>
               </div>
@@ -329,7 +405,9 @@ export default async function RegionalHubDetailPage({
                     <Layers className="h-4.5 w-4.5" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{t.pallets}</p>
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                      {t.pallets}
+                    </p>
                     <p className="mt-0.5 text-[20px] font-bold text-primary">
                       {hub.warehouse_pallets ? hub.warehouse_pallets.toLocaleString() : '---'}
                     </p>
@@ -341,9 +419,13 @@ export default async function RegionalHubDetailPage({
                     <Truck className="h-4.5 w-4.5" />
                   </div>
                   <div>
-                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">{t.storageCapacity}</p>
+                    <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+                      {t.storageCapacity}
+                    </p>
                     <p className="mt-0.5 text-[20px] font-bold text-primary">
-                      {hub.warehouse_storage_tons ? `${hub.warehouse_storage_tons.toLocaleString()} t` : '---'}
+                      {hub.warehouse_storage_tons
+                        ? `${hub.warehouse_storage_tons.toLocaleString()} t`
+                        : '---'}
                     </p>
                   </div>
                 </div>
@@ -353,47 +435,45 @@ export default async function RegionalHubDetailPage({
         </div>
 
         {/* === INDUSTRIAL ZONES SECTION === */}
-        <section className="mt-8 rounded-lg border border-[#B8C0CC] bg-white p-5 shadow-sm">
+        <section className="mt-8 rounded-lg border border-border bg-white p-5 shadow-sm">
           <h2 className="text-[15px] font-bold text-primary flex items-center gap-2">
             <Warehouse className="h-5 w-5 text-brand" />
             {t.industrialZonesTitle}
           </h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t.industrialZonesDesc}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t.industrialZonesDesc}</p>
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {hub.industrial_zones && hub.industrial_zones.length > 0 ? (
               hub.industrial_zones.map((zone) => {
                 const zoneName = getIndustrialZoneName(zone, locale);
                 return (
-                <div 
-                  key={zone.id}
-                  className="group overflow-hidden rounded-lg border border-[#B8C0CC]/60 bg-slate-50/50 hover:bg-white hover:shadow-md hover:border-brand/40 transition-all flex flex-col"
-                >
-                  {/* Image/Placeholder container */}
-                  <div className="relative aspect-[16/9] w-full bg-slate-200 border-b border-slate-200/60 overflow-hidden">
-                    {zone.image ? (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img 
-                        src={getImageUrl(zone.image)} 
-                        alt={zoneName}
-                        className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200/60 text-slate-400 group-hover:text-brand transition-colors">
-                        <Warehouse className="h-8 w-8 stroke-[1.2]" />
-                      </div>
-                    )}
+                  <div
+                    key={zone.id}
+                    className="group overflow-hidden rounded-lg border border-border/60 bg-slate-50/50 hover:bg-white hover:shadow-md hover:border-brand/40 transition-[color,background-color,border-color,box-shadow,opacity,transform] flex flex-col"
+                  >
+                    {/* Image/Placeholder container */}
+                    <div className="relative aspect-[16/9] w-full bg-slate-200 border-b border-slate-200/60 overflow-hidden">
+                      {zone.image ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={getImageUrl(zone.image)}
+                          alt={zoneName}
+                          className="h-full w-full object-cover object-center group-hover:scale-105 transition-transform duration-300"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200/60 text-slate-400 group-hover:text-brand transition-colors">
+                          <Warehouse className="h-8 w-8 stroke-[1.2]" />
+                        </div>
+                      )}
+                    </div>
+                    {/* Content */}
+                    <div className="p-3.5 flex-1 flex flex-col justify-center">
+                      <p className="text-[13px] font-bold leading-snug text-primary group-hover:text-brand transition-colors">
+                        {zoneName}
+                      </p>
+                    </div>
                   </div>
-                  {/* Content */}
-                  <div className="p-3.5 flex-1 flex flex-col justify-center">
-                    <p className="text-[13px] font-bold leading-snug text-primary group-hover:text-brand transition-colors">
-                      {zoneName}
-                    </p>
-                  </div>
-                </div>
                 );
               })
             ) : (
@@ -405,28 +485,26 @@ export default async function RegionalHubDetailPage({
         </section>
 
         {/* === TECHNICAL TEAM SECTION === */}
-        <section className="mt-8 rounded-lg border border-[#B8C0CC] bg-white p-5 shadow-sm">
+        <section className="mt-8 rounded-lg border border-border bg-white p-5 shadow-sm">
           <h2 className="text-[15px] font-bold text-primary flex items-center gap-2">
             <Users className="h-5 w-5 text-brand" />
             {t.teamTitle}
           </h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t.teamDesc}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t.teamDesc}</p>
 
           <div className="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {hub.team_members && hub.team_members.length > 0 ? (
               hub.team_members.map((member) => (
-                <div 
+                <div
                   key={member.id}
-                  className="rounded-lg border border-[#B8C0CC]/60 bg-slate-50/50 p-4 transition-all hover:bg-white hover:shadow-md hover:border-brand/40 flex items-center gap-3.5"
+                  className="rounded-lg border border-border/60 bg-slate-50/50 p-4 transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:bg-white hover:shadow-md hover:border-brand/40 flex items-center gap-3.5"
                 >
                   {/* Photo or initials */}
                   <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full border border-slate-200 bg-brand/5 flex items-center justify-center text-brand font-bold text-sm">
                     {member.photo ? (
                       // eslint-disable-next-line @next/next/no-img-element
-                      <img 
-                        src={getImageUrl(member.photo)} 
+                      <img
+                        src={getImageUrl(member.photo)}
                         alt={member.name}
                         className="h-full w-full object-cover object-center"
                         loading="lazy"
@@ -458,7 +536,6 @@ export default async function RegionalHubDetailPage({
             )}
           </div>
         </section>
-
       </div>
     </div>
   );

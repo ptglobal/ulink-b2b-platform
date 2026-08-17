@@ -1,7 +1,24 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { Search, MapPin, Plus, Edit2, Trash2, Home, BarChart2, Shield, X, AlertTriangle, Navigation, Box, Zap, CheckCircle2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import {
+  Search,
+  MapPin,
+  Plus,
+  Edit2,
+  Trash2,
+  Home,
+  BarChart2,
+  Shield,
+  X,
+  AlertTriangle,
+  Navigation,
+  Box,
+  Zap,
+  CheckCircle2,
+  Building2
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { saveHub, deleteHub } from '@/app/[locale]/admin/hubs/actions';
 
@@ -42,7 +59,10 @@ const OPERATING_STATUS_CONFIG: Record<string, { label: string; classes: string }
   stopped: { label: 'Dừng hoạt động', classes: 'bg-rose-50 text-rose-700 border-rose-100' },
   maintenance: { label: 'Đang bảo trì', classes: 'bg-amber-50 text-amber-700 border-amber-100' },
   full: { label: 'Đầy hàng', classes: 'bg-slate-100 text-slate-700 border-slate-200' },
-  temporarily_closed: { label: 'Đóng cửa tạm thời', classes: 'bg-indigo-50 text-indigo-700 border-indigo-100' }
+  temporarily_closed: {
+    label: 'Đóng cửa tạm thời',
+    classes: 'bg-indigo-50 text-indigo-700 border-indigo-100'
+  }
 };
 
 export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
@@ -54,6 +74,7 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
   // Form Modal State
   const [formOpen, setFormOpen] = useState(false);
   const [activeHub, setActiveHub] = useState<any | null>(null);
+  const [formError, setFormError] = useState('');
   const [selectedHub, setSelectedHub] = useState<HubItem | null>(null);
 
   // Filter hubs
@@ -93,6 +114,7 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
       orders_today: 0
     });
     setFormOpen(true);
+    setFormError('');
   };
 
   const handleOpenEditForm = (h: HubItem) => {
@@ -121,6 +143,7 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
       orders_today: h.orders_today || ''
     });
     setFormOpen(true);
+    setFormError('');
   };
 
   // Auto generate hub code & slug when typing name
@@ -159,7 +182,7 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
     if (!activeHub) return;
     const selectedProv = provinces.find((p) => p.id === pId);
     const provAbbr = selectedProv ? selectedProv.abbr : 'TEMP';
-    
+
     if (activeHub.id) {
       // Edit mode: only change province
       setActiveHub({ ...activeHub, provinceId: pId });
@@ -169,7 +192,7 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
       const parts = currentCode.split('-');
       const seq = parts.length > 2 ? parts[2] : '001';
       const codeVal = `HUB-${provAbbr.toUpperCase()}-${seq}`;
-      
+
       setActiveHub({
         ...activeHub,
         provinceId: pId,
@@ -179,14 +202,20 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
   };
 
   const handleDeleteHub = async (id: number) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa chi nhánh Hub này không? Thao tác này có thể ảnh hưởng đến dữ liệu RFQ và Hàng mẫu liên quan.')) return;
+    if (
+      !confirm(
+        'Bạn có chắc chắn muốn xóa chi nhánh Hub này không? Thao tác này có thể ảnh hưởng đến dữ liệu RFQ và Hàng mẫu liên quan.'
+      )
+    )
+      return;
 
     startTransition(async () => {
       const res = await deleteHub(id);
       if (res.success) {
         setHubs((prev) => prev.filter((h) => h.id !== id));
+        toast.success('Đã xóa chi nhánh Hub thành công.');
       } else {
-        alert('Không thể xóa chi nhánh: ' + res.error);
+        toast.error('Không thể xóa chi nhánh: ' + res.error);
       }
     });
   };
@@ -195,8 +224,15 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
     e.preventDefault();
     if (!activeHub) return;
 
-    if (!activeHub.name || !activeHub.slug || !activeHub.hub_code || !activeHub.detail_address || !activeHub.provinceId) {
-      alert('Vui lòng nhập đầy đủ các thông tin bắt buộc.');
+    setFormError('');
+    if (
+      !activeHub.name ||
+      !activeHub.slug ||
+      !activeHub.hub_code ||
+      !activeHub.detail_address ||
+      !activeHub.provinceId
+    ) {
+      setFormError('Vui lòng nhập đầy đủ các thông tin bắt buộc.');
       return;
     }
 
@@ -211,10 +247,18 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
         detail_address: activeHub.detail_address,
         operating_status: activeHub.operating_status,
         coordinates: activeHub.coordinates || null,
-        warehouse_total_area: activeHub.warehouse_total_area ? Number(activeHub.warehouse_total_area) : null,
-        warehouse_utilized_area: activeHub.warehouse_utilized_area ? Number(activeHub.warehouse_utilized_area) : null,
-        warehouse_available_area: activeHub.warehouse_available_area ? Number(activeHub.warehouse_available_area) : null,
-        warehouse_storage_tons: activeHub.warehouse_storage_tons ? Number(activeHub.warehouse_storage_tons) : null,
+        warehouse_total_area: activeHub.warehouse_total_area
+          ? Number(activeHub.warehouse_total_area)
+          : null,
+        warehouse_utilized_area: activeHub.warehouse_utilized_area
+          ? Number(activeHub.warehouse_utilized_area)
+          : null,
+        warehouse_available_area: activeHub.warehouse_available_area
+          ? Number(activeHub.warehouse_available_area)
+          : null,
+        warehouse_storage_tons: activeHub.warehouse_storage_tons
+          ? Number(activeHub.warehouse_storage_tons)
+          : null,
         warehouse_pallets: activeHub.warehouse_pallets ? Number(activeHub.warehouse_pallets) : null,
         standard_delivery_time: activeHub.standard_delivery_time || null,
         on_time_rate: activeHub.on_time_rate ? Number(activeHub.on_time_rate) : null,
@@ -224,9 +268,10 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
       if (res.success) {
         setFormOpen(false);
         setActiveHub(null);
+        setFormError('');
         window.location.reload();
       } else {
-        alert('Thao tác thất bại: ' + res.error);
+        setFormError(res.error || 'Thao tác thất bại. Vui lòng thử lại.');
       }
     });
   };
@@ -239,11 +284,12 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
           <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
             Hệ thống kho vận & Địa lý
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
             Chi nhánh & Regional Hubs
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
-            Quản lý mạng lưới chi nhánh, tổng kho hàng và phân tích năng lực vận kho, SLA giao nhận trên toàn quốc.
+            Quản lý mạng lưới chi nhánh, tổng kho hàng và phân tích năng lực vận kho, SLA giao nhận
+            trên toàn quốc.
           </p>
         </div>
 
@@ -308,7 +354,7 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
         {filteredHubs.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Home className="h-12 w-12 text-slate-300 mb-3" />
-            <span className="text-sm font-extrabold text-[#0F1E36]">
+            <span className="text-sm font-extrabold text-foreground">
               Không tìm thấy chi nhánh nào
             </span>
             <span className="text-xs text-slate-400 mt-1">
@@ -331,7 +377,10 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
               </thead>
               <tbody className="divide-y divide-slate-100 text-slate-700">
                 {filteredHubs.map((hub) => {
-                  const osc = OPERATING_STATUS_CONFIG[hub.operating_status] || { label: hub.operating_status, classes: 'bg-slate-100 text-slate-800 border-slate-200' };
+                  const osc = OPERATING_STATUS_CONFIG[hub.operating_status] || {
+                    label: hub.operating_status,
+                    classes: 'bg-slate-100 text-slate-800 border-slate-200'
+                  };
                   return (
                     <tr
                       key={hub.id}
@@ -348,9 +397,7 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
                       </td>
 
                       {/* Name */}
-                      <td className="px-6 py-4 font-extrabold text-[#0F1E36]">
-                        {hub.name}
-                      </td>
+                      <td className="px-6 py-4 font-extrabold text-foreground">{hub.name}</td>
 
                       {/* Province */}
                       <td className="px-6 py-4">
@@ -366,7 +413,12 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
 
                       {/* Operating Status */}
                       <td className="px-6 py-4">
-                        <span className={cn("inline-flex items-center border px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider", osc.classes)}>
+                        <span
+                          className={cn(
+                            'inline-flex items-center border px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider',
+                            osc.classes
+                          )}
+                        >
                           {osc.label}
                         </span>
                       </td>
@@ -384,7 +436,7 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
                           <button
                             type="button"
                             onClick={() => handleOpenEditForm(hub)}
-                            className="p-1.5 rounded hover:bg-slate-100 text-slate-500 hover:text-[#0F1E36] transition-colors"
+                            className="p-1.5 rounded hover:bg-slate-100 text-slate-500 hover:text-foreground transition-colors"
                             title="Sửa chi nhánh"
                           >
                             <Edit2 className="h-4 w-4" />
@@ -415,18 +467,22 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div>
-                <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36] flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-extrabold text-foreground flex items-center gap-2">
                   <Home className="h-5 w-5 text-blue-500" />
-                  {activeHub.id ? `Cập nhật chi nhánh: ${activeHub.name}` : 'Thêm chi nhánh Hub mới'}
+                  {activeHub.id
+                    ? `Cập nhật chi nhánh: ${activeHub.name}`
+                    : 'Thêm chi nhánh Hub mới'}
                 </h2>
                 <p className="text-[10px] text-slate-400 font-semibold mt-0.5">
-                  Điền các thông số địa lý, năng lực kho vận và tiêu chuẩn dịch vụ SLA của chi nhánh Hub.
+                  Điền các thông số địa lý, năng lực kho vận và tiêu chuẩn dịch vụ SLA của chi nhánh
+                  Hub.
                 </p>
               </div>
               <button
                 onClick={() => {
                   setFormOpen(false);
                   setActiveHub(null);
+                  setFormError('');
                 }}
                 className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-655"
               >
@@ -435,19 +491,30 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
             </div>
 
             {/* Modal Form Body */}
-            <form onSubmit={handleFormSubmit} className="flex flex-col max-h-[70vh] overflow-hidden">
-              <div className="p-6 overflow-y-auto flex-1 bg-white grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
-                
+            <form
+              onSubmit={handleFormSubmit}
+              className="flex flex-col max-h-[70vh] overflow-hidden"
+            >
+              <div className="p-6 overflow-y-auto flex-1 bg-white">
+                {formError && (
+                  <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200 mb-6">
+                    <AlertTriangle className="h-4 w-4 shrink-0" />
+                    <span>{formError}</span>
+                  </div>
+                )}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
                 {/* Left Column: Basic Geo settings */}
                 <div className="flex flex-col gap-4">
-                  <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-1">
+                  <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-1">
                     <MapPin className="h-4 w-4 text-blue-500" />
                     Thông tin địa lý & hành chính
                   </h3>
 
                   {/* Name */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tên chi nhánh Hub *</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Tên chi nhánh Hub *
+                    </label>
                     <input
                       type="text"
                       required
@@ -461,7 +528,9 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
                   {/* Slug & Hub Code */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Slug định danh *</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Slug định danh *
+                      </label>
                       <input
                         type="text"
                         required
@@ -472,21 +541,25 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Mã Hub code *</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Mã Hub code *
+                      </label>
                       <input
                         type="text"
                         required
                         value={activeHub.hub_code || ''}
                         onChange={(e) => setActiveHub({ ...activeHub, hub_code: e.target.value })}
                         placeholder="HUB-HN-001"
-                        className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-mono font-bold text-[#0F1E36] focus:outline-none bg-slate-50"
+                        className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-mono font-bold text-foreground focus:outline-none bg-slate-50"
                       />
                     </div>
                   </div>
 
                   {/* Provinces selection */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tỉnh / Thành phố *</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Tỉnh / Thành phố *
+                    </label>
                     <select
                       value={activeHub.provinceId || ''}
                       onChange={(e) => handleProvinceChange(Number(e.target.value))}
@@ -502,12 +575,16 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
 
                   {/* Detail Address */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Địa chỉ chi tiết kho *</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Địa chỉ chi tiết kho *
+                    </label>
                     <textarea
                       required
                       rows={2}
                       value={activeHub.detail_address || ''}
-                      onChange={(e) => setActiveHub({ ...activeHub, detail_address: e.target.value })}
+                      onChange={(e) =>
+                        setActiveHub({ ...activeHub, detail_address: e.target.value })
+                      }
                       placeholder="Lô C4, Khu công nghiệp Thăng Long, Huyện Đông Anh..."
                       className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none"
                     />
@@ -515,7 +592,9 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
 
                   {/* Coordinates */}
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tọa độ GPS (lat,lng)</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Tọa độ GPS (lat,lng)
+                    </label>
                     <input
                       type="text"
                       value={activeHub.coordinates || ''}
@@ -528,10 +607,14 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
                   {/* Status & Operating Status */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Trạng thái vận hành *</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Trạng thái vận hành *
+                      </label>
                       <select
                         value={activeHub.operating_status || 'active'}
-                        onChange={(e) => setActiveHub({ ...activeHub, operating_status: e.target.value })}
+                        onChange={(e) =>
+                          setActiveHub({ ...activeHub, operating_status: e.target.value })
+                        }
                         className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 focus:outline-none bg-white shadow-sm"
                       >
                         <option value="active">Đang hoạt động</option>
@@ -542,7 +625,9 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
                       </select>
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Trạng thái phát hành *</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Trạng thái phát hành *
+                      </label>
                       <select
                         value={activeHub.status || 'published'}
                         onChange={(e) => setActiveHub({ ...activeHub, status: e.target.value })}
@@ -558,32 +643,39 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
 
                 {/* Right Column: Warehouse capacity & SLA metrics */}
                 <div className="flex flex-col gap-4">
-                  
                   {/* Warehouse Capacity */}
-                  <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-1">
+                  <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-1">
                     <Box className="h-4 w-4 text-blue-500" />
                     Thông số năng lực kho hàng
                   </h3>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tổng diện tích kho (m²)</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Tổng diện tích kho (m²)
+                      </label>
                       <input
                         type="number"
                         step="any"
                         value={activeHub.warehouse_total_area || ''}
-                        onChange={(e) => setActiveHub({ ...activeHub, warehouse_total_area: e.target.value })}
+                        onChange={(e) =>
+                          setActiveHub({ ...activeHub, warehouse_total_area: e.target.value })
+                        }
                         placeholder="1000"
                         className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Diện tích đã sử dụng (m²)</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Diện tích đã sử dụng (m²)
+                      </label>
                       <input
                         type="number"
                         step="any"
                         value={activeHub.warehouse_utilized_area || ''}
-                        onChange={(e) => setActiveHub({ ...activeHub, warehouse_utilized_area: e.target.value })}
+                        onChange={(e) =>
+                          setActiveHub({ ...activeHub, warehouse_utilized_area: e.target.value })
+                        }
                         placeholder="700"
                         className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none"
                       />
@@ -592,34 +684,46 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
 
                   <div className="grid grid-cols-3 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">DT khả dụng (m²)</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        DT khả dụng (m²)
+                      </label>
                       <input
                         type="number"
                         step="any"
                         value={activeHub.warehouse_available_area || ''}
-                        onChange={(e) => setActiveHub({ ...activeHub, warehouse_available_area: e.target.value })}
+                        onChange={(e) =>
+                          setActiveHub({ ...activeHub, warehouse_available_area: e.target.value })
+                        }
                         placeholder="300"
                         className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tấn hàng chứa tối đa</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Tấn hàng chứa tối đa
+                      </label>
                       <input
                         type="number"
                         step="any"
                         value={activeHub.warehouse_storage_tons || ''}
-                        onChange={(e) => setActiveHub({ ...activeHub, warehouse_storage_tons: e.target.value })}
+                        onChange={(e) =>
+                          setActiveHub({ ...activeHub, warehouse_storage_tons: e.target.value })
+                        }
                         placeholder="50"
                         className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Số vị trí Pallets</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Số vị trí Pallets
+                      </label>
                       <input
                         type="number"
                         step="any"
                         value={activeHub.warehouse_pallets || ''}
-                        onChange={(e) => setActiveHub({ ...activeHub, warehouse_pallets: e.target.value })}
+                        onChange={(e) =>
+                          setActiveHub({ ...activeHub, warehouse_pallets: e.target.value })
+                        }
                         placeholder="500"
                         className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none"
                       />
@@ -627,17 +731,21 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
                   </div>
 
                   {/* SLA metrics */}
-                  <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-1 mt-4">
+                  <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2 mb-1 mt-4">
                     <BarChart2 className="h-4 w-4 text-blue-500" />
                     Hiệu suất vận hành & SLA dịch vụ
                   </h3>
 
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Thời gian giao hàng tiêu chuẩn</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Thời gian giao hàng tiêu chuẩn
+                    </label>
                     <input
                       type="text"
                       value={activeHub.standard_delivery_time || ''}
-                      onChange={(e) => setActiveHub({ ...activeHub, standard_delivery_time: e.target.value })}
+                      onChange={(e) =>
+                        setActiveHub({ ...activeHub, standard_delivery_time: e.target.value })
+                      }
                       placeholder="24h - 48h hoặc Trong ngày"
                       className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none"
                     />
@@ -645,32 +753,40 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tỉ lệ giao đúng giờ (%)</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Tỉ lệ giao đúng giờ (%)
+                      </label>
                       <input
                         type="number"
                         step="any"
                         min="0"
                         max="100"
                         value={activeHub.on_time_rate || ''}
-                        onChange={(e) => setActiveHub({ ...activeHub, on_time_rate: e.target.value })}
+                        onChange={(e) =>
+                          setActiveHub({ ...activeHub, on_time_rate: e.target.value })
+                        }
                         placeholder="98"
                         className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none"
                       />
                     </div>
                     <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Đơn hàng trong hôm nay</label>
+                      <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                        Đơn hàng trong hôm nay
+                      </label>
                       <input
                         type="number"
                         value={activeHub.orders_today || ''}
-                        onChange={(e) => setActiveHub({ ...activeHub, orders_today: e.target.value })}
+                        onChange={(e) =>
+                          setActiveHub({ ...activeHub, orders_today: e.target.value })
+                        }
                         placeholder="12"
                         className="px-3.5 py-2 rounded-xl border border-slate-200 text-xs font-semibold text-slate-700 focus:outline-none"
                       />
                     </div>
                   </div>
                 </div>
-
               </div>
+            </div>
 
               {/* Form Buttons */}
               <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 bg-slate-50/50">
@@ -704,7 +820,7 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div>
-                <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36] flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-extrabold text-foreground flex items-center gap-2">
                   <Home className="h-5 w-5 text-blue-500" />
                   Chi tiết chi nhánh: {selectedHub.name}
                 </h2>
@@ -730,46 +846,57 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
               {/* Address details grid */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-slate-50/50 p-5 rounded-2xl border border-slate-100 text-xs sm:text-sm">
                 <div className="flex flex-col gap-3">
-                  <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-150 pb-2">
+                  <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-150 pb-2">
                     <MapPin className="h-4 w-4 text-blue-500" />
                     Địa chỉ kho hàng
                   </h3>
                   <div className="grid grid-cols-3 gap-y-2 text-xs">
                     <span className="text-slate-400 font-bold">Tỉnh / Thành:</span>
-                    <span className="col-span-2 text-[#0F1E36] font-extrabold">{selectedHub.province?.name || '---'}</span>
+                    <span className="col-span-2 text-foreground font-extrabold">
+                      {selectedHub.province?.name || '---'}
+                    </span>
 
                     <span className="text-slate-400 font-bold">Địa chỉ chi tiết:</span>
-                    <span className="col-span-2 text-slate-700 font-semibold">{selectedHub.detail_address}</span>
+                    <span className="col-span-2 text-slate-700 font-semibold">
+                      {selectedHub.detail_address}
+                    </span>
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-3">
-                  <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-150 pb-2">
+                  <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-150 pb-2">
                     <Shield className="h-4 w-4 text-blue-500" />
                     Cấu hình trạng thái
                   </h3>
                   <div className="grid grid-cols-3 gap-y-2 text-xs">
                     <span className="text-slate-400 font-bold">Vận hành:</span>
                     <span className="col-span-2">
-                      <span className={cn(
-                        "inline-flex items-center border px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider",
-                        OPERATING_STATUS_CONFIG[selectedHub.operating_status]?.classes
-                      )}>
-                        {OPERATING_STATUS_CONFIG[selectedHub.operating_status]?.label || selectedHub.operating_status}
+                      <span
+                        className={cn(
+                          'inline-flex items-center border px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider',
+                          OPERATING_STATUS_CONFIG[selectedHub.operating_status]?.classes
+                        )}
+                      >
+                        {OPERATING_STATUS_CONFIG[selectedHub.operating_status]?.label ||
+                          selectedHub.operating_status}
                       </span>
                     </span>
 
                     <span className="text-slate-400 font-bold">Xuất bản:</span>
                     <span className="col-span-2">
                       <span className="inline-flex items-center border border-slate-200 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-wider bg-white">
-                        {selectedHub.status === 'published' ? 'Đã xuất bản (Published)' : 'Bản nháp (Draft)'}
+                        {selectedHub.status === 'published'
+                          ? 'Đã xuất bản (Published)'
+                          : 'Bản nháp (Draft)'}
                       </span>
                     </span>
-                    
+
                     {selectedHub.coordinates && (
                       <>
                         <span className="text-slate-400 font-bold">Tọa độ GPS:</span>
-                        <span className="col-span-2 text-slate-600 font-mono font-semibold">{selectedHub.coordinates}</span>
+                        <span className="col-span-2 text-slate-600 font-mono font-semibold">
+                          {selectedHub.coordinates}
+                        </span>
                       </>
                     )}
                   </div>
@@ -778,56 +905,97 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
 
               {/* Capacity details block */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
                   <Box className="h-4 w-4 text-blue-500" />
                   Năng lực & Sức chứa kho hàng
                 </h3>
                 <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
                   <div className="bg-slate-50 border border-slate-150 p-3.5 rounded-xl text-center shadow-sm">
-                    <span className="text-slate-400 text-[10px] font-bold block mb-1">TỔNG DIỆN TÍCH</span>
-                    <span className="text-[#0F1E36] font-extrabold text-sm sm:text-base">{selectedHub.warehouse_total_area ? `${selectedHub.warehouse_total_area} m²` : '---'}</span>
+                    <span className="text-slate-400 text-[10px] font-bold block mb-1">
+                      TỔNG DIỆN TÍCH
+                    </span>
+                    <span className="text-foreground font-extrabold text-sm sm:text-base">
+                      {selectedHub.warehouse_total_area
+                        ? `${selectedHub.warehouse_total_area} m²`
+                        : '---'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 border border-slate-150 p-3.5 rounded-xl text-center shadow-sm">
-                    <span className="text-slate-400 text-[10px] font-bold block mb-1">ĐÃ SỬ DỤNG</span>
-                    <span className="text-slate-700 font-extrabold text-sm sm:text-base">{selectedHub.warehouse_utilized_area ? `${selectedHub.warehouse_utilized_area} m²` : '---'}</span>
+                    <span className="text-slate-400 text-[10px] font-bold block mb-1">
+                      ĐÃ SỬ DỤNG
+                    </span>
+                    <span className="text-slate-700 font-extrabold text-sm sm:text-base">
+                      {selectedHub.warehouse_utilized_area
+                        ? `${selectedHub.warehouse_utilized_area} m²`
+                        : '---'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 border border-slate-150 p-3.5 rounded-xl text-center shadow-sm">
-                    <span className="text-slate-400 text-[10px] font-bold block mb-1">KHẢ DỤNG</span>
-                    <span className="text-emerald-600 font-extrabold text-sm sm:text-base">{selectedHub.warehouse_available_area ? `${selectedHub.warehouse_available_area} m²` : '---'}</span>
+                    <span className="text-slate-400 text-[10px] font-bold block mb-1">
+                      KHẢ DỤNG
+                    </span>
+                    <span className="text-emerald-600 font-extrabold text-sm sm:text-base">
+                      {selectedHub.warehouse_available_area
+                        ? `${selectedHub.warehouse_available_area} m²`
+                        : '---'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 border border-slate-150 p-3.5 rounded-xl text-center shadow-sm">
-                    <span className="text-slate-400 text-[10px] font-bold block mb-1">TỐI ĐA (TẤN)</span>
-                    <span className="text-[#0F1E36] font-extrabold text-sm sm:text-base">{selectedHub.warehouse_storage_tons ? `${selectedHub.warehouse_storage_tons} tấn` : '---'}</span>
+                    <span className="text-slate-400 text-[10px] font-bold block mb-1">
+                      TỐI ĐA (TẤN)
+                    </span>
+                    <span className="text-foreground font-extrabold text-sm sm:text-base">
+                      {selectedHub.warehouse_storage_tons
+                        ? `${selectedHub.warehouse_storage_tons} tấn`
+                        : '---'}
+                    </span>
                   </div>
                   <div className="bg-slate-50 border border-slate-150 p-3.5 rounded-xl text-center shadow-sm col-span-2 sm:col-span-1">
-                    <span className="text-slate-400 text-[10px] font-bold block mb-1">SỐ PALLETS</span>
-                    <span className="text-blue-600 font-extrabold text-sm sm:text-base">{selectedHub.warehouse_pallets ? `${selectedHub.warehouse_pallets} pallets` : '---'}</span>
+                    <span className="text-slate-400 text-[10px] font-bold block mb-1">
+                      SỐ PALLETS
+                    </span>
+                    <span className="text-blue-600 font-extrabold text-sm sm:text-base">
+                      {selectedHub.warehouse_pallets
+                        ? `${selectedHub.warehouse_pallets} pallets`
+                        : '---'}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* SLA Metrics block */}
               <div className="flex flex-col gap-3">
-                <h3 className="text-xs font-extrabold text-[#0F1E36] uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <h3 className="text-xs font-extrabold text-foreground uppercase tracking-wider flex items-center gap-1.5 border-b border-slate-100 pb-2">
                   <Zap className="h-4 w-4 text-blue-500" />
                   SLA Dịch vụ & Đơn hàng
                 </h3>
                 <div className="grid grid-cols-3 gap-4 text-center">
                   <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100 flex flex-col items-center justify-center">
-                    <span className="text-slate-400 text-[10px] font-bold block mb-1">THỜI GIAN GIAO TIÊU CHUẨN</span>
-                    <span className="text-[#0F1E36] font-extrabold text-sm sm:text-base">{selectedHub.standard_delivery_time || '24h - 48h'}</span>
+                    <span className="text-slate-400 text-[10px] font-bold block mb-1">
+                      THỜI GIAN GIAO TIÊU CHUẨN
+                    </span>
+                    <span className="text-foreground font-extrabold text-sm sm:text-base">
+                      {selectedHub.standard_delivery_time || '24h - 48h'}
+                    </span>
                   </div>
                   <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100 flex flex-col items-center justify-center">
-                    <span className="text-slate-400 text-[10px] font-bold block mb-1">TỈ LỆ GIAO ĐÚNG GIỜ</span>
-                    <span className="text-emerald-600 font-extrabold text-sm sm:text-base">{selectedHub.on_time_rate ? `${selectedHub.on_time_rate}%` : '98%'}</span>
+                    <span className="text-slate-400 text-[10px] font-bold block mb-1">
+                      TỈ LỆ GIAO ĐÚNG GIỜ
+                    </span>
+                    <span className="text-emerald-600 font-extrabold text-sm sm:text-base">
+                      {selectedHub.on_time_rate ? `${selectedHub.on_time_rate}%` : '98%'}
+                    </span>
                   </div>
                   <div className="bg-slate-50/50 rounded-xl p-4 border border-slate-100 flex flex-col items-center justify-center">
-                    <span className="text-slate-400 text-[10px] font-bold block mb-1">ĐƠN HÀNG HÔM NAY</span>
-                    <span className="text-blue-600 font-extrabold text-sm sm:text-base">{selectedHub.orders_today ?? 0}</span>
+                    <span className="text-slate-400 text-[10px] font-bold block mb-1">
+                      ĐƠN HÀNG HÔM NAY
+                    </span>
+                    <span className="text-blue-600 font-extrabold text-sm sm:text-base">
+                      {selectedHub.orders_today ?? 0}
+                    </span>
                   </div>
                 </div>
               </div>
-
             </div>
 
             {/* Modal Footer */}
@@ -843,7 +1011,6 @@ export function HubsClient({ initialHubs, provinces, error }: HubsClientProps) {
           </div>
         </div>
       )}
-
     </div>
   );
 }

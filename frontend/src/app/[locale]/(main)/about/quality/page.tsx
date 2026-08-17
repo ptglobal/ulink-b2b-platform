@@ -4,7 +4,11 @@ import { AboutQualityStandards } from '@/components/layout/about-quality-standar
 import { AboutQualityProcess } from '@/components/layout/about-quality-process';
 import { AboutQualityMetrics } from '@/components/layout/about-quality-metrics';
 
-export default async function AboutQualityPage({ params: { locale } }: { params: { locale: string } }) {
+export default async function AboutQualityPage({
+  params: { locale }
+}: {
+  params: { locale: string };
+}) {
   setRequestLocale(locale);
 
   return (

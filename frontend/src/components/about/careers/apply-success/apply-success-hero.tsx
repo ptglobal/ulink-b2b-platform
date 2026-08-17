@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Check, ArrowLeft } from 'lucide-react';
+import { Check, ArrowLeft } from '@/components/icons';
 
 export function ApplySuccessHero() {
   return (
@@ -16,14 +16,16 @@ export function ApplySuccessHero() {
 
       {/* Description */}
       <p className="mt-4 text-xs sm:text-sm text-slate-600 leading-relaxed max-w-2xl">
-        Cảm ơn bạn đã nộp đơn ứng tuyển tại ULink Industries. Hồ sơ của bạn đã được gửi trực tiếp đến Bộ phận Nhân sự. Chúng tôi trân trọng tài năng của bạn và sẽ phản hồi kết quả duyệt hồ sơ sớm nhất.
+        Cảm ơn bạn đã nộp đơn ứng tuyển tại ULink Industries. Hồ sơ của bạn đã được gửi trực tiếp
+        đến Bộ phận Nhân sự. Chúng tôi trân trọng tài năng của bạn và sẽ phản hồi kết quả duyệt hồ
+        sơ sớm nhất.
       </p>
 
       {/* Back to Home Button */}
       <div className="mt-6">
         <Link
           href="/"
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-2.5 text-xs font-semibold text-blue-600 shadow-sm hover:bg-slate-50 hover:border-blue-200 transition-all"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-2.5 text-xs font-semibold text-blue-600 shadow-sm hover:bg-slate-50 hover:border-blue-200 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
         >
           <ArrowLeft className="h-4 w-4" /> Về trang chủ
         </Link>

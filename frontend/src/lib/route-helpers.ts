@@ -34,8 +34,17 @@ export function jsonError(error: ApiError) {
   return NextResponse.json(error.toJSON(), { status: error.status });
 }
 
-export function jsonErrorRaw(status: number, code: string, message?: string, details?: Record<string, string[]>) {
-  const body: ApiErrorBody = { error: code, ...(message && { message }), ...(details && { details }) };
+export function jsonErrorRaw(
+  status: number,
+  code: string,
+  message?: string,
+  details?: Record<string, string[]>
+) {
+  const body: ApiErrorBody = {
+    error: code,
+    ...(message && { message }),
+    ...(details && { details })
+  };
   return NextResponse.json(body, { status });
 }
 
@@ -83,9 +92,8 @@ export async function handleRoute<T = unknown>(
       // which field failed without having to dig into `details`.
       const firstField = Object.keys(details)[0] ?? '';
       const firstMsg = details[firstField]?.[0] ?? 'validation failed';
-      const message = firstField && firstField !== '_root'
-        ? `${firstField}: ${firstMsg}`
-        : firstMsg;
+      const message =
+        firstField && firstField !== '_root' ? `${firstField}: ${firstMsg}` : firstMsg;
       return jsonErrorRaw(422, 'validation_error', message, details);
     }
 

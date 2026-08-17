@@ -29,9 +29,16 @@ export async function fetchRegionalHubs(): Promise<RegionalHubWithZones[]> {
           'hub_code',
           'coordinates',
           'operating_status',
+          'detail_address',
           'warehouse_total_area',
           'standard_delivery_time',
           'on_time_rate',
+          'on_time_rate_delta',
+          'orders_today',
+          'order_capacity_per_day',
+          'avg_delivery_time',
+          'avg_delivery_distance',
+          'current_personnel_count',
           { industrial_zones: ['id', 'name', { translations: ['id', 'languages_code', 'name'] }] },
           // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { translations: ['id', 'languages_code', 'name'] }
@@ -64,7 +71,10 @@ export function parseCoordinates(
   return { lat, lon };
 }
 
-export interface RegionalHubDetail extends Omit<RegionalHub, 'province' | 'district' | 'industrial_zones' | 'team_members'> {
+export interface RegionalHubDetail extends Omit<
+  RegionalHub,
+  'province' | 'district' | 'industrial_zones' | 'team_members'
+> {
   province?: { name: string; code: string } | null;
   district?: { name: string; code: string } | null;
   industrial_zones?: {
@@ -73,7 +83,13 @@ export interface RegionalHubDetail extends Omit<RegionalHub, 'province' | 'distr
     image?: string | null;
     translations?: { id: number; languages_code: string; name: string }[];
   }[];
-  team_members?: { id: number; name: string; role?: string | null; years_experience?: number | null; photo?: string | null }[];
+  team_members?: {
+    id: number;
+    name: string;
+    role?: string | null;
+    years_experience?: number | null;
+    photo?: string | null;
+  }[];
   translations?: { id: number; languages_code: string; name: string }[];
 }
 
@@ -107,6 +123,7 @@ export async function fetchRegionalHubBySlug(slug: string): Promise<RegionalHubD
           'orders_today',
           'order_capacity_per_day',
           'avg_delivery_time',
+          'avg_delivery_distance',
           'person_in_charge_name',
           'person_in_charge_title',
           'person_in_charge_phone',
@@ -115,7 +132,14 @@ export async function fetchRegionalHubBySlug(slug: string): Promise<RegionalHubD
           { province: ['name', 'code'] },
           // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { district: ['name', 'code'] },
-          { industrial_zones: ['id', 'name', 'image', { translations: ['id', 'languages_code', 'name'] }] },
+          {
+            industrial_zones: [
+              'id',
+              'name',
+              'image',
+              { translations: ['id', 'languages_code', 'name'] }
+            ]
+          },
           { team_members: ['id', 'name', 'role', 'years_experience', 'photo'] },
           // @ts-expect-error: Directus SDK fields query format is not typed for nested object arrays
           { translations: ['id', 'languages_code', 'name'] }
@@ -155,5 +179,3 @@ export function getHubName(hub: TranslatableName, locale: string): string {
 export function getIndustrialZoneName(zone: TranslatableName, locale: string): string {
   return getTranslatedName(zone, locale);
 }
-
-

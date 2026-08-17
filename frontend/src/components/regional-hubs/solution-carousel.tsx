@@ -1,8 +1,19 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { ArrowRight, Truck, Activity, ShieldCheck, Thermometer, Layers, Settings, Package } from 'lucide-react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import {
+  ArrowRight,
+  Truck,
+  Activity,
+  ShieldCheck,
+  Thermometer,
+  Layers,
+  Settings,
+  Package
+} from '@/components/icons';
+import { BrandedMedia } from '@/components/media/branded-media';
 import { Link } from '@/i18n/navigation';
+import { buttonVariants } from '@/components/ui/button';
 
 interface SlideItem {
   eyebrow: string;
@@ -28,38 +39,34 @@ export default function SolutionCarousel({ slides, labels }: SolutionCarouselPro
 
   const totalSlides = slides.length;
 
-  // Function to handle slide change with fade effect
-  const changeSlide = (index: number) => {
+  const stopAutoplay = useCallback(() => {
+    if (autoplayRef.current) clearInterval(autoplayRef.current);
+  }, []);
+
+  const changeSlide = useCallback((index: number) => {
     if (index === activeSlide || isTransitioning) return;
     setIsTransitioning(true);
     setTimeout(() => {
       setActiveSlide(index);
       setIsTransitioning(false);
-    }, 300); // match transition duration
-  };
+    }, 300);
+  }, [activeSlide, isTransitioning]);
 
-  const nextSlide = () => {
+  const nextSlide = useCallback(() => {
     changeSlide((activeSlide + 1) % totalSlides);
-  };
+  }, [activeSlide, changeSlide, totalSlides]);
 
-  // Setup Autoplay
-  const startAutoplay = () => {
+  const startAutoplay = useCallback(() => {
     stopAutoplay();
     autoplayRef.current = setInterval(() => {
       nextSlide();
-    }, 5000); // 5 seconds
-  };
-
-  const stopAutoplay = () => {
-    if (autoplayRef.current) {
-      clearInterval(autoplayRef.current);
-    }
-  };
+    }, 5000);
+  }, [nextSlide, stopAutoplay]);
 
   useEffect(() => {
     startAutoplay();
     return () => stopAutoplay();
-  }, [activeSlide, isTransitioning]);
+  }, [startAutoplay, stopAutoplay]);
 
   const currentSlide = slides[activeSlide];
 
@@ -68,29 +75,29 @@ export default function SolutionCarousel({ slides, labels }: SolutionCarouselPro
     switch (index) {
       case 0: // Pallet Wrap
         return {
-          icon1: <Activity className="h-6 w-6 text-[#1769E2] shrink-0" />,
-          icon2: <Truck className="h-6 w-6 text-[#1769E2] shrink-0" />
+          icon1: <Activity className="h-6 w-6 text-brand shrink-0" />,
+          icon2: <Truck className="h-6 w-6 text-brand shrink-0" />
         };
       case 1: // Industrial Gloves
         return {
-          icon1: <ShieldCheck className="h-6 w-6 text-[#1769E2] shrink-0" />,
-          icon2: <Truck className="h-6 w-6 text-[#1769E2] shrink-0" />
+          icon1: <ShieldCheck className="h-6 w-6 text-brand shrink-0" />,
+          icon2: <Truck className="h-6 w-6 text-brand shrink-0" />
         };
       case 2: // Aluminum Tape
         return {
-          icon1: <Thermometer className="h-6 w-6 text-[#1769E2] shrink-0" />,
-          icon2: <Truck className="h-6 w-6 text-[#1769E2] shrink-0" />
+          icon1: <Thermometer className="h-6 w-6 text-brand shrink-0" />,
+          icon2: <Truck className="h-6 w-6 text-brand shrink-0" />
         };
       case 3: // Cleanroom Wiper
         return {
-          icon1: <Layers className="h-6 w-6 text-[#1769E2] shrink-0" />,
-          icon2: <Package className="h-6 w-6 text-[#1769E2] shrink-0" />
+          icon1: <Layers className="h-6 w-6 text-brand shrink-0" />,
+          icon2: <Package className="h-6 w-6 text-brand shrink-0" />
         };
       case 4: // PE Shrink Film
       default:
         return {
-          icon1: <Settings className="h-6 w-6 text-[#1769E2] shrink-0" />,
-          icon2: <ShieldCheck className="h-6 w-6 text-[#1769E2] shrink-0" />
+          icon1: <Settings className="h-6 w-6 text-brand shrink-0" />,
+          icon2: <ShieldCheck className="h-6 w-6 text-brand shrink-0" />
         };
     }
   };
@@ -98,46 +105,45 @@ export default function SolutionCarousel({ slides, labels }: SolutionCarouselPro
   const { icon1, icon2 } = getFeaturesIcons(activeSlide);
 
   return (
-    <section 
-      className="w-full bg-white py-14 border-t border-slate-100"
+    <section
+      className="w-full border-t border-border bg-card py-12 sm:py-16"
       onMouseEnter={stopAutoplay}
       onMouseLeave={startAutoplay}
     >
-      <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16">
-        
-        {/* Pagination Dots (Above Carousel Box) */}
-        <div className="flex justify-center items-center gap-3 mb-8">
+      <div className="ulink-container">
+        <div className="mb-6 flex items-center border-b border-border" role="tablist" aria-label="Solution slides">
           {slides.map((_, i) => (
             <button
               key={i}
               onClick={() => changeSlide(i)}
-              className={`h-4.5 w-4.5 rounded-full flex items-center justify-center border transition-all duration-300 ${
-                activeSlide === i 
-                  ? 'border-[#1769E2] w-5 h-5 bg-[#1769E2]/5' 
-                  : 'border-slate-300 hover:border-[#1769E2]/60'
+              className={`flex h-11 min-w-11 items-center justify-center border-b-2 px-3 font-mono text-xs transition-colors ${
+                activeSlide === i
+                  ? 'border-brand bg-brand/[0.06] text-brand'
+                  : 'border-transparent text-muted-foreground hover:bg-muted hover:text-foreground'
               }`}
               aria-label={`Slide ${i + 1}`}
+              role="tab"
+              aria-selected={activeSlide === i}
             >
-              <span className={`h-1.5 w-1.5 rounded-full transition-all duration-300 ${
-                activeSlide === i ? 'bg-[#1769E2] scale-125' : 'bg-transparent'
-              }`} />
+              {String(i + 1).padStart(2, '0')}
             </button>
           ))}
         </div>
 
         {/* Carousel Container */}
-        <div className="rounded-2xl border border-slate-100 bg-white p-8 lg:p-10 shadow-sm">
+        <div className="border border-border bg-background p-6 sm:p-8 lg:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-            
             {/* Left Column: Text & Features */}
-            <div className={`transition-all duration-300 ${isTransitioning ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}>
+            <div
+              className={`transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 ${isTransitioning ? 'opacity-0 translate-y-2' : 'opacity-100 translate-y-0'}`}
+            >
               {/* Eyebrow */}
-              <span className="text-[12px] font-bold text-[#1769E2] tracking-wider uppercase block mb-3">
+              <span className="text-[12px] font-bold text-brand tracking-wider uppercase block mb-3">
                 {currentSlide.eyebrow}
               </span>
-              
+
               {/* Title */}
-              <h2 className="text-[24px] lg:text-[28px] font-bold text-slate-900 leading-snug mb-8">
+              <h2 className="mb-8 text-2xl font-medium leading-snug text-foreground lg:text-3xl">
                 {currentSlide.title}
               </h2>
 
@@ -145,22 +151,18 @@ export default function SolutionCarousel({ slides, labels }: SolutionCarouselPro
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-10">
                 {/* Feature 1 */}
                 <div className="flex items-start gap-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#1769E2]/8">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center bg-brand/8">
                     {icon1}
                   </div>
-                  <p className="text-[12px] leading-relaxed text-slate-500">
-                    {currentSlide.feat1}
-                  </p>
+                  <p className="text-sm leading-6 text-muted-foreground">{currentSlide.feat1}</p>
                 </div>
 
                 {/* Feature 2 */}
                 <div className="flex items-start gap-4">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-[#1769E2]/8">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center bg-brand/8">
                     {icon2}
                   </div>
-                  <p className="text-[12px] leading-relaxed text-slate-500">
-                    {currentSlide.feat2}
-                  </p>
+                  <p className="text-sm leading-6 text-muted-foreground">{currentSlide.feat2}</p>
                 </div>
               </div>
 
@@ -168,14 +170,14 @@ export default function SolutionCarousel({ slides, labels }: SolutionCarouselPro
               <div className="flex flex-wrap items-center gap-4">
                 <Link
                   href="/quick-order"
-                  className="bg-[#1769E2] text-white text-[13px] font-semibold py-3 px-6 rounded-md flex items-center gap-2 hover:bg-[#1257bd] transition-colors"
+                  className={buttonVariants({ variant: 'primary', size: 'lg' })}
                 >
                   {labels.rfqButton}
                   <ArrowRight className="h-4 w-4" />
                 </Link>
                 <Link
                   href="/solutions"
-                  className="border border-[#1769E2] text-[#1769E2] text-[13px] font-semibold py-3 px-6 rounded-md hover:bg-blue-50 transition-colors"
+                  className={buttonVariants({ variant: 'quiet', size: 'lg' })}
                 >
                   {labels.learnMore}
                 </Link>
@@ -183,18 +185,17 @@ export default function SolutionCarousel({ slides, labels }: SolutionCarouselPro
             </div>
 
             {/* Right Column: Visual Image */}
-            <div className={`relative aspect-[4/3] rounded-xl overflow-hidden border border-slate-100 bg-slate-50 shadow-sm transition-all duration-300 ${isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={currentSlide.image}
-                alt={currentSlide.alt}
-                className="h-full w-full object-cover"
-              />
-            </div>
-
+            <BrandedMedia
+              src={currentSlide.image}
+              alt={currentSlide.alt}
+              sizes="(max-width: 1023px) 100vw, 50vw"
+              className={`aspect-[4/3] border border-border bg-muted transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 ${
+                isTransitioning ? 'scale-95 opacity-0' : 'scale-100 opacity-100'
+              }`}
+              compactBrand
+            />
           </div>
         </div>
-
       </div>
     </section>
   );

@@ -7,9 +7,9 @@ export interface ProductListParams {
   search?: string;
   industry?: string; // comma-separated slugs for multi-select
   standard?: string; // comma-separated slugs for multi-select
-  region?: string;   // comma-separated hub slugs
+  region?: string; // comma-separated hub slugs
   category?: string; // comma-separated category slugs
-  sort?: string;     // popular | newest | name_asc | name_desc
+  sort?: string; // popular | newest | name_asc | name_desc
   page?: number;
   limit?: number;
 }
@@ -59,20 +59,58 @@ function buildProductsUrl(params: {
 }
 
 const PRODUCT_LIST_FIELDS = [
-  'id', 'name', 'slug', 'brand', 'short_description', 'hero', 'meta_title',
-  'translations.languages_code', 'translations.name', 'translations.short_description', 'translations.meta_title', 'translations.meta_description',
-  'category.id', 'category.name', 'category.slug',
-  'category.translations.languages_code', 'category.translations.name',
-  'skus.id', 'skus.sku_code', 'skus.stock_status', 'skus.unit', 'skus.pack_size', 'skus.image', 'skus.status',
-  'industries.industries_id.id', 'industries.industries_id.name', 'industries.industries_id.slug',
-  'industries.industries_id.translations.languages_code', 'industries.industries_id.translations.name',
-  'standards.standards_id.id', 'standards.standards_id.name', 'standards.standards_id.slug',
-  'standards.standards_id.translations.languages_code', 'standards.standards_id.translations.name',
-  'documents.id', 'documents.title', 'documents.doc_type', 'documents.status', 'documents.file.id'
+  'id',
+  'name',
+  'slug',
+  'brand',
+  'short_description',
+  'hero',
+  'meta_title',
+  'translations.languages_code',
+  'translations.name',
+  'translations.short_description',
+  'translations.meta_title',
+  'translations.meta_description',
+  'category.id',
+  'category.name',
+  'category.slug',
+  'category.translations.languages_code',
+  'category.translations.name',
+  'skus.id',
+  'skus.sku_code',
+  'skus.stock_status',
+  'skus.unit',
+  'skus.pack_size',
+  'skus.images',
+  'skus.status',
+  'industries.industries_id.id',
+  'industries.industries_id.name',
+  'industries.industries_id.slug',
+  'industries.industries_id.translations.languages_code',
+  'industries.industries_id.translations.name',
+  'standards.standards_id.id',
+  'standards.standards_id.name',
+  'standards.standards_id.slug',
+  'standards.standards_id.translations.languages_code',
+  'standards.standards_id.translations.name',
+  'documents.id',
+  'documents.title',
+  'documents.doc_type',
+  'documents.status',
+  'documents.file.id'
 ];
 
 export async function fetchProducts(params: ProductListParams = {}): Promise<ProductListResult> {
-  const { search, industry, standard, region, category, sort, page = 1, limit = PAGE_SIZE } = params;
+  const {
+    search,
+    industry,
+    standard,
+    region,
+    category,
+    sort,
+    page = 1,
+    limit = PAGE_SIZE
+  } = params;
   const offset = (page - 1) * limit;
 
   // Build filter
@@ -90,15 +128,18 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pro
 
   // Multi-select: comma-separated slugs → _in filter
   if (industry) {
-    const slugs = industry.split(',').filter(Boolean).flatMap((s) => {
-      if (s === 'pharmaceutical-cosmetics') {
-        return ['pharmaceutical', 'cosmetics'];
-      }
-      if (s === 'food-beverage') {
-        return ['food'];
-      }
-      return [s];
-    });
+    const slugs = industry
+      .split(',')
+      .filter(Boolean)
+      .flatMap((s) => {
+        if (s === 'pharmaceutical-cosmetics') {
+          return ['pharmaceutical', 'cosmetics'];
+        }
+        if (s === 'food-beverage') {
+          return ['food'];
+        }
+        return [s];
+      });
     if (slugs.length === 1) {
       filter.industries = { industries_id: { slug: { _eq: slugs[0] } } };
     } else {
@@ -136,13 +177,23 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pro
     // Map sort param to Directus sort field
     let sortField: string | undefined;
     switch (sort) {
-      case 'newest': sortField = '-id'; break;
-      case 'name_asc': sortField = 'name'; break;
-      case 'name_desc': sortField = '-name'; break;
-      default: sortField = '-id'; break; // popular = newest by default (id correlates with creation order)
+      case 'newest':
+        sortField = '-id';
+        break;
+      case 'name_asc':
+        sortField = 'name';
+        break;
+      case 'name_desc':
+        sortField = '-name';
+        break;
+      default:
+        sortField = '-id';
+        break; // popular = newest by default (id correlates with creation order)
     }
 
-    const url = new URL(buildProductsUrl({ filter, fields: PRODUCT_LIST_FIELDS, limit, offset, sort: sortField }));
+    const url = new URL(
+      buildProductsUrl({ filter, fields: PRODUCT_LIST_FIELDS, limit, offset, sort: sortField })
+    );
     url.searchParams.set(
       'deep',
       JSON.stringify({
@@ -156,7 +207,7 @@ export async function fetchProducts(params: ProductListParams = {}): Promise<Pro
       return { products: [], totalCount: 0 };
     }
 
-    const json = await res.json() as { data: Product[]; meta?: { filter_count?: number } };
+    const json = (await res.json()) as { data: Product[]; meta?: { filter_count?: number } };
     const items = json.data ?? [];
     const totalCount = json.meta?.filter_count ?? items.length;
 
@@ -171,22 +222,65 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
   try {
     const base = getDirectusUrl();
     const fields = [
-      'id', 'name', 'slug', 'brand', 'short_description', 'specifications', 'hero',
-      'meta_title', 'meta_description',
-      'translations.languages_code', 'translations.name', 'translations.short_description', 'translations.meta_title', 'translations.meta_description',
-      'category.id', 'category.name', 'category.slug',
-      'category.translations.languages_code', 'category.translations.name', 'category.translations.description',
-      'skus.id', 'skus.sku_code', 'skus.stock_status', 'skus.unit', 'skus.pack_size', 'skus.attributes', 'skus.image', 'skus.status',
-      'industries.industries_id.id', 'industries.industries_id.name', 'industries.industries_id.slug', 'industries.industries_id.description',
-      'industries.industries_id.translations.languages_code', 'industries.industries_id.translations.name', 'industries.industries_id.translations.description',
-      'standards.standards_id.id', 'standards.standards_id.name', 'standards.standards_id.slug', 'standards.standards_id.description',
-      'standards.standards_id.translations.languages_code', 'standards.standards_id.translations.name', 'standards.standards_id.translations.description',
-      'documents.id', 'documents.title', 'documents.doc_type', 'documents.language',
-      'documents.file.id', 'documents.file.filename_download', 'documents.file.type', 'documents.file.filesize',
-      'gallery.directus_files_id.id', 'gallery.directus_files_id.filename_download', 'gallery.directus_files_id.type'
+      'id',
+      'name',
+      'slug',
+      'brand',
+      'short_description',
+      'specifications',
+      'hero',
+      'meta_title',
+      'meta_description',
+      'translations.languages_code',
+      'translations.name',
+      'translations.short_description',
+      'translations.meta_title',
+      'translations.meta_description',
+      'category.id',
+      'category.name',
+      'category.slug',
+      'category.translations.languages_code',
+      'category.translations.name',
+      'category.translations.description',
+      'skus.id',
+      'skus.sku_code',
+      'skus.stock_status',
+      'skus.unit',
+      'skus.pack_size',
+      'skus.attributes',
+      'skus.images',
+      'skus.status',
+      'industries.industries_id.id',
+      'industries.industries_id.name',
+      'industries.industries_id.slug',
+      'industries.industries_id.description',
+      'industries.industries_id.translations.languages_code',
+      'industries.industries_id.translations.name',
+      'industries.industries_id.translations.description',
+      'standards.standards_id.id',
+      'standards.standards_id.name',
+      'standards.standards_id.slug',
+      'standards.standards_id.description',
+      'standards.standards_id.translations.languages_code',
+      'standards.standards_id.translations.name',
+      'standards.standards_id.translations.description',
+      'documents.id',
+      'documents.title',
+      'documents.doc_type',
+      'documents.language',
+      'documents.file.id',
+      'documents.file.filename_download',
+      'documents.file.type',
+      'documents.file.filesize',
+      'gallery.directus_files_id.id',
+      'gallery.directus_files_id.filename_download',
+      'gallery.directus_files_id.type'
     ];
     const url = new URL('/items/products', base);
-    url.searchParams.set('filter', JSON.stringify({ slug: { _eq: slug }, status: { _eq: 'published' } }));
+    url.searchParams.set(
+      'filter',
+      JSON.stringify({ slug: { _eq: slug }, status: { _eq: 'published' } })
+    );
     url.searchParams.set(
       'deep',
       JSON.stringify({
@@ -199,7 +293,7 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
 
     const res = await fetch(url.toString(), { cache: 'no-store' });
     if (!res.ok) return getFallbackProduct(slug);
-    const json = await res.json() as { data: Product[] };
+    const json = (await res.json()) as { data: Product[] };
     return json.data?.[0] ?? getFallbackProduct(slug);
   } catch (error) {
     console.error('Failed to fetch product by slug:', error);
@@ -210,7 +304,7 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
 function getFallbackProduct(slug: string): Product {
   const titleFormatted = slug
     .split('-')
-    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ');
 
   return {
@@ -254,13 +348,16 @@ export async function fetchIndustries(): Promise<Industry[]> {
     const base = getDirectusUrl();
     const url = new URL('/items/industries', base);
     url.searchParams.set('filter', JSON.stringify({ status: { _eq: 'published' } }));
-    url.searchParams.set('fields', 'id,name,slug,description,translations.languages_code,translations.name,translations.description');
+    url.searchParams.set(
+      'fields',
+      'id,name,slug,description,translations.languages_code,translations.name,translations.description'
+    );
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
     const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return [];
-    const json = await res.json() as { data: Industry[] };
+    const json = (await res.json()) as { data: Industry[] };
     return json.data ?? [];
   } catch (error) {
     console.error('Failed to fetch industries:', error);
@@ -273,13 +370,16 @@ export async function fetchStandards(): Promise<Standard[]> {
     const base = getDirectusUrl();
     const url = new URL('/items/standards', base);
     url.searchParams.set('filter', JSON.stringify({ status: { _eq: 'published' } }));
-    url.searchParams.set('fields', 'id,name,slug,description,translations.languages_code,translations.name,translations.description');
+    url.searchParams.set(
+      'fields',
+      'id,name,slug,description,translations.languages_code,translations.name,translations.description'
+    );
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
     const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return [];
-    const json = await res.json() as { data: Standard[] };
+    const json = (await res.json()) as { data: Standard[] };
     return json.data ?? [];
   } catch (error) {
     console.error('Failed to fetch standards:', error);
@@ -292,13 +392,16 @@ export async function fetchProductCategories(): Promise<ProductCategory[]> {
     const base = getDirectusUrl();
     const url = new URL('/items/product_categories', base);
     url.searchParams.set('filter', JSON.stringify({ status: { _eq: 'published' } }));
-    url.searchParams.set('fields', 'id,name,slug,parent,translations.languages_code,translations.name,translations.description');
+    url.searchParams.set(
+      'fields',
+      'id,name,slug,parent,translations.languages_code,translations.name,translations.description'
+    );
     url.searchParams.set('sort', 'name');
     url.searchParams.set('limit', '-1');
 
     const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return [];
-    const json = await res.json() as { data: ProductCategory[] };
+    const json = (await res.json()) as { data: ProductCategory[] };
     return json.data ?? [];
   } catch (error) {
     console.error('Failed to fetch product categories:', error);
@@ -332,7 +435,9 @@ export async function fetchIndustryProductCounts(): Promise<Record<string, numbe
 
     const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return {};
-    const json = await res.json() as { data: Array<{ industries_id: number; count: { id: number } }> };
+    const json = (await res.json()) as {
+      data: Array<{ industries_id: number; count: { id: number } }>;
+    };
     const counts: Record<string, number> = {};
     for (const row of json.data ?? []) {
       counts[String(row.industries_id)] = Number(row.count?.id ?? 0);
@@ -352,7 +457,9 @@ export async function fetchStandardProductCounts(): Promise<Record<string, numbe
 
     const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return {};
-    const json = await res.json() as { data: Array<{ standards_id: number; count: { id: number } }> };
+    const json = (await res.json()) as {
+      data: Array<{ standards_id: number; count: { id: number } }>;
+    };
     const counts: Record<string, number> = {};
     for (const row of json.data ?? []) {
       counts[String(row.standards_id)] = Number(row.count?.id ?? 0);
@@ -372,7 +479,9 @@ export async function fetchRegionProductCounts(): Promise<Record<string, number>
 
     const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return {};
-    const json = await res.json() as { data: Array<{ regional_hubs_id: number; count: { id: number } }> };
+    const json = (await res.json()) as {
+      data: Array<{ regional_hubs_id: number; count: { id: number } }>;
+    };
     const counts: Record<string, number> = {};
     for (const row of json.data ?? []) {
       counts[String(row.regional_hubs_id)] = Number(row.count?.id ?? 0);
@@ -400,7 +509,7 @@ export async function fetchRegionalHubs(): Promise<RegionalHub[]> {
 
     const res = await fetch(url.toString(), { next: { revalidate: 3600 } });
     if (!res.ok) return [];
-    const json = await res.json() as { data: RegionalHub[] };
+    const json = (await res.json()) as { data: RegionalHub[] };
     return json.data ?? [];
   } catch (error) {
     console.error('Failed to fetch regional hubs:', error);
@@ -429,7 +538,7 @@ export async function fetchTopCategoriesWithProducts(
       const { products } = await fetchProducts({
         category: cat.slug,
         limit: productsPerCategory,
-        sort: 'newest',
+        sort: 'newest'
       });
       if (products.length > 0) {
         results.push({ category: cat, products });

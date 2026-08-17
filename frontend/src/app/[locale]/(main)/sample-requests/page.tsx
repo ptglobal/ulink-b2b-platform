@@ -13,13 +13,13 @@ export async function generateMetadata({ params: { locale } }: Props): Promise<M
     title: isVi
       ? 'Yêu cầu hàng mẫu | ULink B2B'
       : isJa
-      ? 'サンプル依頼 | ULink B2B'
-      : 'Sample Requests | ULink B2B',
+        ? 'サンプル依頼 | ULink B2B'
+        : 'Sample Requests | ULink B2B',
     description: isVi
       ? 'Theo dõi trạng thái các yêu cầu hàng mẫu của bạn'
       : isJa
-      ? 'サンプル依頼のステータスを追跡する'
-      : 'Track the status of your sample requests'
+        ? 'サンプル依頼のステータスを追跡する'
+        : 'Track the status of your sample requests'
   };
 }
 
@@ -42,15 +42,15 @@ export default async function SampleRequestsPage({ params: { locale } }: Props) 
             {locale === 'vi'
               ? 'Yêu cầu hàng mẫu'
               : locale === 'ja'
-              ? 'サンプル依頼'
-              : 'Sample Requests'}
+                ? 'サンプル依頼'
+                : 'Sample Requests'}
           </h1>
           <p className="mt-2 text-xs leading-6 text-muted-foreground sm:text-sm">
             {locale === 'vi'
               ? 'Theo dõi trạng thái các yêu cầu nhận hàng mẫu thử của bạn.'
               : locale === 'ja'
-              ? 'サンプル依頼のステータスを確認できます。'
-              : 'Track the status of your sample requests.'}
+                ? 'サンプル依頼のステータスを確認できます。'
+                : 'Track the status of your sample requests.'}
           </p>
         </div>
 

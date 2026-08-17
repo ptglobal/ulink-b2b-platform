@@ -18,7 +18,7 @@ function formatError(err: any): string {
         errors: err.errors,
         status: err.status,
         code: err.code,
-        extensions: err.extensions,
+        extensions: err.extensions
       };
       return JSON.stringify(errorObj, null, 2);
     } catch {
@@ -39,8 +39,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -111,7 +113,7 @@ export async function deleteCategory(id: number) {
 
   try {
     const client = await getSessionClient();
-    
+
     // Check if any active products are still using this category
     const { readItems } = await import('@directus/sdk');
     const productsUsing = await client.request(
@@ -128,7 +130,8 @@ export async function deleteCategory(id: number) {
     if (productsUsing && productsUsing.length > 0) {
       return {
         success: false,
-        error: 'Không thể lưu trữ danh mục này vì đang có sản phẩm thuộc danh mục. Hãy chuyển sản phẩm sang danh mục khác trước.'
+        error:
+          'Không thể lưu trữ danh mục này vì đang có sản phẩm thuộc danh mục. Hãy chuyển sản phẩm sang danh mục khác trước.'
       };
     }
 

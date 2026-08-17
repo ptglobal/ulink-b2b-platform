@@ -42,7 +42,9 @@ export async function POST(req: Request) {
           email = peekJson.data.email;
         }
       }
-    } catch { /* non-fatal */ }
+    } catch {
+      /* non-fatal */
+    }
 
     if (!email) {
       return NextResponse.json({ data: { locked: false } });
@@ -73,7 +75,9 @@ export async function POST(req: Request) {
           return NextResponse.json({ data: statusJson.data });
         }
       }
-    } catch { /* non-fatal */ }
+    } catch {
+      /* non-fatal */
+    }
 
     return NextResponse.json({ data: { locked: false } });
   } catch {

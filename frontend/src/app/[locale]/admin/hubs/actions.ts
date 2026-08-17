@@ -15,7 +15,7 @@ function formatError(err: any): string {
         errors: err.errors,
         status: err.status,
         code: err.code,
-        extensions: err.extensions,
+        extensions: err.extensions
       };
       return JSON.stringify(errorObj, null, 2);
     } catch {
@@ -33,8 +33,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -91,10 +93,14 @@ export async function saveHub(data: {
       detail_address: data.detail_address,
       operating_status: data.operating_status,
       coordinates: data.coordinates || null,
-      warehouse_total_area: data.warehouse_total_area !== undefined ? data.warehouse_total_area : null,
-      warehouse_utilized_area: data.warehouse_utilized_area !== undefined ? data.warehouse_utilized_area : null,
-      warehouse_available_area: data.warehouse_available_area !== undefined ? data.warehouse_available_area : null,
-      warehouse_storage_tons: data.warehouse_storage_tons !== undefined ? data.warehouse_storage_tons : null,
+      warehouse_total_area:
+        data.warehouse_total_area !== undefined ? data.warehouse_total_area : null,
+      warehouse_utilized_area:
+        data.warehouse_utilized_area !== undefined ? data.warehouse_utilized_area : null,
+      warehouse_available_area:
+        data.warehouse_available_area !== undefined ? data.warehouse_available_area : null,
+      warehouse_storage_tons:
+        data.warehouse_storage_tons !== undefined ? data.warehouse_storage_tons : null,
       warehouse_pallets: data.warehouse_pallets !== undefined ? data.warehouse_pallets : null,
       standard_delivery_time: data.standard_delivery_time || null,
       on_time_rate: data.on_time_rate !== undefined ? data.on_time_rate : null,

@@ -6,7 +6,7 @@ import { ApplySuccessSteps } from '@/components/about/careers/apply-success/appl
 import { ApplySuccessRecommendations } from '@/components/about/careers/apply-success/apply-success-recommendations';
 
 export default async function ApplySuccessPage({
-  params: { locale },
+  params: { locale }
 }: {
   params: { locale: string };
 }) {

@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Plus, Check, CheckCircle2 } from 'lucide-react';
+import { Plus, Check, CheckCircle2 } from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 import { readCart, persistCart } from '../rfq/cart-types';
 
@@ -57,7 +57,7 @@ export function AddToCartButton({ product, className = '' }: AddToCartButtonProp
       <button
         type="button"
         onClick={handleAdd}
-        className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-extrabold transition-all shadow-2xs cursor-pointer ${
+        className={`inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-extrabold transition-[color,background-color,border-color,box-shadow,opacity,transform] shadow-2xs cursor-pointer ${
           added
             ? 'bg-emerald-600 text-white hover:bg-emerald-700'
             : 'bg-blue-600 text-white hover:bg-blue-700 hover:scale-[1.02]'
@@ -83,7 +83,9 @@ export function AddToCartButton({ product, className = '' }: AddToCartButtonProp
           </div>
           <div className="text-xs min-w-0 text-left">
             <p className="font-extrabold text-white">Đã thêm vào Yêu cầu Báo giá!</p>
-            <p className="text-slate-300 truncate max-w-[220px] font-medium mt-0.5">{product.name}</p>
+            <p className="text-slate-300 truncate max-w-[220px] font-medium mt-0.5">
+              {product.name}
+            </p>
           </div>
           <Link
             href="/quick-order"

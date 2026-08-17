@@ -45,7 +45,7 @@ export const PROVINCES: Province[] = [
   { code: '86', name: 'Vĩnh Long (Bến Tre, Trà Vinh)' },
   { code: '87', name: 'Đồng Tháp (Tiền Giang)' },
   { code: '89', name: 'An Giang (Kiên Giang)' },
-  { code: '96', name: 'Cà Mau (Bạc Liêu)' },
+  { code: '96', name: 'Cà Mau (Bạc Liêu)' }
 ];
 
 /** Map code tỉnh cũ → code tỉnh mới (sau sáp nhập 1/7/2025) */
@@ -78,7 +78,7 @@ export const PROVINCE_MIGRATION: Record<string, string> = {
   '91': '89', // Kiên Giang → An Giang
   '93': '92', // Hậu Giang → Cần Thơ
   '94': '92', // Sóc Trăng → Cần Thơ
-  '95': '96', // Bạc Liêu → Cà Mau
+  '95': '96' // Bạc Liêu → Cà Mau
 };
 
 /** Resolve province code (hỗ trợ cả code cũ cho backward compat) */
@@ -796,7 +796,7 @@ export const DISTRICTS: District[] = [
   { code: '970', name: 'Đầm Dơi', province_code: '96' },
   { code: '971', name: 'Năm Căn', province_code: '96' },
   { code: '972', name: 'Phú Tân', province_code: '96' },
-  { code: '973', name: 'Ngọc Hiển', province_code: '96' },
+  { code: '973', name: 'Ngọc Hiển', province_code: '96' }
 ];
 
 /** Get districts for a selected province (includes districts from merged provinces) */

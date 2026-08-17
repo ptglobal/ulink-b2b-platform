@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { ShieldCheck, PackageCheck, HeartHandshake } from 'lucide-react';
+import { ShieldCheck, PackageCheck, HeartHandshake } from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 import { ASSETS } from '@/lib/assets';
 
@@ -19,7 +19,7 @@ export async function AuthHero() {
   ];
 
   return (
-    <aside className="relative hidden h-screen flex-1 flex-col overflow-hidden lg:flex">
+    <aside className="relative hidden min-h-[calc(100dvh-var(--header-height))] flex-1 flex-col overflow-hidden lg:flex">
       {/* Phần trên: ảnh nền + overlay + nội dung chính */}
       <div className="relative flex-1 overflow-hidden">
         <div className="absolute inset-0 bg-muted" />
@@ -66,7 +66,9 @@ export async function AuthHero() {
             </li>
           ))}
         </ul>
-        <p className="mt-6 font-mono text-xs tracking-wider text-primary/50">2026 ULINK INDUSTRIES.</p>
+        <p className="mt-6 font-mono text-xs tracking-wider text-primary/50">
+          2026 ULINK INDUSTRIES.
+        </p>
       </div>
     </aside>
   );

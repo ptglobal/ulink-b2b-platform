@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useMemo, useState } from 'react';
-import { Search, Mail, CalendarClock, ArrowRight } from 'lucide-react';
+import { Search, Mail, CalendarClock, ArrowRight } from '@/components/icons';
 import { useRouter } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import type { ContactRequest } from '@/lib/directus';
@@ -53,7 +53,7 @@ export function ContactRequestsClient({ initialRequests, error }: ContactRequest
           <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
             Hộp thư chăm sóc khách hàng
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
             Liên hệ gửi về
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
@@ -96,9 +96,7 @@ export function ContactRequestsClient({ initialRequests, error }: ContactRequest
         {filteredRequests.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Mail className="h-12 w-12 text-slate-300 mb-3" />
-            <span className="text-sm font-extrabold text-[#0F1E36]">
-              Chưa có liên hệ nào
-            </span>
+            <span className="text-sm font-extrabold text-foreground">Chưa có liên hệ nào</span>
             <span className="text-xs text-slate-400 mt-1">
               Hệ thống sẽ hiển thị các tin nhắn khách gửi về tại đây.
             </span>
@@ -133,7 +131,7 @@ export function ContactRequestsClient({ initialRequests, error }: ContactRequest
                   >
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
-                        <span className="font-extrabold text-[#0F1E36] leading-tight">
+                        <span className="font-extrabold text-foreground leading-tight">
                           {request.full_name}
                         </span>
                         <span className="text-[10px] text-slate-400 font-semibold mt-1">
@@ -144,7 +142,9 @@ export function ContactRequestsClient({ initialRequests, error }: ContactRequest
                     <td className="px-6 py-4">
                       <div className="flex flex-col gap-0.5">
                         <span className="text-slate-650 font-medium">{request.email}</span>
-                        <span className="text-slate-400 font-medium text-[11px]">{request.phone}</span>
+                        <span className="text-slate-400 font-medium text-[11px]">
+                          {request.phone}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -165,7 +165,9 @@ export function ContactRequestsClient({ initialRequests, error }: ContactRequest
                     <td className="px-6 py-4 text-slate-500 font-medium">
                       <span className="inline-flex items-center gap-1.5">
                         <CalendarClock className="h-3.5 w-3.5 text-slate-400" />
-                        {request.created_at ? new Date(request.created_at).toLocaleString('vi-VN') : '---'}
+                        {request.created_at
+                          ? new Date(request.created_at).toLocaleString('vi-VN')
+                          : '---'}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-right">

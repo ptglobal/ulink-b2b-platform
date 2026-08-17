@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from '@/components/icons';
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { type Locale } from '@/i18n/routing';
@@ -10,7 +10,10 @@ function FlagVN({ className }: { className?: string }) {
   return (
     <svg className={className} viewBox="0 0 640 480" xmlns="http://www.w3.org/2000/svg">
       <rect width="640" height="480" fill="#da251d" />
-      <polygon points="320,80 365,220 500,220 390,300 420,440 320,360 220,440 250,300 140,220 275,220" fill="#ff0" />
+      <polygon
+        points="320,80 365,220 500,220 390,300 420,440 320,360 220,440 250,300 140,220 275,220"
+        fill="#ff0"
+      />
     </svg>
   );
 }
@@ -38,13 +41,17 @@ function FlagJP({ className }: { className?: string }) {
   );
 }
 
-const locales: { code: Locale; flag: React.ComponentType<{ className?: string }>; label: string }[] = [
+const locales: {
+  code: Locale;
+  flag: React.ComponentType<{ className?: string }>;
+  label: string;
+}[] = [
   { code: 'vi', flag: FlagVN, label: 'Tiếng Việt' },
   { code: 'en', flag: FlagUS, label: 'English' },
-  { code: 'ja', flag: FlagJP, label: '日本語' },
+  { code: 'ja', flag: FlagJP, label: '日本語' }
 ];
 
-/** Footer dropdown locale switcher — styled matching light-theme footer */
+/** Compact locale switcher for the light Figma footer. */
 export function FooterLocaleSwitcher() {
   const locale = useLocale() as Locale;
   const pathname = usePathname();
@@ -68,18 +75,18 @@ export function FooterLocaleSwitcher() {
   }
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative w-full md:w-auto">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="flex items-center gap-2.5 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-[14px] font-semibold text-slate-800 shadow-sm transition-all hover:border-slate-300 hover:bg-slate-50 sm:text-[15px]"
+        className="flex min-h-11 w-full items-center justify-between gap-2.5 border border-[#d7dfeb] bg-white px-4 text-sm font-medium text-[#26344d] hover:border-[#1769e2] hover:bg-[#edf5ff] md:w-auto md:min-w-44"
       >
-        <current.flag className="h-4 w-6 rounded-sm object-cover shadow-xs" />
+        <current.flag className="h-4 w-6 object-cover" />
         <span>{current.label}</span>
         <ChevronDown
-          className={`h-4 w-4 text-slate-600 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+          className={`h-4 w-4 text-[#68758c] transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
           aria-hidden="true"
         />
       </button>
@@ -87,20 +94,20 @@ export function FooterLocaleSwitcher() {
       {open && (
         <ul
           role="listbox"
-          className="absolute bottom-full right-0 z-50 mb-2 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white py-1.5 shadow-xl transition-all"
+          className="absolute bottom-full left-0 z-50 mb-2 w-full overflow-hidden border border-[#d7dfeb] bg-white py-1 shadow-overlay md:left-auto md:right-0 md:w-44"
         >
           {locales.map(({ code, flag: Flag, label }) => (
             <li key={code} role="option" aria-selected={code === locale}>
               <button
                 type="button"
                 onClick={() => switchLocale(code)}
-                className={`flex w-full items-center gap-3 px-4 py-2 text-left text-[14px] transition-colors ${
+                className={`flex min-h-11 w-full items-center gap-3 px-4 text-left text-sm transition-colors ${
                   code === locale
-                    ? 'bg-brand/10 font-bold text-brand'
-                    : 'text-slate-700 hover:bg-slate-100'
+                    ? 'bg-[#edf5ff] font-semibold text-[#1769e2]'
+                    : 'text-[#536079] hover:bg-[#f5f8fc] hover:text-[#172540]'
                 }`}
               >
-                <Flag className="h-4 w-6 rounded-sm object-cover shadow-xs" />
+                <Flag className="h-4 w-6 object-cover" />
                 <span>{label}</span>
               </button>
             </li>

@@ -5,13 +5,15 @@ import { QualityStandardsGrid } from '@/components/about/standards/quality-stand
 import { QualityBadges } from '@/components/about/standards/quality-badges';
 import { QualityProcess } from '@/components/about/standards/quality-process';
 import { QualityCommitments } from '@/components/about/standards/quality-commitments';
+import { getPagePresentation } from '@/lib/page-presentation';
 
 export default async function QualityStandardsPage({
-  params: { locale },
+  params: { locale }
 }: {
   params: { locale: string };
 }) {
   setRequestLocale(locale);
+  const presentation = await getPagePresentation('about-standards', locale);
 
   return (
     <div className="w-full bg-white">
@@ -30,7 +32,7 @@ export default async function QualityStandardsPage({
         </nav>
 
         {/* Các section chính */}
-        <QualityHero />
+        <QualityHero media={presentation?.heroMedia} />
         <QualityStandardsGrid />
         <QualityBadges />
         <QualityProcess />

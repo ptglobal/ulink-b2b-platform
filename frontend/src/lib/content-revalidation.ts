@@ -54,7 +54,7 @@ export function requireRevalidateSecret(
 
   const received = authorization?.startsWith('Bearer ')
     ? authorization.slice(7)
-    : authorization ?? undefined;
+    : (authorization ?? undefined);
 
   if (!received || received !== expectedSecret) {
     throw new Error('Invalid webhook secret.');
@@ -74,11 +74,7 @@ export function parsePublishWebhookPayload(
   const event = body.event;
   const collection = body.collection;
 
-  if (
-    event !== 'items.create' &&
-    event !== 'items.update' &&
-    event !== 'items.delete'
-  ) {
+  if (event !== 'items.create' && event !== 'items.update' && event !== 'items.delete') {
     return { ok: false, error: new Error('Unsupported webhook event.') };
   }
 
@@ -107,9 +103,7 @@ export function parsePublishWebhookPayload(
       keys: Array.isArray(body.keys) ? (body.keys as Array<string | number>) : undefined,
       slug: typeof body.slug === 'string' ? body.slug : undefined,
       status:
-        body.status === 'published' ||
-        body.status === 'draft' ||
-        body.status === 'archived'
+        body.status === 'published' || body.status === 'draft' || body.status === 'archived'
           ? body.status
           : undefined,
       locale: typeof body.locale === 'string' && body.locale.trim() ? body.locale : 'vi'
@@ -117,9 +111,7 @@ export function parsePublishWebhookPayload(
   };
 }
 
-export function resolveRevalidationTargets(
-  payload: PublishWebhookPayload
-): RevalidationTargets {
+export function resolveRevalidationTargets(payload: PublishWebhookPayload): RevalidationTargets {
   const locale = payload.locale ?? 'vi';
   const tags = new Set<string>([`col:${payload.collection}`]);
   const paths = new Set<string>();
@@ -137,10 +129,7 @@ export function resolveRevalidationTargets(
     }
   }
 
-  if (
-    payload.collection === 'product_categories' ||
-    payload.collection === 'products'
-  ) {
+  if (payload.collection === 'product_categories' || payload.collection === 'products') {
     for (const loc of locales) {
       paths.add(`/${loc}/solutions`);
     }

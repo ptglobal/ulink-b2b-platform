@@ -18,7 +18,7 @@ function formatError(err: any): string {
         errors: err.errors,
         status: err.status,
         code: err.code,
-        extensions: err.extensions,
+        extensions: err.extensions
       };
       return JSON.stringify(errorObj, null, 2);
     } catch {
@@ -39,8 +39,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -91,13 +93,16 @@ export async function saveArticle(data: {
     if (data.id) {
       // 1. Fetch existing translations of this blog post
       const { readItems } = await import('@directus/sdk');
-      const existingTranslations = await client.request(
-        readItems('blog_posts_translations' as any, {
-          filter: { blog_posts_id: { _eq: data.id } },
-          fields: ['id', 'languages_code'],
-          limit: -1
-        } as any)
-      ) as any[];
+      const existingTranslations = (await client.request(
+        readItems(
+          'blog_posts_translations' as any,
+          {
+            filter: { blog_posts_id: { _eq: data.id } },
+            fields: ['id', 'languages_code'],
+            limit: -1
+          } as any
+        )
+      )) as any[];
 
       const translationForLocale = existingTranslations.find(
         (t) => t.languages_code === data.locale
@@ -174,7 +179,7 @@ export async function deleteArticle(id: number) {
 
   try {
     const client = await getSessionClient();
-    
+
     // Set status to archived
     await client.request(
       updateItem('blog_posts' as any, id, {
@@ -204,8 +209,10 @@ export async function uploadImage(formData: FormData) {
 
     const cookieHeader = [
       sessionToken ? `directus_session_token=${sessionToken}` : null,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const url = getDirectusUrl();
     const res = await fetch(`${url}/files`, {

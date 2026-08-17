@@ -1,8 +1,9 @@
 'use client';
 
 import { useTransition } from 'react';
-import { Loader2 } from 'lucide-react';
+import { Loader2 } from '@/components/icons';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 import { updateContactRequestStatus } from '@/app/[locale]/admin/contact-requests/actions';
 
 interface ContactRequestStatusToggleProps {
@@ -21,9 +22,10 @@ export function ContactRequestStatusToggle({ id, currentStatus }: ContactRequest
     startTransition(async () => {
       const result = await updateContactRequestStatus(id, nextStatus);
       if (result.success) {
+        toast.success(nextStatus === 'read' ? 'Đã đánh dấu đã đọc.' : 'Đã đánh dấu chưa đọc.');
         router.refresh();
       } else {
-        alert(result.error);
+        toast.error(result.error || 'Đã xảy ra lỗi khi cập nhật trạng thái.');
       }
     });
   };

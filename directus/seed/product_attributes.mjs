@@ -40,14 +40,14 @@ export async function seedProductAttributes(helpers, client) {
 
   // Fetch all seeded product IDs
   const glovesId = await getIdBySlug('products', 'nitrile-cleanroom-gloves');
-  const wipersId = await getIdBySlug('products', 'cleanroom-wipers-polyester');
+  const wipersId = await getIdBySlug('products', 'polyester-cleanroom-wipers');
   const coverallId = await getIdBySlug('products', 'tyvek-cleanroom-coverall');
   const maskId = await getIdBySlug('products', 'cleanroom-face-mask-3ply');
   const esdStrapId = await getIdBySlug('products', 'esd-wrist-strap');
-  const esdMatId = await getIdBySlug('products', 'esd-rubber-table-mat');
-  const ipaId = await getIdBySlug('products', 'cleanroom-ipa-solvent-99');
-  const stickyMatId = await getIdBySlug('products', 'cleanroom-sticky-pe-mat');
-  const esdBagId = await getIdBySlug('products', 'esd-shielding-bag-zipper');
+  const esdMatId = await getIdBySlug('products', 'esd-table-mat-2layer');
+  const ipaId = await getIdBySlug('products', 'ipa-cleanroom-grade-999');
+  const stickyMatId = await getIdBySlug('products', 'sticky-mat-30-layers');
+  const esdBagId = await getIdBySlug('products', 'esd-shielding-bag');
   const latexGlovesId = await getIdBySlug('products', 'sterile-latex-cleanroom-gloves');
 
   // 3. Seed M2M: Assign attributes to ALL products
@@ -88,6 +88,36 @@ export async function seedProductAttributes(helpers, client) {
 
   for (const assignment of assignments) {
     await helpers.ensureItem('products_product_attributes', 'id', assignment);
+  }
+
+  const requiredSeedProducts = [
+    ['nitrile-cleanroom-gloves', glovesId],
+    ['polyester-cleanroom-wipers', wipersId],
+    ['tyvek-cleanroom-coverall', coverallId],
+    ['cleanroom-face-mask-3ply', maskId],
+    ['esd-wrist-strap', esdStrapId],
+    ['esd-table-mat-2layer', esdMatId],
+    ['ipa-cleanroom-grade-999', ipaId],
+    ['sticky-mat-30-layers', stickyMatId],
+    ['esd-shielding-bag', esdBagId],
+    ['sterile-latex-cleanroom-gloves', latexGlovesId]
+  ];
+
+  const missingProducts = requiredSeedProducts
+    .filter(([, id]) => !id)
+    .map(([slug]) => slug);
+
+  if (missingProducts.length > 0) {
+    throw new Error(`Seed products missing before attribute assignment: ${missingProducts.join(', ')}`);
+  }
+
+  const coveredProductIds = new Set(assignments.map((assignment) => assignment.products_id));
+  const uncoveredProducts = requiredSeedProducts
+    .filter(([, id]) => id && !coveredProductIds.has(id))
+    .map(([slug]) => slug);
+
+  if (uncoveredProducts.length > 0) {
+    throw new Error(`Seed products missing attribute coverage: ${uncoveredProducts.join(', ')}`);
   }
 
   console.log('  Global product attributes, options & M2M assignments for all seed products complete!');

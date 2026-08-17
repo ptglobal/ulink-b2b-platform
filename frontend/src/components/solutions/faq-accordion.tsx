@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown } from '@/components/icons';
 
 interface FaqItem {
   id: number;
@@ -23,51 +23,49 @@ export default function FaqAccordion({ sectionTitle, sectionSubtitle, items }: F
   };
 
   return (
-    <section className="w-full mt-16 lg:mt-24 border-t border-slate-100 pt-16">
-      {/* Section Header */}
-      <div className="max-w-3xl mx-auto text-center mb-12">
-        <h2 className="text-xl sm:text-2xl font-extrabold text-[#0F1E36] tracking-tight">
+    <section className="w-full border-t border-[#e5e9f0] bg-[#f4f6fa] py-12 sm:py-14 lg:py-16">
+      <div className="mx-auto mb-8 max-w-3xl px-4 text-center sm:px-8">
+        <h2 className="text-[24px] font-semibold tracking-[-0.02em] text-foreground sm:text-[28px]">
           {sectionTitle}
         </h2>
-        <p className="text-xs sm:text-sm text-slate-500 font-medium mt-2">
+        <p className="mt-2 text-[12px] leading-5 text-muted-foreground sm:text-[13px]">
           {sectionSubtitle}
         </p>
       </div>
 
-      {/* Accordion Container */}
-      <div className="max-w-4xl mx-auto border border-slate-100 rounded-2xl overflow-hidden bg-white shadow-sm">
+      <div className="mx-auto w-[calc(100%_-_2rem)] max-w-[50rem] overflow-hidden rounded-[3px] border border-[#dfe5ef] bg-white sm:w-[calc(100%_-_4rem)]">
         {items.map((item, index) => {
           const isOpen = openId === item.id;
           return (
             <div
               key={item.id}
-              className={`border-b border-slate-100 last:border-0 transition-colors duration-200 ${
-                isOpen ? 'bg-slate-50/40' : ''
+              className={`border-b border-[#e5e9f0] last:border-0 transition-colors duration-200 ${
+                isOpen ? 'bg-[#fbfcfe]' : ''
               }`}
             >
               {/* Question Button */}
               <button
                 onClick={() => toggle(item.id)}
-                className="w-full flex items-center justify-between text-left px-6 sm:px-8 py-5 hover:bg-slate-50/50 transition-colors focus:outline-none"
+                className="flex min-h-14 w-full items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-[#f7f9fc] focus:outline-none sm:px-5"
               >
-                <span className="text-xs sm:text-sm md:text-base font-bold text-[#0F1E36] pr-4 leading-snug">
+                <span className="pr-4 text-[12px] font-semibold leading-snug text-foreground sm:text-[13px]">
                   {index + 1}. {item.question}
                 </span>
                 <ChevronDown
-                  className={`h-5 w-5 text-slate-400 shrink-0 transition-transform duration-300 ${
-                    isOpen ? 'rotate-180 text-blue-600' : ''
+                  className={`h-4 w-4 shrink-0 text-slate-400 transition-transform duration-300 ${
+                    isOpen ? 'rotate-180 text-brand' : ''
                   }`}
                 />
               </button>
 
               {/* Answer Box */}
               <div
-                className={`grid transition-all duration-300 ease-in-out ${
+                className={`grid transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-300 ease-in-out ${
                   isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
                 }`}
               >
                 <div className="overflow-hidden">
-                  <div className="px-6 sm:px-8 pb-6 text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
+                  <div className="px-4 pb-4 text-[11px] leading-5 text-muted-foreground sm:px-5 sm:text-[12px]">
                     {item.answer}
                   </div>
                 </div>

@@ -3,11 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 
-import {
-  MOCK_RESOURCES,
-  MOST_VIEWED_ARTICLES,
-  UPCOMING_EVENTS
-} from './mock-data';
+import { MOCK_RESOURCES, MOST_VIEWED_ARTICLES, UPCOMING_EVENTS } from './mock-data';
 import type { ResourceItem } from './types';
 
 function allResourceItems(): ResourceItem[] {
@@ -44,7 +40,9 @@ test('resource cards have localized copy and valid image assets', () => {
     assert.ok(item.description.vi.trim().length > 0, `${item.id} vi description`);
     assert.ok(item.description.en.trim().length > 0, `${item.id} en description`);
     assert.ok(item.description.ja.trim().length > 0, `${item.id} ja description`);
-    assert.ok(assetPathExists(item.image), `${item.id} missing image: ${item.image}`);
+    if (item.image) {
+      assert.ok(assetPathExists(item.image), `${item.id} missing image: ${item.image}`);
+    }
   }
 });
 

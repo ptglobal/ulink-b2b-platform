@@ -1,72 +1,34 @@
 import Image from 'next/image';
-import { ShieldCheck, Zap, HeartHandshake } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
+import { ShieldCheck, PackageCheck, HeartHandshake } from '@/components/icons';
 
-export function LoginHeroCard() {
+export async function LoginHeroCard() {
+  const t = await getTranslations('auth');
+  const features = [
+    { icon: ShieldCheck, title: t('featureSafe'), description: t('featureSafeDesc') },
+    { icon: PackageCheck, title: t('featureEfficient'), description: t('featureEfficientDesc') },
+    { icon: HeartHandshake, title: t('featurePartner'), description: t('featurePartnerDesc') }
+  ];
+
   return (
-    <div className="relative flex flex-col justify-between rounded-2xl bg-[#0D4397] p-8 lg:p-10 text-white shadow-xl h-full min-h-[600px] overflow-hidden">
-      {/* Subtle Background Terminal Image Layer with lowered opacity */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none mix-blend-overlay">
-        <Image
-          src="/images/about/warehouse-terminal.png"
-          alt="ULink Logistics Terminal Background"
-          fill
-          className="object-cover"
-        />
+    <aside className="flex h-full min-h-[760px] flex-col bg-[#345cc8] p-8 text-white sm:p-10 lg:min-h-[900px] lg:p-12">
+      <h1 className="max-w-[12ch] whitespace-pre-line text-[34px] font-extrabold leading-[1.08] tracking-[-.035em] text-white sm:text-[42px]">
+        {t('heroTitle')} <span className="text-[#c6d4ff]">{t('heroHighlight')}</span>
+      </h1>
+      <p className="mt-5 max-w-[46ch] text-[14px] leading-6 text-white/82">{t('heroDescription')}</p>
+      <div className="relative my-8 min-h-[390px] overflow-hidden border border-white/30 bg-[#254aa9] shadow-[0_16px_35px_rgba(16,38,92,.22)]">
+        <Image src="/images/about/kho_1.png" alt="Hệ thống kho ULink Industries" fill priority sizes="(min-width: 1024px) 520px, 100vw" className="object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#173d99]/35 to-transparent" aria-hidden="true" />
       </div>
-
-      {/* Top Header */}
-      <div className="relative z-10 flex flex-col gap-3">
-        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl text-white leading-tight">
-          Kết nối hôm nay,<br />Kiến tạo <span className="text-blue-300">tương lai.</span>
-        </h1>
-        <p className="text-xs sm:text-sm leading-relaxed text-blue-100/90 max-w-md">
-          ULink Industries chuyên sản xuất và phân phối các sản phẩm vật tư kỹ thuật cho doanh nghiệp sản xuất, với danh mục đa dạng, đáp ứng mọi nhu cầu vận hành - tối ưu chi phí mang lại hiệu suất cao.
-        </p>
+      <div className="mt-auto grid grid-cols-3 gap-4 border-t border-white/20 pt-6">
+        {features.map(({ icon: Icon, title, description }) => (
+          <div key={title} className="min-w-0">
+            <Icon className="h-5 w-5 text-[#c6d4ff]" aria-hidden="true" />
+            <p className="mt-3 text-[12px] font-bold text-white">{title}</p>
+            <p className="mt-1 text-[10px] leading-4 text-white/65">{description}</p>
+          </div>
+        ))}
       </div>
-
-      {/* Foreground Featured Image Overlay (kho_1.png) */}
-      <div className="relative z-10 aspect-[4/3] w-full overflow-hidden rounded-xl shadow-2xl border border-white/30 my-6">
-        <Image
-          src="/images/about/kho_1.png"
-          alt="Hệ thống kệ kho tự động ULink Industries"
-          fill
-          className="object-cover"
-          priority
-        />
-      </div>
-
-      {/* Bottom 3 Feature Badges */}
-      <div className="relative z-10 grid grid-cols-3 gap-3 pt-4 border-t border-white/15">
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-blue-200 backdrop-blur">
-            <ShieldCheck className="h-4 w-4" />
-          </div>
-          <div>
-            <span className="block text-xs font-bold text-white">An toàn</span>
-            <span className="block text-[10px] text-blue-200">Tiêu chuẩn kỹ thuật cao</span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-blue-200 backdrop-blur">
-            <Zap className="h-4 w-4" />
-          </div>
-          <div>
-            <span className="block text-xs font-bold text-white">Hiệu quả</span>
-            <span className="block text-[10px] text-blue-200">Tối ưu chi phí sản xuất</span>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-blue-200 backdrop-blur">
-            <HeartHandshake className="h-4 w-4" />
-          </div>
-          <div>
-            <span className="block text-xs font-bold text-white">Đồng hành</span>
-            <span className="block text-[10px] text-blue-200">Hỗ trợ doanh nghiệp 24/7</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    </aside>
   );
 }

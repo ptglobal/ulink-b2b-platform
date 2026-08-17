@@ -3,7 +3,7 @@ import Link from 'next/link';
 const sameDeptJobs = [
   { id: '1', title: 'Account Manager B2B', location: 'Hà Nội' },
   { id: '2', title: 'Chuyên viên Phát triển Thị trường', location: 'Hà Nam' },
-  { id: '3', title: 'Kỹ sư Tư vấn Giải pháp Kỹ thuật', location: 'Hà Nội' },
+  { id: '3', title: 'Kỹ sư Tư vấn Giải pháp Kỹ thuật', location: 'Hà Nội' }
 ];
 
 export function JobDetailSidebar() {
@@ -40,7 +40,7 @@ export function JobDetailSidebar() {
 
         <Link
           href="/about/careers/b2b-sales/apply"
-          className="mt-2 inline-flex items-center justify-center rounded-lg bg-blue-600 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-blue-700 transition-all"
+          className="mt-2 inline-flex items-center justify-center rounded-lg bg-blue-600 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-blue-700 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
         >
           Ứng tuyển ngay
         </Link>
@@ -57,7 +57,7 @@ export function JobDetailSidebar() {
             <Link
               key={item.id}
               href="/about/careers/b2b-sales"
-              className="flex flex-col p-3 rounded-lg bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-all group"
+              className="flex flex-col p-3 rounded-lg bg-slate-50 border border-slate-100 hover:border-blue-200 hover:bg-blue-50/50 transition-[color,background-color,border-color,box-shadow,opacity,transform] group"
             >
               <span className="text-xs font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
                 {item.title}

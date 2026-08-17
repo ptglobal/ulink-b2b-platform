@@ -18,7 +18,7 @@ function formatError(err: any): string {
         errors: err.errors,
         status: err.status,
         code: err.code,
-        extensions: err.extensions,
+        extensions: err.extensions
       };
       return JSON.stringify(errorObj, null, 2);
     } catch {
@@ -39,8 +39,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);

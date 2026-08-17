@@ -15,8 +15,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -56,37 +58,43 @@ export default async function AdminHubsPage({ params }: PageProps) {
     // 2. Fetch Regional Hubs and Provinces in parallel
     const [hubsRes, provincesRes] = await Promise.all([
       client.request(
-        readItems('regional_hubs' as any, {
-          fields: [
-            'id',
-            'status',
-            'hub_code',
-            'name',
-            'slug',
-            'province.id',
-            'province.name',
-            'detail_address',
-            'operating_status',
-            'coordinates',
-            'warehouse_total_area',
-            'warehouse_utilized_area',
-            'warehouse_available_area',
-            'warehouse_storage_tons',
-            'warehouse_pallets',
-            'standard_delivery_time',
-            'on_time_rate',
-            'orders_today'
-          ] as any,
-          sort: ['id'],
-          limit: -1
-        } as any)
+        readItems(
+          'regional_hubs' as any,
+          {
+            fields: [
+              'id',
+              'status',
+              'hub_code',
+              'name',
+              'slug',
+              'province.id',
+              'province.name',
+              'detail_address',
+              'operating_status',
+              'coordinates',
+              'warehouse_total_area',
+              'warehouse_utilized_area',
+              'warehouse_available_area',
+              'warehouse_storage_tons',
+              'warehouse_pallets',
+              'standard_delivery_time',
+              'on_time_rate',
+              'orders_today'
+            ] as any,
+            sort: ['id'],
+            limit: -1
+          } as any
+        )
       ),
       client.request(
-        readItems('vn_provinces' as any, {
-          fields: ['id', 'name', 'abbr'],
-          sort: ['name'],
-          limit: -1
-        } as any)
+        readItems(
+          'vn_provinces' as any,
+          {
+            fields: ['id', 'name', 'abbr'],
+            sort: ['name'],
+            limit: -1
+          } as any
+        )
       )
     ]);
 
@@ -103,11 +111,7 @@ export default async function AdminHubsPage({ params }: PageProps) {
 
   return (
     <div className="w-full px-4 py-8 sm:px-8 lg:px-12">
-      <HubsClient
-        initialHubs={hubs}
-        provinces={provinces}
-        error={error}
-      />
+      <HubsClient initialHubs={hubs} provinces={provinces} error={error} />
     </div>
   );
 }

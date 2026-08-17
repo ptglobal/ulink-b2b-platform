@@ -34,10 +34,18 @@ export async function POST(req: Request) {
       }
 
       console.error('Newsletter subscription failed inside Directus:', err);
-      return errorJson(500, 'INTERNAL_SERVER_ERROR', 'Đăng ký không thành công. Vui lòng thử lại sau.');
+      return errorJson(
+        500,
+        'INTERNAL_SERVER_ERROR',
+        'Đăng ký không thành công. Vui lòng thử lại sau.'
+      );
     }
   } catch (err) {
     console.error('Newsletter subscription route failed:', err);
-    return errorJson(500, 'INTERNAL_SERVER_ERROR', 'Đăng ký không thành công. Vui lòng thử lại sau.');
+    return errorJson(
+      500,
+      'INTERNAL_SERVER_ERROR',
+      'Đăng ký không thành công. Vui lòng thử lại sau.'
+    );
   }
 }

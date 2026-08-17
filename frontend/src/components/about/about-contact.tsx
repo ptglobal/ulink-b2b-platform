@@ -1,21 +1,43 @@
 'use client';
 
-import { useState } from 'react';
-import type { FormEvent } from 'react';
-import { MapPin, Phone, Mail, Send } from 'lucide-react';
+import { useState, type FormEvent } from 'react';
+import {
+  Button,
+  InlineNotification,
+  Select,
+  SelectItem,
+  TextArea,
+  TextInput,
+  Tile
+} from '@carbon/react';
+import { useTranslations } from 'next-intl';
+import { Mail, MapPin, Phone, Send } from '@/components/icons';
 import { useRouter } from '@/i18n/navigation';
 import { submitContactRequest } from '@/lib/contact-submit';
+import type { SiteSettings } from '@/lib/directus';
+import type { RegionalHubContactCopy } from '@/lib/regional-hubs-content';
 
-export function AboutContact() {
+interface AboutContactProps {
+  settings: SiteSettings;
+  copy?: RegionalHubContactCopy;
+}
+
+export function AboutContact({ settings, copy }: AboutContactProps) {
+  const t = useTranslations('aboutContact');
+  const text = (key: keyof RegionalHubContactCopy) => copy?.[key] || t(key);
   const router = useRouter();
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const email = settings.contact_email || 'contact@ulinkindustries.com';
+  const phone = settings.contact_phone || '0247 309 9899';
+  const address = settings.address || text('addressFallback');
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     if (submitting) return;
 
-    const form = e.currentTarget;
+    const form = event.currentTarget;
     setSubmitting(true);
     setError(null);
 
@@ -42,150 +64,153 @@ export function AboutContact() {
   };
 
   return (
-    <section className="py-12">
-      <div className="rounded-2xl border border-slate-100 bg-slate-50 p-6 sm:p-10">
-        <div className="mb-8 flex flex-col items-center text-center">
-          <span className="mb-2 inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-700/10">
-            LIÊN HỆ VỚI CHÚNG TÔI
-          </span>
-          <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-            Kết nối với ULink Industries ngay hôm nay
+    <section aria-labelledby="about-contact-title" className="border-t border-border py-14 sm:py-16 lg:py-20">
+      <header className="mb-8 grid gap-4 lg:grid-cols-16 lg:items-end">
+        <div className="lg:col-span-10">
+          <p className="font-mono text-xs font-medium text-brand">{text('label')}</p>
+          <h2
+            id="about-contact-title"
+            className="mt-4 max-w-[24ch] text-3xl font-normal leading-tight tracking-[-0.025em] text-foreground sm:text-4xl"
+          >
+            {text('heading')}
           </h2>
-          <p className="mt-2 max-w-xl text-sm text-slate-600">
-            Đội ngũ chuyên gia của chúng tôi luôn sẵn sàng hỗ trợ và giải đáp mọi thắc mắc của Quý doanh nghiệp.
-          </p>
         </div>
+        <p className="max-w-[58ch] text-sm leading-6 text-muted-foreground lg:col-span-6 lg:justify-self-end">
+          {text('description')}
+        </p>
+      </header>
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12">
-          <div className="lg:col-span-7 rounded-xl border border-slate-100 bg-white p-6 shadow-sm sm:p-8">
-            <h3 className="mb-4 text-lg font-bold text-slate-900">Gửi yêu cầu tư vấn</h3>
-            <form
-              onSubmit={handleSubmit}
-              className="space-y-4"
-            >
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700">Họ và tên *</label>
-                  <input
-                    name="name"
-                    type="text"
-                    required
-                    placeholder="Nguyễn Văn A"
-                    className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700">Số điện thoại *</label>
-                  <input
-                    name="phone"
-                    type="tel"
-                    required
-                    placeholder="0912 345 678"
-                    className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                  />
-                </div>
-              </div>
+      <div className="grid gap-px overflow-hidden border border-border bg-border lg:grid-cols-[minmax(0,1.45fr)_minmax(20rem,0.75fr)]">
+        <Tile className="!min-h-0 !rounded-none !bg-card !p-6 sm:!p-8 lg:!p-10">
+          <h3 className="mb-7 text-xl font-medium text-foreground">{text('formTitle')}</h3>
 
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700">Email doanh nghiệp *</label>
-                  <input
-                    name="email"
-                    type="email"
-                    required
-                    placeholder="contact@company.com"
-                    className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                  />
-                </div>
-                <div>
-                  <label className="mb-1 block text-xs font-semibold text-slate-700">Chủ đề *</label>
-                  <select
-                    name="subject"
-                    required
-                    className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm text-slate-700 outline-none focus:border-blue-600"
-                  >
-                    <option value="">Chọn chủ đề</option>
-                    <option value="Báo giá vật tư MRO">Báo giá vật tư MRO</option>
-                    <option value="Hợp tác cung ứng">Hợp tác cung ứng</option>
-                    <option value="Tư vấn giải pháp kỹ thuật">Tư vấn giải pháp kỹ thuật</option>
-                    <option value="Yêu cầu khác">Yêu cầu khác</option>
-                  </select>
-                </div>
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error ? (
+              <InlineNotification
+                kind="error"
+                lowContrast
+                hideCloseButton
+                title={text('submitErrorTitle')}
+                subtitle={error}
+              />
+            ) : null}
 
-              <div>
-                <label className="mb-1 block text-xs font-semibold text-slate-700">Nội dung cần tư vấn *</label>
-                <textarea
-                  name="message"
-                  rows={4}
-                  required
-                  placeholder="Mô tả nhu cầu vật tư hoặc thắc mắc của bạn..."
-                  className="w-full resize-none rounded-lg border border-slate-200 px-3.5 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                />
-              </div>
-
-              {error && (
-                <p className="rounded-lg bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700">{error}</p>
-              )}
-
-              <button
-                type="submit"
-                disabled={submitting}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-md transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
-              >
-                <Send className="h-4 w-4" />
-                {submitting ? 'Đang gửi...' : 'Gửi yêu cầu'}
-              </button>
-            </form>
-          </div>
-
-          <div className="lg:col-span-5 flex flex-col gap-4">
-            <div className="flex flex-col gap-4 rounded-xl border border-slate-100 bg-white p-6 shadow-sm">
-              <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                  <MapPin className="h-5 w-5" />
-                </div>
-                <div>
-                  <span className="block text-xs font-semibold text-slate-500">Văn phòng & Hub Hà Nam</span>
-                  <span className="text-xs font-bold text-slate-800">KCN Đồng Văn, Thị xã Duy Tiên, Tỉnh Hà Nam</span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                  <Phone className="h-5 w-5" />
-                </div>
-                <div>
-                  <span className="block text-xs font-semibold text-slate-500">Hotline tư vấn</span>
-                  <span className="text-xs font-bold text-slate-800">1900 6868 - 0988 123 456</span>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                  <Mail className="h-5 w-5" />
-                </div>
-                <div>
-                  <span className="block text-xs font-semibold text-slate-500">Email</span>
-                  <span className="text-xs font-bold text-slate-800">support@ulink.vn</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-slate-200 shadow-sm">
-              <iframe
-                title="ULink Ha Nam Hub Location"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.473595677843!2d105.975765!3d20.650228!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135c345a5555555%3A0x1!2zS0NOIMSQ4buTbmcgVsSDbiwgRHV5IFRpw6puLCBIw6AgTmFt!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s"
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen={false}
-                loading="lazy"
+            <div className="grid gap-6 sm:grid-cols-2">
+              <TextInput
+                id="about-contact-name"
+                name="name"
+                type="text"
+                autoComplete="name"
+                required
+                labelText={`${text('nameLabel')} *`}
+                placeholder={text('namePlaceholder')}
+              />
+              <TextInput
+                id="about-contact-phone"
+                name="phone"
+                type="tel"
+                autoComplete="tel"
+                required
+                labelText={`${text('phoneLabel')} *`}
+                placeholder={text('phonePlaceholder')}
               />
             </div>
+
+            <div className="grid gap-6 sm:grid-cols-2">
+              <TextInput
+                id="about-contact-email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                labelText={`${text('emailLabel')} *`}
+                placeholder={text('emailPlaceholder')}
+              />
+              <Select
+                id="about-contact-subject"
+                name="subject"
+                required
+                defaultValue=""
+                labelText={`${text('subjectLabel')} *`}
+              >
+                <SelectItem value="" text={text('subjectPlaceholder')} disabled hidden />
+                <SelectItem value="rfq" text={text('subjectRfq')} />
+                <SelectItem value="supply" text={text('subjectSupply')} />
+                <SelectItem value="technical" text={text('subjectTechnical')} />
+                <SelectItem value="other" text={text('subjectOther')} />
+              </Select>
+            </div>
+
+            <TextArea
+              id="about-contact-message"
+              name="message"
+              required
+              rows={5}
+              labelText={`${text('messageLabel')} *`}
+              placeholder={text('messagePlaceholder')}
+            />
+
+            <Button type="submit" kind="primary" size="lg" renderIcon={Send} disabled={submitting}>
+              {submitting ? text('submitting') : text('submit')}
+            </Button>
+          </form>
+        </Tile>
+
+        <aside aria-label={text('contactDetailsLabel')} className="min-w-0 bg-card">
+          <div className="divide-y divide-border">
+            <ContactItem icon={MapPin} label={text('officeLabel')} value={address} />
+            <ContactItem icon={Phone} label={text('hotlineLabel')} value={phone} href={`tel:${phone.replace(/\s/g, '')}`} />
+            <ContactItem icon={Mail} label={text('emailContactLabel')} value={email} href={`mailto:${email}`} />
           </div>
-        </div>
+
+          <div className="relative aspect-[16/10] min-h-64 w-full overflow-hidden border-t border-border bg-muted">
+            <iframe
+              title={text('mapTitle')}
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3733.473595677843!2d105.975765!3d20.650228!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3135c345a5555555%3A0x1!2zS0NOIMSQ4buTbmcgVsSDbiwgRHV5IFRpw6puLCBIw6AgTmFt!5e0!3m2!1svi!2s!4v1700000000000!5m2!1svi!2s"
+              className="absolute inset-0 h-full w-full border-0"
+              allowFullScreen={false}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+        </aside>
       </div>
     </section>
+  );
+}
+
+function ContactItem({
+  icon: Icon,
+  label,
+  value,
+  href
+}: {
+  icon: typeof MapPin;
+  label: string;
+  value: string;
+  href?: string;
+}) {
+  const content = (
+    <>
+      <span className="flex h-12 w-12 shrink-0 items-center justify-center bg-muted text-brand">
+        <Icon className="h-5 w-5" aria-hidden="true" />
+      </span>
+      <span className="min-w-0">
+        <span className="block text-xs font-medium text-muted-foreground">{label}</span>
+        <span className="mt-1 block break-words text-sm font-medium leading-6 text-foreground">{value}</span>
+      </span>
+    </>
+  );
+
+  return (
+    <div className="p-6 sm:p-7">
+      {href ? (
+        <a href={href} className="group flex min-h-12 items-start gap-4 hover:text-brand">
+          {content}
+        </a>
+      ) : (
+        <div className="flex min-h-12 items-start gap-4">{content}</div>
+      )}
+    </div>
   );
 }

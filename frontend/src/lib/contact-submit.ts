@@ -36,4 +36,3 @@ export async function submitContactRequest(
     return { ok: false, message: 'Không thể gửi yêu cầu liên hệ. Vui lòng kiểm tra kết nối mạng.' };
   }
 }
-

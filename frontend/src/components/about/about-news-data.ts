@@ -32,36 +32,36 @@ export const ABOUT_NEWS_ARTICLES: AboutNewsArticle[] = [
     highlights: [
       'Tối ưu tồn kho theo mô hình dự báo nhu cầu ngắn hạn',
       'Rút ngắn lead time nhờ gom đơn theo cụm nhà máy',
-      'Ưu tiên vật tư chiến lược để giảm rủi ro đứt gãy',
+      'Ưu tiên vật tư chiến lược để giảm rủi ro đứt gãy'
     ],
     sections: [
       {
         title: 'Bối cảnh thị trường',
         paragraphs: [
           'Năm 2026 ghi nhận áp lực lớn lên chuỗi cung ứng vật tư B2B khi chi phí logistics, biến động đơn hàng và yêu cầu giao nhanh cùng tăng.',
-          'Các doanh nghiệp sản xuất buộc phải tái cấu trúc kế hoạch mua hàng, phân nhóm vật tư theo mức độ ưu tiên và tăng tốc trao đổi dữ liệu với nhà cung cấp.',
-        ],
+          'Các doanh nghiệp sản xuất buộc phải tái cấu trúc kế hoạch mua hàng, phân nhóm vật tư theo mức độ ưu tiên và tăng tốc trao đổi dữ liệu với nhà cung cấp.'
+        ]
       },
       {
         title: 'Ba hướng triển khai thực tế',
         paragraphs: [
           'Doanh nghiệp có thể bắt đầu bằng việc chuẩn hóa danh mục vật tư, gắn mức tồn kho an toàn theo từng nhóm sản phẩm và thiết lập ngưỡng cảnh báo sớm.',
-          'Đồng thời, nên xây dựng lại lịch đặt hàng theo vùng và theo nhà máy để hạn chế tồn kho phân tán, giảm chi phí giữ hàng mà vẫn đảm bảo mức phục vụ.',
+          'Đồng thời, nên xây dựng lại lịch đặt hàng theo vùng và theo nhà máy để hạn chế tồn kho phân tán, giảm chi phí giữ hàng mà vẫn đảm bảo mức phục vụ.'
         ],
         bullets: [
           'Chuẩn hóa master data cho vật tư chiến lược',
           'Đồng bộ forecast giữa mua hàng và vận hành',
-          'Thiết lập KPI giao đúng hạn theo từng nhà cung cấp',
-        ],
+          'Thiết lập KPI giao đúng hạn theo từng nhà cung cấp'
+        ]
       },
       {
         title: 'Kết luận',
         paragraphs: [
-          'Thắt chặt chuỗi cung ứng không chỉ là câu chuyện giảm chi phí mà còn là cách doanh nghiệp tăng khả năng chống chịu trước biến động của thị trường.',
-        ],
-      },
+          'Thắt chặt chuỗi cung ứng không chỉ là câu chuyện giảm chi phí mà còn là cách doanh nghiệp tăng khả năng chống chịu trước biến động của thị trường.'
+        ]
+      }
     ],
-    relatedIds: ['2', '3'],
+    relatedIds: ['2', '3']
   },
   {
     id: '2',
@@ -76,29 +76,29 @@ export const ABOUT_NEWS_ARTICLES: AboutNewsArticle[] = [
     highlights: [
       'Dữ liệu kho cập nhật theo thời gian thực',
       'Giảm lỗi nhập - xuất nhờ quét mã vạch',
-      'Nâng độ chính xác tồn kho lên mức vận hành chuẩn',
+      'Nâng độ chính xác tồn kho lên mức vận hành chuẩn'
     ],
     sections: [
       {
         title: 'WMS thay đổi vận hành kho thế nào?',
         paragraphs: [
           'Hệ thống WMS giúp doanh nghiệp kiểm soát vị trí hàng hóa, luồng xuất nhập và trạng thái đơn hàng tập trung trên một nền tảng duy nhất.',
-          'Nhờ đó, đội vận hành không còn phụ thuộc vào bảng tính rời rạc mà có thể theo dõi từng kiện hàng, từng vị trí và từng thao tác xử lý.',
-        ],
+          'Nhờ đó, đội vận hành không còn phụ thuộc vào bảng tính rời rạc mà có thể theo dõi từng kiện hàng, từng vị trí và từng thao tác xử lý.'
+        ]
       },
       {
         title: 'Các lợi ích nổi bật',
         paragraphs: [
-          'Khi triển khai đúng cách, WMS hỗ trợ giảm thời gian tìm hàng, tăng độ chính xác picking và cải thiện chất lượng báo cáo cho quản lý.',
+          'Khi triển khai đúng cách, WMS hỗ trợ giảm thời gian tìm hàng, tăng độ chính xác picking và cải thiện chất lượng báo cáo cho quản lý.'
         ],
         bullets: [
           'Kiểm soát batch và serial rõ ràng',
           'Tối ưu sơ đồ slotting trong kho',
-          'Giảm sai lệch tồn kho và tồn đọng xử lý',
-        ],
-      },
+          'Giảm sai lệch tồn kho và tồn đọng xử lý'
+        ]
+      }
     ],
-    relatedIds: ['1', '4'],
+    relatedIds: ['1', '4']
   },
   {
     id: '3',
@@ -113,24 +113,24 @@ export const ABOUT_NEWS_ARTICLES: AboutNewsArticle[] = [
     highlights: [
       'Giao nhanh trong 24h cho cụm khách hàng trọng điểm',
       'Điều phối tuyến xe theo dữ liệu thực tế',
-      'Nâng tỷ lệ giao đúng hẹn nhờ tối ưu tuyến',
+      'Nâng tỷ lệ giao đúng hẹn nhờ tối ưu tuyến'
     ],
     sections: [
       {
         title: 'Lý do mô hình giao nhanh 24h hiệu quả',
         paragraphs: [
           'Tại các vùng kinh tế trọng điểm, khoảng cách giữa kho trung chuyển và điểm tiêu thụ đủ ngắn để doanh nghiệp xây dựng mô hình giao nhận 24h khả thi.',
-          'Mấu chốt là kết nối dữ liệu đơn hàng, tình trạng xe và năng lực bốc xếp để ra quyết định phân bổ tuyến kịp thời.',
-        ],
+          'Mấu chốt là kết nối dữ liệu đơn hàng, tình trạng xe và năng lực bốc xếp để ra quyết định phân bổ tuyến kịp thời.'
+        ]
       },
       {
         title: 'Điểm cần kiểm soát',
         paragraphs: [
-          'Doanh nghiệp nên đặt ngưỡng cảnh báo cho đơn gấp, đơn lạnh và đơn có yêu cầu hẹn giờ để không làm ảnh hưởng đến độ đúng hẹn chung.',
-        ],
-      },
+          'Doanh nghiệp nên đặt ngưỡng cảnh báo cho đơn gấp, đơn lạnh và đơn có yêu cầu hẹn giờ để không làm ảnh hưởng đến độ đúng hẹn chung.'
+        ]
+      }
     ],
-    relatedIds: ['1', '4'],
+    relatedIds: ['1', '4']
   },
   {
     id: '4',
@@ -145,28 +145,27 @@ export const ABOUT_NEWS_ARTICLES: AboutNewsArticle[] = [
     highlights: [
       'Giảm phát thải bằng điện mặt trời áp mái',
       'Tăng hiệu quả chiếu sáng và thông gió',
-      'Cải thiện chỉ số ESG cho hệ thống kho',
+      'Cải thiện chỉ số ESG cho hệ thống kho'
     ],
     sections: [
       {
         title: 'Kho xanh không chỉ là câu chuyện năng lượng',
         paragraphs: [
           'Một hệ thống kho xanh cần được nhìn tổng thể từ vật liệu xây dựng, năng lượng sử dụng, dòng di chuyển nội bộ cho đến cách quản lý chất thải.',
-          'Khi áp dụng đồng bộ, doanh nghiệp vừa tiết kiệm chi phí vừa tăng khả năng đáp ứng các yêu cầu bền vững từ khách hàng quốc tế.',
-        ],
+          'Khi áp dụng đồng bộ, doanh nghiệp vừa tiết kiệm chi phí vừa tăng khả năng đáp ứng các yêu cầu bền vững từ khách hàng quốc tế.'
+        ]
       },
       {
         title: 'Các nhóm tiêu chuẩn nên ưu tiên',
         paragraphs: [
-          'Doanh nghiệp có thể bắt đầu từ những hạng mục dễ triển khai như đèn LED, cảm biến tiết kiệm điện, mái năng lượng mặt trời và quy trình phân loại rác tại nguồn.',
-        ],
-      },
+          'Doanh nghiệp có thể bắt đầu từ những hạng mục dễ triển khai như đèn LED, cảm biến tiết kiệm điện, mái năng lượng mặt trời và quy trình phân loại rác tại nguồn.'
+        ]
+      }
     ],
-    relatedIds: ['2', '3'],
-  },
+    relatedIds: ['2', '3']
+  }
 ];
 
 export function getAboutNewsArticleById(id: string) {
   return ABOUT_NEWS_ARTICLES.find((article) => article.id === id) ?? null;
 }
-

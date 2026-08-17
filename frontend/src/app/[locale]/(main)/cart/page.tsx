@@ -55,12 +55,18 @@ export default async function CartPage({ params: { locale } }: Props) {
   // Fetch real suggested products from Directus (taking the first 4)
   const suggestedProducts = allDbProducts.slice(0, 4).map((prod) => {
     const pricing = getProductPricing(prod.slug, locale);
-    const sku = (prod.skus ?? []).find((s: any) => s.status === 'published') || (prod.skus ?? [])[0];
+    const sku =
+      (prod.skus ?? []).find((s: any) => s.status === 'published') || (prod.skus ?? [])[0];
     const skuCode = sku ? sku.sku_code : prod.slug.toUpperCase();
 
-    const hub = prod.slug.includes('glove') || prod.slug.includes('latex')
-      ? (locale === 'vi' ? 'Hub Bình Dương, Việt Nam' : 'Binh Duong Hub, Vietnam')
-      : (locale === 'vi' ? 'Hub Hà Nam, Việt Nam' : 'Ha Nam Hub, Vietnam');
+    const hub =
+      prod.slug.includes('glove') || prod.slug.includes('latex')
+        ? locale === 'vi'
+          ? 'Hub Bình Dương, Việt Nam'
+          : 'Binh Duong Hub, Vietnam'
+        : locale === 'vi'
+          ? 'Hub Hà Nam, Việt Nam'
+          : 'Ha Nam Hub, Vietnam';
 
     const moqVal = sku?.pack_size ? parseInt(sku.pack_size) || 100 : 100;
     const moqText = locale === 'vi' ? `${moqVal} ${pricing.unit}` : `${moqVal} ${pricing.unit}`;
@@ -69,9 +75,10 @@ export default async function CartPage({ params: { locale } }: Props) {
       sku: skuCode,
       slug: prod.slug,
       name: getTranslatedName(prod, locale),
-      priceText: locale === 'vi'
-        ? `${new Intl.NumberFormat('vi-VN').format(pricing.price)}đ /${pricing.unit}`
-        : `$${(pricing.price / 25000).toFixed(2)} /${pricing.unit}`,
+      priceText:
+        locale === 'vi'
+          ? `${new Intl.NumberFormat('vi-VN').format(pricing.price)}đ /${pricing.unit}`
+          : `$${(pricing.price / 25000).toFixed(2)} /${pricing.unit}`,
       moq: moqVal,
       moqText,
       desc: getTranslatedField(prod, 'short_description', locale) || '',
@@ -91,4 +98,3 @@ export default async function CartPage({ params: { locale } }: Props) {
     </section>
   );
 }
-

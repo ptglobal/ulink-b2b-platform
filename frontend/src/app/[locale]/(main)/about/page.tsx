@@ -8,20 +8,32 @@ import { AboutStandards } from '@/components/about/about-standards';
 import { AboutSustainability } from '@/components/about/about-sustainability';
 import { AboutNews } from '@/components/about/about-news';
 import { AboutContact } from '@/components/about/about-contact';
+import { getPagePresentation } from '@/lib/page-presentation';
+import { getSiteSettings } from '@/lib/site-settings';
 
 export default async function AboutPage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
+  const [presentation, contactSettings] = await Promise.all([
+    getPagePresentation('about', locale),
+    getSiteSettings()
+  ]);
 
   return (
     <div className="w-full bg-white">
       <div className="mx-auto max-w-[1440px] px-4 sm:px-8 lg:px-16 py-4">
         {/* Breadcrumbs */}
-        <nav className="flex items-center gap-2 text-xs font-medium text-slate-500 py-2">
-          <Link href="/" className="hover:text-blue-600 transition-colors">
+        <nav className="flex min-h-11 flex-wrap items-center gap-x-2 text-xs font-medium text-slate-500">
+          <Link
+            href="/"
+            className="inline-flex min-h-11 items-center transition-colors hover:text-blue-600"
+          >
             Trang chủ
           </Link>
           <span className="text-slate-400">&gt;</span>
-          <Link href="/about" className="hover:text-blue-600 transition-colors">
+          <Link
+            href="/about"
+            className="inline-flex min-h-11 items-center transition-colors hover:text-blue-600"
+          >
             Về chúng tôi
           </Link>
           <span className="text-slate-400">&gt;</span>
@@ -29,15 +41,15 @@ export default async function AboutPage({ params: { locale } }: { params: { loca
         </nav>
 
         {/* 8 Section chính */}
-        <AboutHero />
+        <AboutHero media={presentation?.heroMedia} />
         <AboutStats />
         <div className="my-4 h-px w-full bg-slate-200" />
         <AboutLocation />
-        <AboutInfrastructure />
+        <AboutInfrastructure media={presentation?.supportingMedia} />
         <AboutStandards />
-        <AboutSustainability />
+        <AboutSustainability locale={locale} />
         <AboutNews />
-        <AboutContact />
+        <AboutContact settings={contactSettings} />
       </div>
     </div>
   );

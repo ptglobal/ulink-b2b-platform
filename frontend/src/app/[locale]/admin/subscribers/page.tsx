@@ -15,8 +15,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -54,11 +56,14 @@ export default async function AdminSubscribersPage({ params }: PageProps) {
 
     // 2. Fetch Newsletter Subscribers
     const res = await client.request(
-      readItems('newsletter_subscribers' as any, {
-        fields: ['id', 'email', 'status', 'created_at'] as any,
-        sort: ['-id'],
-        limit: -1
-      } as any)
+      readItems(
+        'newsletter_subscribers' as any,
+        {
+          fields: ['id', 'email', 'status', 'created_at'] as any,
+          sort: ['-id'],
+          limit: -1
+        } as any
+      )
     );
 
     subscribers = res || [];
@@ -73,10 +78,7 @@ export default async function AdminSubscribersPage({ params }: PageProps) {
 
   return (
     <div className="w-full px-4 py-8 sm:px-8 lg:px-12">
-      <SubscribersClient
-        initialSubscribers={subscribers}
-        error={error}
-      />
+      <SubscribersClient initialSubscribers={subscribers} error={error} />
     </div>
   );
 }

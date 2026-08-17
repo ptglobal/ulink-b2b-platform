@@ -17,7 +17,7 @@ export function FilterChip({
   filterKey,
   slug,
   locale,
-  searchParams,
+  searchParams
 }: {
   label: string;
   filterKey: string;
@@ -30,7 +30,10 @@ export function FilterChip({
   for (const [k, v] of Object.entries(searchParams)) {
     if (!v) continue;
     if (k === filterKey) {
-      const remaining = v.split(',').filter((s) => s !== slug).join(',');
+      const remaining = v
+        .split(',')
+        .filter((s) => s !== slug)
+        .join(',');
       if (remaining) params.set(k, remaining);
     } else {
       params.set(k, v);
@@ -78,10 +81,10 @@ export function PaginationLink({
   return (
     <a
       href={href}
-      className={`inline-flex items-center justify-center min-w-[32px] h-8 px-2.5 rounded-md text-sm font-medium transition-colors ${
+      className={`inline-flex h-11 min-w-11 items-center justify-center px-2.5 text-sm font-medium transition-colors ${
         active
           ? 'bg-blue-600 text-white'
-          : 'border border-gray-200 text-gray-700 hover:bg-blue-50 hover:text-blue-600'
+          : 'border border-gray-200 text-gray-700 hover:bg-brand/10 hover:text-brand'
       }`}
     >
       {label}

@@ -1,16 +1,58 @@
-import Image from 'next/image';
-import { ArrowRight, Package } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { readItems } from '@directus/sdk';
+import { getLocale, getTranslations } from 'next-intl/server';
+import { ArrowRight, Package } from '@/components/icons';
+import { BrandedMedia } from '@/components/media/branded-media';
 import { Link } from '@/i18n/navigation';
-import { ASSETS } from '@/lib/assets';
+import { publicDirectus, type BlogPost, type BlogPostTranslation } from '@/lib/directus';
 import { SectionHeader } from './section-header';
 
 export async function CaseStudies() {
-  const t = await getTranslations('home');
+  const [t, locale, posts] = await Promise.all([
+    getTranslations('home'),
+    getLocale(),
+    publicDirectus
+      .request(
+        readItems('blog_posts', {
+          filter: { status: { _eq: 'published' } },
+          fields: [
+            'id',
+            'slug',
+            'title',
+            'cover',
+            'published_at',
+            'status',
+            { translations: ['languages_code', 'title'] }
+          ],
+          sort: ['-published_at'],
+          limit: 12
+        })
+      )
+      .catch(() => [] as BlogPost[])
+  ]);
+
+  const items = posts
+    .filter((post) => !post.slug.startsWith('event-'))
+    .slice(0, 4)
+    .map((post) => {
+      const translations = Array.isArray(post.translations)
+        ? post.translations.filter((item): item is BlogPostTranslation => typeof item === 'object')
+        : [];
+      const title =
+        translations.find((item) => item.languages_code === locale)?.title || post.title || post.slug;
+      return {
+        href: `/resources/news-${post.slug}`,
+        title,
+        image: post.cover ? `/api/files/${post.cover}` : null,
+        date: post.published_at
+          ? new Intl.DateTimeFormat(locale, { day: '2-digit', month: '2-digit', year: 'numeric' }).format(new Date(post.published_at))
+          : ''
+      };
+    });
+
+  if (!items.length) return null;
 
   return (
-    <section className="mx-auto w-full max-w-[1800px] px-4 py-12 lg:py-16">
-      {/* ── SECTION HEADER BAR ── */}
+    <section className="mx-auto w-full max-w-[1440px] px-4 py-12 sm:px-8 lg:py-16 xl:px-20">
       <SectionHeader
         title={t('caseStudy.sectionTitle')}
         subtitle={t('caseStudy.sectionSubTitle')}
@@ -18,56 +60,34 @@ export async function CaseStudies() {
         viewAllLabel={t('caseStudy.viewAll')}
       />
 
-      {/* ── 3 CASE STUDY CARDS GRID ── */}
-      <div className="mt-8 grid grid-cols-1 gap-6 md:grid-cols-3 lg:gap-8">
-        {[1, 2, 3].map((num) => (
+      <div className="mt-8 grid grid-cols-1 border-l border-t border-border sm:grid-cols-2 lg:grid-cols-4">
+        {items.map((item, index) => (
           <Link
-            key={num}
-            href={`/resources/case-study-${num}`}
-            className="group flex flex-col overflow-hidden rounded-xl border border-border bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+            key={item.href}
+            href={item.href}
+            className="ulink-media-zoom group flex min-h-[430px] flex-col border-b border-r border-border bg-white transition-colors hover:bg-muted"
           >
-            {/* Top Banner Image with ULINK Logo Watermark */}
-            <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
-              <Image
-                src={ASSETS.home.solutionPackaging}
-                alt="Case Study Production Line"
-                fill
-                sizes="(max-width: 768px) 100vw, 33vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              {/* ULINK Watermark Badge Top Right */}
-              <div className="absolute right-3 top-3 flex items-center gap-1 rounded bg-black/40 px-2 py-1 text-[11px] font-bold text-white backdrop-blur-sm">
-                <span className="h-2 w-2 rounded-full bg-brand" />
-                ULINK
-              </div>
-            </div>
-
-            {/* Middle Text Area */}
-            <div className="flex flex-1 flex-col p-6">
-              <p className="text-[13px] font-bold text-[#4A6FA5] sm:text-[14px]">
-                {t(`caseStudy.card${num}Category` as any)}
+            <BrandedMedia
+              src={item.image}
+              alt={item.title}
+              sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw"
+              className="aspect-[4/3] bg-slate-100"
+              compactBrand
+            />
+            <div className="flex flex-1 flex-col p-5">
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.1em] text-brand">
+                {item.date || `0${index + 1}`}
               </p>
-              <h3 className="mt-3 text-[14px] font-bold leading-relaxed text-slate-800 sm:text-[15px]">
-                {t(`caseStudy.card${num}Title` as any)}
+              <h3 className="mt-3 text-[15px] font-bold leading-6 text-slate-800 group-hover:text-brand">
+                {item.title}
               </h3>
-            </div>
-
-            {/* Card Footer Bar */}
-            <div className="mt-auto flex items-center justify-between border-t border-border px-6 py-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand">
-                  <Package className="h-5 w-5" aria-hidden="true" />
-                </div>
-                <div>
-                  <p className="text-[13px] font-bold text-primary sm:text-[14px]">
-                    {t(`caseStudy.card${num}Metric` as any)}
-                  </p>
-                  <p className="text-[11px] text-muted-foreground sm:text-[12px]">
-                    {t(`caseStudy.card${num}Tag` as any)}
-                  </p>
-                </div>
+              <div className="mt-auto flex items-center justify-between border-t border-border pt-5">
+                <span className="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                  <Package className="h-4 w-4 text-brand" aria-hidden="true" />
+                  ULink Industries
+                </span>
+                <ArrowRight className="h-5 w-5 text-brand transition-transform group-hover:translate-x-1" aria-hidden="true" />
               </div>
-              <ArrowRight className="h-6 w-6 text-brand transition-transform group-hover:translate-x-1" aria-hidden="true" />
             </div>
           </Link>
         ))}

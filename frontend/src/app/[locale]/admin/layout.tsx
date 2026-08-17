@@ -1,35 +1,20 @@
-import React from 'react';
-import { setRequestLocale } from 'next-intl/server';
-import { redirect } from '@/i18n/navigation';
-import { getCurrentUser } from '@/lib/auth-helpers';
-import { AdminSidebar } from '@/components/admin/admin-sidebar';
+import { redirect } from 'next/navigation';
 
-export default async function AdminLayout({
-  children,
-  params: { locale }
-}: {
-  children: React.ReactNode;
-  params: { locale: string };
-}) {
-  setRequestLocale(locale);
+export const dynamic = 'force-dynamic';
 
-  // Authenticate user server-side
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect({ href: '/login', locale });
-  }
+/**
+ * CMS administration is intentionally isolated from the customer website.
+ *
+ * The website login (`/[locale]/login`) is exclusively for B2B customers.
+ * Editorial and operational users authenticate in Directus, which owns its
+ * own session, roles and login screen. Keeping this redirect at the layout
+ * boundary also covers every legacy `/[locale]/admin/*` URL.
+ */
+export default function AdminBoundary() {
+  const directusUrl = process.env.DIRECTUS_PUBLIC_URL ?? process.env.DIRECTUS_URL;
+  const cmsAdminUrl =
+    process.env.CMS_ADMIN_URL ??
+    (directusUrl ? `${directusUrl.replace(/\/$/, '')}/admin/` : 'http://localhost:8055/admin/');
 
-  return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col md:flex-row">
-      {/* Sidebar navigation panel */}
-      <AdminSidebar />
-
-      {/* Main content viewport */}
-      <main className="flex-1 md:pl-64 min-h-screen flex flex-col pt-16 md:pt-0">
-        <div className="flex-1 overflow-y-auto">
-          {children}
-        </div>
-      </main>
-    </div>
-  );
+  redirect(cmsAdminUrl);
 }

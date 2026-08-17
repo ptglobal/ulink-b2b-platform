@@ -18,7 +18,7 @@ import {
   Bookmark,
   Edit3,
   ChevronRight
-} from 'lucide-react';
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import type { AuthUser } from '@/lib/auth-helpers';
 import { readCart, persistCart, type CartItem } from '@/components/rfq/cart-types';
@@ -209,7 +209,11 @@ export default function CartClient({
 
     if (code === 'ULINKB2B') {
       setDiscountPercent(10);
-      setPromoSuccess(locale === 'vi' ? 'Áp dụng mã giảm giá 10% thành công!' : 'Applied 10% discount successfully!');
+      setPromoSuccess(
+        locale === 'vi'
+          ? 'Áp dụng mã giảm giá 10% thành công!'
+          : 'Applied 10% discount successfully!'
+      );
     } else {
       setPromoError(locale === 'vi' ? 'Mã giảm giá không hợp lệ.' : 'Invalid discount code.');
       setDiscountPercent(0);
@@ -253,14 +257,25 @@ export default function CartClient({
   }, [resolvedItems]);
 
   const vat = useMemo(() => Math.round(subtotal * 0.08), [subtotal]);
-  const discountAmount = useMemo(() => Math.round((subtotal + vat) * (discountPercent / 100)), [subtotal, vat, discountPercent]);
-  const grandTotal = useMemo(() => subtotal + vat - discountAmount, [subtotal, vat, discountAmount]);
+  const discountAmount = useMemo(
+    () => Math.round((subtotal + vat) * (discountPercent / 100)),
+    [subtotal, vat, discountPercent]
+  );
+  const grandTotal = useMemo(
+    () => subtotal + vat - discountAmount,
+    [subtotal, vat, discountAmount]
+  );
 
   const formatPrice = (amount: number) => {
     if (locale === 'vi') {
       return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
     }
-    return '$' + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount / 25000);
+    return (
+      '$' +
+      new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        amount / 25000
+      )
+    );
   };
 
   /* ── suggested products click ── */
@@ -286,7 +301,10 @@ export default function CartClient({
       {/* SECTION 1: Breadcrumbs, Progress, Grid */}
       <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 sm:px-8 lg:px-16">
         {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-muted-foreground pb-2">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-2 text-[12px] text-muted-foreground pb-2"
+        >
           <Link href="/" className="transition-colors hover:text-brand">
             {t('breadcrumbHome')}
           </Link>
@@ -305,7 +323,7 @@ export default function CartClient({
           </div>
 
           {/* Step 2: Thanh toán */}
-          <div className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-[#3B82F6]/90 text-white">
+          <div className="flex-1 flex items-center justify-center gap-2.5 py-4 bg-brand/90 text-white">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-brand text-[11px] font-extrabold text-white">
               2
             </span>
@@ -331,251 +349,262 @@ export default function CartClient({
 
         {/* Main Grid */}
         <div className="grid gap-8 lg:grid-cols-12 pt-2">
-        {/* LEFT COLUMN: Cart Items */}
-        <div className="lg:col-span-8 space-y-6">
-          <div className="flex items-baseline gap-2">
-            <h2 className="text-xl font-bold text-foreground">{t('title')}</h2>
-            <span className="text-xs text-muted-foreground">
-              {t('totalItems', { count: cart.length })}
-            </span>
-          </div>
-
-          {resolvedItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-16 px-4 text-center border border-dashed border-border/80 rounded-md space-y-4">
-              <Package className="h-10 w-10 text-muted-foreground/50" />
-              <p className="text-sm text-muted-foreground">{t('emptyCart')}</p>
-              <Link
-                href="/solutions"
-                className="inline-flex items-center gap-1.5 rounded-md border border-brand px-4 py-2 text-xs font-semibold text-brand hover:bg-brand/5 transition-all"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                {t('btnBack')}
-              </Link>
+          {/* LEFT COLUMN: Cart Items */}
+          <div className="lg:col-span-8 space-y-6">
+            <div className="flex items-baseline gap-2">
+              <h2 className="text-xl font-bold text-foreground">{t('title')}</h2>
+              <span className="text-xs text-muted-foreground">
+                {t('totalItems', { count: cart.length })}
+              </span>
             </div>
-          ) : (
-            <div className="overflow-hidden rounded-md border border-slate-200/80">
-              <table className="w-full border-collapse text-left text-sm min-w-[700px]">
-                <thead className="bg-[#F8FAFC] text-slate-600 text-xs uppercase font-bold border-b border-slate-200/80">
-                  <tr>
-                    <th className="px-4 py-3.5 font-semibold text-slate-700">{t('colProduct')}</th>
-                    <th className="px-3 py-3.5 w-[110px] text-right font-semibold text-slate-700">{t('colPrice')}</th>
-                    <th className="px-3 py-3.5 w-[80px] text-center font-semibold text-slate-700">{t('colUnit')}</th>
-                    <th className="px-3 py-3.5 w-[140px] text-center font-semibold text-slate-700">{t('colQuantity')}</th>
-                    <th className="px-4 py-3.5 w-[190px] text-right font-semibold text-slate-700">{t('colTotal')}</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200/60 bg-white">
-                  {resolvedItems.map((item, idx) => (
-                    <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
-                      {/* Product Name & Specs */}
-                      <td className="px-4 py-4 flex gap-3.5 items-start">
-                        {item.slug ? (
-                          <Link
-                            href={`/solutions/${item.slug}`}
-                            className="relative h-14 w-14 shrink-0 rounded border border-slate-200/60 bg-white flex items-center justify-center overflow-hidden hover:opacity-90 transition-opacity block"
-                          >
-                            {item.hero ? (
-                              <Image
-                                src={`${DIRECTUS_URL}/assets/${item.hero}`}
-                                alt={item.product_name || item.sku}
-                                fill
-                                className="object-contain p-1"
-                                sizes="56px"
-                              />
-                            ) : (
-                              <Package className="h-6 w-6 text-slate-300" />
-                            )}
-                          </Link>
-                        ) : (
-                          <div className="relative h-14 w-14 shrink-0 rounded border border-slate-200/60 bg-white flex items-center justify-center overflow-hidden">
-                            <Package className="h-6 w-6 text-slate-300" />
-                          </div>
-                        )}
-                        <div className="space-y-0.5 min-w-0">
+
+            {resolvedItems.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-16 px-4 text-center border border-dashed border-border/80 rounded-md space-y-4">
+                <Package className="h-10 w-10 text-muted-foreground/50" />
+                <p className="text-sm text-muted-foreground">{t('emptyCart')}</p>
+                <Link
+                  href="/solutions"
+                  className="inline-flex items-center gap-1.5 rounded-md border border-brand px-4 py-2 text-xs font-semibold text-brand hover:bg-brand/5 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
+                >
+                  <ArrowLeft className="h-3.5 w-3.5" />
+                  {t('btnBack')}
+                </Link>
+              </div>
+            ) : (
+              <div className="overflow-x-auto rounded-md border border-slate-200/80">
+                <table className="w-full border-collapse text-left text-sm min-w-[700px]">
+                  <thead className="bg-background text-slate-600 text-xs uppercase font-bold border-b border-slate-200/80">
+                    <tr>
+                      <th className="px-4 py-3.5 font-semibold text-slate-700">
+                        {t('colProduct')}
+                      </th>
+                      <th className="px-3 py-3.5 w-[110px] text-right font-semibold text-slate-700">
+                        {t('colPrice')}
+                      </th>
+                      <th className="px-3 py-3.5 w-[80px] text-center font-semibold text-slate-700">
+                        {t('colUnit')}
+                      </th>
+                      <th className="px-3 py-3.5 w-[140px] text-center font-semibold text-slate-700">
+                        {t('colQuantity')}
+                      </th>
+                      <th className="px-4 py-3.5 w-[190px] text-right font-semibold text-slate-700">
+                        {t('colTotal')}
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200/60 bg-white">
+                    {resolvedItems.map((item, idx) => (
+                      <tr key={idx} className="hover:bg-slate-50/50 transition-colors">
+                        {/* Product Name & Specs */}
+                        <td className="px-4 py-4 flex gap-3.5 items-start">
                           {item.slug ? (
                             <Link
                               href={`/solutions/${item.slug}`}
-                              className="font-semibold text-slate-900 text-sm block leading-snug hover:text-brand transition-colors"
+                              className="relative h-14 w-14 shrink-0 rounded border border-slate-200/60 bg-white flex items-center justify-center overflow-hidden hover:opacity-90 transition-opacity block"
                             >
-                              {item.product_name}
+                              {item.hero ? (
+                                <Image
+                                  src={`${DIRECTUS_URL}/assets/${item.hero}`}
+                                  alt={item.product_name || item.sku}
+                                  fill
+                                  className="object-contain p-1"
+                                  sizes="56px"
+                                />
+                              ) : (
+                                <Package className="h-6 w-6 text-slate-300" />
+                              )}
                             </Link>
                           ) : (
-                            <span className="font-semibold text-slate-900 text-sm block leading-snug">
-                              {item.product_name}
-                            </span>
+                            <div className="relative h-14 w-14 shrink-0 rounded border border-slate-200/60 bg-white flex items-center justify-center overflow-hidden">
+                              <Package className="h-6 w-6 text-slate-300" />
+                            </div>
                           )}
-                          <span className="text-[11px] font-mono text-slate-400 block pt-0.5">
-                            SKU: {item.sku}
-                          </span>
-                          <span className="text-[11px] text-slate-500 block truncate max-w-sm">
-                            {locale === 'vi' ? 'Quy cách: ' : 'Spec: '}{item.spec}
-                          </span>
-                        </div>
-                      </td>
+                          <div className="space-y-0.5 min-w-0">
+                            {item.slug ? (
+                              <Link
+                                href={`/solutions/${item.slug}`}
+                                className="font-semibold text-slate-900 text-sm block leading-snug hover:text-brand transition-colors"
+                              >
+                                {item.product_name}
+                              </Link>
+                            ) : (
+                              <span className="font-semibold text-slate-900 text-sm block leading-snug">
+                                {item.product_name}
+                              </span>
+                            )}
+                            <span className="text-[11px] font-mono text-slate-400 block pt-0.5">
+                              SKU: {item.sku}
+                            </span>
+                            <span className="text-[11px] text-slate-500 block truncate max-w-sm">
+                              {locale === 'vi' ? 'Quy cách: ' : 'Spec: '}
+                              {item.spec}
+                            </span>
+                          </div>
+                        </td>
 
-                      {/* Unit Price */}
-                      <td className="px-3 py-4 text-right font-medium text-slate-700">
-                        {formatPrice(item.unitPrice)}
-                      </td>
+                        {/* Unit Price */}
+                        <td className="px-3 py-4 text-right font-medium text-slate-700">
+                          {formatPrice(item.unitPrice)}
+                        </td>
 
-                      {/* Unit */}
-                      <td className="px-3 py-4 text-center text-slate-600 font-medium">
-                        {item.unit}
-                      </td>
+                        {/* Unit */}
+                        <td className="px-3 py-4 text-center text-slate-600 font-medium">
+                          {item.unit}
+                        </td>
 
-                      {/* Quantity Input */}
-                      <td className="px-3 py-4 text-center">
-                        <div className="flex items-center justify-center gap-3.5 mx-auto w-fit">
-                          <button
-                            type="button"
-                            onClick={() => handleQtyChange(idx, item.quantity - 10)}
-                            className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-800 transition-colors"
-                          >
-                            <Minus className="h-3.5 w-3.5" />
-                          </button>
-                          <span className="text-sm font-semibold text-slate-800 min-w-[32px] text-center">
-                            {item.quantity}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => handleQtyChange(idx, item.quantity + 10)}
-                            className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-800 transition-colors"
-                          >
-                            <Plus className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
+                        {/* Quantity Input */}
+                        <td className="px-3 py-4 text-center">
+                          <div className="flex items-center justify-center gap-3.5 mx-auto w-fit">
+                            <button
+                              type="button"
+                              onClick={() => handleQtyChange(idx, item.quantity - 10)}
+                              className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-800 transition-colors"
+                            >
+                              <Minus className="h-3.5 w-3.5" />
+                            </button>
+                            <span className="text-sm font-semibold text-slate-800 min-w-[32px] text-center">
+                              {item.quantity}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleQtyChange(idx, item.quantity + 10)}
+                              className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-800 transition-colors"
+                            >
+                              <Plus className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+                        </td>
 
-                      {/* Total Price & Remove Button */}
-                      <td className="px-4 py-4 text-right">
-                        <div className="flex items-center justify-end gap-3">
-                          <span className="font-bold text-[#006AA7] text-base">
-                            {formatPrice(item.total)}
-                          </span>
-                          <button
-                            type="button"
-                            onClick={() => handleRemove(idx)}
-                            className="p-2 border border-slate-200 hover:border-slate-300 rounded text-slate-400 hover:text-rose-600 hover:bg-slate-50 transition-all flex items-center justify-center shrink-0"
-                            aria-label="Remove item"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-
-        {/* RIGHT COLUMN: Summary */}
-        <div className="lg:col-span-4 space-y-6">
-          {/* Order Summary Panel */}
-          <div className="rounded-lg border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm space-y-5">
-            <h3 className="text-lg font-bold text-slate-900">{t('summaryTitle')}</h3>
-
-            <div className="space-y-4 text-sm">
-              <div className="flex justify-between">
-                <span className="text-slate-500">{t('subtotal')}</span>
-                <span className="font-semibold text-slate-800">{formatPrice(subtotal)}</span>
+                        {/* Total Price & Remove Button */}
+                        <td className="px-4 py-4 text-right">
+                          <div className="flex items-center justify-end gap-3">
+                            <span className="font-bold text-brand text-base">
+                              {formatPrice(item.total)}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => handleRemove(idx)}
+                              className="p-2 border border-slate-200 hover:border-slate-300 rounded text-slate-400 hover:text-rose-600 hover:bg-slate-50 transition-[color,background-color,border-color,box-shadow,opacity,transform] flex items-center justify-center shrink-0"
+                              aria-label="Remove item"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">{t('vat')}</span>
-                <span className="font-semibold text-slate-800">{formatPrice(vat)}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-slate-500">{t('shipping')}</span>
-                <span className="font-medium text-brand text-right">{t('shippingContact')}</span>
-              </div>
+            )}
+          </div>
 
-              {/* Divider */}
-              <hr className="border-slate-200" />
+          {/* RIGHT COLUMN: Summary */}
+          <div className="lg:col-span-4 space-y-6">
+            {/* Order Summary Panel */}
+            <div className="rounded-lg border border-slate-200 bg-background p-6 shadow-sm space-y-5">
+              <h3 className="text-lg font-bold text-slate-900">{t('summaryTitle')}</h3>
 
-              {/* Promo Code Input */}
-              <form onSubmit={handleApplyPromo} className="space-y-2">
-                <label className="text-xs font-bold text-slate-500 block">
-                  {t('promoLabel')}
-                </label>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    placeholder={t('promoPlaceholder')}
-                    className="flex-1 rounded border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand font-mono uppercase"
-                  />
-                  <button
-                    type="submit"
-                    className="rounded bg-[#E0F2FE] hover:bg-[#BAE6FD] text-sky-700 text-xs font-bold px-4 py-2.5 transition-all border border-sky-200"
-                  >
-                    {t('promoApply')}
-                  </button>
+              <div className="space-y-4 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-500">{t('subtotal')}</span>
+                  <span className="font-semibold text-slate-800">{formatPrice(subtotal)}</span>
                 </div>
-                {promoError && (
-                  <span className="text-xs text-rose-500 font-medium block mt-1">{promoError}</span>
-                )}
-                {promoSuccess && (
-                  <span className="text-xs text-emerald-600 font-medium block mt-1">{promoSuccess}</span>
-                )}
-              </form>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">{t('vat')}</span>
+                  <span className="font-semibold text-slate-800">{formatPrice(vat)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-500">{t('shipping')}</span>
+                  <span className="font-medium text-brand text-right">{t('shippingContact')}</span>
+                </div>
 
-              {/* Divider */}
-              <hr className="border-slate-200" />
+                {/* Divider */}
+                <hr className="border-slate-200" />
 
-              <div className="flex items-baseline justify-between pt-1">
-                <span className="text-base font-bold text-slate-900">{t('total')}</span>
-                <div className="text-right">
-                  <span className="text-2xl font-extrabold text-[#006AA7] block leading-none">
-                    {formatPrice(grandTotal)}
-                  </span>
-                  <span className="text-[10px] text-slate-400 font-medium block mt-1.5">
-                    {t('vatIncluded')}
-                  </span>
+                {/* Promo Code Input */}
+                <form onSubmit={handleApplyPromo} className="space-y-2">
+                  <label className="text-xs font-bold text-slate-500 block">
+                    {t('promoLabel')}
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value)}
+                      placeholder={t('promoPlaceholder')}
+                      className="flex-1 rounded border border-slate-200 bg-white px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand font-mono uppercase"
+                    />
+                    <button
+                      type="submit"
+                      className="rounded bg-[#E0F2FE] hover:bg-[#BAE6FD] text-sky-700 text-xs font-bold px-4 py-2.5 transition-[color,background-color,border-color,box-shadow,opacity,transform] border border-sky-200"
+                    >
+                      {t('promoApply')}
+                    </button>
+                  </div>
+                  {promoError && (
+                    <span className="text-xs text-rose-500 font-medium block mt-1">
+                      {promoError}
+                    </span>
+                  )}
+                  {promoSuccess && (
+                    <span className="text-xs text-emerald-600 font-medium block mt-1">
+                      {promoSuccess}
+                    </span>
+                  )}
+                </form>
+
+                {/* Divider */}
+                <hr className="border-slate-200" />
+
+                <div className="flex items-baseline justify-between pt-1">
+                  <span className="text-base font-bold text-slate-900">{t('total')}</span>
+                  <div className="text-right">
+                    <span className="text-2xl font-extrabold text-brand block leading-none">
+                      {formatPrice(grandTotal)}
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-medium block mt-1.5">
+                      {t('vatIncluded')}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {/* Buttons */}
-            <div className="space-y-3.5 pt-2">
-              <Link
-                href="/checkout"
-                className="inline-flex items-center justify-center gap-2 w-full rounded-md bg-brand py-3.5 text-sm font-bold text-white shadow hover:bg-brand/95 transition-all text-center"
-              >
-                {t('btnCheckout')}
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link
-                href="/solutions"
-                className="inline-flex items-center justify-center gap-2 w-full rounded-md border border-brand text-brand hover:bg-brand/5 py-3.5 text-sm font-bold transition-all text-center"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                {t('btnBack')}
-              </Link>
+              {/* Buttons */}
+              <div className="space-y-3.5 pt-2">
+                <Link
+                  href="/checkout"
+                  className="inline-flex items-center justify-center gap-2 w-full rounded-md bg-brand py-3.5 text-sm font-bold text-white shadow hover:bg-brand/95 transition-[color,background-color,border-color,box-shadow,opacity,transform] text-center"
+                >
+                  {t('btnCheckout')}
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
+                <Link
+                  href="/solutions"
+                  className="inline-flex items-center justify-center gap-2 w-full rounded-md border border-brand text-brand hover:bg-brand/5 py-3.5 text-sm font-bold transition-[color,background-color,border-color,box-shadow,opacity,transform] text-center"
+                >
+                  <ArrowLeft className="h-4 w-4" />
+                  {t('btnBack')}
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      </div>
 
       {/* SECTION 2: Quick Quote Promo Banner - Full Width of Viewport */}
-      <div className="w-full bg-[#F8FAFC] border-y border-slate-200/80 py-10 my-4">
+      <div className="w-full bg-background border-y border-slate-200/80 py-10 my-4">
         <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
           <div className="space-y-2 max-w-3xl">
             <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
               {t('rfqSectionSubtitle')}
             </span>
-            <h4 className="text-lg font-bold text-slate-800 leading-tight">
-              {t('rfqTitle')}
-            </h4>
-            <p className="text-xs text-slate-500 leading-relaxed">
-              {t('rfqDesc')}
-            </p>
+            <h4 className="text-lg font-bold text-slate-800 leading-tight">{t('rfqTitle')}</h4>
+            <p className="text-xs text-slate-500 leading-relaxed">{t('rfqDesc')}</p>
           </div>
           <Link
             href="/quick-order"
-            className="inline-flex items-center justify-center gap-2 rounded-md bg-[#006AA7] hover:bg-[#005B90] px-6 py-3 text-sm font-bold text-white shadow transition-all shrink-0 w-full md:w-auto"
+            className="inline-flex items-center justify-center gap-2 rounded-md bg-brand hover:bg-brand-strong px-6 py-3 text-sm font-bold text-white shadow transition-[color,background-color,border-color,box-shadow,opacity,transform] shrink-0 w-full md:w-auto"
           >
             {t('rfqCta')}
             <Edit3 className="h-4.5 w-4.5" />
@@ -587,78 +616,76 @@ export default function CartClient({
       <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-10 px-4 sm:px-8 lg:px-16 pb-8">
         {/* Suggested Products Grid */}
         <div className="space-y-6">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-slate-900">{t('suggestTitle')}</h3>
-          <Link href="/solutions" className="text-xs font-semibold text-brand hover:underline">
-            {t('viewAll')}
-          </Link>
-        </div>
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-bold text-slate-900">{t('suggestTitle')}</h3>
+            <Link href="/solutions" className="text-xs font-semibold text-brand hover:underline">
+              {t('viewAll')}
+            </Link>
+          </div>
 
-        <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
-          {suggestedProducts.map((prod, idx) => (
-            <div
-              key={idx}
-              className="rounded-md border border-slate-200/80 p-4 shadow-sm flex flex-col justify-between bg-white hover:border-brand/40 transition-all space-y-4"
-            >
-              <div className="space-y-3">
-                {/* Fallback/Directus Image */}
-                <Link
-                  href={`/solutions/${prod.slug}`}
-                  className="aspect-square w-full rounded bg-slate-50 border border-slate-200/40 flex items-center justify-center overflow-hidden relative block hover:opacity-90 transition-opacity"
-                >
-                  {prod.hero ? (
-                    <Image
-                      src={`${DIRECTUS_URL}/assets/${prod.hero}`}
-                      alt={prod.name}
-                      fill
-                      className="object-contain p-2"
-                      sizes="(max-width: 768px) 100vw, 25vw"
-                    />
-                  ) : (
-                    <Package className="h-10 w-10 text-slate-200" />
-                  )}
-                </Link>
-                <div className="space-y-1">
-                  <h4 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 min-h-[40px] hover:text-brand transition-colors">
-                    <Link href={`/solutions/${prod.slug}`}>
-                      {prod.name}
-                    </Link>
-                  </h4>
-                  <div className="flex items-baseline gap-1 text-xs">
-                    <span className="font-extrabold text-brand">{prod.priceText}</span>
-                  </div>
-                  <div className="text-[10px] text-slate-400 space-y-0.5 pt-1">
-                    <p>
-                      {t('moqLabel')}: {prod.moqText}
-                    </p>
-                    <div className="flex items-center gap-1 text-[9px] text-slate-500 font-semibold pt-1">
-                      <MapPin className="h-3 w-3 text-slate-400" />
-                      <span>{prod.hub}</span>
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-4">
+            {suggestedProducts.map((prod, idx) => (
+              <div
+                key={idx}
+                className="rounded-md border border-slate-200/80 p-4 shadow-sm flex flex-col justify-between bg-white hover:border-brand/40 transition-[color,background-color,border-color,box-shadow,opacity,transform] space-y-4"
+              >
+                <div className="space-y-3">
+                  {/* Fallback/Directus Image */}
+                  <Link
+                    href={`/solutions/${prod.slug}`}
+                    className="aspect-square w-full rounded bg-slate-50 border border-slate-200/40 flex items-center justify-center overflow-hidden relative block hover:opacity-90 transition-opacity"
+                  >
+                    {prod.hero ? (
+                      <Image
+                        src={`${DIRECTUS_URL}/assets/${prod.hero}`}
+                        alt={prod.name}
+                        fill
+                        className="object-contain p-2"
+                        sizes="(max-width: 768px) 100vw, 25vw"
+                      />
+                    ) : (
+                      <Package className="h-10 w-10 text-slate-200" />
+                    )}
+                  </Link>
+                  <div className="space-y-1">
+                    <h4 className="text-sm font-bold text-slate-900 leading-snug line-clamp-2 min-h-[40px] hover:text-brand transition-colors">
+                      <Link href={`/solutions/${prod.slug}`}>{prod.name}</Link>
+                    </h4>
+                    <div className="flex items-baseline gap-1 text-xs">
+                      <span className="font-extrabold text-brand">{prod.priceText}</span>
+                    </div>
+                    <div className="text-[10px] text-slate-400 space-y-0.5 pt-1">
+                      <p>
+                        {t('moqLabel')}: {prod.moqText}
+                      </p>
+                      <div className="flex items-center gap-1 text-[9px] text-slate-500 font-semibold pt-1">
+                        <MapPin className="h-3 w-3 text-slate-400" />
+                        <span>{prod.hub}</span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleAddSuggested(prod)}
-                  className="flex-1 rounded bg-brand py-2 text-xs font-semibold text-white hover:bg-brand/95 transition-all"
-                >
-                  {t('orderNow')}
-                </button>
-                <button
-                  type="button"
-                  className="p-2 border border-slate-200 text-slate-400 hover:text-slate-600 rounded hover:bg-slate-50 transition-all flex items-center justify-center shrink-0"
-                  aria-label="Bookmark"
-                >
-                  <Bookmark className="h-4 w-4" />
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => handleAddSuggested(prod)}
+                    className="flex-1 rounded bg-brand py-2 text-xs font-semibold text-white hover:bg-brand/95 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
+                  >
+                    {t('orderNow')}
+                  </button>
+                  <button
+                    type="button"
+                    className="p-2 border border-slate-200 text-slate-400 hover:text-slate-600 rounded hover:bg-slate-50 transition-[color,background-color,border-color,box-shadow,opacity,transform] flex items-center justify-center shrink-0"
+                    aria-label="Bookmark"
+                  >
+                    <Bookmark className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
       </div>
 
       {/* SECTION 4: Engineer Support Banner - Full Width of Viewport */}
@@ -668,25 +695,21 @@ export default function CartClient({
             <span className="text-[10px] font-bold text-blue-200 uppercase tracking-wider block">
               {t('bannerTitle')}
             </span>
-            <h3 className="text-lg sm:text-xl font-bold leading-tight">
-              {t('bannerSubtitle')}
-            </h3>
-            <p className="text-xs text-blue-100 opacity-90 leading-relaxed">
-              {t('bannerDesc')}
-            </p>
+            <h3 className="text-lg sm:text-xl font-bold leading-tight">{t('bannerSubtitle')}</h3>
+            <p className="text-xs text-blue-100 opacity-90 leading-relaxed">{t('bannerDesc')}</p>
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto shrink-0 pt-2">
             <a
               href={`tel:${t('btnHotline').replace(/\s/g, '')}`}
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-white/60 hover:border-white text-white hover:bg-white/10 px-5 py-3 text-xs font-bold transition-all text-center"
+              className="inline-flex items-center justify-center gap-2 rounded-md border border-white/60 hover:border-white text-white hover:bg-white/10 px-5 py-3 text-xs font-bold transition-[color,background-color,border-color,box-shadow,opacity,transform] text-center"
             >
               <Phone className="h-4 w-4" />
               {t('btnHotline')}
             </a>
             <button
               type="button"
-              className="inline-flex items-center justify-center gap-2 rounded-md bg-[#3B82F6] hover:bg-blue-600 text-white px-5 py-3 text-xs font-bold transition-all text-center shadow-md"
+              className="inline-flex items-center justify-center gap-2 rounded-md bg-brand hover:bg-blue-600 text-white px-5 py-3 text-xs font-bold transition-[color,background-color,border-color,box-shadow,opacity,transform] text-center shadow-md"
             >
               <CalendarDays className="h-4 w-4" />
               {t('btnSchedule')}

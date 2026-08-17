@@ -15,6 +15,8 @@ import { cookies } from 'next/headers';
 const DIRECTUS_URL = process.env.DIRECTUS_URL ?? 'http://localhost:8055';
 const SESSION_COOKIE = 'directus_session_token';
 const REFRESH_COOKIE = 'directus_refresh_token';
+const CUSTOMER_ROLE_ID =
+  process.env.DIRECTUS_CUSTOMER_ROLE_ID ?? 'e11b0e50-3030-410c-9999-000000000003';
 
 export interface AuthUser {
   id: string;
@@ -53,13 +55,15 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     cookieHeader = [
       session ? `${SESSION_COOKIE}=${session}` : null,
       refresh ? `${REFRESH_COOKIE}=${refresh}` : null
-    ].filter(Boolean).join('; ');
+    ]
+      .filter(Boolean)
+      .join('; ');
   } catch {
     return null;
   }
 
   try {
-    const res = await fetch(`${DIRECTUS_URL}/users/me`, {
+    const res = await fetch(`${DIRECTUS_URL}/users/me?fields=id,email,first_name,last_name,role,status`, {
       headers: { cookie: cookieHeader },
       // We do NOT cache this — the user shape can change at any time.
       cache: 'no-store'
@@ -68,20 +72,20 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     const json = (await res.json()) as DirectusMe;
     if (!json?.data?.id) return null;
     const u = json.data;
+    const role = typeof u.role === 'string' ? u.role : (u.role?.id ?? null);
+    if (role !== CUSTOMER_ROLE_ID) return null;
     return {
       id: u.id,
       email: u.email,
       first_name: u.first_name,
       last_name: u.last_name,
-      role: typeof u.role === 'string' ? u.role : u.role?.id ?? null,
+      role,
       status: u.status
     };
   } catch {
     return null;
   }
 }
-
-export { isAdminUser } from './auth';
 
 /**
  * Forward a Request's cookies to Directus and return the upstream Response.

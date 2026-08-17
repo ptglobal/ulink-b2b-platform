@@ -1,7 +1,16 @@
 'use client';
 
 import { useEffect, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
-import { AlertTriangle, ArrowRight, CheckCircle2, Download, FileText, Loader2, Sparkles, Upload } from 'lucide-react';
+import {
+  AlertTriangle,
+  ArrowRight,
+  CheckCircle2,
+  Download,
+  FileText,
+  Loader2,
+  Sparkles,
+  Upload
+} from '@/components/icons';
 
 import {
   buildCommercialImportErrorCsv,
@@ -50,7 +59,9 @@ function actionStyles(action: CommercialImportSummary['rows'][number]['action'])
 
 export function CommercialImportWorkbench() {
   const [collection, setCollection] = useState<CommercialImportCollection>(DEFAULT_COLLECTION);
-  const [csvText, setCsvText] = useState(COMMERCIAL_IMPORT_COLLECTION_META[DEFAULT_COLLECTION].sampleCsv);
+  const [csvText, setCsvText] = useState(
+    COMMERCIAL_IMPORT_COLLECTION_META[DEFAULT_COLLECTION].sampleCsv
+  );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [allowPartial, setAllowPartial] = useState(false);
   const [state, setState] = useState<ImportState>({ loading: null, error: null, result: null });
@@ -88,7 +99,11 @@ export function CommercialImportWorkbench() {
 
   async function runImport(mode: CommercialImportMode) {
     if (!canSubmit) {
-      setState({ loading: null, error: 'Paste CSV text or choose a file before running the import.', result: null });
+      setState({
+        loading: null,
+        error: 'Paste CSV text or choose a file before running the import.',
+        result: null
+      });
       return;
     }
 
@@ -109,9 +124,11 @@ export function CommercialImportWorkbench() {
         )
       });
 
-      const payload = (await response.json().catch(() => null)) as
-        | { success?: boolean; data?: CommercialImportSummary; error?: { message?: string } }
-        | null;
+      const payload = (await response.json().catch(() => null)) as {
+        success?: boolean;
+        data?: CommercialImportSummary;
+        error?: { message?: string };
+      } | null;
 
       if (!response.ok) {
         throw new Error(payload?.error?.message ?? 'Commercial import failed.');
@@ -170,10 +187,12 @@ export function CommercialImportWorkbench() {
             Sales Ops only
           </div>
 
-          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">Commercial import workbench</h2>
+          <h2 className="mt-4 text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+            Commercial import workbench
+          </h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-            Preview or commit CSV rows against Directus through the `/api/import` facade. Customers can fall back to tax code or
-            email, while orders use atomic nested `order_items_json`.
+            Preview or commit CSV rows against Directus through the `/api/import` facade. Customers
+            can fall back to tax code or email, while orders use atomic nested `order_items_json`.
           </p>
 
           <div className="mt-6 grid gap-3 sm:grid-cols-2">
@@ -195,9 +214,13 @@ export function CommercialImportWorkbench() {
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold text-foreground">{itemMeta.label}</p>
-                      <p className="mt-1 text-xs leading-5 text-muted-foreground">{itemMeta.description}</p>
+                      <p className="mt-1 text-xs leading-5 text-muted-foreground">
+                        {itemMeta.description}
+                      </p>
                     </div>
-                    {active && <CheckCircle2 className="mt-0.5 h-4 w-4 text-brand" aria-hidden="true" />}
+                    {active && (
+                      <CheckCircle2 className="mt-0.5 h-4 w-4 text-brand" aria-hidden="true" />
+                    )}
                   </div>
                 </button>
               );
@@ -212,7 +235,10 @@ export function CommercialImportWorkbench() {
             <p className="mt-2 text-sm leading-6 text-muted-foreground">{meta.keyHint}</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {meta.requiredColumns.map((column) => (
-                <span key={column} className="rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
+                <span
+                  key={column}
+                  className="rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground"
+                >
                   {column}
                 </span>
               ))}
@@ -225,8 +251,13 @@ export function CommercialImportWorkbench() {
               { label: 'Updated', value: summary.updated },
               { label: 'Failed', value: summary.failed }
             ].map((item) => (
-              <div key={item.label} className="rounded-2xl border border-border/70 bg-background/75 px-4 py-4">
-                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{item.label}</p>
+              <div
+                key={item.label}
+                className="rounded-2xl border border-border/70 bg-background/75 px-4 py-4"
+              >
+                <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                  {item.label}
+                </p>
                 <p className="mt-2 text-2xl font-semibold text-foreground">{item.value}</p>
               </div>
             ))}
@@ -236,7 +267,10 @@ export function CommercialImportWorkbench() {
         <div className="px-6 py-6 sm:px-8 sm:py-8">
           <form className="space-y-5" onSubmit={onSubmit}>
             <div>
-              <label className="mb-2 block text-sm font-medium text-foreground" htmlFor="commercial-import-file">
+              <label
+                className="mb-2 block text-sm font-medium text-foreground"
+                htmlFor="commercial-import-file"
+              >
                 CSV file or pasted text
               </label>
               <label
@@ -244,9 +278,12 @@ export function CommercialImportWorkbench() {
                 className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border/80 bg-background/70 px-6 py-8 text-center transition-colors hover:border-brand/40 hover:bg-brand/5"
               >
                 <Upload className="h-5 w-5 text-brand" aria-hidden="true" />
-                <span className="mt-2 text-sm font-medium text-foreground">Drop a CSV file or click to upload</span>
+                <span className="mt-2 text-sm font-medium text-foreground">
+                  Drop a CSV file or click to upload
+                </span>
                 <span className="mt-1 text-xs leading-5 text-muted-foreground">
-                  The file will be read into the editor so you can review or tweak the payload before previewing.
+                  The file will be read into the editor so you can review or tweak the payload
+                  before previewing.
                 </span>
                 <input
                   id="commercial-import-file"
@@ -258,14 +295,18 @@ export function CommercialImportWorkbench() {
               </label>
               {selectedFile && (
                 <p className="mt-2 text-xs text-muted-foreground">
-                  Loaded file: <span className="font-medium text-foreground">{selectedFile.name}</span>
+                  Loaded file:{' '}
+                  <span className="font-medium text-foreground">{selectedFile.name}</span>
                 </p>
               )}
             </div>
 
             <div>
               <div className="mb-2 flex items-center justify-between gap-3">
-                <label className="block text-sm font-medium text-foreground" htmlFor="commercial-import-csv">
+                <label
+                  className="block text-sm font-medium text-foreground"
+                  htmlFor="commercial-import-csv"
+                >
                   CSV content
                 </label>
                 <button
@@ -298,7 +339,9 @@ export function CommercialImportWorkbench() {
                 className="mt-1 h-4 w-4 rounded border-border text-brand focus:ring-brand"
               />
               <span>
-                <span className="block text-sm font-medium text-foreground">Allow partial success</span>
+                <span className="block text-sm font-medium text-foreground">
+                  Allow partial success
+                </span>
                 <span className="mt-1 block text-sm leading-6 text-muted-foreground">
                   Keep valid rows and report failures instead of aborting the whole file.
                 </span>
@@ -363,9 +406,12 @@ export function CommercialImportWorkbench() {
               <div className="rounded-2xl border border-border/70 bg-background/80 px-4 py-4">
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">{rowLabel}</p>
+                    <p className="text-xs uppercase tracking-[0.16em] text-muted-foreground">
+                      {rowLabel}
+                    </p>
                     <p className="mt-1 text-sm text-foreground">
-                      {state.result.collection} · {state.result.mode} · partial success {state.result.allowPartial ? 'on' : 'off'}
+                      {state.result.collection} · {state.result.mode} · partial success{' '}
+                      {state.result.allowPartial ? 'on' : 'off'}
                     </p>
                   </div>
                   <button
@@ -380,7 +426,7 @@ export function CommercialImportWorkbench() {
                 </div>
               </div>
 
-              <div className="overflow-hidden rounded-2xl border border-border/70">
+              <div className="overflow-x-auto rounded-2xl border border-border/70">
                 <table className="w-full border-collapse text-left text-sm">
                   <thead className="bg-muted/60 text-xs uppercase tracking-[0.16em] text-muted-foreground">
                     <tr>
@@ -394,18 +440,31 @@ export function CommercialImportWorkbench() {
                   <tbody className="divide-y divide-border/70">
                     {state.result.rows.map((row) => (
                       <tr key={`${row.row}-${row.key}`}>
-                        <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{row.row}</td>
-                        <td className="px-4 py-3 font-mono text-xs text-foreground">{row.key || '—'}</td>
+                        <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
+                          {row.row}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-xs text-foreground">
+                          {row.key || '—'}
+                        </td>
                         <td className="px-4 py-3">
-                          <span className={cn('inline-flex rounded-full border px-2.5 py-1 text-xs font-medium', actionStyles(row.action))}>
+                          <span
+                            className={cn(
+                              'inline-flex rounded-full border px-2.5 py-1 text-xs font-medium',
+                              actionStyles(row.action)
+                            )}
+                          >
                             {row.action}
                           </span>
                         </td>
                         <td className="px-4 py-3 text-xs text-muted-foreground">
-                          {row.errors.length === 0 ? '—' : row.errors.map((item) => `${item.field}: ${item.message}`).join('; ')}
+                          {row.errors.length === 0
+                            ? '—'
+                            : row.errors.map((item) => `${item.field}: ${item.message}`).join('; ')}
                         </td>
                         <td className="px-4 py-3 text-xs text-muted-foreground">
-                          {Array.isArray(row.nested?.order_items) ? `${row.nested?.order_items.length ?? 0} order items` : '—'}
+                          {Array.isArray(row.nested?.order_items)
+                            ? `${row.nested?.order_items.length ?? 0} order items`
+                            : '—'}
                         </td>
                       </tr>
                     ))}
@@ -417,8 +476,8 @@ export function CommercialImportWorkbench() {
                 <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-4 text-sm text-rose-700 dark:text-rose-300">
                   <p className="font-medium">Validation errors</p>
                   <p className="mt-1 text-sm leading-6">
-                    {errorRows.length} row-level error{errorRows.length === 1 ? '' : 's'} were returned. Download the CSV to fix the
-                    source file and re-run the preview.
+                    {errorRows.length} row-level error{errorRows.length === 1 ? '' : 's'} were
+                    returned. Download the CSV to fix the source file and re-run the preview.
                   </p>
                 </div>
               )}

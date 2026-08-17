@@ -52,7 +52,9 @@ export function createTurnstileVerifier(secret = process.env.TURNSTILE_SECRET_KE
   return async (token: string, ip: string) => {
     if (!secret) {
       if (process.env.NODE_ENV !== 'production') {
-        console.warn('TURNSTILE_SECRET_KEY is not configured. Bypassing Turnstile verifier in development.');
+        console.warn(
+          'TURNSTILE_SECRET_KEY is not configured. Bypassing Turnstile verifier in development.'
+        );
         return true;
       }
       return false;

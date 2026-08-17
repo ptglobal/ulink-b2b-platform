@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback, type FormEvent } from 'react';
 import { createPortal } from 'react-dom';
-import { X, Loader2, CheckCircle2, User, MapPin, MessageSquare } from 'lucide-react';
+import { X, Loader2, CheckCircle2, User, MapPin, MessageSquare } from '@/components/icons';
 import { useAuth } from '@/lib/auth-context';
 import { PROVINCES, getDistrictsByProvince } from '@/data/vietnam-provinces';
 
@@ -125,7 +125,9 @@ export default function SampleRequestModal({
     } else {
       document.body.style.overflow = '';
     }
-    return () => { document.body.style.overflow = ''; };
+    return () => {
+      document.body.style.overflow = '';
+    };
   }, [open]);
 
   const validate = useCallback((): FieldErrors => {
@@ -336,7 +338,9 @@ export default function SampleRequestModal({
                   >
                     <option value="">{labels.selectProvince}</option>
                     {PROVINCES.map((p) => (
-                      <option key={p.code} value={p.code}>{p.name}</option>
+                      <option key={p.code} value={p.code}>
+                        {p.name}
+                      </option>
                     ))}
                   </select>
                 </Field>
@@ -350,7 +354,9 @@ export default function SampleRequestModal({
                     >
                       <option value="">{labels.selectDistrict}</option>
                       {districts.map((d) => (
-                        <option key={d.code} value={d.code}>{d.name}</option>
+                        <option key={d.code} value={d.code}>
+                          {d.name}
+                        </option>
                       ))}
                     </select>
                   ) : (

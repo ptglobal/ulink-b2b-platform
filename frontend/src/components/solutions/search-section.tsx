@@ -2,10 +2,11 @@
 
 import { useState, useTransition, useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Search } from 'lucide-react';
+import { Search } from '@/components/icons';
 
 interface SearchSectionProps {
   locale: string;
+  targetPath?: string;
   labels: {
     eyebrow: string;
     title: string;
@@ -15,7 +16,7 @@ interface SearchSectionProps {
   };
 }
 
-export default function SearchSection({ locale, labels }: SearchSectionProps) {
+export default function SearchSection({ locale, labels, targetPath }: SearchSectionProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -29,11 +30,30 @@ export default function SearchSection({ locale, labels }: SearchSectionProps) {
   }, [searchParamValue]);
 
   const tags = [
-    { label: locale === 'vi' ? 'Màng co PE' : locale === 'ja' ? 'PE熱収縮フィルム' : 'PE Shrink Film', value: 'Màng co PE' },
-    { label: locale === 'vi' ? 'Găng tay Nitrile' : locale === 'ja' ? 'ニトリル手袋' : 'Nitrile Gloves', value: 'Găng tay Nitrile' },
-    { label: locale === 'vi' ? 'Thảm phòng sạch' : locale === 'ja' ? 'クリーンルームマット' : 'Cleanroom Sticky Mat', value: 'Thảm phòng sạch' },
-    { label: locale === 'vi' ? 'Khăn lau' : locale === 'ja' ? '工業用ワイパー' : 'Wipes', value: 'Khăn lau' },
-    { label: locale === 'vi' ? 'Túi PE' : locale === 'ja' ? 'PEバッグ' : 'PE Bag', value: 'Túi PE' },
+    {
+      label:
+        locale === 'vi' ? 'Màng co PE' : locale === 'ja' ? 'PE熱収縮フィルム' : 'PE Shrink Film',
+      value: 'Màng co PE'
+    },
+    {
+      label:
+        locale === 'vi' ? 'Găng tay Nitrile' : locale === 'ja' ? 'ニトリル手袋' : 'Nitrile Gloves',
+      value: 'Găng tay Nitrile'
+    },
+    {
+      label:
+        locale === 'vi'
+          ? 'Thảm phòng sạch'
+          : locale === 'ja'
+            ? 'クリーンルームマット'
+            : 'Cleanroom Sticky Mat',
+      value: 'Thảm phòng sạch'
+    },
+    {
+      label: locale === 'vi' ? 'Khăn lau' : locale === 'ja' ? '工業用ワイパー' : 'Wipes',
+      value: 'Khăn lau'
+    },
+    { label: locale === 'vi' ? 'Túi PE' : locale === 'ja' ? 'PEバッグ' : 'PE Bag', value: 'Túi PE' }
   ];
 
   function handleSearch(searchQuery: string) {
@@ -45,7 +65,7 @@ export default function SearchSection({ locale, labels }: SearchSectionProps) {
     }
     params.set('page', '1');
     startTransition(() => {
-      router.replace(`${pathname}?${params.toString()}`);
+      router.push(`${targetPath || pathname}?${params.toString()}`);
     });
   }
 
@@ -57,7 +77,7 @@ export default function SearchSection({ locale, labels }: SearchSectionProps) {
   const activeSearch = searchParams.get('search') ?? '';
 
   return (
-    <section className="w-full bg-[#F8FAFC] py-12 lg:py-16 border-b border-gray-100">
+    <section className="w-full bg-background py-12 lg:py-16 border-b border-gray-100">
       <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16 text-center">
         {/* Header */}
         <p className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-blue-600">
@@ -72,7 +92,10 @@ export default function SearchSection({ locale, labels }: SearchSectionProps) {
 
         {/* Search Input bar */}
         <div className="mt-8 max-w-3xl mx-auto">
-          <form onSubmit={handleSubmit} className="relative flex items-center bg-white rounded-full border border-gray-200 p-1.5 pl-4 shadow-sm focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+          <form
+            onSubmit={handleSubmit}
+            className="relative flex items-center bg-white rounded-full border border-gray-200 p-1.5 pl-4 shadow-sm focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
+          >
             <Search className="h-5 w-5 text-gray-400 shrink-0 mr-3" />
             <input
               type="text"
@@ -107,10 +130,11 @@ export default function SearchSection({ locale, labels }: SearchSectionProps) {
                     handleSearch(tag.value);
                   }
                 }}
-                className={`rounded-full px-4 py-2 text-xs font-semibold transition-all border ${isActive
+                className={`rounded-full px-4 py-2 text-xs font-semibold transition-[color,background-color,border-color,box-shadow,opacity,transform] border ${
+                  isActive
                     ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
                     : 'bg-white border-gray-200 text-slate-600 hover:bg-slate-50 hover:border-gray-300'
-                  }`}
+                }`}
               >
                 {tag.label}
               </button>

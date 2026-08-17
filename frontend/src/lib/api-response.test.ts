@@ -1,14 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import {
-  buildSuccessPayload,
-  buildErrorPayload
-} from './api-response';
-import type {
-  SuccessPayload,
-  ErrorPayload
-} from './api-response';
+import { buildSuccessPayload, buildErrorPayload } from './api-response';
+import type { SuccessPayload, ErrorPayload } from './api-response';
 
 test('buildSuccessPayload wraps data in success envelope', () => {
   const payload = buildSuccessPayload({ id: 123, name: 'sku-1' }) as SuccessPayload;

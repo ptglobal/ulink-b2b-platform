@@ -1,21 +1,26 @@
-import {
-  FileText,
-  BookOpen,
-  ShieldCheck,
-  Briefcase,
-  Newspaper,
-  CalendarDays
-} from 'lucide-react';
+import { FileText, BookOpen, ShieldCheck, Briefcase, Newspaper, CalendarDays } from '@/components/icons';
 import { ResourceItem } from './types';
 
 // Updated 6 Tabs configuration matching the screenshot
 export const TABS = [
   { id: 'all', label: { vi: 'Tất cả', en: 'All', ja: 'すべて' }, icon: FileText },
-  { id: 'guide', label: { vi: 'Cẩm nang kỹ thuật', en: 'Technical Guides', ja: '技術ガイド' }, icon: BookOpen },
-  { id: 'standard', label: { vi: 'Chứng chỉ chất lượng', en: 'Certificates', ja: '品質認証書' }, icon: ShieldCheck },
-  { id: 'case-study', label: { vi: 'Nghiên cứu điển hình', en: 'Case Studies', ja: 'ケーススタディ' }, icon: Briefcase },
+  {
+    id: 'guide',
+    label: { vi: 'Cẩm nang kỹ thuật', en: 'Technical Guides', ja: '技術ガイド' },
+    icon: BookOpen
+  },
+  {
+    id: 'standard',
+    label: { vi: 'Chứng chỉ chất lượng', en: 'Certificates', ja: '品質認証書' },
+    icon: ShieldCheck
+  },
+  {
+    id: 'case-study',
+    label: { vi: 'Nghiên cứu điển hình', en: 'Case Studies', ja: 'ケーススタディ' },
+    icon: Briefcase
+  },
   { id: 'news', label: { vi: 'Tin tức', en: 'News', ja: 'ニュース' }, icon: Newspaper },
-  { id: 'event', label: { vi: 'Sự kiện', en: 'Events', ja: 'イベント' }, icon: CalendarDays },
+  { id: 'event', label: { vi: 'Sự kiện', en: 'Events', ja: 'イベント' }, icon: CalendarDays }
 ];
 
 export interface EventItem {
@@ -51,7 +56,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     contentType: 'tech-doc',
     author: {
       name: { vi: 'Nguyễn Minh Anh', en: 'Minh Anh Nguyen', ja: 'グエン・ミン・アイン' },
-      role: { vi: 'Chuyên gia kỹ thuật – ULink Industries', en: 'Technical Expert – ULink Industries', ja: '技術専門家 – ULink Industries' },
+      role: {
+        vi: 'Chuyên gia kỹ thuật – ULink Industries',
+        en: 'Technical Expert – ULink Industries',
+        ja: '技術専門家 – ULink Industries'
+      },
       avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '8 phút đọc', en: '8 min read', ja: '8分で読める' },
@@ -64,7 +73,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       {
         id: 'sec-1',
         num: '1.',
-        title: { vi: 'Giới thiệu màng lọc HEPA', en: 'HEPA Filter Intro', ja: 'HEPAフィルターの紹介' },
+        title: {
+          vi: 'Giới thiệu màng lọc HEPA',
+          en: 'HEPA Filter Intro',
+          ja: 'HEPAフィルターの紹介'
+        },
         content: {
           vi: 'Màng lọc HEPA là thành phần cốt lõi của bất kỳ hệ thống phòng sạch nào, giúp giữ lại 99.97% các hạt có kích thước từ 0.3 micromet.',
           en: 'HEPA filter is the core component of any cleanroom system, capturing 99.97% of particles down to 0.3 microns.',
@@ -73,8 +86,18 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       }
     ],
     aiSummary: {
-      intro: { vi: 'Cẩm nang toàn diện về tiêu chuẩn thiết kế phòng sạch.', en: 'Comprehensive guide to cleanroom design standards.', ja: 'クリーンルーム設計規格の包括的なガイド。' },
-      bullets: [{ vi: 'Cơ chế lọc không khí HEPA.', en: 'HEPA filtration mechanics.', ja: 'HEPAフィルターろ過メカニズム。' }]
+      intro: {
+        vi: 'Cẩm nang toàn diện về tiêu chuẩn thiết kế phòng sạch.',
+        en: 'Comprehensive guide to cleanroom design standards.',
+        ja: 'クリーンルーム設計規格の包括的なガイド。'
+      },
+      bullets: [
+        {
+          vi: 'Cơ chế lọc không khí HEPA.',
+          en: 'HEPA filtration mechanics.',
+          ja: 'HEPAフィルターろ過メカニズム。'
+        }
+      ]
     }
   },
   {
@@ -109,7 +132,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/documents/RES-002.pdf',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Chứng nhận ISO chính thức.', en: 'Official ISO Certificates.', ja: '公式ISO認証書。' },
+      intro: {
+        vi: 'Chứng nhận ISO chính thức.',
+        en: 'Official ISO Certificates.',
+        ja: '公式ISO認証書。'
+      },
       bullets: []
     }
   },
@@ -134,7 +161,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     contentType: 'article',
     author: {
       name: { vi: 'Phạm Minh Tuấn', en: 'Minh Tuan Pham', ja: 'ファム・ミン・トゥアン' },
-      role: { vi: 'Trưởng bộ phận Nghiên cứu ESD', en: 'Head of ESD Research', ja: 'ESD研究開発部門長' },
+      role: {
+        vi: 'Trưởng bộ phận Nghiên cứu ESD',
+        en: 'Head of ESD Research',
+        ja: 'ESD研究開発部門長'
+      },
       avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '10 phút đọc', en: '10 min read', ja: '10分で読める' },
@@ -156,8 +187,18 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       }
     ],
     aiSummary: {
-      intro: { vi: 'Phân tích thực tế dự án kiểm soát ESD thành công.', en: 'Real-world analysis of a successful ESD control project.', ja: '成功したESD制御プロジェクトの実世界分析。' },
-      bullets: [{ vi: 'Giảm tỷ lệ lỗi linh kiện bán dẫn.', en: 'Reduced semiconductor defect rate.', ja: '半導体欠陥率の低減。' }]
+      intro: {
+        vi: 'Phân tích thực tế dự án kiểm soát ESD thành công.',
+        en: 'Real-world analysis of a successful ESD control project.',
+        ja: '成功したESD制御プロジェクトの実世界分析。'
+      },
+      bullets: [
+        {
+          vi: 'Giảm tỷ lệ lỗi linh kiện bán dẫn.',
+          en: 'Reduced semiconductor defect rate.',
+          ja: '半導体欠陥率の低減。'
+        }
+      ]
     }
   },
   {
@@ -192,7 +233,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/documents/RES-004.pdf',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Cập nhật tin tức ISO mới nhất.', en: 'Latest ISO standards update.', ja: '最新のISO規格の更新。' },
+      intro: {
+        vi: 'Cập nhật tin tức ISO mới nhất.',
+        en: 'Latest ISO standards update.',
+        ja: '最新のISO規格の更新。'
+      },
       bullets: []
     }
   },
@@ -228,7 +273,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/contact',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Hội thảo sắp tới về phòng sạch điện tử.', en: 'Upcoming semiconductor cleanroom webinar.', ja: '次回の半導体クリーンルームウェビナー。' },
+      intro: {
+        vi: 'Hội thảo sắp tới về phòng sạch điện tử.',
+        en: 'Upcoming semiconductor cleanroom webinar.',
+        ja: '次回の半導体クリーンルームウェビナー。'
+      },
       bullets: []
     }
   },
@@ -264,7 +313,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/documents/RES-006.pdf',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Hướng dẫn lựa chọn găng tay nitrile phòng sạch.', en: 'Guide to cleanroom nitrile gloves selection.', ja: 'クリーンルーム用ニトリル手袋の選択ガイド。' },
+      intro: {
+        vi: 'Hướng dẫn lựa chọn găng tay nitrile phòng sạch.',
+        en: 'Guide to cleanroom nitrile gloves selection.',
+        ja: 'クリーンルーム用ニトリル手袋の選択ガイド。'
+      },
       bullets: []
     }
   },
@@ -300,7 +353,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/documents/RES-007.pdf',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Tài liệu tiêu chuẩn ESD chính thức.', en: 'Official ESD standard documents.', ja: '公式ESD規格資料。' },
+      intro: {
+        vi: 'Tài liệu tiêu chuẩn ESD chính thức.',
+        en: 'Official ESD standard documents.',
+        ja: '公式ESD規格資料。'
+      },
       bullets: []
     }
   },
@@ -325,7 +382,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     contentType: 'article',
     author: {
       name: { vi: 'Dược sĩ Lê Thị Bình', en: 'Pharmacist Binh Le', ja: '薬剤師レ・ティ・ビン' },
-      role: { vi: 'Chuyên viên kỹ thuật bao bì dược', en: 'Pharma Packaging Specialist', ja: '医薬品包装専門家' },
+      role: {
+        vi: 'Chuyên viên kỹ thuật bao bì dược',
+        en: 'Pharma Packaging Specialist',
+        ja: '医薬品包装専門家'
+      },
       avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '9 phút đọc', en: '9 min read', ja: '9分で読める' },
@@ -336,7 +397,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/documents/RES-008.pdf',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Giải pháp túi nhôm phòng sạch cho dược phẩm.', en: 'Cleanroom aluminum bag solutions for pharma.', ja: '医薬品向けのクリーンルームアルミ袋ソリューション。' },
+      intro: {
+        vi: 'Giải pháp túi nhôm phòng sạch cho dược phẩm.',
+        en: 'Cleanroom aluminum bag solutions for pharma.',
+        ja: '医薬品向けのクリーンルームアルミ袋ソリューション。'
+      },
       bullets: []
     }
   },
@@ -372,7 +437,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/documents/RES-009.pdf',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Sự kiện khánh thành dây chuyền túi nhôm mới.', en: 'Inauguration of the new aluminum bag line.', ja: '新しいアルミ袋生産ラインの落成イベント。' },
+      intro: {
+        vi: 'Sự kiện khánh thành dây chuyền túi nhôm mới.',
+        en: 'Inauguration of the new aluminum bag line.',
+        ja: '新しいアルミ袋生産ラインの落成イベント。'
+      },
       bullets: []
     }
   },
@@ -408,7 +477,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/contact',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Sự kiện triển lãm bao bì công nghiệp.', en: 'Industrial packaging exhibition.', ja: '産業用包装展示会イベント。' },
+      intro: {
+        vi: 'Sự kiện triển lãm bao bì công nghiệp.',
+        en: 'Industrial packaging exhibition.',
+        ja: '産業用包装展示会イベント。'
+      },
       bullets: []
     }
   },
@@ -433,7 +506,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     contentType: 'tech-doc',
     author: {
       name: { vi: 'Vũ Hoàng Nam', en: 'Hoang Nam Vu', ja: 'ヴー・ホアン・ナム' },
-      role: { vi: 'Kỹ sư HVAC phòng sạch', en: 'Cleanroom HVAC Engineer', ja: 'クリーンルームHVACエンジニア' },
+      role: {
+        vi: 'Kỹ sư HVAC phòng sạch',
+        en: 'Cleanroom HVAC Engineer',
+        ja: 'クリーンルームHVACエンジニア'
+      },
       avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '8 phút đọc', en: '8 min read', ja: '8分で読める' },
@@ -444,7 +521,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/documents/RES-011.pdf',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Tối ưu hóa năng lượng phòng sạch.', en: 'Optimizing cleanroom energy.', ja: 'クリーンルームのエネルギー最適化。' },
+      intro: {
+        vi: 'Tối ưu hóa năng lượng phòng sạch.',
+        en: 'Optimizing cleanroom energy.',
+        ja: 'クリーンルームのエネルギー最適化。'
+      },
       bullets: []
     }
   },
@@ -469,7 +550,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     contentType: 'certificate',
     author: {
       name: { vi: 'ULink Regulatory', en: 'ULink Regulatory', ja: 'ULink 規制対応' },
-      role: { vi: 'Ban tuân thủ pháp lý', en: 'Regulatory Compliance', ja: '規制コンプライアンス部門' },
+      role: {
+        vi: 'Ban tuân thủ pháp lý',
+        en: 'Regulatory Compliance',
+        ja: '規制コンプライアンス部門'
+      },
       avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: 'Tải chứng chỉ', en: 'Download cert', ja: '認証書をダウンロード' },
@@ -480,7 +565,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/documents/RES-012.pdf',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Chứng chỉ FDA chính thức.', en: 'Official FDA Certificate.', ja: '公式FDA認証書。' },
+      intro: {
+        vi: 'Chứng chỉ FDA chính thức.',
+        en: 'Official FDA Certificate.',
+        ja: '公式FDA認証書。'
+      },
       bullets: []
     }
   },
@@ -505,7 +594,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     contentType: 'article',
     author: {
       name: { vi: 'ULink Supply Chain', en: 'ULink Supply Chain', ja: 'ULink サプライチェーン' },
-      role: { vi: 'Nhóm giải pháp đóng gói', en: 'Packaging Solutions Team', ja: '包装ソリューションチーム' },
+      role: {
+        vi: 'Nhóm giải pháp đóng gói',
+        en: 'Packaging Solutions Team',
+        ja: '包装ソリューションチーム'
+      },
       avatar: '/images/about/op-team.webp'
     },
     readTime: { vi: '9 phút đọc', en: '9 min read', ja: '9分で読める' },
@@ -527,9 +620,17 @@ export const MOCK_RESOURCES: ResourceItem[] = [
       }
     ],
     aiSummary: {
-      intro: { vi: 'Tối ưu quy trình đóng gói cho xuất khẩu.', en: 'Optimized export packing workflow.', ja: '輸出梱包フローの最適化。' },
+      intro: {
+        vi: 'Tối ưu quy trình đóng gói cho xuất khẩu.',
+        en: 'Optimized export packing workflow.',
+        ja: '輸出梱包フローの最適化。'
+      },
       bullets: [
-        { vi: 'Giảm lỗi hút ẩm trong quá trình lưu kho.', en: 'Reduced moisture defects during storage.', ja: '保管中の吸湿不良を削減。' }
+        {
+          vi: 'Giảm lỗi hút ẩm trong quá trình lưu kho.',
+          en: 'Reduced moisture defects during storage.',
+          ja: '保管中の吸湿不良を削減。'
+        }
       ]
     }
   },
@@ -565,7 +666,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/documents/RES-014.pdf',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Tin mở rộng kho trung chuyển mới.', en: 'News on the new transit warehouse.', ja: '新しい中継倉庫のニュース。' },
+      intro: {
+        vi: 'Tin mở rộng kho trung chuyển mới.',
+        en: 'News on the new transit warehouse.',
+        ja: '新しい中継倉庫のニュース。'
+      },
       bullets: []
     }
   },
@@ -601,7 +706,11 @@ export const MOCK_RESOURCES: ResourceItem[] = [
     downloadUrl: '/contact',
     sections: [],
     aiSummary: {
-      intro: { vi: 'Workshop về vật tư phòng sạch.', en: 'Workshop on cleanroom consumables.', ja: 'クリーンルーム消耗品のワークショップ。' },
+      intro: {
+        vi: 'Workshop về vật tư phòng sạch.',
+        en: 'Workshop on cleanroom consumables.',
+        ja: 'クリーンルーム消耗品のワークショップ。'
+      },
       bullets: []
     }
   }
@@ -707,7 +816,7 @@ export const MOST_VIEWED_ARTICLES: ResourceItem[] = [
     downloadUrl: '/documents/MV-003.pdf',
     sections: [],
     aiSummary: { intro: { vi: '', en: '', ja: '' }, bullets: [] }
-  },
+  }
 ];
 
 // Upcoming Events Mock Data

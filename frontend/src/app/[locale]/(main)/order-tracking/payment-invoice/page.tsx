@@ -34,11 +34,7 @@ export default async function PaymentInvoicePage({ params: { locale } }: Props) 
 
   return (
     <section className="relative overflow-hidden bg-white min-h-screen py-8 lg:py-12">
-      <PaymentInvoiceClient
-        user={user}
-        locale={locale}
-        dbProductMap={dbProductMap}
-      />
+      <PaymentInvoiceClient user={user} locale={locale} dbProductMap={dbProductMap} />
     </section>
   );
 }

@@ -61,7 +61,11 @@ export type ResolvedRfqAssignment = {
 };
 
 function normalizeSlug(value: string): string {
-  return value.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 function getHubId(value: RfqRecord['hub']): number | null {

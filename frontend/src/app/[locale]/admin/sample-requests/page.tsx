@@ -16,8 +16,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -43,7 +45,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function SampleRequestsPage({ params }: Props) {
   const { locale } = await params;
   setRequestLocale(locale);
-  
+
   // 1. Check Auth
   const user = await getCurrentUser();
   if (!user) {
@@ -61,30 +63,33 @@ export default async function SampleRequestsPage({ params }: Props) {
     // 2. Fetch Sample Requests, Sales, and SKUs in parallel
     const [requestsRes, salesRes, skusRes] = await Promise.all([
       client.request(
-        readItems('sample_requests' as any, {
-          fields: [
-            'id',
-            'contact_name',
-            'email',
-            'company',
-            'phone',
-            'province',
-            'district',
-            'address_detail',
-            'product_slug',
-            'skus',
-            'message',
-            'status',
-            'approval_note',
-            'reject_reason',
-            'assigned_sales.id',
-            'assigned_sales.first_name',
-            'assigned_sales.last_name',
-            'created_at'
-          ],
-          sort: ['-id'],
-          limit: -1
-        } as any)
+        readItems(
+          'sample_requests' as any,
+          {
+            fields: [
+              'id',
+              'contact_name',
+              'email',
+              'company',
+              'phone',
+              'province',
+              'district',
+              'address_detail',
+              'product_slug',
+              'skus',
+              'message',
+              'status',
+              'approval_note',
+              'reject_reason',
+              'assigned_sales.id',
+              'assigned_sales.first_name',
+              'assigned_sales.last_name',
+              'created_at'
+            ],
+            sort: ['-id'],
+            limit: -1
+          } as any
+        )
       ),
       client.request(
         readUsers({
@@ -96,12 +101,15 @@ export default async function SampleRequestsPage({ params }: Props) {
         })
       ),
       client.request(
-        readItems('product_skus' as any, {
-          filter: { status: { _in: ['published', 'draft'] } },
-          fields: ['id', 'sku_code'],
-          sort: ['sku_code'],
-          limit: -1
-        } as any)
+        readItems(
+          'product_skus' as any,
+          {
+            filter: { status: { _in: ['published', 'draft'] } },
+            fields: ['id', 'sku_code'],
+            sort: ['sku_code'],
+            limit: -1
+          } as any
+        )
       )
     ]);
 

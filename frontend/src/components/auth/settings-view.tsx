@@ -12,7 +12,7 @@ import {
   KeyRound,
   X,
   type LucideIcon
-} from 'lucide-react';
+} from '@/components/icons';
 import { changePassword } from '@/lib/auth';
 
 /**
@@ -67,11 +67,7 @@ export function SettingsView({ user, customer }: Props) {
             />
             <Field icon={UserRound} label={t('fieldContact')} value={fullName} />
             <Field icon={Mail} label={t('fieldEmail')} value={user.email} />
-            <Field
-              icon={Phone}
-              label={t('fieldPhone')}
-              value={customer?.phone ?? '—'}
-            />
+            <Field icon={Phone} label={t('fieldPhone')} value={customer?.phone ?? '—'} />
           </dl>
         </div>
 
@@ -83,9 +79,7 @@ export function SettingsView({ user, customer }: Props) {
             which is the stronger security signal for an account setting. */}
         <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
           <h2 className="text-base font-semibold text-foreground">{t('securitySection')}</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {t('securityChangePasswordDesc')}
-          </p>
+          <p className="mt-1 text-xs text-muted-foreground">{t('securityChangePasswordDesc')}</p>
 
           <ChangePasswordButton email={user.email} />
         </div>
@@ -99,15 +93,7 @@ export function SettingsView({ user, customer }: Props) {
 
 // ─── Field ───────────────────────────────────────────────────────────────────
 
-function Field({
-  icon: Icon,
-  label,
-  value
-}: {
-  icon: LucideIcon;
-  label: string;
-  value: string;
-}) {
+function Field({ icon: Icon, label, value }: { icon: LucideIcon; label: string; value: string }) {
   return (
     <div className="flex items-start gap-3 rounded-lg border border-border bg-background/40 px-3.5 py-3">
       <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-brand/10 text-brand">
@@ -151,7 +137,9 @@ function readLockedUntilFromStorage(): number | null {
         if (Number.isFinite(n) && n > Date.now()) return n;
       }
     }
-  } catch { /* SSR / quota */ }
+  } catch {
+    /* SSR / quota */
+  }
   return null;
 }
 
@@ -245,7 +233,9 @@ function ChangePasswordDialog({ email }: { email: string }) {
               <KeyRound className="h-5 w-5" aria-hidden={true} />
             </span>
             <h3 id="settings-change-pw-title" className="text-base font-semibold text-foreground">
-              {sent ? t('settingsChangePasswordDialogSentTitle') : t('settingsChangePasswordDialogTitle')}
+              {sent
+                ? t('settingsChangePasswordDialogSentTitle')
+                : t('settingsChangePasswordDialogTitle')}
             </h3>
           </div>
           <button
@@ -276,14 +266,20 @@ function ChangePasswordDialog({ email }: { email: string }) {
             <p className="mt-1 text-xs">
               {t('resetPasswordLockedWithCountdown', {
                 mm: String(Math.max(0, Math.floor((lockedUntil! - now) / 60000))).padStart(2, '0'),
-                ss: String(Math.max(0, Math.floor(((lockedUntil! - now) % 60000) / 1000))).padStart(2, '0')
+                ss: String(Math.max(0, Math.floor(((lockedUntil! - now) % 60000) / 1000))).padStart(
+                  2,
+                  '0'
+                )
               })}
             </p>
           </div>
         )}
 
         {error && !isLocked && (
-          <p role="alert" className="mt-3 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive">
+          <p
+            role="alert"
+            className="mt-3 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-xs text-destructive"
+          >
             {error}
           </p>
         )}
@@ -314,7 +310,9 @@ function ChangePasswordDialog({ email }: { email: string }) {
                 className="inline-flex h-9 items-center gap-2 rounded-lg border border-brand bg-brand px-4 text-sm font-medium text-brand-foreground transition-colors hover:bg-brand-strong disabled:opacity-60"
               >
                 {sending && <Loader2 className="h-4 w-4 animate-spin" aria-hidden={true} />}
-                {sending ? t('settingsChangePasswordDialogSending') : t('settingsChangePasswordDialogSend')}
+                {sending
+                  ? t('settingsChangePasswordDialogSending')
+                  : t('settingsChangePasswordDialogSend')}
               </button>
             </>
           )}

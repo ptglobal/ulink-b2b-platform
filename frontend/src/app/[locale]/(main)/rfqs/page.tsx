@@ -13,13 +13,13 @@ export async function generateMetadata({ params: { locale } }: Props): Promise<M
     title: isVi
       ? 'Yêu cầu báo giá (RFQs) | ULink B2B'
       : isJa
-      ? '見積依頼 (RFQs) | ULink B2B'
-      : 'Request for Quotation (RFQs) | ULink B2B',
+        ? '見積依頼 (RFQs) | ULink B2B'
+        : 'Request for Quotation (RFQs) | ULink B2B',
     description: isVi
       ? 'Quản lý và theo dõi danh sách yêu cầu báo giá'
       : isJa
-      ? '見積依頼リストの管理と追跡'
-      : 'Manage and track your requests for quotation'
+        ? '見積依頼リストの管理と追跡'
+        : 'Manage and track your requests for quotation'
   };
 }
 
@@ -43,7 +43,8 @@ export default async function RfqsPage({ params: { locale } }: Props) {
             Yêu cầu báo giá (RFQs)
           </h1>
           <p className="mt-2 text-xs leading-6 text-muted-foreground sm:text-sm">
-            Xem, tìm kiếm, lọc và kiểm tra chi tiết các yêu cầu báo giá của doanh nghiệp bạn được đồng bộ trực tiếp với hệ thống ULink.
+            Xem, tìm kiếm, lọc và kiểm tra chi tiết các yêu cầu báo giá của doanh nghiệp bạn được
+            đồng bộ trực tiếp với hệ thống ULink.
           </p>
         </div>
 

@@ -11,7 +11,9 @@ export async function POST(req: Request) {
       const created = await saveContactRequest(data, {
         writeContactRequest: async (payload) => {
           const writeDirectus = createWriteDirectusClient();
-          return writeDirectus.request(createItem('contact_requests', payload)) as Promise<{ id: number | string }>;
+          return writeDirectus.request(createItem('contact_requests', payload)) as Promise<{
+            id: number | string;
+          }>;
         }
       });
 

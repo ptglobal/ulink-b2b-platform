@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState, type FormEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
-import { ArrowRight, Loader2, CheckCircle2, Mail, ShieldCheck } from 'lucide-react';
+import { ArrowRight, Loader2, CheckCircle2, Mail, ShieldCheck } from '@/components/icons';
 import { Link, useRouter } from '@/i18n/navigation';
 import { requestOtp, verifyOtp, register, AuthError } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -261,7 +261,10 @@ function OtpFormInner() {
       </p>
 
       {formError && (
-        <p role="alert" className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+        <p
+          role="alert"
+          className="mt-4 rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+        >
           {formError}
         </p>
       )}
@@ -273,7 +276,10 @@ function OtpFormInner() {
               {t('emailLabel')}
             </label>
             <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+              <Mail
+                className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+                aria-hidden="true"
+              />
               <input
                 id="email"
                 name="email"
@@ -283,7 +289,10 @@ function OtpFormInner() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder={t('emailPlaceholder')}
                 aria-invalid={!!fieldErrors.email}
-                className={cn(inputBase, fieldErrors.email ? 'border-destructive' : 'border-border')}
+                className={cn(
+                  inputBase,
+                  fieldErrors.email ? 'border-destructive' : 'border-border'
+                )}
               />
             </div>
             {fieldErrors.email && (
@@ -318,7 +327,10 @@ function OtpFormInner() {
             {t('otpTitle')}
           </label>
           <div className="relative">
-            <ShieldCheck className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <ShieldCheck
+              className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <input
               id="code"
               name="code"
@@ -330,7 +342,11 @@ function OtpFormInner() {
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
               placeholder={t('otpPlaceholder')}
               aria-invalid={!!fieldErrors.code}
-              className={cn(inputBase, 'tracking-widest', fieldErrors.code ? 'border-destructive' : 'border-border')}
+              className={cn(
+                inputBase,
+                'tracking-widest',
+                fieldErrors.code ? 'border-destructive' : 'border-border'
+              )}
             />
           </div>
           {fieldErrors.code && (

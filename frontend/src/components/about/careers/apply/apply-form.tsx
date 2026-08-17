@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { UploadCloud, FileText, X, ArrowRight } from 'lucide-react';
+import { UploadCloud, FileText, X, ArrowRight } from '@/components/icons';
 
 export function ApplyForm() {
   const router = useRouter();
@@ -43,7 +43,9 @@ export function ApplyForm() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Địa chỉ Email *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Địa chỉ Email *
+              </label>
               <input
                 type="email"
                 required
@@ -52,7 +54,9 @@ export function ApplyForm() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Số điện thoại *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Số điện thoại *
+              </label>
               <input
                 type="tel"
                 required
@@ -64,7 +68,9 @@ export function ApplyForm() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Ngày tháng năm sinh *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Ngày tháng năm sinh *
+              </label>
               <input
                 type="date"
                 required
@@ -99,7 +105,9 @@ export function ApplyForm() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Bậc học cao nhất *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Bậc học cao nhất *
+              </label>
               <select
                 required
                 className="w-full rounded-lg border border-slate-200 px-3.5 py-2.5 text-xs text-slate-700 outline-none focus:border-blue-600"
@@ -111,7 +119,9 @@ export function ApplyForm() {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Trường Đại học / Cao đẳng *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Trường Đại học / Cao đẳng *
+              </label>
               <input
                 type="text"
                 required
@@ -123,7 +133,9 @@ export function ApplyForm() {
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Chuyên ngành *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Chuyên ngành *
+              </label>
               <input
                 type="text"
                 required
@@ -132,7 +144,9 @@ export function ApplyForm() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Năm tốt nghiệp *</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Năm tốt nghiệp *
+              </label>
               <input
                 type="text"
                 required
@@ -156,7 +170,9 @@ export function ApplyForm() {
         <div className="space-y-4">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Tên công ty gần nhất</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Tên công ty gần nhất
+              </label>
               <input
                 type="text"
                 placeholder="Nhập tên công ty bạn đã/đang làm việc"
@@ -164,7 +180,9 @@ export function ApplyForm() {
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-slate-700 mb-1">Vị trí đảm nhiệm</label>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Vị trí đảm nhiệm
+              </label>
               <input
                 type="text"
                 placeholder="Ví dụ: Nhân viên kinh doanh, Trưởng nhóm..."
@@ -174,7 +192,9 @@ export function ApplyForm() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Thời gian làm việc</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Thời gian làm việc
+            </label>
             <input
               type="text"
               placeholder="Ví dụ: 03/2022 - Hiện tại hoặc 2 năm"
@@ -183,7 +203,9 @@ export function ApplyForm() {
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">Mô tả ngắn về công việc và thành tựu nổi bật</label>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Mô tả ngắn về công việc và thành tựu nổi bật
+            </label>
             <textarea
               rows={4}
               placeholder="Nêu ngắn gọn nhiệm vụ chính và KPI hoặc kết quả nổi bật bạn đã đạt được..."
@@ -229,11 +251,13 @@ export function ApplyForm() {
             </div>
           ) : (
             <>
-              <p className="text-xs font-bold text-slate-900">
-                Kéo thả tệp tin CV của bạn vào đây
+              <p className="text-xs font-bold text-slate-900">Kéo thả tệp tin CV của bạn vào đây</p>
+              <p className="text-[11px] text-blue-600 underline mt-1">
+                Hoặc bấm để chọn tệp từ máy tính
               </p>
-              <p className="text-[11px] text-blue-600 underline mt-1">Hoặc bấm để chọn tệp từ máy tính</p>
-              <p className="text-[10px] text-slate-400 mt-2">Hỗ trợ định dạng PDF, DOC, DOCX. Dung lượng tối đa 10MB.</p>
+              <p className="text-[10px] text-slate-400 mt-2">
+                Hỗ trợ định dạng PDF, DOC, DOCX. Dung lượng tối đa 10MB.
+              </p>
             </>
           )}
         </div>
@@ -245,11 +269,15 @@ export function ApplyForm() {
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-600">
             05
           </span>
-          <h2 className="text-base font-bold text-slate-900">Thư giới thiệu / Thông điệp gửi nhà tuyển dụng</h2>
+          <h2 className="text-base font-bold text-slate-900">
+            Thư giới thiệu / Thông điệp gửi nhà tuyển dụng
+          </h2>
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Thư giới thiệu (Không bắt buộc)</label>
+          <label className="block text-xs font-semibold text-slate-700 mb-1">
+            Thư giới thiệu (Không bắt buộc)
+          </label>
           <textarea
             rows={4}
             placeholder="Chia sẻ lý do bạn mong muốn đồng hành cùng ULink, mục tiêu phát triển bản thân hoặc kỳ vọng..."
@@ -258,17 +286,26 @@ export function ApplyForm() {
         </div>
 
         <div className="flex items-start gap-2 pt-2">
-          <input type="checkbox" required id="commit" className="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-600" />
+          <input
+            type="checkbox"
+            required
+            id="commit"
+            className="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-600"
+          />
           <label htmlFor="commit" className="text-[11px] leading-relaxed text-slate-600">
-            Tôi cam kết thông tin cung cấp là chính xác và đồng ý cho ULink Industries sử dụng thông tin này phục vụ quy trình tuyển dụng và đánh giá năng lực theo đúng Chính sách bảo mật thông tin.
+            Tôi cam kết thông tin cung cấp là chính xác và đồng ý cho ULink Industries sử dụng thông
+            tin này phục vụ quy trình tuyển dụng và đánh giá năng lực theo đúng Chính sách bảo mật
+            thông tin.
           </label>
         </div>
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-slate-100">
-          <span className="text-[11px] text-slate-500">Đơn ứng tuyển sẽ được gửi trực tiếp đến bộ phận nhân sự.</span>
+          <span className="text-[11px] text-slate-500">
+            Đơn ứng tuyển sẽ được gửi trực tiếp đến bộ phận nhân sự.
+          </span>
           <button
             type="submit"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3 text-xs font-bold text-white shadow-md hover:bg-blue-700 transition-all"
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-7 py-3 text-xs font-bold text-white shadow-md hover:bg-blue-700 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
           >
             Gửi đơn <ArrowRight className="h-4 w-4" />
           </button>

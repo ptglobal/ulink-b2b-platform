@@ -22,10 +22,20 @@ import {
   RefreshCw,
   Plus,
   ArrowRight
-} from 'lucide-react';
+} from '@/components/icons';
 import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
-import { getTranslatedName, getTranslatedField, getTranslatedDescription } from '@/lib/i18n-content';
-import { fetchProductBySlug, fetchProducts, getProductPricing, ProductSku, Product } from '@/lib/product-data';
+import {
+  getTranslatedName,
+  getTranslatedField,
+  getTranslatedDescription
+} from '@/lib/i18n-content';
+import {
+  fetchProductBySlug,
+  fetchProducts,
+  getProductPricing,
+  ProductSku,
+  Product
+} from '@/lib/product-data';
 import ProductDetailClient from '@/components/product/product-detail-client';
 import { ProductImageGallery } from '@/components/product/product-image-gallery';
 import RequestSampleButton from '@/components/sample-request/request-sample-button';
@@ -48,7 +58,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
   }
 
   const name = getTranslatedName(product, locale) || product.name;
-  const desc = getTranslatedField(product, 'short_description', locale) || product.short_description || '';
+  const desc =
+    getTranslatedField(product, 'short_description', locale) || product.short_description || '';
 
   return {
     title: `${name} | Giải pháp Phòng sạch & Đóng gói ULink`,
@@ -71,10 +82,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
   const directusUrl = getDirectusUrl();
   const productName = getTranslatedName(product, locale) || product.name;
-  const productDescription = getTranslatedField(product, 'short_description', locale) || product.short_description;
+  const productDescription =
+    getTranslatedField(product, 'short_description', locale) || product.short_description;
 
-  const category = typeof product.category === 'object' && product.category !== null ? product.category : null;
-  const categoryName = category ? (getTranslatedName(category, locale) || category.name) : null;
+  const category =
+    typeof product.category === 'object' && product.category !== null ? product.category : null;
+  const categoryName = category ? getTranslatedName(category, locale) || category.name : null;
 
   const pricing = getProductPricing(product.slug, locale);
 
@@ -91,7 +104,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     if (locale === 'vi') {
       return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
     }
-    return '$' + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount / 25000);
+    return (
+      '$' +
+      new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        amount / 25000
+      )
+    );
   };
 
   const specs = product.specifications as Record<string, string> | null;
@@ -102,9 +120,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   const heroId = typeof rawHero === 'object' && rawHero !== null ? (rawHero as any).id : rawHero;
 
   if (heroId) {
-    const heroSrc = typeof heroId === 'string' && (heroId.startsWith('http') || heroId.startsWith('/'))
-      ? heroId
-      : `${directusUrl}/assets/${heroId}`;
+    const heroSrc =
+      typeof heroId === 'string' && (heroId.startsWith('http') || heroId.startsWith('/'))
+        ? heroId
+        : `${directusUrl}/assets/${heroId}`;
     productGalleryImages.push({
       src: heroSrc,
       alt: `${productName} - Ảnh đại diện Database`,
@@ -114,10 +133,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
   gallery.forEach((fileObj, idx) => {
     const rawFileRef = fileObj?.directus_files_id;
-    const fileId = typeof rawFileRef === 'object' && rawFileRef !== null ? (rawFileRef as any).id : rawFileRef;
+    const fileId =
+      typeof rawFileRef === 'object' && rawFileRef !== null ? (rawFileRef as any).id : rawFileRef;
     if (fileId) {
       const fileSrc = `${directusUrl}/assets/${fileId}`;
-      if (!productGalleryImages.some(img => img.src === fileSrc)) {
+      if (!productGalleryImages.some((img) => img.src === fileSrc)) {
         productGalleryImages.push({
           src: fileSrc,
           alt: `${productName} - Bộ sưu tập DB ${idx + 1}`,
@@ -129,13 +149,18 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
   skus.forEach((sku, idx) => {
     const rawSkuImage = sku?.image;
-    const skuImageId = typeof rawSkuImage === 'object' && rawSkuImage !== null ? (rawSkuImage as any).id : rawSkuImage;
+    const skuImageId =
+      typeof rawSkuImage === 'object' && rawSkuImage !== null
+        ? (rawSkuImage as any).id
+        : rawSkuImage;
 
     if (skuImageId) {
-      const skuSrc = typeof skuImageId === 'string' && (skuImageId.startsWith('http') || skuImageId.startsWith('/'))
-        ? skuImageId
-        : `${directusUrl}/assets/${skuImageId}`;
-      if (!productGalleryImages.some(img => img.src === skuSrc)) {
+      const skuSrc =
+        typeof skuImageId === 'string' &&
+        (skuImageId.startsWith('http') || skuImageId.startsWith('/'))
+          ? skuImageId
+          : `${directusUrl}/assets/${skuImageId}`;
+      if (!productGalleryImages.some((img) => img.src === skuSrc)) {
         productGalleryImages.push({
           src: skuSrc,
           alt: `${productName} - Mã SKU ${sku.sku_code || idx + 1}`,
@@ -146,10 +171,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   });
 
   const { products: allDbProducts } = await fetchProducts({ limit: 10 });
-  const featured = allDbProducts.filter(p => p.slug !== product.slug).slice(0, 4);
+  const featured = allDbProducts.filter((p) => p.slug !== product.slug).slice(0, 4);
 
   return (
-    <div className="min-h-screen bg-[#FAFAFA]">
+    <div className="min-h-screen bg-background">
       {/* Breadcrumb */}
       <div className="bg-white border-b border-gray-150">
         <div className="mx-auto w-full max-w-[1440px] px-4 sm:px-8 lg:px-16 py-3">
@@ -164,15 +189,16 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             {category && (
               <>
                 <span className="text-slate-300 font-bold">&gt;</span>
-                <Link href={`/${locale}/products/categories/${category.slug}`} className="hover:text-blue-600 transition-colors">
+                <Link
+                  href={`/${locale}/products/categories/${category.slug}`}
+                  className="hover:text-blue-600 transition-colors"
+                >
                   {categoryName}
                 </Link>
               </>
             )}
             <span className="text-slate-300 font-bold">&gt;</span>
-            <span className="text-slate-900 font-bold truncate max-w-[280px]">
-              {productName}
-            </span>
+            <span className="text-slate-900 font-bold truncate max-w-[280px]">{productName}</span>
           </nav>
         </div>
       </div>
@@ -206,9 +232,15 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
               <div className="flex items-center gap-1.5">
                 <span className="font-extrabold text-slate-900">4.8</span>
                 <div className="flex text-amber-400">
-                  <span>★</span><span>★</span><span>★</span><span>★</span><span>★</span>
+                  <span>★</span>
+                  <span>★</span>
+                  <span>★</span>
+                  <span>★</span>
+                  <span>★</span>
                 </div>
-                <span className="text-slate-500 font-medium">(48 {locale === 'vi' ? 'đánh giá' : 'reviews'})</span>
+                <span className="text-slate-500 font-medium">
+                  (48 {locale === 'vi' ? 'đánh giá' : 'reviews'})
+                </span>
               </div>
             </div>
 
@@ -221,7 +253,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             )}
 
             {/* 4 Feature Icon Circles */}
-            <div className="grid grid-cols-4 gap-3 py-2">
+            <div className="grid grid-cols-2 gap-4 py-2 sm:grid-cols-4">
               <div className="flex flex-col items-center text-center group">
                 <div className="w-12 h-12 rounded-full bg-slate-50 border border-slate-200/70 flex items-center justify-center text-blue-600 mb-2 shrink-0 group-hover:bg-blue-50 transition-colors shadow-2xs">
                   <Maximize2 className="h-5 w-5" />
@@ -264,28 +296,38 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             {/* 2x2 Key Specifications Grid */}
             <div className="grid grid-cols-2 gap-y-5 gap-x-8 py-2">
               <div className="flex flex-col">
-                <span className="text-xs font-semibold text-slate-500">{locale === 'vi' ? 'Độ dày màng' : 'Thickness'}</span>
+                <span className="text-xs font-semibold text-slate-500">
+                  {locale === 'vi' ? 'Độ dày màng' : 'Thickness'}
+                </span>
                 <span className="text-xs sm:text-sm font-bold text-slate-900 mt-1">
                   {specs?.['Độ dày'] || specs?.['Thickness'] || '17 mic / 20 mic / 23 mic'}
                 </span>
               </div>
 
               <div className="flex flex-col">
-                <span className="text-xs font-semibold text-slate-500">{locale === 'vi' ? 'Chất liệu chính' : 'Material'}</span>
+                <span className="text-xs font-semibold text-slate-500">
+                  {locale === 'vi' ? 'Chất liệu chính' : 'Material'}
+                </span>
                 <span className="text-xs sm:text-sm font-bold text-slate-900 mt-1">
                   {specs?.['Chất liệu'] || specs?.['Material'] || '100% LLDPE Nguyên Sinh'}
                 </span>
               </div>
 
               <div className="flex flex-col">
-                <span className="text-xs font-semibold text-slate-500">{locale === 'vi' ? 'Quy cách cuộn' : 'Specification'}</span>
+                <span className="text-xs font-semibold text-slate-500">
+                  {locale === 'vi' ? 'Quy cách cuộn' : 'Specification'}
+                </span>
                 <span className="text-xs sm:text-sm font-bold text-slate-900 mt-1">
-                  {specs?.['Đóng gói'] || specs?.['Specification'] || 'Khổ rộng 50cm, cân nặng theo yêu cầu'}
+                  {specs?.['Đóng gói'] ||
+                    specs?.['Specification'] ||
+                    'Khổ rộng 50cm, cân nặng theo yêu cầu'}
                 </span>
               </div>
 
               <div className="flex flex-col">
-                <span className="text-xs font-semibold text-slate-500">{locale === 'vi' ? 'Màu sắc' : 'Color'}</span>
+                <span className="text-xs font-semibold text-slate-500">
+                  {locale === 'vi' ? 'Màu sắc' : 'Color'}
+                </span>
                 <span className="text-xs sm:text-sm font-bold text-slate-900 mt-1">
                   {specs?.['Màu sắc'] || specs?.['Color'] || 'Trắng trong'}
                 </span>
@@ -298,7 +340,9 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
             {standards.length > 0 && (
               <div className="space-y-3 pt-2">
                 <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
-                  {locale === 'vi' ? 'Tiêu chuẩn chất lượng đạt được:' : 'Quality Standards Achieved:'}
+                  {locale === 'vi'
+                    ? 'Tiêu chuẩn chất lượng đạt được:'
+                    : 'Quality Standards Achieved:'}
                 </p>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {standards.map((std) => (
@@ -328,7 +372,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
           {/* RIGHT: Sidebar Card */}
           <div className="lg:col-span-3">
-            <div className="bg-[#F8FAFC] border border-slate-200/80 rounded-xl p-6 sticky top-6 space-y-6">
+            <div className="bg-background border border-slate-200/80 rounded-xl p-6 sticky top-6 space-y-6">
               {/* Product interactive config */}
               <ProductDetailClient
                 skus={skus.map((s: ProductSku) => ({
@@ -346,7 +390,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                   addToCart: locale === 'vi' ? 'Thêm vào RFQ' : 'Add to RFQ',
                   added: locale === 'vi' ? 'Đã thêm' : 'Added',
                   selectVariant: locale === 'vi' ? 'Chọn quy cách' : 'Select Variant',
-                  requestQuote: locale === 'vi' ? 'Yêu cầu báo giá sản lượng lớn' : 'Request Bulk Quote'
+                  requestQuote:
+                    locale === 'vi' ? 'Yêu cầu báo giá sản lượng lớn' : 'Request Bulk Quote'
                 }}
               />
 
@@ -398,7 +443,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                 </h3>
               </div>
               <Link
-                href={category?.slug ? `/${locale}/products/categories/${category.slug}` : `/${locale}/products`}
+                href={
+                  category?.slug
+                    ? `/${locale}/products/categories/${category.slug}`
+                    : `/${locale}/products`
+                }
                 className="text-xs font-bold text-blue-600 hover:underline flex items-center gap-1"
               >
                 {locale === 'vi' ? 'Xem tất cả' : 'View All'} &rarr;
@@ -424,11 +473,16 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                     >
                       {(() => {
                         const rawProdHero = prod.hero;
-                        const prodHeroId = typeof rawProdHero === 'object' && rawProdHero !== null ? (rawProdHero as any).id : rawProdHero;
+                        const prodHeroId =
+                          typeof rawProdHero === 'object' && rawProdHero !== null
+                            ? (rawProdHero as any).id
+                            : rawProdHero;
                         if (prodHeroId) {
-                          const prodHeroSrc = typeof prodHeroId === 'string' && (prodHeroId.startsWith('http') || prodHeroId.startsWith('/'))
-                            ? prodHeroId
-                            : `${directusUrl}/assets/${prodHeroId}`;
+                          const prodHeroSrc =
+                            typeof prodHeroId === 'string' &&
+                            (prodHeroId.startsWith('http') || prodHeroId.startsWith('/'))
+                              ? prodHeroId
+                              : `${directusUrl}/assets/${prodHeroId}`;
                           return (
                             <Image
                               src={prodHeroSrc}
@@ -452,8 +506,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                           </h4>
                         </Link>
                         <p className="text-xs sm:text-sm font-extrabold text-slate-900">
-                          {formatPrice(Math.round(prodPricing.price * 0.9))} - {formatPrice(Math.round(prodPricing.price * 1.1))}
-                          <span className="text-[10px] sm:text-xs font-normal text-slate-400"> /per {prodPricing.unit}</span>
+                          {formatPrice(Math.round(prodPricing.price * 0.9))} -{' '}
+                          {formatPrice(Math.round(prodPricing.price * 1.1))}
+                          <span className="text-[10px] sm:text-xs font-normal text-slate-400">
+                            {' '}
+                            /per {prodPricing.unit}
+                          </span>
                         </p>
 
                         {/* MOQ Info */}
@@ -462,8 +520,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                           <span className="text-slate-300">|</span>
                           <span>
                             {stockStatus === 'in_stock'
-                              ? (locale === 'vi' ? 'Có sẵn tại kho' : 'In Stock')
-                              : (locale === 'vi' ? 'Sản xuất theo yêu cầu' : 'On Demand')}
+                              ? locale === 'vi'
+                                ? 'Có sẵn tại kho'
+                                : 'In Stock'
+                              : locale === 'vi'
+                                ? 'Sản xuất theo yêu cầu'
+                                : 'On Demand'}
                           </span>
                         </div>
 
@@ -481,12 +543,12 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
                           className="text-xs font-semibold text-slate-600 hover:text-blue-600 transition-colors flex items-center gap-1 group/link"
                         >
                           <span>{locale === 'vi' ? 'Chi tiết' : 'Details'}</span>
-                          <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover/link:text-blue-600 group-hover/link:translate-x-0.5 transition-all" />
+                          <ArrowRight className="h-3.5 w-3.5 text-slate-400 group-hover/link:text-blue-600 group-hover/link:translate-x-0.5 transition-[color,background-color,border-color,box-shadow,opacity,transform]" />
                         </Link>
 
                         <Link
                           href={`/${locale}/quick-order`}
-                          className="bg-[#1868DF] hover:bg-[#1459C5] text-white font-bold text-xs px-3.5 py-1.5 rounded-full flex items-center gap-1 transition-colors shadow-2xs cursor-pointer"
+                          className="bg-brand hover:bg-brand-strong text-white font-bold text-xs px-3.5 py-1.5 rounded-full flex items-center gap-1 transition-colors shadow-2xs cursor-pointer"
                         >
                           <Plus className="h-3.5 w-3.5 stroke-[2.5]" />
                           <span>{locale === 'vi' ? 'Thêm vào RFQ' : 'Add to RFQ'}</span>

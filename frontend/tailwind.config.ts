@@ -32,7 +32,13 @@ const config: Config = {
         brand: {
           DEFAULT: 'hsl(var(--brand))',
           strong: 'hsl(var(--brand-strong))',
+          deep: 'hsl(var(--brand-deep))',
+          soft: 'hsl(var(--brand-soft))',
           foreground: 'hsl(var(--brand-foreground))'
+        },
+        evidence: {
+          DEFAULT: 'hsl(var(--evidence))',
+          foreground: 'hsl(var(--evidence-foreground))'
         },
         muted: {
           DEFAULT: 'hsl(var(--muted))',
@@ -43,16 +49,26 @@ const config: Config = {
           foreground: 'hsl(var(--card-foreground))'
         },
         silver: 'hsl(var(--silver))',
-        onyx: 'hsl(var(--onyx))'
+        onyx: 'hsl(var(--onyx))',
+        success: 'hsl(var(--success))',
+        warning: 'hsl(var(--warning))'
       },
       borderRadius: {
         lg: 'var(--radius)',
-        md: 'calc(var(--radius) - 2px)',
-        sm: 'calc(var(--radius) - 4px)'
+        md: 'var(--radius-control)',
+        sm: 'var(--radius-detail)'
       },
       fontFamily: {
         sans: ['var(--font-sans)', 'system-ui', 'sans-serif'],
         mono: ['var(--font-mono)', 'monospace']
+      },
+      boxShadow: {
+        ambient: '0 2px 8px hsl(var(--foreground) / 0.08)',
+        overlay: '0 16px 40px hsl(var(--foreground) / 0.16)'
+      },
+      transitionTimingFunction: {
+        'out-expo': 'cubic-bezier(0.16, 1, 0.3, 1)',
+        'out-quint': 'cubic-bezier(0.22, 1, 0.36, 1)'
       }
     }
   },

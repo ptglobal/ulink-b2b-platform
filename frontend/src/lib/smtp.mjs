@@ -126,7 +126,9 @@ function sendCommand(socket, command) {
 }
 
 async function openConnection({ host, port, secure }) {
-  const socket = secure ? tls.connect({ host, port, servername: host }) : net.connect({ host, port });
+  const socket = secure
+    ? tls.connect({ host, port, servername: host })
+    : net.connect({ host, port });
   socket.setEncoding('utf8');
 
   if (secure) {

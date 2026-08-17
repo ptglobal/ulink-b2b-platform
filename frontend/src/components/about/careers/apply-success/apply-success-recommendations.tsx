@@ -7,7 +7,7 @@ const jobs = [
     title: 'Kỹ Sư Giám Sát Chất Lượng QA/QC (Phòng Sạch)',
     salary: '14 - 20M VNĐ',
     location: 'Kim Bảng, Hà Nam',
-    href: '/about/careers/qa-qc-engineer',
+    href: '/about/careers/qa-qc-engineer'
   },
   {
     id: '2',
@@ -15,8 +15,8 @@ const jobs = [
     title: 'Chuyên Viên Logistics & Điều Phối Chuỗi Cung Ứng',
     salary: '12 - 18M VNĐ',
     location: 'HUB Hà Nam',
-    href: '/about/careers/logistics-spec',
-  },
+    href: '/about/careers/logistics-spec'
+  }
 ];
 
 export function ApplySuccessRecommendations() {
@@ -36,7 +36,7 @@ export function ApplySuccessRecommendations() {
           <Link
             key={item.id}
             href={item.href}
-            className="flex flex-col justify-between rounded-xl bg-white p-6 border border-slate-100 shadow-sm transition-all hover:shadow-md hover:border-blue-200 group"
+            className="flex flex-col justify-between rounded-xl bg-white p-6 border border-slate-100 shadow-sm transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:shadow-md hover:border-blue-200 group"
           >
             <div>
               <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider block mb-1">

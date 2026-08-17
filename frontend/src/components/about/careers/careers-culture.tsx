@@ -1,36 +1,36 @@
-import { Sparkles, Users, ShieldCheck, TrendingUp, Target, Heart } from 'lucide-react';
+import { Sparkles, Users, ShieldCheck, TrendingUp, Target, Heart } from '@/components/icons';
 
 const values = [
   {
     icon: Sparkles,
     title: 'Môi trường mở & Đổi mới',
-    desc: 'Khuyến khích mọi cá nhân đưa ra ý tưởng mới, sáng tạo không giới hạn và thử nghiệm giải pháp đột phá.',
+    desc: 'Khuyến khích mọi cá nhân đưa ra ý tưởng mới, sáng tạo không giới hạn và thử nghiệm giải pháp đột phá.'
   },
   {
     icon: Users,
     title: 'Tinh thần đồng đội',
-    desc: 'Hợp tác chặt chẽ, chia sẻ tri thức và luôn sẵn sàng hỗ trợ lẫn nhau hoàn thành mục tiêu chung.',
+    desc: 'Hợp tác chặt chẽ, chia sẻ tri thức và luôn sẵn sàng hỗ trợ lẫn nhau hoàn thành mục tiêu chung.'
   },
   {
     icon: ShieldCheck,
     title: 'Liêm chính & Uy tín',
-    desc: 'Đặt tinh thần trung thực, minh bạch và tính cam kết uy tín lên hàng đầu trong mọi hành động.',
+    desc: 'Đặt tinh thần trung thực, minh bạch và tính cam kết uy tín lên hàng đầu trong mọi hành động.'
   },
   {
     icon: TrendingUp,
     title: 'Phát triển cá nhân',
-    desc: 'Tạo mọi điều kiện học tập, tham gia đào tạo chuyên sâu và lộ trình thăng tiến rõ ràng cho từng vị trí.',
+    desc: 'Tạo mọi điều kiện học tập, tham gia đào tạo chuyên sâu và lộ trình thăng tiến rõ ràng cho từng vị trí.'
   },
   {
     icon: Target,
     title: 'Cam kết sứ mệnh',
-    desc: 'Đồng lòng hướng tới sứ mệnh tối ưu hóa chuỗi cung ứng vật tư B2B cho cộng đồng doanh nghiệp Việt.',
+    desc: 'Đồng lòng hướng tới sứ mệnh tối ưu hóa chuỗi cung ứng vật tư B2B cho cộng đồng doanh nghiệp Việt.'
   },
   {
     icon: Heart,
     title: 'Đóng góp cộng đồng',
-    desc: 'Gắn liền sự phát triển của doanh nghiệp với trách nhiệm xã hội và định hướng phát triển xanh bền vững.',
-  },
+    desc: 'Gắn liền sự phát triển của doanh nghiệp với trách nhiệm xã hội và định hướng phát triển xanh bền vững.'
+  }
 ];
 
 export function CareersCulture() {
@@ -54,15 +54,13 @@ export function CareersCulture() {
           return (
             <div
               key={idx}
-              className="flex flex-col rounded-xl bg-white p-6 shadow-sm border border-slate-100 transition-all hover:shadow-md hover:-translate-y-0.5"
+              className="flex flex-col rounded-xl bg-white p-6 shadow-sm border border-slate-100 transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:shadow-md hover:-translate-y-0.5"
             >
               <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
                 <Icon className="h-5 w-5" />
               </div>
               <h3 className="text-base font-bold text-slate-900">{item.title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">
-                {item.desc}
-              </p>
+              <p className="mt-2 text-xs leading-relaxed text-slate-600">{item.desc}</p>
             </div>
           );
         })}

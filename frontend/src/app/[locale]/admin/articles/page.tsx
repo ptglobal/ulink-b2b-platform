@@ -15,8 +15,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -52,25 +54,28 @@ export default async function AdminArticlesPage({ params }: PageProps) {
     const client = await getSessionClient();
     // 2. Fetch blog posts
     const res = await client.request(
-      readItems('blog_posts' as any, {
-        filter: { status: { _in: ['published', 'draft'] } },
-        fields: [
-          'id',
-          'status',
-          'slug',
-          'cover',
-          'author',
-          'published_at',
-          'translations.id',
-          'translations.languages_code',
-          'translations.title',
-          'translations.body',
-          'translations.meta_title',
-          'translations.meta_description'
-        ],
-        sort: ['-id'],
-        limit: -1
-      } as any)
+      readItems(
+        'blog_posts' as any,
+        {
+          filter: { status: { _in: ['published', 'draft'] } },
+          fields: [
+            'id',
+            'status',
+            'slug',
+            'cover',
+            'author',
+            'published_at',
+            'translations.id',
+            'translations.languages_code',
+            'translations.title',
+            'translations.body',
+            'translations.meta_title',
+            'translations.meta_description'
+          ],
+          sort: ['-id'],
+          limit: -1
+        } as any
+      )
     );
     articles = res || [];
   } catch (err) {

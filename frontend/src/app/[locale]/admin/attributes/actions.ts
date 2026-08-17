@@ -18,7 +18,7 @@ function formatError(err: any): string {
         errors: err.errors,
         status: err.status,
         code: err.code,
-        extensions: err.extensions,
+        extensions: err.extensions
       };
       return JSON.stringify(errorObj, null, 2);
     } catch {
@@ -39,8 +39,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -112,17 +114,21 @@ export async function deleteAttribute(id: number) {
 
     // 1. Check if assigned to any products
     const assigned = await client.request(
-      readItems('products_product_attributes' as any, {
-        filter: { product_attributes_id: { _eq: id } },
-        fields: ['id'],
-        limit: 1
-      } as any)
+      readItems(
+        'products_product_attributes' as any,
+        {
+          filter: { product_attributes_id: { _eq: id } },
+          fields: ['id'],
+          limit: 1
+        } as any
+      )
     );
 
     if (assigned && assigned.length > 0) {
       return {
         success: false,
-        error: 'Không thể xóa thuộc tính này vì đang được gán cho một hoặc nhiều sản phẩm. Hãy bỏ gán khỏi sản phẩm trước.'
+        error:
+          'Không thể xóa thuộc tính này vì đang được gán cho một hoặc nhiều sản phẩm. Hãy bỏ gán khỏi sản phẩm trước.'
       };
     }
 
@@ -186,13 +192,16 @@ export async function deleteAttributeOption(id: number) {
     const { readItems } = await import('@directus/sdk');
 
     // 1. Fetch the option details to get value & attribute slug
-    const option = await client.request(
-      readItems('product_attribute_options' as any, {
-        filter: { id: { _eq: id } },
-        fields: ['id', 'value', 'attribute.slug'],
-        limit: 1
-      } as any)
-    ) as any[];
+    const option = (await client.request(
+      readItems(
+        'product_attribute_options' as any,
+        {
+          filter: { id: { _eq: id } },
+          fields: ['id', 'value', 'attribute.slug'],
+          limit: 1
+        } as any
+      )
+    )) as any[];
 
     if (!option || option.length === 0) {
       return { success: false, error: 'Tùy chọn không tồn tại.' };
@@ -203,13 +212,16 @@ export async function deleteAttributeOption(id: number) {
 
     // 2. Check if any SKUs are currently using this option value
     if (attrSlug) {
-      const skus = await client.request(
-        readItems('product_skus' as any, {
-          filter: { status: { _in: ['published', 'draft'] } },
-          fields: ['id', 'sku_code', 'attributes'],
-          limit: -1
-        } as any)
-      ) as any[];
+      const skus = (await client.request(
+        readItems(
+          'product_skus' as any,
+          {
+            filter: { status: { _in: ['published', 'draft'] } },
+            fields: ['id', 'sku_code', 'attributes'],
+            limit: -1
+          } as any
+        )
+      )) as any[];
 
       const inUse = skus.some((sku: any) => {
         if (!sku.attributes || typeof sku.attributes !== 'object') return false;

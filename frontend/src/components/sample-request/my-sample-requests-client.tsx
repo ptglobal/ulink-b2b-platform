@@ -1,7 +1,17 @@
 'use client';
 
 import { useEffect, useState, useMemo } from 'react';
-import { Search, Loader2, Package, Clock, CheckCircle2, XCircle, Eye, ChevronRight, FileBox } from 'lucide-react';
+import {
+  Search,
+  Loader2,
+  Package,
+  Clock,
+  CheckCircle2,
+  XCircle,
+  Eye,
+  ChevronRight,
+  FileBox
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { useTranslations, useLocale } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -59,7 +69,10 @@ export function MySampleRequestsClient() {
     return list;
   }, [requests, statusFilter, searchQuery]);
 
-  const statusConfig: Record<string, { label: string; icon: typeof Clock; classes: string; dotColor: string }> = {
+  const statusConfig: Record<
+    string,
+    { label: string; icon: typeof Clock; classes: string; dotColor: string }
+  > = {
     pending: {
       label: t('pending'),
       icon: Clock,
@@ -94,19 +107,15 @@ export function MySampleRequestsClient() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-r from-indigo-900 via-indigo-800 to-blue-700 overflow-hidden">
+      <section className="relative bg-gradient-to-r from-brand-deep via-brand-strong to-brand overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] bg-repeat" />
         </div>
         <div className="relative container mx-auto px-4 py-8 lg:py-12">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div>
-              <h1 className="text-2xl lg:text-3xl font-bold text-white">
-                {t('title')}
-              </h1>
-              <p className="mt-2 text-indigo-200 text-sm lg:text-base">
-                {t('subtitle')}
-              </p>
+              <h1 className="text-2xl lg:text-3xl font-bold text-white">{t('title')}</h1>
+              <p className="mt-2 text-indigo-200 text-sm lg:text-base">{t('subtitle')}</p>
             </div>
 
             {/* Stats cards */}
@@ -149,7 +158,7 @@ export function MySampleRequestsClient() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={t('searchPlaceholder')}
-              className="w-full rounded-lg border border-gray-200 bg-gray-50 pl-9 pr-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:bg-white focus:outline-none transition-all"
+              className="w-full rounded-lg border border-gray-200 bg-gray-50 pl-9 pr-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 focus:bg-white focus:outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform]"
             />
           </div>
 
@@ -160,16 +169,14 @@ export function MySampleRequestsClient() {
                 key={s}
                 onClick={() => setStatusFilter(s)}
                 className={cn(
-                  'px-3 py-1.5 rounded-md text-xs font-medium transition-all',
+                  'px-3 py-1.5 rounded-md text-xs font-medium transition-[color,background-color,border-color,box-shadow,opacity,transform]',
                   statusFilter === s
                     ? 'bg-white text-gray-900 shadow-sm'
                     : 'text-gray-500 hover:text-gray-700'
                 )}
               >
                 {s === 'all' ? t('all') : t(s)}
-                <span className="ml-1 text-[10px] opacity-60">
-                  {counts[s]}
-                </span>
+                <span className="ml-1 text-[10px] opacity-60">{counts[s]}</span>
               </button>
             ))}
           </div>
@@ -200,7 +207,7 @@ export function MySampleRequestsClient() {
               return (
                 <div
                   key={req.id}
-                  className="group flex flex-col sm:flex-row sm:items-center gap-4 bg-white rounded-xl border border-gray-200 shadow-sm px-5 py-4 hover:shadow-md hover:border-blue-200 transition-all"
+                  className="group flex flex-col sm:flex-row sm:items-center gap-4 bg-white rounded-xl border border-gray-200 shadow-sm px-5 py-4 hover:shadow-md hover:border-blue-200 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
                 >
                   {/* Left: icon + info */}
                   <div className="flex items-start gap-4 flex-1 min-w-0">
@@ -212,14 +219,10 @@ export function MySampleRequestsClient() {
                         <h3 className="text-sm font-semibold text-gray-900 truncate">
                           {req.product_slug}
                         </h3>
-                        <span className="text-[11px] font-mono text-gray-400">
-                          #{req.id}
-                        </span>
+                        <span className="text-[11px] font-mono text-gray-400">#{req.id}</span>
                       </div>
                       <div className="flex items-center gap-3 mt-1.5 text-xs text-gray-500">
-                        {req.contact_name && (
-                          <span>{req.contact_name}</span>
-                        )}
+                        {req.contact_name && <span>{req.contact_name}</span>}
                         {req.company && (
                           <>
                             <span className="w-1 h-1 rounded-full bg-gray-300" />
@@ -262,10 +265,12 @@ export function MySampleRequestsClient() {
                   {/* Right: status + action */}
                   <div className="flex items-center gap-3 sm:shrink-0">
                     {/* Status badge */}
-                    <div className={cn(
-                      'inline-flex items-center gap-1.5 rounded-full border px-3 py-1',
-                      sc?.classes
-                    )}>
+                    <div
+                      className={cn(
+                        'inline-flex items-center gap-1.5 rounded-full border px-3 py-1',
+                        sc?.classes
+                      )}
+                    >
                       <StatusIcon className="h-3.5 w-3.5" />
                       <span className="text-xs font-medium">{sc?.label}</span>
                     </div>
@@ -273,7 +278,7 @@ export function MySampleRequestsClient() {
                     {/* View detail button */}
                     <button
                       onClick={() => router.push(`/${locale}/sample-requests/${req.id}`)}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-700 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition-all shadow-sm"
+                      className="inline-flex min-h-11 items-center gap-1.5 border border-gray-200 bg-white px-3 text-xs font-medium text-gray-700 shadow-sm transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:border-brand/25 hover:bg-brand/10 hover:text-brand"
                     >
                       <Eye className="h-3.5 w-3.5" />
                       {t('viewDetail')}

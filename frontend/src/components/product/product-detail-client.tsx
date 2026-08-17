@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { ShoppingCart, Check, FileText, Truck, MapPin, Settings2 } from 'lucide-react';
+import { ShoppingCart, Check, FileText, Truck, MapPin, Settings2 } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { useRouter } from '@/i18n/navigation';
 
@@ -114,7 +114,7 @@ export default function ProductDetailClient({
       }) ?? effectiveSkus[0]
     );
   }, [effectiveSkus, selections]);
- 
+
   // Dynamic B2B price tiers matching user screenshot
   const priceTiers = useMemo(() => {
     const minPrice = 39500;
@@ -139,12 +139,21 @@ export default function ProductDetailClient({
   }, [quantity]);
 
   // Format currency
-  const formatPrice = useCallback((amount: number) => {
-    if (locale === 'vi') {
-      return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
-    }
-    return '$' + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount / 25000);
-  }, [locale]);
+  const formatPrice = useCallback(
+    (amount: number) => {
+      if (locale === 'vi') {
+        return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
+      }
+      return (
+        '$' +
+        new Intl.NumberFormat('en-US', {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(amount / 25000)
+      );
+    },
+    [locale]
+  );
 
   const handleSelectAttribute = useCallback((attrName: string, value: string) => {
     setSelections((prev) => ({ ...prev, [attrName]: value }));
@@ -156,45 +165,48 @@ export default function ProductDetailClient({
     setQuantity(Math.max(1, val));
   }, []);
 
-  const performAddToCart = useCallback((targetQty: number) => {
-    if (!selectedSku) return false;
-    try {
-      const raw = localStorage.getItem('rfq-cart');
-      const cart: Array<any> = raw ? JSON.parse(raw) : [];
-      const specArr: string[] = [];
-      if (selectedSku.attributes) {
-        for (const [k, v] of Object.entries(selectedSku.attributes)) {
-          specArr.push(`${k === 'size' ? 'Kích cỡ' : k}: ${v}`);
+  const performAddToCart = useCallback(
+    (targetQty: number) => {
+      if (!selectedSku) return false;
+      try {
+        const raw = localStorage.getItem('rfq-cart');
+        const cart: Array<any> = raw ? JSON.parse(raw) : [];
+        const specArr: string[] = [];
+        if (selectedSku.attributes) {
+          for (const [k, v] of Object.entries(selectedSku.attributes)) {
+            specArr.push(`${k === 'size' ? 'Kích cỡ' : k}: ${v}`);
+          }
         }
-      }
-      const specString = specArr.join(', ');
+        const specString = specArr.join(', ');
 
-      const existingIdx = cart.findIndex((item) => item.sku === selectedSku.sku_code);
-      if (existingIdx > -1) {
-        cart[existingIdx].quantity = targetQty;
-        cart[existingIdx].qty = targetQty;
-        cart[existingIdx].product_name = productName;
-        cart[existingIdx].spec = specString;
-        cart[existingIdx].unit = unitLabel;
-      } else {
-        cart.push({
-          sku: selectedSku.sku_code,
-          product_name: productName,
-          spec: specString,
-          unit: unitLabel,
-          quantity: targetQty,
-          qty: targetQty,
-          note: ''
-        });
+        const existingIdx = cart.findIndex((item) => item.sku === selectedSku.sku_code);
+        if (existingIdx > -1) {
+          cart[existingIdx].quantity = targetQty;
+          cart[existingIdx].qty = targetQty;
+          cart[existingIdx].product_name = productName;
+          cart[existingIdx].spec = specString;
+          cart[existingIdx].unit = unitLabel;
+        } else {
+          cart.push({
+            sku: selectedSku.sku_code,
+            product_name: productName,
+            spec: specString,
+            unit: unitLabel,
+            quantity: targetQty,
+            qty: targetQty,
+            note: ''
+          });
+        }
+        localStorage.setItem('rfq-cart', JSON.stringify(cart));
+        window.dispatchEvent(new Event('rfq-cart-changed'));
+        return true;
+      } catch (err) {
+        console.error('Failed to add to cart:', err);
+        return false;
       }
-      localStorage.setItem('rfq-cart', JSON.stringify(cart));
-      window.dispatchEvent(new Event('rfq-cart-changed'));
-      return true;
-    } catch (err) {
-      console.error('Failed to add to cart:', err);
-      return false;
-    }
-  }, [selectedSku, productName, unitLabel]);
+    },
+    [selectedSku, productName, unitLabel]
+  );
 
   const handleAddToCart = useCallback(() => {
     const success = performAddToCart(quantity);
@@ -219,9 +231,7 @@ export default function ProductDetailClient({
           <span className="text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight">
             {formatPrice(minTierPrice)} - {formatPrice(maxTierPrice)}
           </span>
-          <span className="text-base font-bold text-slate-600">
-            / {unitLabel}
-          </span>
+          <span className="text-base font-bold text-slate-600">/ {unitLabel}</span>
         </div>
         <p className="text-xs text-slate-500 font-medium">
           {locale === 'vi' ? 'Chưa bao gồm thuế (8% VAT)' : 'Tax excluded (8% VAT)'}
@@ -241,7 +251,9 @@ export default function ProductDetailClient({
         <div key={attr.name} className="space-y-2.5">
           <p className="text-xs font-bold text-slate-800">
             {attr.name === 'size'
-              ? (locale === 'vi' ? 'Trọng lượng cuộn (Kích cỡ)' : 'Size / Weight')
+              ? locale === 'vi'
+                ? 'Trọng lượng cuộn (Kích cỡ)'
+                : 'Size / Weight'
               : attr.name}
           </p>
           <div className="flex flex-wrap gap-2.5">
@@ -253,7 +265,7 @@ export default function ProductDetailClient({
                   type="button"
                   onClick={() => handleSelectAttribute(attr.name, val)}
                   className={cn(
-                    'px-4 py-2 rounded-lg text-xs font-bold border transition-all flex items-center justify-center cursor-pointer',
+                    'px-4 py-2 rounded-lg text-xs font-bold border transition-[color,background-color,border-color,box-shadow,opacity,transform] flex items-center justify-center cursor-pointer',
                     isSelected
                       ? 'border-blue-600 bg-blue-50/80 text-blue-600 ring-1 ring-blue-600 shadow-xs'
                       : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300'
@@ -271,7 +283,9 @@ export default function ProductDetailClient({
       <div className="space-y-2.5">
         <div className="flex items-center justify-between">
           <p className="text-xs font-bold text-slate-800">
-            {locale === 'vi' ? `Số lượng đặt (MOQ: 500 ${unitLabel})` : `Order Qty (MOQ: 500 ${unitLabel})`}
+            {locale === 'vi'
+              ? `Số lượng đặt (MOQ: 500 ${unitLabel})`
+              : `Order Qty (MOQ: 500 ${unitLabel})`}
           </p>
         </div>
         <div className="flex items-center w-full bg-white rounded-xl border border-slate-200 overflow-hidden shadow-2xs">
@@ -312,12 +326,16 @@ export default function ProductDetailClient({
                 className={cn(
                   'flex justify-between items-center px-4 py-3 text-xs transition-colors',
                   isActive
-                    ? 'bg-blue-50/90 font-bold text-blue-700 border-l-4 border-l-blue-600'
+                    ? 'bg-blue-50/90 font-bold text-blue-700 ring-1 ring-inset ring-blue-200'
                     : 'text-slate-700 bg-white'
                 )}
               >
-                <span className="font-semibold">{tier.label} {unitLabel}</span>
-                <span className={isActive ? 'text-blue-700 font-extrabold' : 'text-slate-900 font-bold'}>
+                <span className="font-semibold">
+                  {tier.label} {unitLabel}
+                </span>
+                <span
+                  className={isActive ? 'text-blue-700 font-extrabold' : 'text-slate-900 font-bold'}
+                >
                   {formatPrice(tier.price)}/{unitLabel}
                 </span>
               </div>
@@ -333,7 +351,7 @@ export default function ProductDetailClient({
           onClick={handleRequestQuote}
           disabled={!selectedSku}
           className={cn(
-            'w-full flex items-center justify-center h-[48px] rounded-lg font-bold text-sm text-[#1868DF] border border-[#1868DF] bg-white hover:bg-blue-50/60 transition-colors cursor-pointer shadow-2xs',
+            'w-full flex items-center justify-center h-[48px] rounded-lg font-bold text-sm text-brand border border-brand bg-white hover:bg-blue-50/60 transition-colors cursor-pointer shadow-2xs',
             !selectedSku && 'opacity-50 cursor-not-allowed'
           )}
         >
@@ -347,15 +365,25 @@ export default function ProductDetailClient({
       <div className="space-y-3 pt-1 text-xs text-slate-600 font-medium">
         <div className="flex items-center gap-2.5">
           <Settings2 className="h-4 w-4 text-slate-500 shrink-0" />
-          <span>{locale === 'vi' ? 'Sản xuất theo yêu cầu doanh nghiệp' : 'Custom manufacturing upon request'}</span>
+          <span>
+            {locale === 'vi'
+              ? 'Sản xuất theo yêu cầu doanh nghiệp'
+              : 'Custom manufacturing upon request'}
+          </span>
         </div>
         <div className="flex items-center gap-2.5">
           <Truck className="h-4 w-4 text-slate-500 shrink-0" />
-          <span>{locale === 'vi' ? 'Thời gian giao hàng: 3-5 ngày' : 'Delivery: 3-5 business days'}</span>
+          <span>
+            {locale === 'vi' ? 'Thời gian giao hàng: 3-5 ngày' : 'Delivery: 3-5 business days'}
+          </span>
         </div>
         <div className="flex items-center gap-2.5">
           <MapPin className="h-4 w-4 text-slate-500 shrink-0" />
-          <span>{locale === 'vi' ? 'Xuất xưởng: Hub Hà Nam, Việt Nam' : 'Warehouse: Ha Nam Hub, Vietnam'}</span>
+          <span>
+            {locale === 'vi'
+              ? 'Xuất xưởng: Hub Hà Nam, Việt Nam'
+              : 'Warehouse: Ha Nam Hub, Vietnam'}
+          </span>
         </div>
       </div>
     </div>

@@ -19,7 +19,9 @@ export function AuthTabs() {
   const t = useTranslations('auth');
   const pathname = usePathname();
 
-  const isStandalone = STANDALONE_PREFIXES.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  const isStandalone = STANDALONE_PREFIXES.some(
+    (p) => pathname === p || pathname.startsWith(`${p}/`)
+  );
   if (isStandalone) return null;
 
   const tabs = [

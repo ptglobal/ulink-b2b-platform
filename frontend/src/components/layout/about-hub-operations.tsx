@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { Building2, MonitorSmartphone, Truck, UserRound } from 'lucide-react';
+import { Building2, MonitorSmartphone, Truck, UserRound } from '@/components/icons';
 import { ASSETS } from '@/lib/assets';
 
 export async function AboutHubOperations() {
@@ -43,7 +43,7 @@ export async function AboutHubOperations() {
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_auto_320px]">
       {/* Operations grid */}
       <div>
-        <h2 className="mb-5 text-[12px] font-bold tracking-wide text-[#1A2D49]">
+        <h2 className="mb-5 text-[12px] font-bold tracking-wide text-foreground">
           {t('operations.title')}
         </h2>
         <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-2 xl:grid-cols-4">
@@ -52,8 +52,10 @@ export async function AboutHubOperations() {
               <div className="flex flex-1 items-start gap-2.5">
                 <span className="mt-0.5 text-brand">{card.icon}</span>
                 <div>
-                  <p className="text-[11px] font-bold leading-tight text-[#1A2D49]">{card.title}</p>
-                  <p className="mt-1.5 text-[10px] leading-relaxed text-[#141414]/60">{card.desc}</p>
+                  <p className="text-[11px] font-bold leading-tight text-foreground">{card.title}</p>
+                  <p className="mt-1.5 text-[10px] leading-relaxed text-foreground/60">
+                    {card.desc}
+                  </p>
                 </div>
               </div>
               <div className="relative mt-3 h-[103px] w-full overflow-hidden rounded-[0.25rem]">
@@ -71,12 +73,14 @@ export async function AboutHubOperations() {
       </div>
 
       {/* Vertical divider */}
-      <div className="hidden w-px bg-[#B8C0CC] lg:block" />
+      <div className="hidden w-px bg-border lg:block" />
 
       {/* ISO standards */}
       <div>
-        <h2 className="mb-3 text-[12px] font-bold tracking-wide text-[#1A2D49]">{t('iso.title')}</h2>
-        <p className="text-[10px] leading-relaxed text-[#141414]/65">{t('iso.desc')}</p>
+        <h2 className="mb-3 text-[12px] font-bold tracking-wide text-foreground">
+          {t('iso.title')}
+        </h2>
+        <p className="text-[10px] leading-relaxed text-foreground/65">{t('iso.desc')}</p>
 
         <div className="mt-6 grid grid-cols-3 gap-3">
           {isoBadges.map((badge, i) => (
@@ -90,8 +94,8 @@ export async function AboutHubOperations() {
                   className="object-contain"
                 />
               </div>
-              <p className="mt-2 text-[9px] font-bold text-[#1A2D49]">{badge.code}</p>
-              <p className="mt-1 text-[9px] leading-snug text-[#141414]/60">{badge.label}</p>
+              <p className="mt-2 text-[9px] font-bold text-foreground">{badge.code}</p>
+              <p className="mt-1 text-[9px] leading-snug text-foreground/60">{badge.label}</p>
             </div>
           ))}
         </div>

@@ -21,34 +21,46 @@ export async function GET(req: Request) {
     }
 
     // 2. Fetch regional hubs
-    const hubsRes = await proxyToDirectus('/items/regional_hubs?fields=id,name,slug&filter[status][_eq]=published', {
-      method: 'GET',
-      cookieHeader
-    });
+    const hubsRes = await proxyToDirectus(
+      '/items/regional_hubs?fields=id,name,slug&filter[status][_eq]=published',
+      {
+        method: 'GET',
+        cookieHeader
+      }
+    );
     const hubsPayload = hubsRes.ok ? await hubsRes.json() : null;
     const hubsData = hubsPayload?.data || [];
 
     // 3. Fetch industries
-    const industriesRes = await proxyToDirectus('/items/industries?fields=id,name,slug&filter[status][_eq]=published', {
-      method: 'GET',
-      cookieHeader
-    });
+    const industriesRes = await proxyToDirectus(
+      '/items/industries?fields=id,name,slug&filter[status][_eq]=published',
+      {
+        method: 'GET',
+        cookieHeader
+      }
+    );
     const industriesPayload = industriesRes.ok ? await industriesRes.json() : null;
     const industriesData = industriesPayload?.data || [];
 
     // 4. Fetch product SKUs
-    const skusRes = await proxyToDirectus('/items/product_skus?fields=id,sku_code,unit,pack_size&filter[status][_eq]=published', {
-      method: 'GET',
-      cookieHeader
-    });
+    const skusRes = await proxyToDirectus(
+      '/items/product_skus?fields=id,sku_code,unit,pack_size&filter[status][_eq]=published',
+      {
+        method: 'GET',
+        cookieHeader
+      }
+    );
     const skusPayload = skusRes.ok ? await skusRes.json() : null;
     const skusData = skusPayload?.data || [];
 
     // 5. Fetch published products for suggestion cards
-    const productsRes = await proxyToDirectus('/items/products?fields=id,slug,name,hero,translations.languages_code,translations.name,skus.unit&filter[status][_eq]=published&limit=8', {
-      method: 'GET',
-      cookieHeader
-    });
+    const productsRes = await proxyToDirectus(
+      '/items/products?fields=id,slug,name,hero,translations.languages_code,translations.name,skus.unit&filter[status][_eq]=published&limit=8',
+      {
+        method: 'GET',
+        cookieHeader
+      }
+    );
     const productsPayload = productsRes.ok ? await productsRes.json() : null;
     const productsData = productsPayload?.data || [];
 

@@ -1,79 +1,76 @@
-import Image from 'next/image';
-import { MapPin, Users, TrendingUp, Award, Clock, HeartHandshake } from 'lucide-react';
+import { Award, Clock, HeartHandshake, TrendingUp, Users } from '@/components/icons';
+import { BrandedMedia } from '@/components/media/branded-media';
+import { ASSETS } from '@/lib/assets';
+import type { ContentMedia } from '@/lib/directus';
 
-const stats = [
-  { value: '100+', label: 'Nhân sự tài năng', icon: Users },
-  { value: '15+', label: 'Năm kinh nghiệm', icon: Clock },
-  { value: '35+', label: 'Đối tác lớn', icon: Award },
-  { value: '98%', label: 'Tỷ lệ gắn bó', icon: HeartHandshake },
-];
+const content = {
+  vi: {
+    label: 'Phát triển năng lực công nghiệp',
+    title: 'Học từ vận hành thực tế. Tạo ảnh hưởng có thể đo lường.',
+    description:
+      'ULink xây dựng đội ngũ liên chức năng, nơi kiến thức vật liệu, dữ liệu và năng lực thực thi cùng tạo nên chất lượng phục vụ khách hàng doanh nghiệp.',
+    stats: ['Nhân sự chuyên môn', 'Năm kinh nghiệm', 'Đối tác chiến lược', 'Tỷ lệ gắn bó']
+  },
+  en: {
+    label: 'Industrial capability development',
+    title: 'Learn from real operations. Create measurable impact.',
+    description:
+      'ULink develops cross-functional teams where material knowledge, data, and execution come together for enterprise customers.',
+    stats: ['Specialists', 'Years of experience', 'Strategic partners', 'Team retention']
+  },
+  ja: {
+    label: '産業オペレーション人材の育成',
+    title: '実務から学び、測定できる成果を生み出す。',
+    description:
+      'ULink は資材知識、データ、実行力を結び、法人顧客への価値を高める部門横断チームを育成します。',
+    stats: ['専門人材', '業界経験', '戦略パートナー', '定着率']
+  }
+} as const;
 
-export function CareersHero() {
+const values = ['100+', '15+', '35+', '98%'];
+const icons = [Users, Clock, Award, HeartHandshake];
+
+export function CareersHero({ locale, media }: { locale: string; media?: ContentMedia | null }) {
+  const language = locale === 'en' || locale === 'ja' ? locale : 'vi';
+  const copy = content[language];
+  const image = media ?? {
+    path: ASSETS.brand.careersTraining,
+    role: 'careers.hero.operational-mentoring',
+    alt: 'Chuyên gia vận hành ULink hướng dẫn nhân sự trẻ kiểm tra vật tư và quét mã tại kho'
+  };
+
   return (
-    <section className="py-8 lg:py-12">
-      <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-12">
-        {/* Left Column: Headline & Quick Props */}
-        <div className="lg:col-span-6 flex flex-col gap-4">
-          <span className="inline-flex w-fit items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-700/10">
-            TÌM KIẾM NHÂN TÀI
-          </span>
-          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl lg:text-5xl leading-tight">
-            Kiến tạo giá trị khác biệt. Phát triển bền vững.
+    <section className="py-10 lg:py-16">
+      <div className="grid border-y border-border lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)]">
+        <div className="flex flex-col justify-center bg-card p-7 sm:p-10 lg:p-14">
+          <TrendingUp className="h-8 w-8 text-brand" aria-hidden="true" />
+          <p className="mt-8 text-sm font-semibold text-brand">{copy.label}</p>
+          <h1 className="mt-4 max-w-[15ch] text-4xl font-normal leading-[1.08] text-foreground sm:text-5xl">
+            {copy.title}
           </h1>
-          <p className="text-base leading-relaxed text-slate-600 sm:text-lg">
-            Tại ULink B2B Platform, chúng tôi xây dựng một môi trường làm việc cởi mở, sáng tạo, nơi mỗi cá nhân đều được trao quyền bứt phá và tạo ra giá trị thực sự cho chuỗi cung ứng công nghiệp Việt Nam.
-          </p>
-
-          <div className="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-              <MapPin className="h-4 w-4 text-blue-600 shrink-0" />
-              <span>Vị trí thuận lợi</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-              <Users className="h-4 w-4 text-blue-600 shrink-0" />
-              <span>Môi trường mở</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-              <TrendingUp className="h-4 w-4 text-blue-600 shrink-0" />
-              <span>Phát triển lâu dài</span>
-            </div>
-          </div>
+          <p className="mt-6 max-w-[60ch] text-base leading-8 text-muted-foreground">{copy.description}</p>
         </div>
-
-        {/* Right Column: Hero Image */}
-        <div className="lg:col-span-6">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl shadow-xl ring-1 ring-slate-900/10">
-            <Image
-              src="/images/about/op-team.webp"
-              alt="Đội ngũ nhân sự ULink B2B Platform"
-              fill
-              className="object-cover"
-              priority
-            />
-          </div>
-        </div>
+        <BrandedMedia
+          src={image.path}
+          alt={image.alt}
+          className="min-h-[26rem] lg:min-h-[36rem]"
+          sizes="(max-width: 1024px) 100vw, 56vw"
+          priority
+        />
       </div>
 
-      {/* Impression Metrics Bar */}
-      <div className="mt-12 grid grid-cols-2 gap-4 sm:grid-cols-4">
-        {stats.map((s, idx) => {
-          const Icon = s.icon;
+      <dl className="grid border-b border-border sm:grid-cols-2 lg:grid-cols-4">
+        {values.map((value, index) => {
+          const Icon = icons[index];
           return (
-            <div
-              key={idx}
-              className="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm border border-slate-100"
-            >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
-                <Icon className="h-6 w-6" />
-              </div>
-              <div>
-                <span className="block text-2xl font-extrabold text-slate-900">{s.value}</span>
-                <span className="text-xs font-medium text-slate-500">{s.label}</span>
-              </div>
+            <div key={copy.stats[index]} className="min-h-36 border-b border-border p-5 sm:border-r lg:border-b-0 last:sm:border-r-0">
+              <Icon className="h-5 w-5 text-brand" aria-hidden="true" />
+              <dd className="mt-5 font-mono text-3xl font-normal text-foreground">{value}</dd>
+              <dt className="mt-2 text-sm text-muted-foreground">{copy.stats[index]}</dt>
             </div>
           );
         })}
-      </div>
+      </dl>
     </section>
   );
 }

@@ -93,6 +93,27 @@ export function buildPermissionDefs() {
     },
     {
       policy: FRONTEND_SERVICE_POLICY_ID,
+      collection: 'event_registrations',
+      action: 'create',
+      permissions: {},
+      fields: [
+        'reference_code',
+        'event_slug',
+        'event_title',
+        'full_name',
+        'email',
+        'phone',
+        'company',
+        'job_title',
+        'discovery_source',
+        'note',
+        'consent',
+        'registration_status',
+        'payment_status'
+      ]
+    },
+    {
+      policy: FRONTEND_SERVICE_POLICY_ID,
       collection: 'rfq_requests',
       action: 'create',
       permissions: {},
@@ -516,6 +537,18 @@ export function buildPermissionDefs() {
       permissions: {},
       fields: ['*']
     });
+  }
+
+  for (const policy of [EDITOR_POLICY_ID, SALES_POLICY_ID]) {
+    for (const action of ['create', 'read', 'update', 'delete']) {
+      permissions.push({
+        policy,
+        collection: 'event_registrations',
+        action,
+        permissions: {},
+        fields: ['*']
+      });
+    }
   }
 
   // Editor & Sales have full CRUD access to newsletter subscriptions

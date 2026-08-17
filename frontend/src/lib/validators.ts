@@ -6,7 +6,8 @@ import { z } from 'zod';
 //   - directus/extensions/customer-onboarding-endpoint/src/service.js
 //   - directus/extensions/password-change-endpoint/src/index.js
 // Keep the two in sync.
-export const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+export const PASSWORD_REGEX =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 export const PASSWORD_HINT = 'auth.validation.passwordPolicy';
 
 // ─── Auth ────────────────────────────────────────────────────────────────────
@@ -29,10 +30,7 @@ export const registerSchema = z
       .string()
       .min(1, 'required')
       .regex(/^\d{6,40}$/, 'invalid_phone'),
-    password: z
-      .string()
-      .min(8, 'too_short')
-      .regex(PASSWORD_REGEX, 'password_policy'),
+    password: z.string().min(8, 'too_short').regex(PASSWORD_REGEX, 'password_policy'),
     confirm_password: z.string().min(1, 'required'),
     // The user must explicitly accept the terms of service. The agree_at
     // timestamp travels with the registration so the backend can stamp a
@@ -84,10 +82,7 @@ export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 export const changePasswordInSessionSchema = z
   .object({
     current_password: z.string().min(1, 'required'),
-    new_password: z
-      .string()
-      .min(8, 'too_short')
-      .regex(PASSWORD_REGEX, 'password_policy'),
+    new_password: z.string().min(8, 'too_short').regex(PASSWORD_REGEX, 'password_policy'),
     confirm_new_password: z.string().min(1, 'required')
   })
   .refine((v) => v.new_password === v.confirm_new_password, {
@@ -110,10 +105,7 @@ export const changePasswordViaTokenSchema = z
   .object({
     token: z.string().min(1, 'required'),
     current_password: z.string().min(1, 'required'),
-    new_password: z
-      .string()
-      .min(8, 'too_short')
-      .regex(PASSWORD_REGEX, 'password_policy'),
+    new_password: z.string().min(8, 'too_short').regex(PASSWORD_REGEX, 'password_policy'),
     confirm_new_password: z.string().min(1, 'required')
   })
   .refine((v) => v.new_password === v.confirm_new_password, {

@@ -1,7 +1,21 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { Search, Users, Shield, Plus, Edit2, Trash2, Mail, User, ShieldAlert, Lock, X, AlertTriangle } from 'lucide-react';
+import toast from 'react-hot-toast';
+import {
+  Search,
+  Users,
+  Shield,
+  Plus,
+  Edit2,
+  Trash2,
+  Mail,
+  User,
+  ShieldAlert,
+  Lock,
+  X,
+  AlertTriangle
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { saveUserAction, deleteUserAction } from '@/app/[locale]/admin/users/actions';
 
@@ -34,6 +48,7 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
   // CRUD Form State
   const [formOpen, setFormOpen] = useState(false);
   const [activeUser, setActiveUser] = useState<any | null>(null);
+  const [formError, setFormError] = useState('');
 
   // Filter users
   const filteredUsers = users.filter((u) => {
@@ -57,6 +72,7 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
       status: 'active'
     });
     setFormOpen(true);
+    setFormError('');
   };
 
   const handleOpenEditForm = (u: UserItem) => {
@@ -70,17 +86,20 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
       status: u.status
     });
     setFormOpen(true);
+    setFormError('');
   };
 
   const handleDeleteUser = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa tài khoản này không? Thao tác này không thể hoàn tác.')) return;
+    if (!confirm('Bạn có chắc chắn muốn xóa tài khoản này không? Thao tác này không thể hoàn tác.'))
+      return;
 
     startTransition(async () => {
       const res = await deleteUserAction(id);
       if (res.success) {
         setUsers((prev) => prev.filter((u) => u.id !== id));
+        toast.success('Đã xóa tài khoản người dùng thành công.');
       } else {
-        alert('Không thể xóa tài khoản: ' + res.error);
+        toast.error('Không thể xóa tài khoản: ' + res.error);
       }
     });
   };
@@ -89,13 +108,19 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
     e.preventDefault();
     if (!activeUser) return;
 
-    if (!activeUser.first_name || !activeUser.last_name || !activeUser.email || !activeUser.roleId) {
-      alert('Vui lòng nhập đầy đủ các thông tin bắt buộc.');
+    setFormError('');
+    if (
+      !activeUser.first_name ||
+      !activeUser.last_name ||
+      !activeUser.email ||
+      !activeUser.roleId
+    ) {
+      setFormError('Vui lòng nhập đầy đủ các thông tin bắt buộc.');
       return;
     }
 
     if (!activeUser.id && !activeUser.password) {
-      alert('Vui lòng nhập mật khẩu cho tài khoản mới.');
+      setFormError('Vui lòng nhập mật khẩu cho tài khoản mới.');
       return;
     }
 
@@ -113,9 +138,10 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
       if (res.success) {
         setFormOpen(false);
         setActiveUser(null);
+        setFormError('');
         window.location.reload();
       } else {
-        alert('Thao tác thất bại: ' + res.error);
+        setFormError(res.error || 'Thao tác thất bại. Vui lòng thử lại.');
       }
     });
   };
@@ -128,11 +154,12 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
           <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
             Hệ thống phân quyền & Bảo mật
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
             Quản lý Tài khoản (Users)
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
-            Xem, tạo mới và phân quyền các nhóm tài khoản Administrator, Editor, Salesmen và Khách hàng B2B truy cập hệ thống.
+            Xem, tạo mới và phân quyền các nhóm tài khoản Administrator, Editor, Salesmen và Khách
+            hàng B2B truy cập hệ thống.
           </p>
         </div>
 
@@ -197,7 +224,7 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
         {filteredUsers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Users className="h-12 w-12 text-slate-300 mb-3" />
-            <span className="text-sm font-extrabold text-[#0F1E36]">
+            <span className="text-sm font-extrabold text-foreground">
               Không tìm thấy người dùng nào
             </span>
             <span className="text-xs text-slate-400 mt-1">
@@ -222,7 +249,7 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
                     <tr key={u.id} className="hover:bg-slate-50/30 transition-colors">
                       {/* Name */}
                       <td className="px-6 py-4">
-                        <span className="font-extrabold text-[#0F1E36] leading-tight">
+                        <span className="font-extrabold text-foreground leading-tight">
                           {`${u.first_name || ''} ${u.last_name || ''}`.trim() || 'No Name'}
                         </span>
                       </td>
@@ -243,15 +270,21 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
                       <td className="px-6 py-4">
                         <span
                           className={cn(
-                            "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold",
+                            'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold',
                             u.status === 'active'
-                              ? "bg-emerald-50 text-emerald-700"
+                              ? 'bg-emerald-50 text-emerald-700'
                               : u.status === 'invited'
-                              ? "bg-blue-50 text-blue-700"
-                              : "bg-rose-50 text-rose-700"
+                                ? 'bg-blue-50 text-blue-700'
+                                : 'bg-rose-50 text-rose-700'
                           )}
                         >
-                          {u.status === 'active' ? 'Hoạt động' : u.status === 'suspended' ? 'Đã khóa' : u.status === 'invited' ? 'Đang mời' : u.status}
+                          {u.status === 'active'
+                            ? 'Hoạt động'
+                            : u.status === 'suspended'
+                              ? 'Đã khóa'
+                              : u.status === 'invited'
+                                ? 'Đang mời'
+                                : u.status}
                         </span>
                       </td>
 
@@ -261,7 +294,7 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
                           <button
                             type="button"
                             onClick={() => handleOpenEditForm(u)}
-                            className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-[#0F1E36] transition-colors"
+                            className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-foreground transition-colors"
                             title="Sửa tài khoản"
                           >
                             <Edit2 className="h-4 w-4" />
@@ -292,7 +325,7 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div>
-                <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36] flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-extrabold text-foreground flex items-center gap-2">
                   <Shield className="h-5 w-5 text-blue-500" />
                   {activeUser.id ? 'Cập nhật tài khoản' : 'Thêm tài khoản mới'}
                 </h2>
@@ -304,6 +337,7 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
                 onClick={() => {
                   setFormOpen(false);
                   setActiveUser(null);
+                  setFormError('');
                 }}
                 className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-655"
               >
@@ -314,11 +348,18 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
             {/* Modal Form Body */}
             <form onSubmit={handleFormSubmit} className="flex flex-col">
               <div className="p-6 flex flex-col gap-4 bg-white">
-                
+                {formError && (
+                  <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200">
+                    <AlertTriangle className="h-4 w-4 shrink-0" />
+                    <span>{formError}</span>
+                  </div>
+                )}
                 {/* First Name & Last Name */}
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Họ *</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Họ *
+                    </label>
                     <input
                       type="text"
                       required
@@ -329,7 +370,9 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Tên *</label>
+                    <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                      Tên *
+                    </label>
                     <input
                       type="text"
                       required
@@ -368,7 +411,11 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
                     required={!activeUser.id}
                     value={activeUser.password || ''}
                     onChange={(e) => setActiveUser({ ...activeUser, password: e.target.value })}
-                    placeholder={activeUser.id ? 'Để trống nếu không muốn đổi mật khẩu...' : 'Nhập mật khẩu an toàn...'}
+                    placeholder={
+                      activeUser.id
+                        ? 'Để trống nếu không muốn đổi mật khẩu...'
+                        : 'Nhập mật khẩu an toàn...'
+                    }
                     className="px-3.5 py-2.5 rounded-xl border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none focus:ring-1 focus:ring-blue-650 focus:border-blue-650 shadow-sm"
                   />
                 </div>
@@ -396,7 +443,9 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
 
                 {/* Status dropdown */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Trạng thái tài khoản</label>
+                  <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                    Trạng thái tài khoản
+                  </label>
                   <select
                     value={activeUser.status || 'active'}
                     onChange={(e) => setActiveUser({ ...activeUser, status: e.target.value })}
@@ -408,7 +457,6 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
                     <option value="draft">Bản nháp (Draft)</option>
                   </select>
                 </div>
-
               </div>
 
               {/* Submit Buttons */}
@@ -435,7 +483,6 @@ export function UsersClient({ initialUsers, roles, error }: UsersClientProps) {
           </div>
         </div>
       )}
-
     </div>
   );
 }

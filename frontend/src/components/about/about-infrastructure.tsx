@@ -1,64 +1,72 @@
-import Image from 'next/image';
+import { BrandedMedia } from '@/components/media/branded-media';
+import { ASSETS } from '@/lib/assets';
+import type { ContentMedia } from '@/lib/directus';
 
-const items = [
+const defaults = [
   {
-    image: '/images/about/op-wms.webp',
-    title: 'Hệ thống kho WMS',
-    desc: 'Quản lý kho hàng tự động, theo dõi tồn kho theo thời gian thực chuẩn xác.',
+    path: ASSETS.brand.operations.wms,
+    role: 'about.operations.wms-control',
+    alt: 'Đội vận hành ULink giám sát tồn kho và lịch giao hàng trên hệ thống WMS',
+    title: 'Điều hành kho bằng dữ liệu',
+    description: 'Tồn kho, ngoại lệ và lịch giao được theo dõi tại một điểm kiểm soát.'
   },
   {
-    image: '/images/about/op-warehouse.webp',
-    title: 'Quản lý đơn hàng OMS',
-    desc: 'Xử lý đơn hàng thông minh, tối ưu hóa quy trình từ khâu đặt hàng đến xuất kho.',
+    path: ASSETS.brand.operations.inbound,
+    role: 'about.operations.inbound-quality',
+    alt: 'Nhân sự ULink kiểm tra vật tư tại khu vực tiếp nhận hàng',
+    title: 'Kiểm soát đầu vào',
+    description: 'Vật tư được đối chiếu mã hàng, tình trạng bao gói và hồ sơ trước khi nhập kho.'
   },
   {
-    image: '/images/about/op-truck.webp',
-    title: 'Mạng lưới Vận tải',
-    desc: 'Đội xe vận chuyển chuyên dụng, đảm bảo giao hàng an toàn, đúng hẹn.',
+    path: ASSETS.brand.operations.dispatch,
+    role: 'about.operations.regional-dispatch',
+    alt: 'Đội ULink kiểm tra tải trọng và đai kiện trước khi xe rời trung tâm phân phối',
+    title: 'Điều phối giao nhận vùng',
+    description: 'Lô hàng được cố định, xác nhận và bàn giao theo kế hoạch vận tải.'
   },
   {
-    image: '/images/about/op-team.webp',
-    title: 'Đội ngũ chuyên nghiệp',
-    desc: 'Kỹ sư & chuyên gia tư vấn giải pháp vật tư kỹ thuật chuyên sâu cho nhà máy.',
-  },
+    path: ASSETS.brand.operations.team,
+    role: 'about.operations.technical-team',
+    alt: 'Nhóm kỹ thuật và mua hàng ULink rà soát mẫu vật tư cùng kế hoạch cung ứng',
+    title: 'Đội ngũ kỹ thuật liên chức năng',
+    description: 'Kỹ thuật, mua hàng và vận hành cùng xác minh yêu cầu trước khi chốt phương án.'
+  }
 ];
 
-export function AboutInfrastructure() {
-  return (
-    <section className="py-8 lg:py-12">
-      <div className="flex flex-col items-center text-center mb-8">
-        <span className="inline-flex items-center rounded-full bg-blue-50 px-3.5 py-1 text-xs font-semibold text-blue-700 ring-1 ring-inset ring-blue-700/10 mb-2">
-          Vận hành thông minh
-        </span>
-        <h2 className="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">
-          Hạ tầng kỹ thuật & Hệ thống tối ưu
-        </h2>
-      </div>
+export function AboutInfrastructure({ media }: { media?: ContentMedia[] }) {
+  const items = defaults.map((item, index) => ({ ...item, ...(media?.[index] ?? {}) }));
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((item, index) => (
-          <div
-            key={index}
-            className="group flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm transition-all hover:shadow-md hover:-translate-y-1"
-          >
-            <div className="relative aspect-[4/3] w-full overflow-hidden bg-slate-100">
-              <Image
-                src={item.image}
-                alt={item.title}
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-105"
+  return (
+    <section className="py-12 lg:py-20">
+      <div className="grid gap-8 border-t border-border pt-8 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.75fr)] lg:gap-16">
+        <div>
+          <p className="text-sm font-semibold text-brand">Hệ thống vận hành ULink</p>
+          <h2 className="mt-4 max-w-[15ch] text-3xl font-normal leading-tight text-foreground sm:text-4xl">
+            Hạ tầng được tổ chức quanh khả năng kiểm soát
+          </h2>
+          <p className="mt-5 max-w-[48ch] text-sm leading-7 text-muted-foreground">
+            Mỗi điểm chạm từ nhận hàng, lưu kho đến giao vận đều có người phụ trách và bằng chứng vận hành rõ ràng.
+          </p>
+        </div>
+
+        <div className="grid gap-px bg-border sm:grid-cols-2">
+          {items.map((item) => (
+            <article key={item.role} className="bg-card">
+              <BrandedMedia
+                src={item.path}
+                alt={item.alt}
+                className="aspect-[16/10] w-full"
+                imageClassName="transition-transform duration-300 ease-out group-hover:scale-[1.02]"
+                sizes="(max-width: 1024px) 100vw, 34vw"
+                compactBrand
               />
-            </div>
-            <div className="flex flex-col p-5">
-              <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-600 transition-colors">
-                {item.title}
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">
-                {item.desc}
-              </p>
-            </div>
-          </div>
-        ))}
+              <div className="p-5 sm:p-6">
+                <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
+                <p className="mt-3 text-sm leading-6 text-muted-foreground">{item.description}</p>
+              </div>
+            </article>
+          ))}
+        </div>
       </div>
     </section>
   );

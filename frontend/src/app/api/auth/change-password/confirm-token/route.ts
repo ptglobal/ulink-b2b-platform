@@ -50,15 +50,12 @@ export async function POST(req: Request) {
       // 1. Peek the token. Token email is the source of truth.
       let tokenEmail: string | null = null;
       try {
-        const peekRes = await fetch(
-          `${DIRECTUS_URL}/password-reset-request/peek`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ token: data.token }),
-            cache: 'no-store'
-          }
-        );
+        const peekRes = await fetch(`${DIRECTUS_URL}/password-reset-request/peek`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: data.token }),
+          cache: 'no-store'
+        });
         if (peekRes.ok) {
           const peekJson = (await peekRes.json()) as {
             data?: { valid?: boolean; email?: string };
@@ -259,10 +256,8 @@ export async function POST(req: Request) {
       }
 
       if (!res.ok) {
-        const code =
-          body.error ?? body.errors?.[0]?.extensions?.code ?? 'reset_failed';
-        const message =
-          body.message ?? body.errors?.[0]?.message ?? 'Password change failed.';
+        const code = body.error ?? body.errors?.[0]?.extensions?.code ?? 'reset_failed';
+        const message = body.message ?? body.errors?.[0]?.message ?? 'Password change failed.';
         const status =
           code === 'invalid_token' || code === 'missing_fields'
             ? 400

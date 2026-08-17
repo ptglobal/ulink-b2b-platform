@@ -15,8 +15,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -57,7 +59,15 @@ export default async function AdminUsersPage({ params }: PageProps) {
     const [usersRes, rolesRes] = await Promise.all([
       client.request(
         readUsers({
-          fields: ['id', 'first_name', 'last_name', 'email', 'status', 'role.id', 'role.name'] as any,
+          fields: [
+            'id',
+            'first_name',
+            'last_name',
+            'email',
+            'status',
+            'role.id',
+            'role.name'
+          ] as any,
           limit: -1
         })
       ),
@@ -82,11 +92,7 @@ export default async function AdminUsersPage({ params }: PageProps) {
 
   return (
     <div className="w-full px-4 py-8 sm:px-8 lg:px-12">
-      <UsersClient
-        initialUsers={users}
-        roles={roles}
-        error={error}
-      />
+      <UsersClient initialUsers={users} roles={roles} error={error} />
     </div>
   );
 }

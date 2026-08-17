@@ -1,11 +1,8 @@
 import Image from 'next/image';
-import { ArrowLeft, ArrowRight, Calendar, Clock, User, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, Clock, User, CheckCircle2 } from '@/components/icons';
 import { setRequestLocale } from 'next-intl/server';
 import { Link, redirect } from '@/i18n/navigation';
-import {
-  ABOUT_NEWS_ARTICLES,
-  getAboutNewsArticleById,
-} from '@/components/about/about-news-data';
+import { ABOUT_NEWS_ARTICLES, getAboutNewsArticleById } from '@/components/about/about-news-data';
 
 interface PageProps {
   params: {

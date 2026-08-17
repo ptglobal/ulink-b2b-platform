@@ -72,7 +72,11 @@ export async function POST(req: Request) {
 
     if (!onboardRes.ok) {
       let body: DirectusErrorBody | null = null;
-      try { body = (await onboardRes.json()) as DirectusErrorBody; } catch { /* not JSON */ }
+      try {
+        body = (await onboardRes.json()) as DirectusErrorBody;
+      } catch {
+        /* not JSON */
+      }
       const message = body?.message ?? body?.error ?? 'Registration failed.';
       // 409 (email taken) and 422 (validation) are the only "expected" failures.
       if (onboardRes.status === 409) {
@@ -90,13 +94,16 @@ export async function POST(req: Request) {
 
     // 2. Account created — return 201 with no session cookie. The frontend
     //    redirects to /login so the user signs in explicitly.
-    return jsonOk({
-      ok: true,
-      data: {
-        user_id: onboard.data?.user_id,
-        customer_id: onboard.data?.customer_id,
-        status: onboard.data?.status ?? 'active'
-      }
-    }, 201);
+    return jsonOk(
+      {
+        ok: true,
+        data: {
+          user_id: onboard.data?.user_id,
+          customer_id: onboard.data?.customer_id,
+          status: onboard.data?.status ?? 'active'
+        }
+      },
+      201
+    );
   });
 }

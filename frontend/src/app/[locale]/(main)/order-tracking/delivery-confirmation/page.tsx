@@ -20,10 +20,7 @@ export default async function DeliveryConfirmationPage({ params: { locale } }: P
 
   return (
     <section className="relative overflow-hidden bg-white min-h-screen py-8 lg:py-12">
-      <DeliveryConfirmationClient
-        user={user}
-        locale={locale}
-      />
+      <DeliveryConfirmationClient user={user} locale={locale} />
     </section>
   );
 }

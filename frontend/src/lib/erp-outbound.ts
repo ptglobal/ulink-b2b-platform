@@ -21,8 +21,23 @@ export type ErpOutboundResult = {
 
 const ENTITY_MEANINGFUL_FIELDS: Record<ErpEntity, Set<string>> = {
   orders: new Set(['status', 'subtotal', 'tax', 'total', 'hub', 'order_items', 'erp_ref']),
-  invoices: new Set(['paid_status', 'amount', 'paid_amount', 'balance', 'due_date', 'order', 'erp_ref']),
-  deliveries: new Set(['status', 'hub', 'scheduled_date', 'delivered_date', 'tracking_ref', 'erp_ref'])
+  invoices: new Set([
+    'paid_status',
+    'amount',
+    'paid_amount',
+    'balance',
+    'due_date',
+    'order',
+    'erp_ref'
+  ]),
+  deliveries: new Set([
+    'status',
+    'hub',
+    'scheduled_date',
+    'delivered_date',
+    'tracking_ref',
+    'erp_ref'
+  ])
 };
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {

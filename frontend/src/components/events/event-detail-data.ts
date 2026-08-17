@@ -113,7 +113,8 @@ const EVENT_DETAILS: Record<string, EventDetail> = {
   },
   'ev-002': {
     slug: 'ev-002',
-    title: 'Hội nghị khách hàng và Triển lãm bao bì ESD cao cấp trong chuỗi cung ứng linh kiện điện tử',
+    title:
+      'Hội nghị khách hàng và Triển lãm bao bì ESD cao cấp trong chuỗi cung ứng linh kiện điện tử',
     summary:
       'Sự kiện dành cho khách hàng điện tử với nội dung về cấu hình bao bì ESD, demo vật tư và chia sẻ case thực tế từ nhà máy.',
     image: '/images/about/hero-warehouse.webp',

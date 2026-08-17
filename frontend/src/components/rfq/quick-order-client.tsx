@@ -21,7 +21,7 @@ import {
   Check,
   Info,
   Package
-} from 'lucide-react';
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import type { AuthUser } from '@/lib/auth-helpers';
 import Image from 'next/image';
@@ -187,7 +187,6 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
     persistCart(newCart);
   }, []);
 
-
   const handleRemoveItem = useCallback((index: number) => {
     setCart((prev) => {
       const updated = prev.filter((_, i) => i !== index);
@@ -199,9 +198,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
   const handleUpdateCartField = useCallback(
     (index: number, field: keyof CartItem, value: string | number) => {
       setCart((prev) => {
-        const updated = prev.map((item, i) =>
-          i === index ? { ...item, [field]: value } : item
-        );
+        const updated = prev.map((item, i) => (i === index ? { ...item, [field]: value } : item));
         persistCart(updated);
         return updated;
       });
@@ -266,8 +263,18 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
     setDraftSavedMsg(true);
     setTimeout(() => setDraftSavedMsg(false), 2000);
   }, [
-    formCompany, formTaxId, formContact, formEmail, formPhone, formAddress,
-    formHub, formIndustry, formDeliveryTime, formPaymentMethod, formOrderFrequency, formMessage
+    formCompany,
+    formTaxId,
+    formContact,
+    formEmail,
+    formPhone,
+    formAddress,
+    formHub,
+    formIndustry,
+    formDeliveryTime,
+    formPaymentMethod,
+    formOrderFrequency,
+    formMessage
   ]);
 
   /* ── submit ── */
@@ -361,10 +368,10 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
       const rfqIdNum = json.data?.id || 8947;
       const formattedRfqCode = `RFQ-2026-${String(rfqIdNum).slice(-4).padStart(4, '0')}A`;
 
-      const industryObj = meta?.industries.find(i => i.slug === formIndustry);
+      const industryObj = meta?.industries.find((i) => i.slug === formIndustry);
       const industryLabel = industryObj ? industryObj.name : formIndustry;
 
-      const productNames = validCartItems.map(item => item.product_name || item.sku).join(' & ');
+      const productNames = validCartItems.map((item) => item.product_name || item.sku).join(' & ');
 
       const now = new Date();
       const timeString = `Hôm nay, lúc ${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')} (GMT+7)`;
@@ -406,21 +413,19 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
     }
   };
 
-  /* ── shared input classes ── */
   const inputCls = (err?: string) =>
     cn(
-      'w-full rounded-lg border  px-3 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand',
-      err ? 'border-rose-500' : 'border-border/80'
+      'h-11 w-full rounded-md border bg-card px-3 text-sm text-foreground outline-none transition-[border-color,box-shadow] focus:border-brand focus:ring-2 focus:ring-brand/15',
+      err ? 'border-destructive' : 'border-input'
     );
 
   const selectCls = (err?: string) =>
     cn(
-      'w-full rounded-lg border  px-3 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand appearance-none',
-      err ? 'border-rose-500' : 'border-border/80'
+      'h-11 w-full appearance-none rounded-md border bg-card px-3 text-sm text-foreground outline-none transition-[border-color,box-shadow] focus:border-brand focus:ring-2 focus:ring-brand/15',
+      err ? 'border-destructive' : 'border-input'
     );
 
-  const sectionHeadCls =
-    'flex items-center gap-2 text-base font-semibold text-foreground border-l-[3px] border-brand pl-3';
+  const sectionHeadCls = 'text-base font-semibold tracking-[-0.015em] text-foreground';
 
   /* ───────────────── RENDER ─────────────────── */
 
@@ -428,7 +433,10 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
     return (
       <div className="w-full max-w-[800px] mx-auto text-center py-6 sm:py-10 space-y-8 text-slate-800 text-left">
         {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-muted-foreground justify-center">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-2 text-[12px] text-muted-foreground justify-center"
+        >
           <Link href="/" className="transition-colors hover:text-brand">
             {t('breadcrumbHome')}
           </Link>
@@ -438,22 +446,25 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
 
         {/* Soft Blue Circle Check Icon */}
         <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-[#EBF5FF] shadow-sm border border-blue-100/40">
-          <Check className="h-6 w-6 text-[#1D4ED8] stroke-[3]" />
+          <Check className="h-6 w-6 text-brand stroke-[3]" />
         </div>
 
         {/* Heading & Subtext */}
         <div className="space-y-4 max-w-2xl mx-auto text-center">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight">
+          <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
             Yêu cầu báo giá đã được gửi thành công!
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed">
-            Cảm ơn Quý khách đã tin tưởng và lựa chọn ULink Industries. Yêu cầu của bạn đã được chuyển tới phòng chuyên môn kỹ thuật. Đội ngũ kỹ sư của chúng tôi đang tiến hành rà soát các yêu cầu kỹ thuật và sẽ liên hệ phản hồi chi tiết tới Quý khách trong vòng 24 giờ tới.
+            Cảm ơn Quý khách đã tin tưởng và lựa chọn ULink Industries. Yêu cầu của bạn đã được
+            chuyển tới phòng chuyên môn kỹ thuật. Đội ngũ kỹ sư của chúng tôi đang tiến hành rà soát
+            các yêu cầu kỹ thuật và sẽ liên hệ phản hồi chi tiết tới Quý khách trong vòng 24 giờ
+            tới.
           </p>
         </div>
 
         {/* Card: Chi tiết yêu cầu */}
         <div className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 w-full max-w-[540px] mx-auto text-left shadow-sm space-y-6">
-          <h3 className="text-sm font-extrabold text-[#0F1E36] border-b border-slate-100 pb-3 uppercase tracking-wider">
+          <h3 className="text-sm font-extrabold text-foreground border-b border-slate-100 pb-3 uppercase tracking-wider">
             Chi tiết yêu cầu của Quý khách
           </h3>
 
@@ -464,7 +475,10 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
             </div>
             <div className="flex justify-between items-center py-3">
               <span className="text-slate-400 font-medium">Doanh nghiệp</span>
-              <span className="font-extrabold text-slate-850 text-right max-w-[240px] truncate" title={submittedRfq.company}>
+              <span
+                className="font-extrabold text-slate-850 text-right max-w-[240px] truncate"
+                title={submittedRfq.company}
+              >
                 {submittedRfq.company}
               </span>
             </div>
@@ -474,7 +488,10 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
             </div>
             <div className="flex justify-between items-center py-3">
               <span className="text-slate-400 font-medium">Sản phẩm quan tâm</span>
-              <span className="font-extrabold text-slate-850 text-right max-w-[285px] truncate" title={submittedRfq.products}>
+              <span
+                className="font-extrabold text-slate-850 text-right max-w-[285px] truncate"
+                title={submittedRfq.products}
+              >
                 {submittedRfq.products}
               </span>
             </div>
@@ -491,7 +508,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
           </div>
 
           {/* Info note */}
-          <div className="bg-blue-50/50 text-[#1E40AF] p-3 rounded-lg text-[11px] font-semibold flex items-start gap-2 border border-blue-100/35">
+          <div className="bg-blue-50/50 text-brand-strong p-3 rounded-lg text-[11px] font-semibold flex items-start gap-2 border border-blue-100/35">
             <Info className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
               Một bản sao chi tiết yêu cầu báo giá đã được gửi tự động tới email liên hệ của bạn.
@@ -508,7 +525,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
               setCreatedRfqId(null);
               setSubmittedRfq(null);
             }}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-6 py-3 text-xs sm:text-sm font-bold text-white hover:bg-brand/95 transition-all shadow hover:scale-[1.01]"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-6 py-3 text-xs sm:text-sm font-bold text-white hover:bg-brand/95 transition-[color,background-color,border-color,box-shadow,opacity,transform] shadow hover:scale-[1.01]"
           >
             {t('createNew')}
             <ArrowRight className="h-4 w-4" />
@@ -518,7 +535,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
         {/* Suggestion block: Có thể Quý khách quan tâm */}
         {meta?.products && meta.products.length > 0 && (
           <div className="w-full text-left pt-12 border-t border-slate-100 mt-12 space-y-6">
-            <h3 className="text-lg sm:text-xl font-bold text-[#0F1E36]">
+            <h3 className="text-lg sm:text-xl font-bold text-foreground">
               Có thể Quý khách quan tâm
             </h3>
 
@@ -526,7 +543,9 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
             <div className="grid gap-4 grid-cols-2 sm:grid-cols-4">
               {meta.products.slice(0, 4).map((product) => {
                 const directusUrl = getDirectusUrl();
-                const imageUrl = product.hero ? `${directusUrl}/assets/${product.hero}?width=200&height=200&fit=cover` : null;
+                const imageUrl = product.hero
+                  ? `${directusUrl}/assets/${product.hero}?width=200&height=200&fit=cover`
+                  : null;
                 const translatedName = getTranslatedName(product, locale);
                 const unit = product.skus?.[0]?.unit || 'cái';
 
@@ -534,7 +553,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                   <Link
                     key={product.id}
                     href={`/solutions/${product.slug}`}
-                    className="bg-white border border-slate-150 p-4 rounded-xl flex flex-col justify-between hover:shadow-md transition-all group"
+                    className="bg-white border border-slate-150 p-4 rounded-xl flex flex-col justify-between hover:shadow-md transition-[color,background-color,border-color,box-shadow,opacity,transform] group"
                   >
                     <div className="space-y-2">
                       <div className="aspect-square bg-slate-50/60 rounded-lg flex items-center justify-center relative overflow-hidden">
@@ -573,7 +592,10 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
   return (
     <div className="w-full space-y-6 text-left">
       {/* Breadcrumbs */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-muted-foreground">
+      <nav
+        aria-label="Breadcrumb"
+        className="flex items-center gap-2 text-[12px] text-muted-foreground"
+      >
         <Link href="/" className="transition-colors hover:text-brand">
           {t('breadcrumbHome')}
         </Link>
@@ -583,13 +605,13 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
 
       {/* Page Header */}
       <div className="max-w-4xl">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-brand">
+        <p className="font-mono text-xs font-medium text-brand">
           {t('subtitle')}
         </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+        <h1 className="mt-3 text-3xl font-semibold tracking-[-0.03em] text-foreground sm:text-4xl">
           {t('title')}
         </h1>
-        <p className="mt-3 text-sm leading-relaxed text-muted-foreground max-w-3xl">
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-muted-foreground sm:text-base">
           {t('description')}
         </p>
       </div>
@@ -607,7 +629,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
             )}
 
             {/* ── Section 1: Business Info ── */}
-            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-5">
+            <div className="space-y-5 rounded-lg border border-border bg-card p-5 sm:p-6">
               <h3 className={sectionHeadCls}>{t('sectionBusiness')}</h3>
 
               {/* Company */}
@@ -618,11 +640,16 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                 <input
                   type="text"
                   value={formCompany}
-                  onChange={(e) => { setFormCompany(e.target.value); setFieldErrors((p) => ({ ...p, company: '' })); }}
+                  onChange={(e) => {
+                    setFormCompany(e.target.value);
+                    setFieldErrors((p) => ({ ...p, company: '' }));
+                  }}
                   className={inputCls(fieldErrors.company)}
                   placeholder={t('companyPlaceholder')}
                 />
-                {fieldErrors.company && <span className="text-xs text-rose-500 font-medium">{fieldErrors.company}</span>}
+                {fieldErrors.company && (
+                  <span className="text-xs text-rose-500 font-medium">{fieldErrors.company}</span>
+                )}
               </div>
 
               {/* Tax ID + Contact */}
@@ -644,11 +671,16 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                   <input
                     type="text"
                     value={formContact}
-                    onChange={(e) => { setFormContact(e.target.value); setFieldErrors((p) => ({ ...p, contact: '' })); }}
+                    onChange={(e) => {
+                      setFormContact(e.target.value);
+                      setFieldErrors((p) => ({ ...p, contact: '' }));
+                    }}
                     className={inputCls(fieldErrors.contact)}
                     placeholder={t('contactPlaceholder')}
                   />
-                  {fieldErrors.contact && <span className="text-xs text-rose-500 font-medium">{fieldErrors.contact}</span>}
+                  {fieldErrors.contact && (
+                    <span className="text-xs text-rose-500 font-medium">{fieldErrors.contact}</span>
+                  )}
                 </div>
               </div>
 
@@ -661,22 +693,32 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                   <input
                     type="text"
                     value={formPhone}
-                    onChange={(e) => { setFormPhone(e.target.value); setFieldErrors((p) => ({ ...p, phone: '' })); }}
+                    onChange={(e) => {
+                      setFormPhone(e.target.value);
+                      setFieldErrors((p) => ({ ...p, phone: '' }));
+                    }}
                     className={inputCls(fieldErrors.phone)}
                     placeholder={t('phonePlaceholder')}
                   />
-                  {fieldErrors.phone && <span className="text-xs text-rose-500 font-medium">{fieldErrors.phone}</span>}
+                  {fieldErrors.phone && (
+                    <span className="text-xs text-rose-500 font-medium">{fieldErrors.phone}</span>
+                  )}
                 </div>
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium text-foreground">{t('emailLabel')}</label>
                   <input
                     type="email"
                     value={formEmail}
-                    onChange={(e) => { setFormEmail(e.target.value); setFieldErrors((p) => ({ ...p, email: '' })); }}
+                    onChange={(e) => {
+                      setFormEmail(e.target.value);
+                      setFieldErrors((p) => ({ ...p, email: '' }));
+                    }}
                     className={inputCls(fieldErrors.email)}
                     placeholder={t('emailPlaceholder')}
                   />
-                  {fieldErrors.email && <span className="text-xs text-rose-500 font-medium">{fieldErrors.email}</span>}
+                  {fieldErrors.email && (
+                    <span className="text-xs text-rose-500 font-medium">{fieldErrors.email}</span>
+                  )}
                 </div>
               </div>
 
@@ -686,26 +728,29 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                 <input
                   type="text"
                   value={formAddress}
-                  onChange={(e) => { setFormAddress(e.target.value); setFieldErrors((p) => ({ ...p, address: '' })); }}
+                  onChange={(e) => {
+                    setFormAddress(e.target.value);
+                    setFieldErrors((p) => ({ ...p, address: '' }));
+                  }}
                   className={inputCls(fieldErrors.address)}
                   placeholder={t('addressPlaceholder')}
                 />
-                {fieldErrors.address && <span className="text-xs text-rose-500 font-medium">{fieldErrors.address}</span>}
+                {fieldErrors.address && (
+                  <span className="text-xs text-rose-500 font-medium">{fieldErrors.address}</span>
+                )}
               </div>
             </div>
 
             {/* ── Section 2: Product Table ── */}
-            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-5">
+            <div className="space-y-5 rounded-lg border border-border bg-card p-5 sm:p-6">
               <h3 className={sectionHeadCls}>{t('sectionProducts')}</h3>
 
               {cart.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-10 px-4 text-center border-2 border-dashed border-border/60 rounded-xl space-y-4">
-                  <p className="text-sm text-muted-foreground max-w-md">
-                    {t('emptyCart')}
-                  </p>
+                <div className="flex flex-col items-center justify-center space-y-4 rounded-md border border-dashed border-border px-4 py-10 text-center">
+                  <p className="text-sm text-muted-foreground max-w-md">{t('emptyCart')}</p>
                   <Link
                     href="/solutions/categories/cleanroom-consumables"
-                    className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-4 py-2 text-xs font-semibold text-white hover:bg-brand/90 transition-all shadow"
+                    className="inline-flex h-10 items-center gap-1.5 rounded-md bg-brand px-4 text-xs font-semibold text-white hover:bg-brand-strong"
                   >
                     {t('viewProducts')}
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -740,19 +785,21 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                               </span>
                             )}
                           </td>
-                          <td className="px-3 py-2.5 text-sm text-slate-700">
-                            {item.spec || '-'}
-                          </td>
-                          <td className="px-3 py-2.5 text-sm text-slate-700">
-                            {item.unit || '-'}
-                          </td>
+                          <td className="px-3 py-2.5 text-sm text-slate-700">{item.spec || '-'}</td>
+                          <td className="px-3 py-2.5 text-sm text-slate-700">{item.unit || '-'}</td>
                           <td className="px-3 py-2.5">
                             <input
                               type="number"
                               min={1}
                               value={item.quantity || ''}
-                              onChange={(e) => handleUpdateCartField(idx, 'quantity', Math.max(1, parseInt(e.target.value) || 1))}
-                              className="w-24 rounded-lg border border-border/80  px-2.5 py-1 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand font-semibold text-center"
+                              onChange={(e) =>
+                                handleUpdateCartField(
+                                  idx,
+                                  'quantity',
+                                  Math.max(1, parseInt(e.target.value) || 1)
+                                )
+                              }
+                              className="w-24 rounded-lg border border-border/80  px-2.5 py-1 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand font-semibold text-center"
                               placeholder="1"
                             />
                           </td>
@@ -760,7 +807,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                             <button
                               type="button"
                               onClick={() => handleRemoveItem(idx)}
-                              className="rounded-lg p-1.5 text-muted-foreground hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/20 transition-all"
+                              className="rounded-lg p-1.5 text-muted-foreground hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/20 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -771,37 +818,48 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                   </table>
                 </div>
               )}
-
-
             </div>
 
             {/* ── Section 3: Additional Requirements & Delivery ── */}
-            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-5">
+            <div className="space-y-5 rounded-lg border border-border bg-card p-5 sm:p-6">
               <h3 className={sectionHeadCls}>{t('sectionShipping')}</h3>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 {/* Industry */}
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">{t('industryLabel')}</label>
+                  <label className="text-sm font-medium text-foreground">
+                    {t('industryLabel')}
+                  </label>
                   <div className="relative">
                     <select
                       value={formIndustry}
-                      onChange={(e) => { setFormIndustry(e.target.value); setFieldErrors((p) => ({ ...p, industry: '' })); }}
+                      onChange={(e) => {
+                        setFormIndustry(e.target.value);
+                        setFieldErrors((p) => ({ ...p, industry: '' }));
+                      }}
                       className={selectCls(fieldErrors.industry)}
                     >
                       <option value="">{t('industryPlaceholder')}</option>
                       {meta?.industries.map((ind) => (
-                        <option key={ind.slug} value={ind.slug}>{ind.name}</option>
+                        <option key={ind.slug} value={ind.slug}>
+                          {ind.name}
+                        </option>
                       ))}
                     </select>
                     <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rotate-90 pointer-events-none" />
                   </div>
-                  {fieldErrors.industry && <span className="text-xs text-rose-500 font-medium">{fieldErrors.industry}</span>}
+                  {fieldErrors.industry && (
+                    <span className="text-xs text-rose-500 font-medium">
+                      {fieldErrors.industry}
+                    </span>
+                  )}
                 </div>
 
                 {/* Delivery Time */}
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">{t('deliveryTimeLabel')}</label>
+                  <label className="text-sm font-medium text-foreground">
+                    {t('deliveryTimeLabel')}
+                  </label>
                   <div className="relative">
                     <select
                       value={formDeliveryTime}
@@ -822,7 +880,9 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
               <div className="grid gap-4 sm:grid-cols-2">
                 {/* Payment Method */}
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">{t('paymentMethodLabel')}</label>
+                  <label className="text-sm font-medium text-foreground">
+                    {t('paymentMethodLabel')}
+                  </label>
                   <div className="relative">
                     <select
                       value={formPaymentMethod}
@@ -841,7 +901,9 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
 
                 {/* Order Frequency */}
                 <div className="space-y-1.5">
-                  <label className="text-sm font-medium text-foreground">{t('orderFrequencyLabel')}</label>
+                  <label className="text-sm font-medium text-foreground">
+                    {t('orderFrequencyLabel')}
+                  </label>
                   <div className="relative">
                     <select
                       value={formOrderFrequency}
@@ -865,40 +927,47 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                 <div className="relative">
                   <select
                     value={formHub}
-                    onChange={(e) => { setFormHub(e.target.value); setFieldErrors((p) => ({ ...p, hub: '' })); }}
+                    onChange={(e) => {
+                      setFormHub(e.target.value);
+                      setFieldErrors((p) => ({ ...p, hub: '' }));
+                    }}
                     className={selectCls(fieldErrors.hub)}
                   >
                     <option value="">{t('hubPlaceholder')}</option>
                     {meta?.hubs.map((hub) => (
-                      <option key={hub.id} value={hub.id}>{hub.name}</option>
+                      <option key={hub.id} value={hub.id}>
+                        {hub.name}
+                      </option>
                     ))}
                   </select>
                   <ChevronRight className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground rotate-90 pointer-events-none" />
                 </div>
-                {fieldErrors.hub && <span className="text-xs text-rose-500 font-medium">{fieldErrors.hub}</span>}
+                {fieldErrors.hub && (
+                  <span className="text-xs text-rose-500 font-medium">{fieldErrors.hub}</span>
+                )}
               </div>
 
               {/* Special Request */}
               <div className="space-y-1.5">
-                <label className="text-sm font-medium text-foreground">{t('specialRequestLabel')}</label>
+                <label className="text-sm font-medium text-foreground">
+                  {t('specialRequestLabel')}
+                </label>
                 <textarea
                   rows={3}
                   value={formMessage}
                   onChange={(e) => setFormMessage(e.target.value)}
                   placeholder={t('specialRequestPlaceholder')}
-                  className="w-full rounded-lg border border-border/80  px-3 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand resize-none"
+                  className="w-full rounded-lg border border-border/80  px-3 py-2.5 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand resize-none"
                 />
               </div>
             </div>
-
-
 
             {/* ── Actions ── */}
             <div className="flex items-center gap-4 pt-2">
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="inline-flex items-center gap-2 rounded-xl border border-border/80  px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/40 transition-all"
+                className="inline-flex items-center gap-2 rounded-xl border border-border/80  px-5 py-3 text-sm font-semibold text-foreground hover:bg-muted/40 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
               >
                 {draftSavedMsg ? (
                   <>
@@ -913,7 +982,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
               <button
                 type="submit"
                 disabled={submitting}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow hover:bg-brand/90 transition-all disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-6 py-3 text-sm font-semibold text-white shadow hover:bg-brand/90 transition-[color,background-color,border-color,box-shadow,opacity,transform] disabled:opacity-50"
               >
                 {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
                 {submitting ? t('submitting') : t('submitRfq')}
@@ -926,14 +995,34 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
         <div className="lg:col-span-4">
           <div className="sticky top-24 space-y-6">
             {/* Why ULink */}
-            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-5">
+            <div className="space-y-5 rounded-lg border border-border bg-card p-5 sm:p-6">
               <h3 className="text-lg font-bold text-foreground">{t('sidebarWhyTitle')}</h3>
 
               {[
-                { icon: Shield, titleKey: 'sidebarBenefit1Title' as const, descKey: 'sidebarBenefit1Desc' as const, color: 'text-orange-500' },
-                { icon: Headphones, titleKey: 'sidebarBenefit2Title' as const, descKey: 'sidebarBenefit2Desc' as const, color: 'text-blue-500' },
-                { icon: Truck, titleKey: 'sidebarBenefit3Title' as const, descKey: 'sidebarBenefit3Desc' as const, color: 'text-emerald-500' },
-                { icon: Award, titleKey: 'sidebarBenefit4Title' as const, descKey: 'sidebarBenefit4Desc' as const, color: 'text-purple-500' }
+                {
+                  icon: Shield,
+                  titleKey: 'sidebarBenefit1Title' as const,
+                  descKey: 'sidebarBenefit1Desc' as const,
+                  color: 'text-orange-500'
+                },
+                {
+                  icon: Headphones,
+                  titleKey: 'sidebarBenefit2Title' as const,
+                  descKey: 'sidebarBenefit2Desc' as const,
+                  color: 'text-blue-500'
+                },
+                {
+                  icon: Truck,
+                  titleKey: 'sidebarBenefit3Title' as const,
+                  descKey: 'sidebarBenefit3Desc' as const,
+                  color: 'text-emerald-500'
+                },
+                {
+                  icon: Award,
+                  titleKey: 'sidebarBenefit4Title' as const,
+                  descKey: 'sidebarBenefit4Desc' as const,
+                  color: 'text-purple-500'
+                }
               ].map(({ icon: Icon, titleKey, descKey, color }, idx) => (
                 <div key={idx} className="flex gap-3">
                   <div className={cn('mt-0.5 shrink-0', color)}>
@@ -941,14 +1030,16 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-foreground">{t(titleKey)}</p>
-                    <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">{t(descKey)}</p>
+                    <p className="text-xs text-muted-foreground leading-relaxed mt-0.5">
+                      {t(descKey)}
+                    </p>
                   </div>
                 </div>
               ))}
             </div>
 
             {/* RFQ Process */}
-            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-4">
+            <div className="space-y-4 rounded-lg border border-border bg-card p-5 sm:p-6">
               <h3 className="text-lg font-bold text-foreground">{t('sidebarProcessTitle')}</h3>
 
               <div className="space-y-3">
@@ -959,7 +1050,12 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
                   { step: 4, key: 'sidebarStep4' as const, color: 'bg-orange-500 text-white' }
                 ].map(({ step, key, color }) => (
                   <div key={step} className="flex items-start gap-3">
-                    <div className={cn('flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold', color)}>
+                    <div
+                      className={cn(
+                        'flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold',
+                        color
+                      )}
+                    >
                       {step}
                     </div>
                     <p className="text-sm text-foreground leading-relaxed pt-0.5">{t(key)}</p>
@@ -969,20 +1065,28 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
             </div>
 
             {/* Urgent Support */}
-            <div className="rounded-2xl border border-border p-6 shadow-sm space-y-4">
+            <div className="space-y-4 rounded-lg border border-border bg-card p-5 sm:p-6">
               <h3 className="text-lg font-bold text-foreground">{t('sidebarUrgentTitle')}</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">{t('sidebarUrgentDesc')}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {t('sidebarUrgentDesc')}
+              </p>
 
               <div className="space-y-2.5">
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">Hotline:</span>
-                  <a href={`tel:${t('sidebarHotline').replace(/\s/g, '')}`} className="text-lg font-bold text-brand hover:underline">
+                  <a
+                    href={`tel:${t('sidebarHotline').replace(/\s/g, '')}`}
+                    className="text-lg font-bold text-brand hover:underline"
+                  >
                     {t('sidebarHotline')}
                   </a>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-muted-foreground">Email:</span>
-                  <a href={`mailto:${t('sidebarEmail')}`} className="text-sm font-medium text-brand hover:underline">
+                  <a
+                    href={`mailto:${t('sidebarEmail')}`}
+                    className="text-sm font-medium text-brand hover:underline"
+                  >
                     {t('sidebarEmail')}
                   </a>
                 </div>
@@ -990,7 +1094,7 @@ export function QuickOrderClient({ user }: { user: AuthUser | null }) {
 
               <a
                 href={`tel:${t('sidebarHotline').replace(/\s/g, '')}`}
-                className="flex items-center justify-center gap-2 w-full rounded-xl border-2 border-rose-500 px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-all"
+                className="flex items-center justify-center gap-2 w-full rounded-xl border-2 border-rose-500 px-4 py-2.5 text-sm font-semibold text-rose-600 hover:bg-rose-50 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
               >
                 <Phone className="h-4 w-4" />
                 {t('sidebarCtaCall')}

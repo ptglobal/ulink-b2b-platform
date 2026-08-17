@@ -2,12 +2,14 @@
 
 import { useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { Send, Loader2 } from 'lucide-react';
+import { Send, Loader2 } from '@/components/icons';
 
 export function NewsletterForm() {
   const t = useTranslations('footer');
   const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error' | 'conflict' | 'invalid'>('idle');
+  const [status, setStatus] = useState<
+    'idle' | 'loading' | 'success' | 'error' | 'conflict' | 'invalid'
+  >('idle');
   const [message, setMessage] = useState('');
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -63,7 +65,11 @@ export function NewsletterForm() {
 
   return (
     <div className="mt-2">
-      <form onSubmit={onSubmit} className="flex items-stretch overflow-hidden rounded-lg bg-white" noValidate>
+      <form
+        onSubmit={onSubmit}
+        className="flex items-stretch overflow-hidden rounded-lg bg-white"
+        noValidate
+      >
         <input
           type="email"
           value={email}
@@ -92,8 +98,8 @@ export function NewsletterForm() {
             status === 'success'
               ? 'text-green-400'
               : status === 'invalid' || status === 'conflict' || status === 'error'
-              ? 'text-red-400'
-              : 'text-white/60'
+                ? 'text-red-400'
+                : 'text-white/60'
           }`}
         >
           {message}

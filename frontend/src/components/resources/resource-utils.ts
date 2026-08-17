@@ -6,7 +6,8 @@ export function getResourceSlug(resource: Pick<ResourceItem, 'id'> | string) {
   return id.toLowerCase();
 }
 
-export function getResourceHref(resource: Pick<ResourceItem, 'id'>) {
+export function getResourceHref(resource: Pick<ResourceItem, 'id' | 'category'>) {
+  if (resource.category === 'event') return '/events';
   return `/resources/${getResourceSlug(resource)}`;
 }
 
@@ -57,16 +58,22 @@ export function resourceToDetailData(
     locale === 'vi'
       ? 'Tài liệu này đang được cập nhật nội dung chi tiết. Vui lòng liên hệ đội ngũ ULink để nhận bản đầy đủ hoặc tài liệu liên quan.'
       : locale === 'ja'
-      ? 'この資料は現在詳細コンテンツを更新中です。完全版または関連資料についてはULinkチームまでお問い合わせください。'
-      : 'This document is being updated with more detailed content. Please contact the ULink team for the full version or related materials.';
-  const intro = resource.aiSummary?.intro?.[locale] || resource.description[locale] || fallbackIntro;
+        ? 'この資料は現在詳細コンテンツを更新中です。完全版または関連資料についてはULinkチームまでお問い合わせください。'
+        : 'This document is being updated with more detailed content. Please contact the ULink team for the full version or related materials.';
+  const intro =
+    resource.aiSummary?.intro?.[locale] || resource.description[locale] || fallbackIntro;
   const highlights = summaryBullets.map((bullet) => bullet[locale]).filter(Boolean);
-  const sectionsHtml = resource.sections.length > 0
-    ? resource.sections.map((section) => renderSection(section, locale)).join('')
-    : `
+  const sectionsHtml =
+    resource.sections.length > 0
+      ? resource.sections.map((section) => renderSection(section, locale)).join('')
+      : `
       <section class="space-y-4">
         <h2 class="text-xl font-bold text-slate-900">${escapeHtml(
-          locale === 'vi' ? 'Tổng quan tài liệu' : locale === 'ja' ? '資料概要' : 'Document overview'
+          locale === 'vi'
+            ? 'Tổng quan tài liệu'
+            : locale === 'ja'
+              ? '資料概要'
+              : 'Document overview'
         )}</h2>
         <p class="text-sm leading-7 text-slate-600">${renderParagraphs(intro)}</p>
       </section>
@@ -131,15 +138,15 @@ export function resourceToDetailData(
       resource.category === 'standard' || resource.contentType === 'certificate'
         ? 'doc'
         : resource.category === 'case-study'
-        ? 'case-study'
-        : 'news',
+          ? 'case-study'
+          : 'news',
     category: renderTranslatedText(resource.badge, locale),
     title: renderTranslatedText(resource.title, locale),
     description: renderTranslatedText(resource.description, locale),
     date: resource.date,
     author: renderTranslatedText(resource.author.name, locale),
     readTime: renderTranslatedText(resource.readTime, locale),
-    coverImage: resource.image,
+    coverImage: resource.image || '',
     contentHtml: [metaHtml, summaryHtml, sectionsHtml].join(''),
     highlights
   };

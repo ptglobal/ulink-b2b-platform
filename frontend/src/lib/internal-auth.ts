@@ -6,7 +6,9 @@ export function requireInternalToken(
     throw new Error('INTERNAL_API_TOKEN is required for internal requests.');
   }
 
-  const received = authorization?.startsWith('Bearer ') ? authorization.slice(7) : authorization ?? undefined;
+  const received = authorization?.startsWith('Bearer ')
+    ? authorization.slice(7)
+    : (authorization ?? undefined);
   if (!received || received !== expected) {
     throw new Error('Invalid internal API token.');
   }

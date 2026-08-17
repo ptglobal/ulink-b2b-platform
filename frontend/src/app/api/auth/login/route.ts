@@ -4,6 +4,8 @@ import { extractSetCookie } from '@/lib/auth-helpers';
 import { loginSchema, type LoginInput } from '@/lib/validators';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL ?? 'http://localhost:8055';
+const CUSTOMER_ROLE_ID =
+  process.env.DIRECTUS_CUSTOMER_ROLE_ID ?? 'e11b0e50-3030-410c-9999-000000000003';
 
 export const dynamic = 'force-dynamic';
 
@@ -70,7 +72,11 @@ export async function POST(req: Request) {
         throw new ApiError(401, 'invalid_credentials', 'Email or password is incorrect');
       }
       if (res.status === 429) {
-        throw new ApiError(429, 'too_many_attempts', 'Too many login attempts. Please wait and try again.');
+        throw new ApiError(
+          429,
+          'too_many_attempts',
+          'Too many login attempts. Please wait and try again.'
+        );
       }
       // Surface upstream error message for diagnostics, without echoing the body.
       let upstreamMessage: string | undefined;
@@ -83,13 +89,42 @@ export async function POST(req: Request) {
       throw new ApiError(res.status, 'login_failed', upstreamMessage ?? 'Login failed.');
     }
 
-    const response = jsonOk({ ok: true });
     const setCookie = extractSetCookie(res);
-    if (setCookie) response.headers.set('set-cookie', setCookie);
-    else {
+    if (!setCookie) {
       // Defensive: refuse to claim success without a session cookie.
       return jsonErrorRaw(500, 'login_failed', 'Upstream did not return a session cookie.');
     }
+
+    // Customer portal and Directus CMS are separate authentication boundaries.
+    // Verify the role before forwarding any upstream cookie to the browser.
+    const sessionCookie = setCookie.split(';', 1)[0];
+    const meRes = await fetch(`${DIRECTUS_URL}/users/me?fields=id,role`, {
+      headers: { cookie: sessionCookie },
+      cache: 'no-store'
+    });
+    const meJson = meRes.ok
+      ? ((await meRes.json().catch(() => null)) as {
+          data?: { role?: string | { id?: string } | null };
+        } | null)
+      : null;
+    const role =
+      typeof meJson?.data?.role === 'string' ? meJson.data.role : meJson?.data?.role?.id;
+
+    if (role !== CUSTOMER_ROLE_ID) {
+      await fetch(`${DIRECTUS_URL}/auth/logout`, {
+        method: 'POST',
+        headers: { cookie: sessionCookie },
+        cache: 'no-store'
+      }).catch(() => undefined);
+      throw new ApiError(
+        403,
+        'customer_portal_only',
+        'This sign-in is reserved for customer accounts. CMS users must use the CMS login.'
+      );
+    }
+
+    const response = jsonOk({ ok: true });
+    response.headers.set('set-cookie', setCookie);
     return response;
   });
 }

@@ -15,8 +15,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -54,37 +56,40 @@ export default async function AdminRfqsPage({ params }: PageProps) {
 
   try {
     const client = await getSessionClient();
-    
+
     // 2. Fetch RFQ Requests, Sales team, Hubs and SKUs in parallel
     const [rfqsRes, salesRes, hubsRes, skusRes] = await Promise.all([
       client.request(
-        readItems('rfq_requests' as any, {
-          fields: [
-            'id',
-            'company',
-            'contact_name',
-            'email',
-            'phone',
-            'address',
-            'industry',
-            'message',
-            'status',
-            'approval_note',
-            'reject_reason',
-            'source',
-            'scheduled_delivery',
-            'requested_delivery_date',
-            'created_at',
-            'line_items',
-            'hub.id',
-            'hub.name',
-            'assigned_sales.id',
-            'assigned_sales.first_name',
-            'assigned_sales.last_name'
-          ],
-          sort: ['-id'],
-          limit: -1
-        } as any)
+        readItems(
+          'rfq_requests' as any,
+          {
+            fields: [
+              'id',
+              'company',
+              'contact_name',
+              'email',
+              'phone',
+              'address',
+              'industry',
+              'message',
+              'status',
+              'approval_note',
+              'reject_reason',
+              'source',
+              'scheduled_delivery',
+              'requested_delivery_date',
+              'created_at',
+              'line_items',
+              'hub.id',
+              'hub.name',
+              'assigned_sales.id',
+              'assigned_sales.first_name',
+              'assigned_sales.last_name'
+            ],
+            sort: ['-id'],
+            limit: -1
+          } as any
+        )
       ),
       client.request(
         readUsers({
@@ -96,19 +101,25 @@ export default async function AdminRfqsPage({ params }: PageProps) {
         })
       ),
       client.request(
-        readItems('regional_hubs' as any, {
-          fields: ['id', 'name'],
-          sort: ['name'],
-          limit: -1
-        } as any)
+        readItems(
+          'regional_hubs' as any,
+          {
+            fields: ['id', 'name'],
+            sort: ['name'],
+            limit: -1
+          } as any
+        )
       ),
       client.request(
-        readItems('product_skus' as any, {
-          filter: { status: { _in: ['published', 'draft'] } },
-          fields: ['id', 'sku_code'],
-          sort: ['sku_code'],
-          limit: -1
-        } as any)
+        readItems(
+          'product_skus' as any,
+          {
+            filter: { status: { _in: ['published', 'draft'] } },
+            fields: ['id', 'sku_code'],
+            sort: ['sku_code'],
+            limit: -1
+          } as any
+        )
       )
     ]);
 
@@ -125,5 +136,7 @@ export default async function AdminRfqsPage({ params }: PageProps) {
     }
   }
 
-  return <RfqsClient initialRfqs={rfqs} salesTeam={salesTeam} hubs={hubs} skus={skus} error={error} />;
+  return (
+    <RfqsClient initialRfqs={rfqs} salesTeam={salesTeam} hubs={hubs} skus={skus} error={error} />
+  );
 }

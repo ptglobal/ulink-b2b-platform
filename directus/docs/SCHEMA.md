@@ -33,7 +33,7 @@ Conventions:
 | `blog_posts` | `title`, `slug`, `body`, `cover`, `author`, `published_at`, `status`, `meta_title`, `meta_description` | Blog/news |
 | `case_studies` | `title`, `slug`, `summary`, `body`, `industry`, `cover`, `status` | Resource center content |
 | `iso_certifications` | `name`, `number`, `issuer`, `valid_until`, `file`, `status` | ISO certificates |
-| `pages` | `title`, `slug`, `body`, `status`, `meta_title`, `meta_description` | Static pages |
+| `pages` | `title`, `slug`, `body`, `content`, `status`, `meta_title`, `meta_description` | Static pages plus structured Carbon modules |
 
 SEO defaults live in singleton `site_settings`. Current bootstrap only adds
 `meta_title` and `meta_description` on content collections; `og_image` exists on
@@ -44,7 +44,7 @@ SEO defaults live in singleton `site_settings`. Current bootstrap only adds
 | Collection | Current bootstrap fields | Notes |
 |---|---|---|
 | `site_settings` | `logo`, `contact_email`, `contact_phone`, `address`, `meta_title`, `meta_description`, `og_image` | Global contact and default SEO |
-| `homepage` | `title`, `hero_section` | Homepage layout singleton |
+| `homepage` | `title`, `hero_section`, `content` | Homepage layout singleton; localized structured modules and unique media roles |
 
 ## Hub child collections
 

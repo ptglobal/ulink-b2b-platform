@@ -1,4 +1,4 @@
-import { FileText, Download, ExternalLink } from 'lucide-react';
+import { FileText, Download, ExternalLink } from '@/components/icons';
 import type { ProductDocument, DirectusFile } from '@/lib/directus';
 
 interface ProductDocumentsProps {
@@ -26,7 +26,7 @@ function getFileExtension(file: DirectusFile): string {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX',
       'application/vnd.ms-excel': 'XLS',
       'application/msword': 'DOC',
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX'
     };
     if (mimeMap[file.type]) return mimeMap[file.type];
   }
@@ -42,14 +42,14 @@ const docTypeBadgeStyles: Record<string, string> = {
   tds: 'bg-blue-100 text-blue-800',
   msds: 'bg-orange-100 text-orange-800',
   certificate: 'bg-green-100 text-green-800',
-  brochure: 'bg-purple-100 text-purple-800',
+  brochure: 'bg-purple-100 text-purple-800'
 };
 
 const docTypeLabels: Record<string, string> = {
   tds: 'TDS',
   msds: 'MSDS',
   certificate: 'Certificate',
-  brochure: 'Brochure',
+  brochure: 'Brochure'
 };
 
 export default function ProductDocuments({ documents, labels }: ProductDocumentsProps) {
@@ -74,20 +74,15 @@ export default function ProductDocuments({ documents, labels }: ProductDocuments
         {documents.map((doc) => {
           // file can be a string UUID or an object {id, ...}
           const file = typeof doc.file === 'object' ? (doc.file as DirectusFile | null) : null;
-          const fileId = typeof doc.file === 'string' ? doc.file : file?.id ?? null;
+          const fileId = typeof doc.file === 'string' ? doc.file : (file?.id ?? null);
           const hasFile = fileId !== null;
 
           return (
-            <div
-              key={doc.id}
-              className="flex items-center justify-between px-4 py-3 bg-white"
-            >
+            <div key={doc.id} className="flex items-center justify-between px-4 py-3 bg-white">
               {/* Left: icon + title + badge */}
               <div className="flex items-center gap-3 min-w-0">
                 <FileText className="h-5 w-5 text-gray-400 shrink-0" />
-                <span className="truncate font-medium text-gray-900">
-                  {doc.title}
-                </span>
+                <span className="truncate font-medium text-gray-900">{doc.title}</span>
                 <span
                   className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium shrink-0 ${docTypeBadgeStyles[doc.doc_type] ?? 'bg-gray-100 text-gray-800'}`}
                 >
@@ -97,18 +92,18 @@ export default function ProductDocuments({ documents, labels }: ProductDocuments
 
               {/* Right: format + file size + actions */}
               <div className="flex items-center gap-3 shrink-0 ml-4">
-                {hasFile && file && (() => {
-                  const ext = getFileExtension(file);
-                  return ext ? (
-                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-gray-100 text-gray-600 ring-1 ring-gray-200">
-                      {ext}
-                    </span>
-                  ) : null;
-                })()}
+                {hasFile &&
+                  file &&
+                  (() => {
+                    const ext = getFileExtension(file);
+                    return ext ? (
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase bg-gray-100 text-gray-600 ring-1 ring-gray-200">
+                        {ext}
+                      </span>
+                    ) : null;
+                  })()}
                 {hasFile && file && file.filesize != null && (
-                  <span className="text-sm text-gray-500">
-                    {formatFileSize(file.filesize)}
-                  </span>
+                  <span className="text-sm text-gray-500">{formatFileSize(file.filesize)}</span>
                 )}
 
                 {hasFile ? (

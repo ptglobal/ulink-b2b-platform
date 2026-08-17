@@ -1,6 +1,6 @@
 import { Fragment } from 'react';
 import { getTranslations } from 'next-intl/server';
-import { Search, PackageCheck, BoxSelect, Truck, Users, ArrowRight } from 'lucide-react';
+import { Search, PackageCheck, BoxSelect, Truck, Users, ArrowRight } from '@/components/icons';
 
 export async function AboutQualityProcess() {
   const t = await getTranslations('aboutQuality.process');
@@ -14,15 +14,11 @@ export async function AboutQualityProcess() {
   ];
 
   return (
-    <section className="rounded-[6px] bg-[#F5F5F5] px-6 py-6">
+    <section className="rounded-[6px] bg-background px-6 py-6">
       {/* Header */}
       <div>
-        <h2 className="text-[12px] font-bold text-[#1A2D49]">
-          {t('title')}
-        </h2>
-        <p className="mt-1.5 text-[9px] font-normal text-[#141414]/50">
-          {t('subtitle')}
-        </p>
+        <h2 className="text-[12px] font-bold text-foreground">{t('title')}</h2>
+        <p className="mt-1.5 text-[9px] font-normal text-foreground/50">{t('subtitle')}</p>
       </div>
 
       {/* Steps flow */}
@@ -32,19 +28,19 @@ export async function AboutQualityProcess() {
             {/* Step item */}
             <div className="flex flex-col items-center text-center">
               {/* Icon */}
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center text-[#1769E2]">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center text-brand">
                 {step.icon}
               </div>
               {/* Number */}
-              <span className="mt-1.5 text-[11px] font-normal text-[#141414]/60">
+              <span className="mt-1.5 text-[11px] font-normal text-foreground/60">
                 {t(`steps.${step.key}.number`)}
               </span>
               {/* Title */}
-              <p className="mt-2 text-[10px] font-bold text-[#1A2D49]">
+              <p className="mt-2 text-[10px] font-bold text-foreground">
                 {t(`steps.${step.key}.title`)}
               </p>
               {/* Description */}
-              <p className="mt-1 text-[9px] leading-[1.7] text-[#141414]/40">
+              <p className="mt-1 text-[9px] leading-[1.7] text-foreground/40">
                 {t(`steps.${step.key}.desc`)}
               </p>
             </div>
@@ -52,7 +48,7 @@ export async function AboutQualityProcess() {
             {/* Arrow separator */}
             {index < steps.length - 1 && (
               <div className="hidden items-center justify-center sm:flex">
-                <ArrowRight className="h-4 w-4 text-[#B8C0CC]" strokeWidth={1.5} />
+                <ArrowRight className="h-4 w-4 text-muted-foreground" strokeWidth={1.5} />
               </div>
             )}
           </Fragment>

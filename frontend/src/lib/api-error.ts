@@ -57,18 +57,13 @@ export const ERRORS = {
   VALIDATION: (details: Record<string, string[]>) =>
     new ApiError(422, 'validation_error', 'Input validation failed', details),
 
-  NOT_FOUND: (resource = 'resource') =>
-    new ApiError(404, 'not_found', `${resource} not found`),
+  NOT_FOUND: (resource = 'resource') => new ApiError(404, 'not_found', `${resource} not found`),
 
-  UNAUTHORIZED: () =>
-    new ApiError(401, 'unauthorized', 'Authentication required'),
+  UNAUTHORIZED: () => new ApiError(401, 'unauthorized', 'Authentication required'),
 
-  FORBIDDEN: () =>
-    new ApiError(403, 'forbidden', 'Insufficient permissions'),
+  FORBIDDEN: () => new ApiError(403, 'forbidden', 'Insufficient permissions'),
 
-  NETWORK: () =>
-    new ApiError(0, 'network_error', 'Network request failed'),
+  NETWORK: () => new ApiError(0, 'network_error', 'Network request failed'),
 
-  INTERNAL: (message = 'Internal server error') =>
-    new ApiError(500, 'internal_error', message)
+  INTERNAL: (message = 'Internal server error') => new ApiError(500, 'internal_error', message)
 } as const;

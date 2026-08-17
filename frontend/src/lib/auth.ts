@@ -10,23 +10,6 @@ import { api } from '@/lib/api';
 
 export { ApiError as AuthError };
 
-/**
- * Helper to check whether a given user object has admin privileges.
- * Safe for both Client and Server components.
- */
-export function isAdminUser(user?: { role?: string | null; email?: string | null } | null): boolean {
-  if (!user) return false;
-  const role = (user.role ?? '').toLowerCase();
-  const email = (user.email ?? '').toLowerCase();
-  return (
-    role === 'administrator' ||
-    role === 'admin' ||
-    role.includes('admin') ||
-    email.startsWith('admin@') ||
-    email.includes('admin')
-  );
-}
-
 // ─── Session shape ───────────────────────────────────────────────────────────
 
 export interface MeResponse {
@@ -83,7 +66,9 @@ export interface RegisterInput {
   verified_token?: string;
 }
 
-export async function register(input: RegisterInput): Promise<{ data: { user_id: string; customer_id: string; status: string } }> {
+export async function register(
+  input: RegisterInput
+): Promise<{ data: { user_id: string; customer_id: string; status: string } }> {
   return api.post('/api/auth/register', input);
 }
 
@@ -149,9 +134,7 @@ export interface ChangePasswordInSessionInput {
  *   - 'password_mismatch' (422) — confirm_new_password didn't match
  *   - 'password_policy' (422) — new_password failed complexity rule
  */
-export async function changePasswordInSession(
-  input: ChangePasswordInSessionInput
-): Promise<void> {
+export async function changePasswordInSession(input: ChangePasswordInSessionInput): Promise<void> {
   await api.post('/api/auth/change-password/apply', input);
 }
 
@@ -180,9 +163,7 @@ export interface ChangePasswordByTokenInput {
  *   - 'rate_limited' (429) — too many attempts on this token
  *   - 'upstream_error' (502) — Directus unreachable
  */
-export async function changePasswordByToken(
-  input: ChangePasswordByTokenInput
-): Promise<void> {
+export async function changePasswordByToken(input: ChangePasswordByTokenInput): Promise<void> {
   await api.post('/api/auth/change-password/confirm-token', input);
 }
 

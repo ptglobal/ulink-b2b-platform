@@ -36,8 +36,9 @@ export async function POST(req: Request) {
     `directus_session_token=; ${expires}`,
     `directus_refresh_token=; ${expires}`
   ];
-  response.headers.set('set-cookie', upstreamSetCookie
-    ? `${upstreamSetCookie}, ${clearCookies.join(', ')}`
-    : clearCookies.join(', '));
+  response.headers.set(
+    'set-cookie',
+    upstreamSetCookie ? `${upstreamSetCookie}, ${clearCookies.join(', ')}` : clearCookies.join(', ')
+  );
   return response;
 }

@@ -34,7 +34,15 @@ interface RequestOptions {
  * Trả về parsed JSON hoặc throw ApiError.
  */
 export async function api<T = unknown>(url: string, options: RequestOptions = {}): Promise<T> {
-  const { method = 'GET', body, headers = {}, credentials = 'include', signal, cache, next } = options;
+  const {
+    method = 'GET',
+    body,
+    headers = {},
+    credentials = 'include',
+    signal,
+    cache,
+    next
+  } = options;
 
   const fetchOptions: RequestInit & { next?: { revalidate?: number | false; tags?: string[] } } = {
     method,
@@ -89,14 +97,23 @@ export async function api<T = unknown>(url: string, options: RequestOptions = {}
 api.get = <T = unknown>(url: string, opts?: Omit<RequestOptions, 'method' | 'body'>) =>
   api<T>(url, { ...opts, method: 'GET' });
 
-api.post = <T = unknown>(url: string, body?: unknown, opts?: Omit<RequestOptions, 'method' | 'body'>) =>
-  api<T>(url, { ...opts, method: 'POST', body });
+api.post = <T = unknown>(
+  url: string,
+  body?: unknown,
+  opts?: Omit<RequestOptions, 'method' | 'body'>
+) => api<T>(url, { ...opts, method: 'POST', body });
 
-api.put = <T = unknown>(url: string, body?: unknown, opts?: Omit<RequestOptions, 'method' | 'body'>) =>
-  api<T>(url, { ...opts, method: 'PUT', body });
+api.put = <T = unknown>(
+  url: string,
+  body?: unknown,
+  opts?: Omit<RequestOptions, 'method' | 'body'>
+) => api<T>(url, { ...opts, method: 'PUT', body });
 
-api.patch = <T = unknown>(url: string, body?: unknown, opts?: Omit<RequestOptions, 'method' | 'body'>) =>
-  api<T>(url, { ...opts, method: 'PATCH', body });
+api.patch = <T = unknown>(
+  url: string,
+  body?: unknown,
+  opts?: Omit<RequestOptions, 'method' | 'body'>
+) => api<T>(url, { ...opts, method: 'PATCH', body });
 
 api.delete = <T = unknown>(url: string, opts?: Omit<RequestOptions, 'method' | 'body'>) =>
   api<T>(url, { ...opts, method: 'DELETE' });

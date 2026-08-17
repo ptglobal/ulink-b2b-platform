@@ -15,7 +15,7 @@ import {
   Star,
   CheckCircle,
   HelpCircle
-} from 'lucide-react';
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { getTranslatedName, getTranslatedDescription } from '@/lib/i18n-content';
 import type { Industry, Standard, ProductSku } from '@/lib/directus';
@@ -46,7 +46,8 @@ export default function ProductTabs({
   const [activeTab, setActiveTab] = useState<'specs' | 'apps' | 'certs' | 'reviews'>('specs');
 
   // Pack size from the first SKU
-  const packSize = skus[0]?.pack_size ?? (locale === 'vi' ? 'Đóng gói theo yêu cầu' : 'Standard packaging');
+  const packSize =
+    skus[0]?.pack_size ?? (locale === 'vi' ? 'Đóng gói theo yêu cầu' : 'Standard packaging');
 
   const tabs = [
     { id: 'specs', label: locale === 'vi' ? 'Thông số kỹ thuật' : 'Specifications' },
@@ -58,17 +59,20 @@ export default function ProductTabs({
   // Render specifications tab content
   const renderSpecsContent = () => {
     // Generate technical bullet points dynamically based on product name/category
-    const bulletPoints = locale === 'vi' ? [
-      `Sản phẩm ${productName} được thiết kế với chất liệu cao cấp, bảo vệ tối ưu khỏi các tác nhân vật lý và hóa học khi thao tác.`,
-      `Công nghệ dệt/đúc liền mạch mang lại độ ôm khít hoàn hảo, tăng tối đa độ nhạy cảm ứng đầu ngón tay và linh hoạt khi sử dụng.`,
-      `Khả năng chống tĩnh điện hoặc chống nhiễm bẩn vượt trội, lý tưởng cho môi trường phòng sạch và trạm sản xuất linh kiện.`,
-      `Chất liệu thân thiện, không gây kích ứng da, thông thoáng khí giúp người lao động thoải mái làm việc suốt ngày dài.`
-    ] : [
-      `The ${productName} is engineered with premium materials for optimal protection against physical and chemical hazards during handling.`,
-      `Seamless construction provides a perfect snug fit, maximizing fingertip sensitivity and dexterity.`,
-      `Excellent anti-static or contamination control properties, ideal for cleanrooms and sensitive assembly lines.`,
-      `Skin-friendly, breathable materials keep workers comfortable throughout extended shifts.`
-    ];
+    const bulletPoints =
+      locale === 'vi'
+        ? [
+            `Sản phẩm ${productName} được thiết kế với chất liệu cao cấp, bảo vệ tối ưu khỏi các tác nhân vật lý và hóa học khi thao tác.`,
+            `Công nghệ dệt/đúc liền mạch mang lại độ ôm khít hoàn hảo, tăng tối đa độ nhạy cảm ứng đầu ngón tay và linh hoạt khi sử dụng.`,
+            `Khả năng chống tĩnh điện hoặc chống nhiễm bẩn vượt trội, lý tưởng cho môi trường phòng sạch và trạm sản xuất linh kiện.`,
+            `Chất liệu thân thiện, không gây kích ứng da, thông thoáng khí giúp người lao động thoải mái làm việc suốt ngày dài.`
+          ]
+        : [
+            `The ${productName} is engineered with premium materials for optimal protection against physical and chemical hazards during handling.`,
+            `Seamless construction provides a perfect snug fit, maximizing fingertip sensitivity and dexterity.`,
+            `Excellent anti-static or contamination control properties, ideal for cleanrooms and sensitive assembly lines.`,
+            `Skin-friendly, breathable materials keep workers comfortable throughout extended shifts.`
+          ];
 
     return (
       <div className="space-y-8">
@@ -81,7 +85,10 @@ export default function ProductTabs({
             </h4>
             <ul className="space-y-3">
               {bulletPoints.map((bp, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+                <li
+                  key={i}
+                  className="flex items-start gap-2.5 text-xs sm:text-sm text-slate-600 leading-relaxed font-medium"
+                >
                   <span className="text-blue-500 shrink-0 mt-1.5">•</span>
                   <span>{bp}</span>
                 </li>
@@ -91,7 +98,7 @@ export default function ProductTabs({
 
           {/* Right: Actual Applications Box */}
           <div className="lg:col-span-4">
-            <div className="bg-[#F8FAFC] border border-slate-100 p-6 rounded-xl space-y-4">
+            <div className="bg-background border border-slate-100 p-6 rounded-xl space-y-4">
               <h4 className="text-sm font-extrabold text-slate-800">
                 {locale === 'vi' ? 'Ứng dụng thực tế' : 'Real-world Applications'}
               </h4>
@@ -100,25 +107,41 @@ export default function ProductTabs({
                   <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                     <Wrench className="h-4 w-4" />
                   </div>
-                  <span>{locale === 'vi' ? 'Lắp ráp cơ khí & linh kiện' : 'Mechanical & Component Assembly'}</span>
+                  <span>
+                    {locale === 'vi'
+                      ? 'Lắp ráp cơ khí & linh kiện'
+                      : 'Mechanical & Component Assembly'}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-700 font-semibold">
                   <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                     <FileText className="h-4 w-4" />
                   </div>
-                  <span>{locale === 'vi' ? 'Gia công kim loại & tấm tôn' : 'Metalworking & Sheet Handling'}</span>
+                  <span>
+                    {locale === 'vi'
+                      ? 'Gia công kim loại & tấm tôn'
+                      : 'Metalworking & Sheet Handling'}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-700 font-semibold">
                   <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                     <Truck className="h-4 w-4" />
                   </div>
-                  <span>{locale === 'vi' ? 'Logistics, Kho vận & Đóng gói' : 'Logistics, Warehouse & Packaging'}</span>
+                  <span>
+                    {locale === 'vi'
+                      ? 'Logistics, Kho vận & Đóng gói'
+                      : 'Logistics, Warehouse & Packaging'}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3 text-xs text-slate-700 font-semibold">
                   <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
                     <Shield className="h-4 w-4" />
                   </div>
-                  <span>{locale === 'vi' ? 'Bảo trì công nghiệp chung' : 'General Industrial Maintenance'}</span>
+                  <span>
+                    {locale === 'vi'
+                      ? 'Bảo trì công nghiệp chung'
+                      : 'General Industrial Maintenance'}
+                  </span>
                 </div>
               </div>
             </div>
@@ -127,39 +150,48 @@ export default function ProductTabs({
 
         {/* Technical specifications table */}
         <div className="space-y-4">
-          <div className="border border-slate-200/80 rounded-xl overflow-hidden shadow-sm bg-white">
+          <div className="overflow-x-auto rounded-xl border border-slate-200/80 bg-white shadow-sm">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-blue-600 text-white text-xs font-bold uppercase tracking-wider">
-                  <th className="px-6 py-3.5 w-1/3">{locale === 'vi' ? 'Thông số' : 'Parameter'}</th>
+                  <th className="px-6 py-3.5 w-1/3">
+                    {locale === 'vi' ? 'Thông số' : 'Parameter'}
+                  </th>
                   <th className="px-6 py-3.5 w-2/3">{locale === 'vi' ? 'Chi tiết' : 'Details'}</th>
                 </tr>
               </thead>
               <tbody className="text-xs sm:text-sm text-slate-700 divide-y divide-slate-100">
                 {skuCode && (
                   <tr className="bg-white">
-                    <td className="px-6 py-3 font-semibold text-slate-500">{locale === 'vi' ? 'Mã sản phẩm' : 'Product Code'}</td>
+                    <td className="px-6 py-3 font-semibold text-slate-500">
+                      {locale === 'vi' ? 'Mã sản phẩm' : 'Product Code'}
+                    </td>
                     <td className="px-6 py-3 font-bold text-slate-800">{skuCode}</td>
                   </tr>
                 )}
                 {brand && (
                   <tr className="bg-slate-50/50">
-                    <td className="px-6 py-3 font-semibold text-slate-500">{locale === 'vi' ? 'Thương hiệu' : 'Brand'}</td>
+                    <td className="px-6 py-3 font-semibold text-slate-500">
+                      {locale === 'vi' ? 'Thương hiệu' : 'Brand'}
+                    </td>
                     <td className="px-6 py-3 font-bold text-slate-800">{brand}</td>
                   </tr>
                 )}
                 {categoryName && (
                   <tr className="bg-white">
-                    <td className="px-6 py-3 font-semibold text-slate-500">{locale === 'vi' ? 'Danh mục' : 'Category'}</td>
+                    <td className="px-6 py-3 font-semibold text-slate-500">
+                      {locale === 'vi' ? 'Danh mục' : 'Category'}
+                    </td>
                     <td className="px-6 py-3 font-bold text-slate-800">{categoryName}</td>
                   </tr>
                 )}
-                {specifications && Object.entries(specifications).map(([key, val], idx) => (
-                  <tr key={key} className={idx % 2 === 0 ? 'bg-slate-50/50' : 'bg-white'}>
-                    <td className="px-6 py-3 font-semibold text-slate-500">{key}</td>
-                    <td className="px-6 py-3 font-bold text-slate-800">{val}</td>
-                  </tr>
-                ))}
+                {specifications &&
+                  Object.entries(specifications).map(([key, val], idx) => (
+                    <tr key={key} className={idx % 2 === 0 ? 'bg-slate-50/50' : 'bg-white'}>
+                      <td className="px-6 py-3 font-semibold text-slate-500">{key}</td>
+                      <td className="px-6 py-3 font-bold text-slate-800">{val}</td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
@@ -188,9 +220,7 @@ export default function ProductTabs({
             <span className="text-xs font-bold text-blue-600 uppercase tracking-widest block">
               {locale === 'vi' ? 'Thông tin đóng gói' : 'Packaging Information'}
             </span>
-            <h3 className="text-2xl font-black text-slate-900 leading-tight">
-              {packSize}
-            </h3>
+            <h3 className="text-2xl font-black text-slate-900 leading-tight">{packSize}</h3>
             <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium">
               {locale === 'vi'
                 ? `Sản phẩm ${skuCode} được đóng gói trong thùng carton tiêu chuẩn cao, giúp chống ẩm mốc và va đập trong quá trình vận chuyển cũng như lưu kho. Mỗi thùng chứa đúng quy chuẩn ${packSize}, cực kỳ thuận tiện cho việc quản lý xuất nhập tồn kho bán buôn.`
@@ -221,9 +251,9 @@ export default function ProductTabs({
           <Link
             key={ind.id}
             href={`/${locale}/solutions?industry=${ind.slug}`}
-            className="flex flex-col items-center justify-center p-6 rounded-xl border border-slate-200/80 bg-white hover:border-blue-500 hover:shadow-md transition-all text-center group"
+            className="flex flex-col items-center justify-center p-6 rounded-xl border border-slate-200/80 bg-white hover:border-blue-500 hover:shadow-md transition-[color,background-color,border-color,box-shadow,opacity,transform] text-center group"
           >
-            <div className="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center text-slate-500 group-hover:bg-blue-50 group-hover:text-blue-600 mb-4 shrink-0 transition-colors">
+            <div className="mb-4 flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-slate-50 text-slate-500 transition-colors group-hover:bg-brand/10 group-hover:text-brand">
               <Cpu className="h-5 w-5" />
             </div>
             <span className="text-sm font-bold text-slate-700 group-hover:text-blue-600 transition-colors">
@@ -240,14 +270,15 @@ export default function ProductTabs({
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 py-4">
         {standards.map((std) => (
-          <div key={std.id} className="flex items-start gap-4 p-5 bg-white border border-slate-200/80 rounded-xl shadow-sm">
+          <div
+            key={std.id}
+            className="flex items-start gap-4 p-5 bg-white border border-slate-200/80 rounded-xl shadow-sm"
+          >
             <div className="w-12 h-12 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
               <Award className="h-6 w-6" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-800">
-                {getTranslatedName(std, locale)}
-              </h4>
+              <h4 className="text-sm font-bold text-slate-800">{getTranslatedName(std, locale)}</h4>
               {getTranslatedDescription(std, locale) && (
                 <p className="text-xs text-slate-500 leading-relaxed mt-1 font-medium">
                   {getTranslatedDescription(std, locale)}
@@ -263,15 +294,33 @@ export default function ProductTabs({
   // Render mock reviews tab content
   const renderReviewsContent = () => {
     const reviews = [
-      { author: 'Trần Minh H.', company: 'Samsung Electro-Mechanics', text: 'Chất lượng đóng gói rất đồng đều. Hàng chống tĩnh điện đo thử đạt chuẩn điện trở yêu cầu.', rating: 5, date: '12/06/2026' },
-      { author: 'Nguyễn Thuỳ D.', company: 'Foxconn Bắc Giang', text: 'Khả năng chịu kéo căng tốt, rất ít khi bị rách khi quấn góc pallet sắc nhọn.', rating: 4, date: '28/05/2026' },
-      { author: 'Yamada T.', company: 'Nidec Vietnam', text: 'Giao hàng đúng hẹn, đầy đủ chứng chỉ chất lượng CO/CQ cho từng đợt hàng.', rating: 5, date: '14/05/2026' }
+      {
+        author: 'Trần Minh H.',
+        company: 'Samsung Electro-Mechanics',
+        text: 'Chất lượng đóng gói rất đồng đều. Hàng chống tĩnh điện đo thử đạt chuẩn điện trở yêu cầu.',
+        rating: 5,
+        date: '12/06/2026'
+      },
+      {
+        author: 'Nguyễn Thuỳ D.',
+        company: 'Foxconn Bắc Giang',
+        text: 'Khả năng chịu kéo căng tốt, rất ít khi bị rách khi quấn góc pallet sắc nhọn.',
+        rating: 4,
+        date: '28/05/2026'
+      },
+      {
+        author: 'Yamada T.',
+        company: 'Nidec Vietnam',
+        text: 'Giao hàng đúng hẹn, đầy đủ chứng chỉ chất lượng CO/CQ cho từng đợt hàng.',
+        rating: 5,
+        date: '14/05/2026'
+      }
     ];
 
     return (
       <div className="space-y-6 py-4">
         {/* Rating Summary Card */}
-        <div className="bg-[#F8FAFC] border border-slate-200/60 p-6 rounded-xl flex flex-col sm:flex-row gap-6 items-center justify-between">
+        <div className="bg-background border border-slate-200/60 p-6 rounded-xl flex flex-col sm:flex-row gap-6 items-center justify-between">
           <div className="text-center sm:text-left space-y-1">
             <p className="text-3xl font-black text-slate-900">4.7 / 5.0</p>
             <div className="flex text-amber-400 justify-center sm:justify-start">
@@ -279,7 +328,9 @@ export default function ProductTabs({
                 <Star key={i} className="h-4.5 w-4.5 fill-current" />
               ))}
             </div>
-            <p className="text-xs text-slate-400 font-semibold">12 đánh giá thực tế từ khách hàng doanh nghiệp</p>
+            <p className="text-xs text-slate-400 font-semibold">
+              12 đánh giá thực tế từ khách hàng doanh nghiệp
+            </p>
           </div>
           <div className="flex items-center gap-1.5 px-4 py-2.5 bg-white border border-slate-100 rounded-lg shadow-sm">
             <CheckCircle className="h-4.5 w-4.5 text-emerald-500" />
@@ -331,7 +382,7 @@ export default function ProductTabs({
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
                 className={cn(
-                  'text-sm pb-3 px-1 transition-all border-b-2 font-bold focus:outline-none',
+                  'text-sm pb-3 px-1 transition-[color,background-color,border-color,box-shadow,opacity,transform] border-b-2 font-bold focus:outline-none',
                   isActive
                     ? 'text-blue-600 border-blue-600'
                     : 'text-slate-400 border-transparent hover:text-slate-600'

@@ -32,10 +32,7 @@ export const revalidate = 0;
 //   - Without ?token=… (in-session path): require a session and redirect
 //     anonymous visitors to /login?next=/change-password so they come back
 //     here after signing in.
-export default async function ChangePasswordPage({
-  params: { locale },
-  searchParams
-}: Props) {
+export default async function ChangePasswordPage({ params: { locale }, searchParams }: Props) {
   setRequestLocale(locale);
   if (searchParams.token) return <ChangePasswordForm />;
   const user = await getCurrentUser();

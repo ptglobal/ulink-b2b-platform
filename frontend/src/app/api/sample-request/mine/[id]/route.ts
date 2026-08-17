@@ -16,10 +16,10 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     }
 
     const cookieHeader = getRequestCookieHeader(req);
-    const response = await proxyToDirectus(
-      `/items/sample_requests/${params.id}?fields=*`,
-      { method: 'GET', cookieHeader }
-    );
+    const response = await proxyToDirectus(`/items/sample_requests/${params.id}?fields=*`, {
+      method: 'GET',
+      cookieHeader
+    });
 
     if (!response.ok) {
       if (response.status === 403 || response.status === 404) {

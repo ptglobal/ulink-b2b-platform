@@ -1,32 +1,34 @@
-import Link from 'next/link';
-import { PhoneCall, Send } from 'lucide-react';
+import { PhoneCall, Send } from '@/components/icons';
+import { Link } from '@/i18n/navigation';
 
 export function LoginCta() {
   return (
-    <section className="py-8 my-4">
-      <div className="rounded-2xl bg-white p-8 border border-slate-100 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="flex flex-col gap-1">
-          <span className="text-xs font-semibold text-slate-500">Liên hệ trực tiếp</span>
-          <h2 className="text-xl sm:text-2xl font-bold text-slate-900">
+    <section className="bg-white px-4 py-12 sm:px-8 lg:px-16">
+      <div className="mx-auto flex max-w-[1120px] flex-col gap-7 border-t border-[#dfe5ef] pt-9 md:flex-row md:items-center md:justify-between">
+        <div>
+          <p className="text-[12px] font-semibold text-[#68758c]">Liên hệ trực tiếp</p>
+          <h2 className="mt-2 text-[23px] font-bold text-[#172540]">
             Kết nối với ULink Industries
           </h2>
-          <p className="text-xs text-slate-600">
-            Hãy liên hệ với chúng tôi để được tư vấn giải pháp tối ưu cho doanh nghiệp của bạn.
+          <p className="mt-2 max-w-[62ch] text-[13px] leading-5 text-[#5b6780]">
+            Đội ngũ ULink sẵn sàng tư vấn giải pháp và hỗ trợ quy trình mua sắm vật tư cho doanh
+            nghiệp.
           </p>
         </div>
-
-        <div className="flex items-center gap-3 shrink-0">
+        <div className="flex shrink-0 gap-3">
           <a
             href="tel:19006868"
-            className="inline-flex items-center gap-2 rounded-xl border border-[#0D4397] bg-white px-5 py-2.5 text-xs font-semibold text-[#0D4397] shadow-sm hover:bg-blue-50 transition-all"
+            className="inline-flex h-11 items-center gap-2 border border-[#1769e2] px-5 text-[13px] font-semibold text-[#1769e2]"
           >
-            <PhoneCall className="h-4 w-4" /> Gọi ngay
+            <PhoneCall className="h-4 w-4" />
+            Gọi ngay
           </a>
           <Link
             href="/contact"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#0D4397] px-6 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-[#0a387e] transition-all"
+            className="inline-flex h-11 items-center gap-2 bg-[#1769e2] px-5 text-[13px] font-semibold text-white"
           >
-            <Send className="h-4 w-4" /> Gửi yêu cầu
+            <Send className="h-4 w-4" />
+            Gửi yêu cầu
           </Link>
         </div>
       </div>

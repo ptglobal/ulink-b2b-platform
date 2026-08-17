@@ -1,19 +1,20 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 import {
   ArrowLeft,
   Calendar,
   User,
   Clock,
-    Share2,
+  Share2,
   FileText,
   CheckCircle2,
   BookOpen,
   ArrowRight,
   ShieldCheck
-} from 'lucide-react';
+} from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 
 export interface ResourceData {
@@ -38,6 +39,12 @@ interface ResourceDetailClientProps {
 }
 
 export function ResourceDetailClient({ data }: ResourceDetailClientProps) {
+  const [coverFailed, setCoverFailed] = useState(false);
+
+  useEffect(() => {
+    setCoverFailed(false);
+  }, [data.coverImage]);
+
   return (
     <article suppressHydrationWarning className="min-h-screen bg-slate-50/50 pb-16 pt-8">
       {/* ── BREADCRUMB HEADER ── */}
@@ -82,7 +89,7 @@ export function ResourceDetailClient({ data }: ResourceDetailClientProps) {
           </div>
 
           {/* Title */}
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#0F1E36] tracking-tight leading-snug">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-foreground tracking-tight leading-snug">
             {data.title}
           </h1>
 
@@ -108,15 +115,26 @@ export function ResourceDetailClient({ data }: ResourceDetailClientProps) {
           </div>
 
           {/* Cover Image Banner */}
-          <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-slate-100 shadow-md">
-            <Image
-              src={data.coverImage}
-              alt={data.title}
-              fill
-              priority
-              sizes="(max-width: 1024px) 100vw, 1000px"
-              className="object-cover object-center"
-            />
+          <div className="relative mt-8 aspect-[16/9] w-full overflow-hidden rounded-2xl border border-slate-100 bg-slate-100 shadow-md">
+            {data.coverImage && !coverFailed ? (
+              <Image
+                src={data.coverImage}
+                alt={data.title}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 1000px"
+                className="object-cover object-center"
+                onError={() => setCoverFailed(true)}
+              />
+            ) : (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-[linear-gradient(135deg,#edf3ff_0%,#f8faff_58%,#dce8ff_100%)] px-6 text-center text-brand">
+                <FileText className="h-12 w-12 stroke-[1.25]" aria-hidden="true" />
+                <p className="mt-4 max-w-xl text-sm font-bold text-slate-800">{data.title}</p>
+                <p className="mt-1 text-xs font-semibold uppercase tracking-[0.14em] text-brand/75">
+                  ULink Industries · Technical resource
+                </p>
+              </div>
+            )}
           </div>
         </div>
       </header>
@@ -124,20 +142,20 @@ export function ResourceDetailClient({ data }: ResourceDetailClientProps) {
       {/* ── ARTICLE MAIN CONTENT BODY ── */}
       <main className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8 mt-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          
           {/* Main Column */}
           <div className="lg:col-span-8 bg-white p-6 sm:p-10 rounded-3xl border border-slate-200/80 shadow-sm">
-            
-
             {/* Highlights list if any */}
             {data.highlights && data.highlights.length > 0 && (
               <div className="mb-8 p-6 rounded-2xl bg-blue-50/60 border border-blue-100">
-                <h3 className="text-xs font-extrabold text-[#0D4397] uppercase tracking-wider mb-3">
+                <h3 className="text-xs font-extrabold text-brand uppercase tracking-wider mb-3">
                   Điểm nổi bật của giải pháp
                 </h3>
                 <ul className="space-y-2.5">
                   {data.highlights.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2.5 text-xs sm:text-sm font-semibold text-slate-800">
+                    <li
+                      key={idx}
+                      className="flex items-start gap-2.5 text-xs sm:text-sm font-semibold text-slate-800"
+                    >
                       <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
                       <span>{item}</span>
                     </li>
@@ -162,7 +180,7 @@ export function ResourceDetailClient({ data }: ResourceDetailClientProps) {
                 onClick={() => {
                   if (typeof window !== 'undefined') {
                     navigator.clipboard.writeText(window.location.href);
-                    alert('Đã sao chép đường dẫn bài viết!');
+                    toast.success('Đã sao chép đường dẫn bài viết!');
                   }
                 }}
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg border border-slate-200 text-xs font-bold text-slate-600 hover:bg-slate-50 transition-colors"
@@ -177,9 +195,10 @@ export function ResourceDetailClient({ data }: ResourceDetailClientProps) {
           <aside className="lg:col-span-4 space-y-6">
             {/* Quick Contact Widget */}
             <div className="p-6 rounded-3xl bg-white border border-slate-200/80 shadow-sm">
-              <h3 className="text-base font-extrabold text-[#0F1E36]">Cần tư vấn giải pháp?</h3>
+              <h3 className="text-base font-extrabold text-foreground">Cần tư vấn giải pháp?</h3>
               <p className="text-xs text-slate-500 mt-2 leading-relaxed font-medium">
-                Đội ngũ kỹ sư phòng sạch ULink sẵn sàng tư vấn mẫu sản phẩm và gửi báo giá chi tiết trong 24h.
+                Đội ngũ kỹ sư phòng sạch ULink sẵn sàng tư vấn mẫu sản phẩm và gửi báo giá chi tiết
+                trong 24h.
               </p>
               <Link
                 href="/quick-order"
@@ -197,7 +216,8 @@ export function ResourceDetailClient({ data }: ResourceDetailClientProps) {
               </span>
               <h4 className="text-sm font-extrabold text-white">Giao hàng 2H tại các KCN</h4>
               <p className="text-xs text-slate-300 mt-2 leading-relaxed">
-                Các Hub sẵn kho tại Bắc Ninh, Hải Phòng, Đồng Nai và Bình Dương hỗ trợ giao nhanh 24/7.
+                Các Hub sẵn kho tại Bắc Ninh, Hải Phòng, Đồng Nai và Bình Dương hỗ trợ giao nhanh
+                24/7.
               </p>
               <Link
                 href="/regional-hubs"
@@ -207,7 +227,6 @@ export function ResourceDetailClient({ data }: ResourceDetailClientProps) {
               </Link>
             </div>
           </aside>
-
         </div>
       </main>
     </article>

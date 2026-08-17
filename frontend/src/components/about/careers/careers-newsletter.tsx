@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Mail, Send } from 'lucide-react';
+import { Mail, Send } from '@/components/icons';
 
 export function CareersNewsletter() {
   const [submitted, setSubmitted] = useState(false);
@@ -24,7 +24,8 @@ export function CareersNewsletter() {
               Đăng ký nhận tin tuyển dụng
             </h2>
             <p className="text-xs sm:text-sm text-blue-100 leading-relaxed">
-              Nhận thông báo ngay khi có vị trí làm việc mới phù hợp với kỹ năng và định hướng phát triển của bạn.
+              Nhận thông báo ngay khi có vị trí làm việc mới phù hợp với kỹ năng và định hướng phát
+              triển của bạn.
             </p>
           </div>
 
@@ -33,7 +34,9 @@ export function CareersNewsletter() {
             {submitted ? (
               <div className="rounded-xl bg-white/20 p-4 text-center text-white backdrop-blur">
                 <p className="font-bold text-sm">Cảm ơn bạn đã đăng ký!</p>
-                <p className="text-xs mt-1">Chúng tôi sẽ gửi thông báo công việc mới tới email của bạn.</p>
+                <p className="text-xs mt-1">
+                  Chúng tôi sẽ gửi thông báo công việc mới tới email của bạn.
+                </p>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3">
@@ -45,7 +48,7 @@ export function CareersNewsletter() {
                 />
                 <button
                   type="submit"
-                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-xs font-bold text-white shadow-md hover:bg-slate-800 transition-all"
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 py-3 text-xs font-bold text-white shadow-md hover:bg-slate-800 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
                 >
                   <Send className="h-4 w-4" /> Đăng ký ngay
                 </button>

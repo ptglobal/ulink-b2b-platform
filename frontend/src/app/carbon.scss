@@ -1,0 +1,7 @@
+@use '@carbon/react';
+
+/*
+ * Carbon owns component reset, IBM Plex faces, component states and theme
+ * variables. ULink additions live in globals.css and only compose Carbon
+ * primitives; they do not fork Carbon component internals.
+ */

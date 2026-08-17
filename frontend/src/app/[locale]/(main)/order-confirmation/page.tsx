@@ -34,11 +34,7 @@ export default async function OrderConfirmationPage({ params: { locale } }: Prop
 
   return (
     <section className="relative overflow-hidden bg-white min-h-screen py-8 lg:py-12">
-      <OrderConfirmationClient
-        user={user}
-        locale={locale}
-        dbProductMap={dbProductMap}
-      />
+      <OrderConfirmationClient user={user} locale={locale} dbProductMap={dbProductMap} />
     </section>
   );
 }

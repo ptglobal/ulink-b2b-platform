@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { ArrowRight, Calendar, User } from 'lucide-react';
+import { ArrowRight, Calendar, User } from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 import { ABOUT_NEWS_ARTICLES } from './about-news-data';
 
@@ -21,10 +21,16 @@ export function AboutNews() {
             key={item.id}
             href={`/about/news/${item.id}`}
             aria-label={`Xem chi tiết bài viết: ${item.title}`}
-            className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-all hover:shadow-md"
+            className="group flex h-full flex-col overflow-hidden rounded-xl border border-slate-100 bg-white shadow-sm transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:shadow-md"
           >
             <div className="relative aspect-[16/10] w-full overflow-hidden bg-slate-100">
-              <Image src={item.coverImage} alt={item.title} fill className="object-cover" />
+              <Image
+                src={item.coverImage}
+                alt={item.title}
+                fill
+                sizes="(max-width: 639px) 100vw, (max-width: 1023px) 50vw, 25vw"
+                className="object-cover"
+              />
             </div>
             <div className="flex flex-1 flex-col p-5">
               <div className="mb-2 flex items-center gap-3 text-xs text-slate-500">

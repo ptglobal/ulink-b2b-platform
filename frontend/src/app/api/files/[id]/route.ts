@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
+import { getDirectusUrl, normalizeSecret } from '@/lib/directus-runtime.mjs';
+import cmsAssetManifest from '@/generated/cms-asset-manifest.json';
 
 /**
  * GET /api/files/[id]
@@ -13,8 +14,13 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     return NextResponse.json({ error: 'Missing file ID' }, { status: 400 });
   }
 
+  const snapshotPath = (cmsAssetManifest as Record<string, string>)[id];
+  if (snapshotPath) {
+    return NextResponse.redirect(new URL(snapshotPath, req.url), 307);
+  }
+
   const directusUrl = getDirectusUrl();
-  const token = process.env.DIRECTUS_TOKEN;
+  const token = normalizeSecret(process.env.DIRECTUS_TOKEN);
   const url = new URL(req.url);
   const isDownload = url.searchParams.has('download');
 
@@ -56,9 +62,6 @@ export async function GET(req: Request, { params }: { params: { id: string } }) 
     });
   } catch (err) {
     console.error('File proxy failed:', err);
-    return NextResponse.json(
-      { error: 'Failed to fetch file' },
-      { status: 502 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch file' }, { status: 502 });
   }
 }

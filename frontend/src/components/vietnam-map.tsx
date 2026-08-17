@@ -16,14 +16,6 @@ export type ClusterMarker = {
   lon: number;
 };
 
-/** Fallback clusters if none are provided via props */
-const DEFAULT_CLUSTERS: ClusterMarker[] = [
-  { id: '01', lat: 21.12, lon: 106.07 },  // Bắc Ninh
-  { id: '02', lat: 20.65, lon: 106.05 },  // Hưng Yên
-  { id: '03', lat: 20.86, lon: 106.68 },  // Hải Phòng
-  { id: '04', lat: 10.95, lon: 106.83 },  // Đồng Nai
-];
-
 // Must match the projection used to generate the SVG
 const PAD = 15;
 const VIEW_W = 380;
@@ -55,32 +47,18 @@ function computeListTargets(count: number): number[] {
   const step = usable / (count - 1);
   const scale = VIEW_H / containerHeight;
 
-  return Array.from({ length: count }, (_, i) =>
-    Math.round((paddingY + i * step) * scale)
-  );
-}
-
-/**
- * Compute staggered bend X positions so connector lines don't overlap.
- */
-function computeBendXPositions(count: number): number[] {
-  const baseX = 270;
-  const stepX = 25;
-  return Array.from({ length: count }, (_, i) =>
-    Math.min(baseX + i * stepX, VIEW_W - 10)
-  );
+  return Array.from({ length: count }, (_, i) => Math.round((paddingY + i * step) * scale));
 }
 
 interface VietnamMapProps {
   className?: string;
-  /** Dynamic cluster markers — falls back to default hardcoded clusters */
+  /** Dynamic cluster markers supplied by Directus. */
   clusters?: ClusterMarker[];
 }
 
 export function VietnamMap({ className, clusters }: VietnamMapProps) {
-  const activeMarkers = clusters && clusters.length > 0 ? clusters : DEFAULT_CLUSTERS;
+  const activeMarkers = clusters ?? [];
   const listTargets = computeListTargets(activeMarkers.length);
-  const bendXPositions = computeBendXPositions(activeMarkers.length);
 
   return (
     <div className={`relative ${className ?? ''}`}>
@@ -99,7 +77,7 @@ export function VietnamMap({ className, clusters }: VietnamMapProps) {
         viewBox={`0 0 ${VIEW_W} ${VIEW_H}`}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        className="absolute inset-0 h-full w-full overflow-visible"
+        className="absolute inset-0 h-full w-full overflow-hidden"
         aria-label="Các cụm công nghiệp"
       >
         {/* Connector lines: from node to hub card on the right */}
@@ -107,7 +85,7 @@ export function VietnamMap({ className, clusters }: VietnamMapProps) {
           const { x, y } = geoToSvg(cluster.lat, cluster.lon);
           const targetY = listTargets[i];
           // Extend far enough to reach the left edge of hub cards
-          const targetX = VIEW_W + 160;
+          const targetX = VIEW_W - 2;
           // Smooth cubic Bezier curve
           const d = `M ${x} ${y} C ${(x + targetX) / 2} ${y}, ${(x + targetX) / 2} ${targetY}, ${targetX} ${targetY}`;
           return (
@@ -149,12 +127,7 @@ export function VietnamMap({ className, clusters }: VietnamMapProps) {
                 opacity="0.6"
               />
               {/* Solid cyan center */}
-              <circle
-                cx={x}
-                cy={y}
-                r="3.5"
-                fill="#00e5ff"
-              />
+              <circle cx={x} cy={y} r="3.5" fill="#00e5ff" />
             </g>
           );
         })}

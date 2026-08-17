@@ -16,7 +16,7 @@ import {
   Zap,
   Truck,
   Factory
-} from 'lucide-react';
+} from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
 import { IndustryData } from './types';
@@ -76,17 +76,17 @@ export function IndustryHero({ industryData, locale, translations }: IndustryHer
               {translations.resources}
             </Link>
             <ChevronRight className="h-3 w-3" />
-            <span className="text-[#0F1E36] font-bold">{industryData.name}</span>
+            <span className="text-foreground font-bold">{industryData.name}</span>
           </nav>
 
           {/* Title & Icon Header */}
           <div className="flex items-start gap-4 sm:gap-6 mb-8">
             {/* Icon Container */}
             <div className="flex h-16 w-16 sm:h-20 sm:w-20 shrink-0 items-center justify-center bg-white border border-slate-100 shadow-md">
-              <HeroIcon className="h-8 w-8 sm:h-10 sm:w-10 text-[#1769E2]" />
+              <HeroIcon className="h-8 w-8 sm:h-10 sm:w-10 text-brand" />
             </div>
             <div className="space-y-2">
-              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight text-[#0F1E36]">
+              <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight leading-tight text-foreground">
                 {industryData.title}
               </h1>
               <p className="text-xs sm:text-sm text-slate-400 max-w-2xl leading-relaxed font-semibold">
@@ -100,10 +100,13 @@ export function IndustryHero({ industryData, locale, translations }: IndustryHer
             {industryData.valueProps.map((prop, idx) => {
               const PropIcon = iconMap[prop.iconName] || ShieldCheck;
               return (
-                <div key={idx} className={`flex gap-3 items-start ${idx > 0 ? 'md:pl-6' : ''} ${idx > 0 ? 'pt-4 md:pt-0' : ''}`}>
-                  <PropIcon className="h-6 w-6 text-[#1769E2] shrink-0 mt-0.5" />
+                <div
+                  key={idx}
+                  className={`flex gap-3 items-start ${idx > 0 ? 'md:pl-6' : ''} ${idx > 0 ? 'pt-4 md:pt-0' : ''}`}
+                >
+                  <PropIcon className="h-6 w-6 text-brand shrink-0 mt-0.5" />
                   <div className="space-y-0.5">
-                    <h4 className="text-xs sm:text-sm font-bold text-[#0F1E36] leading-snug">
+                    <h4 className="text-xs sm:text-sm font-bold text-foreground leading-snug">
                       {prop.title}
                     </h4>
                     <p className="text-[10px] sm:text-xs text-slate-400 leading-relaxed font-semibold">

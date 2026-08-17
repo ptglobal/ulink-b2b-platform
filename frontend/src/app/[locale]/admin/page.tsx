@@ -1,4 +1,3 @@
-import React from 'react';
 import { setRequestLocale } from 'next-intl/server';
 import { getCurrentUser } from '@/lib/auth-helpers';
 import { createWriteDirectusClient } from '@/lib/directus';
@@ -8,13 +7,18 @@ import {
   FileSpreadsheet,
   FileCheck,
   Package,
-  PlusCircle,
-  FileText,
+  Plus,
   Users,
   Mail,
-  TrendingUp,
-  ArrowRight
-} from 'lucide-react';
+  ArrowRight,
+  Activity,
+  Upload
+} from '@/components/icons';
+import { PageIntro } from '@/components/ui/page-intro';
+import { Badge } from '@/components/ui/badge';
+import { Surface, SurfaceContent, SurfaceDescription, SurfaceHeader, SurfaceTitle } from '@/components/ui/surface';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 
 interface Props {
   params: { locale: string };
@@ -23,15 +27,14 @@ interface Props {
 export default async function AdminDashboardPage({ params: { locale } }: Props) {
   setRequestLocale(locale);
   const user = await getCurrentUser();
-
-  // Try to fetch actual counts from Directus (with fallbacks if offline/unconfigured)
-  const stats = {
-    rfqs: 12,
-    sampleRequests: 4,
-    contacts: 0,
-    products: 48,
-    users: 5
+  const stats: Record<'rfqs' | 'sampleRequests' | 'contacts' | 'products' | 'users', number | null> = {
+    rfqs: null,
+    sampleRequests: null,
+    contacts: null,
+    products: null,
+    users: null
   };
+  let sourceAvailable = false;
 
   try {
     const client = createWriteDirectusClient();
@@ -42,182 +45,111 @@ export default async function AdminDashboardPage({ params: { locale } }: Props) 
       client.request(readItems('products', { fields: ['id'] })),
       client.request(readUsers({ fields: ['id'] }))
     ]);
-    if (rfqRes) stats.rfqs = rfqRes.length;
-    if (sampleRes) stats.sampleRequests = sampleRes.length;
-    if (contactRes) stats.contacts = contactRes.length;
-    if (productRes) stats.products = productRes.length;
-    if (usersRes) stats.users = usersRes.length;
-  } catch (err) {
-    console.warn('Directus stats fetch failed, using fallback numbers:', err);
+    stats.rfqs = rfqRes?.length ?? 0;
+    stats.sampleRequests = sampleRes?.length ?? 0;
+    stats.contacts = contactRes?.length ?? 0;
+    stats.products = productRes?.length ?? 0;
+    stats.users = usersRes?.length ?? 0;
+    sourceAvailable = true;
+  } catch (error) {
+    console.warn('Directus stats fetch failed:', error);
   }
 
   const kpis = [
-    {
-      label: 'Yêu cầu Báo giá',
-      value: stats.rfqs,
-      desc: 'Yêu cầu RFQ cần phản hồi',
-      icon: FileSpreadsheet,
-      color: 'bg-blue-500/10 text-blue-600 border-blue-100',
-      href: '/admin/rfqs'
-    },
-    {
-      label: 'Yêu cầu Hàng mẫu',
-      value: stats.sampleRequests,
-      desc: 'Hồ sơ chờ phê duyệt mẫu thử',
-      icon: FileCheck,
-      color: 'bg-orange-500/10 text-orange-600 border-orange-100',
-      href: '/admin/sample-requests'
-    },
-    {
-      label: 'Liên hệ gửi về',
-      value: stats.contacts,
-      desc: 'Tin nhắn từ form liên hệ',
-      icon: Mail,
-      color: 'bg-cyan-500/10 text-cyan-600 border-cyan-100',
-      href: '/admin/contact-requests'
-    },
-    {
-      label: 'Sản phẩm đang bán',
-      value: stats.products,
-      desc: 'SKUs đang hoạt động trên hệ thống',
-      icon: Package,
-      color: 'bg-green-500/10 text-green-600 border-green-100',
-      href: '/admin/products'
-    },
-    {
-      label: 'Tài khoản User',
-      value: stats.users,
-      desc: 'Tài khoản đăng nhập hệ thống',
-      icon: Users,
-      color: 'bg-purple-500/10 text-purple-600 border-purple-100',
-      href: '/admin/users'
-    }
+    { label: 'Yêu cầu báo giá', value: stats.rfqs, description: 'RFQ trong hệ thống', icon: FileSpreadsheet, href: '/admin/rfqs' },
+    { label: 'Yêu cầu hàng mẫu', value: stats.sampleRequests, description: 'Hồ sơ mẫu thử', icon: FileCheck, href: '/admin/sample-requests' },
+    { label: 'Liên hệ gửi về', value: stats.contacts, description: 'Tin nhắn khách hàng', icon: Mail, href: '/admin/contact-requests' },
+    { label: 'Sản phẩm', value: stats.products, description: 'Bản ghi danh mục', icon: Package, href: '/admin/products' },
+    { label: 'Tài khoản', value: stats.users, description: 'Người dùng hệ thống', icon: Users, href: '/admin/users' }
+  ];
+
+  const queues = [
+    { label: 'Xử lý yêu cầu báo giá', description: 'Kiểm tra nhu cầu, SKU, số lượng và thời hạn phản hồi.', value: stats.rfqs, href: '/admin/rfqs', icon: FileSpreadsheet },
+    { label: 'Duyệt yêu cầu hàng mẫu', description: 'Theo dõi quyết định, địa chỉ nhận và phản hồi của khách hàng.', value: stats.sampleRequests, href: '/admin/sample-requests', icon: FileCheck },
+    { label: 'Phản hồi liên hệ mới', description: 'Phân loại yêu cầu tư vấn trước khi chuyển cho đội phụ trách.', value: stats.contacts, href: '/admin/contact-requests', icon: Mail }
   ];
 
   return (
-    <div className="w-full px-4 py-8 sm:px-8 lg:px-12">
-      {/* Header Welcome Section */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-100 pb-6 mb-8">
-        <div>
-          <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
-            Trang chủ Quản trị
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
-            Chào mừng quay trở lại, {user?.first_name || 'Admin'}
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
-            Hệ thống quản lý thông tin B2B ULink Industries.
-          </p>
-        </div>
-      </div>
-
-      {/* Grid of KPI Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
-        {kpis.map((kpi, idx) => (
-          <Link
-            key={idx}
-            href={kpi.href}
-            className="block bg-white border border-slate-100 hover:border-slate-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-all group"
-          >
-            <div className="flex items-center justify-between mb-4">
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center border ${kpi.color}`}>
-                <kpi.icon className="h-5 w-5" />
-              </div>
-              <TrendingUp className="h-4 w-4 text-slate-350 opacity-0 group-hover:opacity-100 transition-opacity" />
-            </div>
-            <span className="text-xs text-slate-400 font-bold tracking-tight block">
-              {kpi.label}
-            </span>
-            <span className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight block mt-1">
-              {kpi.value}
-            </span>
-            <span className="text-[10px] text-slate-500 font-medium block mt-2">
-              {kpi.desc}
-            </span>
+    <div className="pb-12">
+      <PageIntro
+        eyebrow="ULINK / OPERATIONS"
+        title={`Chào ${user?.first_name || 'Admin'}`}
+        description="Theo dõi nhu cầu B2B, danh mục sản phẩm và các hàng đợi vận hành từ một hệ thống nhất quán."
+        meta={<Badge variant={sourceAvailable ? 'success' : 'warning'} dot>{sourceAvailable ? 'Directus đã đồng bộ' : 'Chưa kết nối nguồn dữ liệu'}</Badge>}
+        actions={
+          <Link href="/admin/products" className={cn(buttonVariants(), 'group')}>
+            <Plus className="h-4 w-4" aria-hidden="true" />
+            Tạo sản phẩm
           </Link>
-        ))}
-      </div>
+        }
+      />
 
-      {/* Grid of Main Content Areas */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Left Column: Quick Actions */}
-        <div className="lg:col-span-1 bg-white border border-slate-100 rounded-xl p-6 shadow-sm">
-          <h3 className="text-base font-extrabold text-[#0F1E36] mb-4">
-            Thao tác nhanh
-          </h3>
-          <div className="space-y-3">
-            <Link
-              href="/admin/products"
-              className="flex items-center justify-between p-3.5 rounded-lg border border-slate-50 hover:bg-slate-50 text-slate-700 hover:text-[#0F1E36] text-xs sm:text-sm font-bold transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <PlusCircle className="h-4.5 w-4.5 text-blue-600" />
-                <span>Thêm sản phẩm mới</span>
+      <div className="px-4 py-8 sm:px-6 lg:px-8 xl:px-10">
+        <section aria-label="Chỉ số vận hành" className="grid divide-y divide-border border-y border-border bg-card sm:grid-cols-2 sm:divide-x sm:divide-y-0 xl:grid-cols-5">
+          {kpis.map((kpi) => (
+            <Link key={kpi.href} href={kpi.href} className="group flex min-h-32 flex-col justify-between p-4 hover:bg-muted/60 sm:p-5">
+              <div className="flex items-center justify-between gap-3">
+                <kpi.icon className="h-4 w-4 text-muted-foreground group-hover:text-brand" aria-hidden="true" />
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground opacity-0 transition-[opacity,transform] group-hover:translate-x-0.5 group-hover:opacity-100" aria-hidden="true" />
               </div>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/admin/articles"
-              className="flex items-center justify-between p-3.5 rounded-lg border border-slate-50 hover:bg-slate-50 text-slate-700 hover:text-[#0F1E36] text-xs sm:text-sm font-bold transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <FileText className="h-4.5 w-4.5 text-blue-600" />
-                <span>Viết bài tin tức mới</span>
+              <div className="mt-5">
+                <p className="ulink-data text-2xl font-semibold tracking-[-0.03em]">{kpi.value ?? '—'}</p>
+                <p className="mt-1 text-xs font-medium text-foreground">{kpi.label}</p>
+                <p className="mt-1 text-[11px] text-muted-foreground">{kpi.description}</p>
               </div>
-              <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link
-              href="/admin/users"
-              className="flex items-center justify-between p-3.5 rounded-lg border border-slate-50 hover:bg-slate-50 text-slate-700 hover:text-[#0F1E36] text-xs sm:text-sm font-bold transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Users className="h-4.5 w-4.5 text-blue-600" />
-                <span>Quản lý tài khoản User</span>
-              </div>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link
-              href="/admin/contact-requests"
-              className="flex items-center justify-between p-3.5 rounded-lg border border-slate-50 hover:bg-slate-50 text-slate-700 hover:text-[#0F1E36] text-xs sm:text-sm font-bold transition-colors"
-            >
-              <div className="flex items-center gap-3">
-                <Mail className="h-4.5 w-4.5 text-cyan-600" />
-                <span>Hộp thư liên hệ</span>
-              </div>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </div>
-        </div>
+          ))}
+        </section>
 
-        {/* Right Columns: System Info Summary */}
-        <div className="lg:col-span-2 bg-white border border-slate-100 rounded-xl p-6 shadow-sm flex flex-col justify-between">
-          <div>
-            <h3 className="text-base font-extrabold text-[#0F1E36] mb-3">
-              Hướng dẫn Vận hành Hệ thống B2B
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed mb-4">
-              Đây là trang tổng quan vận hành hệ thống bán hàng và truyền thông B2B của ULink. Bạn có thể sử dụng menu bên trái để điều hướng nhanh đến các khu vực quản lý:
-            </p>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-slate-650 font-medium">
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
-                <span>Cập nhật và chỉnh sửa thông số kỹ thuật của sản phẩm trong thẻ <strong>Sản phẩm & SKUs</strong>.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
-                <span>Xuất bản cẩm nang, tin tức thị trường B2B trong thẻ <strong>Bài viết CMS</strong>.</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-1.5 shrink-0" />
-                <span>Phản hồi báo giá RFQ của khách hàng doanh nghiệp trong thẻ <strong>Yêu cầu Báo giá</strong>.</span>
-              </li>
-            </ul>
-          </div>
+        <div className="mt-8 grid gap-6 xl:grid-cols-[minmax(0,1.35fr)_minmax(20rem,0.65fr)]">
+          <Surface>
+            <SurfaceHeader className="sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <SurfaceTitle>Hàng đợi cần xử lý</SurfaceTitle>
+                <SurfaceDescription>Đi vào đúng nhóm hồ sơ mà không cần dò lại menu.</SurfaceDescription>
+              </div>
+              <Activity className="h-5 w-5 text-evidence" aria-hidden="true" />
+            </SurfaceHeader>
+            <SurfaceContent className="divide-y divide-border p-0">
+              {queues.map((queue) => (
+                <Link key={queue.href} href={queue.href} className="group flex items-center gap-4 px-5 py-5 hover:bg-muted/55 sm:px-6">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground group-hover:bg-brand/10 group-hover:text-brand">
+                    <queue.icon className="h-4 w-4" aria-hidden="true" />
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-sm font-semibold">{queue.label}</span>
+                    <span className="mt-1 block text-xs leading-5 text-muted-foreground">{queue.description}</span>
+                  </span>
+                  <span className="ulink-data text-sm font-medium text-muted-foreground">{queue.value ?? '—'}</span>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-brand" aria-hidden="true" />
+                </Link>
+              ))}
+            </SurfaceContent>
+          </Surface>
 
-          <div className="border-t border-slate-100 pt-5 mt-6 flex items-center justify-between text-xs font-semibold text-slate-400">
-            <span>Phiên bản Admin Panel v1.0.0</span>
-            <span>ULink B2B Platform</span>
-          </div>
+          <Surface>
+            <SurfaceHeader>
+              <SurfaceTitle>Thao tác nhanh</SurfaceTitle>
+              <SurfaceDescription>Các công việc danh mục thường dùng.</SurfaceDescription>
+            </SurfaceHeader>
+            <SurfaceContent className="grid gap-2">
+              <Link href="/admin/products" className="group flex min-h-12 items-center gap-3 rounded-md px-3 text-sm font-medium hover:bg-muted">
+                <Plus className="h-4 w-4 text-brand" aria-hidden="true" />
+                Thêm sản phẩm mới
+                <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+              <Link href="/admin/import" className="group flex min-h-12 items-center gap-3 rounded-md px-3 text-sm font-medium hover:bg-muted">
+                <Upload className="h-4 w-4 text-evidence" aria-hidden="true" />
+                Nhập dữ liệu thương mại
+                <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+              <Link href="/admin/users" className="group flex min-h-12 items-center gap-3 rounded-md px-3 text-sm font-medium hover:bg-muted">
+                <Users className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                Quản lý tài khoản
+                <ArrowRight className="ml-auto h-4 w-4 text-muted-foreground transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+            </SurfaceContent>
+          </Surface>
         </div>
       </div>
     </div>

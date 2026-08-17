@@ -25,7 +25,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     const response = await proxyToDirectus(`/items/rfq_requests/${id}`, {
       method: 'PATCH',
       headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify(body),
       cookieHeader

@@ -1,4 +1,9 @@
-export const COMMERCIAL_IMPORT_COLLECTIONS = ['customers', 'orders', 'invoices', 'deliveries'] as const;
+export const COMMERCIAL_IMPORT_COLLECTIONS = [
+  'customers',
+  'orders',
+  'invoices',
+  'deliveries'
+] as const;
 
 export type CommercialImportCollection = (typeof COMMERCIAL_IMPORT_COLLECTIONS)[number];
 export type CommercialImportMode = 'preview' | 'commit';
@@ -46,7 +51,10 @@ export interface CommercialImportCollectionMeta {
   sampleCsv: string;
 }
 
-export const COMMERCIAL_IMPORT_COLLECTION_META: Record<CommercialImportCollection, CommercialImportCollectionMeta> = {
+export const COMMERCIAL_IMPORT_COLLECTION_META: Record<
+  CommercialImportCollection,
+  CommercialImportCollectionMeta
+> = {
   customers: {
     label: 'Customers',
     description: 'Match by erp_ref first, then tax_code, then email.',
@@ -94,10 +102,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 export function isCommercialImportCollection(value: unknown): value is CommercialImportCollection {
-  return typeof value === 'string' && COMMERCIAL_IMPORT_COLLECTIONS.includes(value as CommercialImportCollection);
+  return (
+    typeof value === 'string' &&
+    COMMERCIAL_IMPORT_COLLECTIONS.includes(value as CommercialImportCollection)
+  );
 }
 
-export function normalizeCommercialImportMode(value: unknown, fallback: CommercialImportMode = 'preview'): CommercialImportMode {
+export function normalizeCommercialImportMode(
+  value: unknown,
+  fallback: CommercialImportMode = 'preview'
+): CommercialImportMode {
   return value === 'commit' ? 'commit' : fallback;
 }
 
@@ -117,13 +131,18 @@ function escapeCsvCell(value: string): string {
 export function buildCommercialImportErrorCsv(rows: CommercialImportErrorRow[]): string {
   const lines = ['row,field,message'];
   for (const row of rows) {
-    lines.push([row.row, row.field, row.message].map((value) => escapeCsvCell(String(value))).join(','));
+    lines.push(
+      [row.row, row.field, row.message].map((value) => escapeCsvCell(String(value))).join(',')
+    );
   }
 
   return lines.join('\n');
 }
 
-export function buildCommercialImportFormData(input: CommercialImportSubmission, file?: File | null): FormData {
+export function buildCommercialImportFormData(
+  input: CommercialImportSubmission,
+  file?: File | null
+): FormData {
   const formData = new FormData();
   formData.set('collection', input.collection);
   formData.set('mode', input.mode ?? 'preview');
@@ -152,7 +171,9 @@ async function readCommercialImportCsvText(formData: FormData): Promise<string> 
   return '';
 }
 
-export async function parseCommercialImportRequest(request: Request): Promise<CommercialImportSubmission> {
+export async function parseCommercialImportRequest(
+  request: Request
+): Promise<CommercialImportSubmission> {
   const contentType = request.headers.get('content-type') ?? '';
 
   let body: Record<string, unknown> = {};

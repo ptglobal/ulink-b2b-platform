@@ -2,23 +2,23 @@ const metrics = [
   {
     value: '99.7%',
     label: 'Tỷ lệ sản phẩm đạt chuẩn',
-    sub: 'Kiểm định nghiêm ngặt trước khi xuất kho',
+    sub: 'Kiểm định nghiêm ngặt trước khi xuất kho'
   },
   {
     value: '< 24h',
     label: 'Thời gian xử lý khiếu nại',
-    sub: 'Hỗ trợ kỹ thuật và đổi trả nhanh chóng',
+    sub: 'Hỗ trợ kỹ thuật và đổi trả nhanh chóng'
   },
   {
     value: '98.5%',
     label: 'Độ hài lòng khách hàng',
-    sub: 'Theo khảo sát thường niên năm 2025',
+    sub: 'Theo khảo sát thường niên năm 2025'
   },
   {
     value: '97.8%',
     label: 'Tỷ lệ giao hàng đúng hẹn',
-    sub: 'Cam kết tiến độ sản xuất cho nhà máy',
-  },
+    sub: 'Cam kết tiến độ sản xuất cho nhà máy'
+  }
 ];
 
 export function QualityCommitments() {
@@ -43,12 +43,8 @@ export function QualityCommitments() {
               <span className="text-3xl font-extrabold text-blue-600 sm:text-4xl">
                 {item.value}
               </span>
-              <span className="mt-2 text-sm font-bold text-slate-900">
-                {item.label}
-              </span>
-              <span className="mt-1 text-xs text-slate-500 max-w-[200px]">
-                {item.sub}
-              </span>
+              <span className="mt-2 text-sm font-bold text-slate-900">{item.label}</span>
+              <span className="mt-1 text-xs text-slate-500 max-w-[200px]">{item.sub}</span>
             </div>
           ))}
         </div>

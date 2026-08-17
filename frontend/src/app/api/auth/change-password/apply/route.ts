@@ -1,9 +1,6 @@
 import { handleRoute, jsonOk } from '@/lib/route-helpers';
 import { ApiError } from '@/lib/api-error';
-import {
-  changePasswordInSessionSchema,
-  type ChangePasswordInSessionInput
-} from '@/lib/validators';
+import { changePasswordInSessionSchema, type ChangePasswordInSessionInput } from '@/lib/validators';
 
 const DIRECTUS_URL = process.env.DIRECTUS_URL ?? 'http://localhost:8055';
 const SESSION_COOKIE = 'directus_session_token';
@@ -42,7 +39,11 @@ export async function POST(req: Request) {
       const cookies = parseCookies(cookieHeader);
       const sessionToken = cookies[SESSION_COOKIE];
       if (!sessionToken) {
-        throw new ApiError(401, 'unauthenticated', 'You must be signed in to change your password.');
+        throw new ApiError(
+          401,
+          'unauthenticated',
+          'You must be signed in to change your password.'
+        );
       }
 
       // 2. Identify the user via /users/me. We need their id and email for
@@ -167,7 +168,11 @@ export async function POST(req: Request) {
         // frontend can branch on it.
         const hookCode = body.errors?.[0]?.extensions?.code;
         if (hookCode === 'PASSWORD_SAME_AS_OLD') {
-          throw new ApiError(422, 'PASSWORD_SAME_AS_OLD', 'New password must be different from the current password.');
+          throw new ApiError(
+            422,
+            'PASSWORD_SAME_AS_OLD',
+            'New password must be different from the current password.'
+          );
         }
         const message = body.errors?.[0]?.message ?? 'Password change failed.';
         throw new ApiError(patchRes.status, 'change_failed', message);

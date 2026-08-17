@@ -7,6 +7,11 @@ export interface ProductCategory {
   name: string;
   slug: string;
   description?: string | null;
+  translations?: Array<{
+    languages_code: string | { code: string };
+    name?: string | null;
+    description?: string | null;
+  }>;
   parent?: number | ProductCategory | null;
   status: 'published' | 'draft' | 'archived';
 }
@@ -25,6 +30,7 @@ export interface ProductDocument {
   doc_type: 'tds' | 'msds' | 'certificate' | 'brochure';
   product: number | Product;
   file: string | DirectusFile | null;
+  cover?: string | DirectusFile | null;
   language?: string | null;
   status: 'published' | 'draft' | 'archived';
 }
@@ -116,6 +122,7 @@ export interface RegionalHub {
   orders_today?: number | null;
   order_capacity_per_day?: number | null;
   avg_delivery_time?: string | null;
+  avg_delivery_distance?: number | null;
   // Technical Team
   person_in_charge_name?: string | null;
   person_in_charge_title?: string | null;
@@ -158,6 +165,111 @@ export interface SiteSettings {
 export interface HomePage {
   title?: string | null;
   hero_section?: unknown;
+  content?: HomePageContent | null;
+  translations?: Array<{
+    id?: number;
+    languages_code: string | { code: string };
+    title?: string | null;
+    content?: HomePageContent | null;
+  }>;
+}
+
+export interface PagePresentation {
+  version: number;
+  heroMedia?: ContentMedia | null;
+  supportingMedia?: ContentMedia[];
+  /** Localized marketing copy managed from the Directus pages collection. */
+  copy?: Record<string, string | Record<string, string>>;
+}
+
+export interface ContentPage {
+  id: number;
+  slug: string;
+  status?: 'published' | 'draft' | 'archived';
+  title?: string | null;
+  content?: PagePresentation | null;
+  translations?: Array<{
+    id?: number;
+    languages_code: string | { code: string };
+    title?: string | null;
+    content?: PagePresentation | null;
+  }>;
+}
+
+export interface ContentAction {
+  label: string;
+  href: string;
+}
+
+export interface ContentMedia {
+  path: string;
+  role: string;
+  alt: string;
+}
+
+export interface HomePageContent {
+  version: number;
+  hero: {
+    kicker: string;
+    title: string;
+    description: string;
+    primaryAction: ContentAction;
+    secondaryAction: ContentAction;
+    assurance: string;
+    image: ContentMedia;
+  };
+  journey: {
+    title: string;
+    description: string;
+    items: Array<{
+      icon: 'document' | 'catalog' | 'quote' | 'delivery';
+      label: string;
+      title: string;
+      description: string;
+      href: string;
+      action: string;
+    }>;
+  };
+  about?: {
+    title: string;
+    description: string;
+    bullets: string[];
+    action: ContentAction;
+    image: ContentMedia;
+  };
+  materials: {
+    title: string;
+    description: string;
+    image: ContentMedia;
+    groups: Array<{ title: string; description: string; href: string; image?: ContentMedia }>;
+  };
+  proof: {
+    title: string;
+    description: string;
+    items: Array<{ value: string; label: string; detail: string }>;
+  };
+  audiences: {
+    title: string;
+    subtitle: string;
+    items: Array<{
+      icon: 'building' | 'factory';
+      title: string;
+      description: string;
+      bullets: string[];
+      action: ContentAction;
+    }>;
+  };
+  governance: {
+    title: string;
+    description: string;
+    items: Array<{ title: string; description: string; href: string }>;
+  };
+  cta: {
+    title: string;
+    description: string;
+    primaryAction: ContentAction;
+    secondaryAction: ContentAction;
+  };
 }
 
 export interface RfqRequest {
@@ -176,7 +288,11 @@ export interface RfqRequest {
   source?: 'web' | 'portal';
   user?: string | number | { id: string };
   hub?: string | number | RegionalHub | null;
-  assigned_sales?: string | number | { id: string; first_name?: string; last_name?: string; email?: string; avatar?: string } | null;
+  assigned_sales?:
+    | string
+    | number
+    | { id: string; first_name?: string; last_name?: string; email?: string; avatar?: string }
+    | null;
   created_at?: string;
   approval_note?: string | null;
   reject_reason?: string | null;
@@ -237,6 +353,24 @@ export interface ContactRequest {
   created_at?: string;
 }
 
+export interface EventRegistration {
+  id?: number | string;
+  reference_code: string;
+  event_slug: string;
+  event_title: string;
+  full_name: string;
+  email: string;
+  phone: string;
+  company: string;
+  job_title?: string | null;
+  discovery_source?: string | null;
+  note?: string | null;
+  consent: boolean;
+  registration_status: 'pending' | 'confirmed' | 'cancelled';
+  payment_status: 'pending' | 'paid' | 'failed' | 'not_required';
+  created_at?: string;
+}
+
 export interface SampleRequest {
   id?: number | string;
   contact_name: string;
@@ -262,7 +396,38 @@ export interface IsoCertification {
   number: string;
   issuer?: string | null;
   file?: string | null;
+  cover?: string | DirectusFile | null;
   status?: 'published' | 'draft' | 'archived';
+}
+
+export interface BlogPost {
+  id: number;
+  title: string;
+  slug: string;
+  cover?: string | null;
+  published_at?: string | null;
+  meta_description?: string | null;
+  status: 'published' | 'draft' | 'archived';
+  translations?: number[] | BlogPostTranslation[];
+}
+
+export interface BlogPostTranslation {
+  id: number;
+  blog_posts_id: number | BlogPost;
+  languages_code: string;
+  title: string;
+  body?: string | null;
+  meta_title?: string | null;
+  meta_description?: string | null;
+}
+
+export interface CaseStudy {
+  id: number;
+  title: string;
+  slug: string;
+  summary?: string | null;
+  cover?: string | null;
+  status: 'published' | 'draft' | 'archived';
 }
 
 export interface Schema {
@@ -280,14 +445,19 @@ export interface Schema {
   hub_team_members: HubTeamMember[];
   site_settings: SiteSettings;
   homepage: HomePage;
+  pages: ContentPage[];
   rfq_requests: RfqRequest[];
   rfq_assignment_rules: RfqAssignmentRule[];
   directus_notifications: DirectusNotification[];
   integration_events: IntegrationEvent[];
   newsletter_subscribers: NewsletterSubscriber[];
   contact_requests: ContactRequest[];
+  event_registrations: EventRegistration[];
   sample_requests: SampleRequest[];
   iso_certifications: IsoCertification[];
+  blog_posts: BlogPost[];
+  blog_posts_translations: BlogPostTranslation[];
+  case_studies: CaseStudy[];
 }
 
 const url = getDirectusUrl();
@@ -297,9 +467,15 @@ const url = getDirectusUrl();
  * Next.js App Router caches GET responses according to `next.revalidate`,
  * so Directus reads are served from cache and refreshed every hour.
  */
-// Tạm thời tắt cache ISR trong môi trường dev
+// Keep CMS reads fresh during local development, while allowing production
+// builds to prerender and ship the current Directus snapshot to the CDN.
 const isrFetch: typeof globalThis.fetch = (input, init) =>
-  globalThis.fetch(input, { ...init, cache: 'no-store' /* next: { revalidate: 3600 } */ });
+  globalThis.fetch(input, {
+    ...init,
+    ...(process.env.NODE_ENV === 'production'
+      ? { next: { revalidate: 3600 } }
+      : { cache: 'no-store' })
+  });
 
 /**
  * Uncached fetch for auth, mutations, and data that must always be fresh.
@@ -308,10 +484,14 @@ const noStoreFetch: typeof globalThis.fetch = (input, init) =>
   globalThis.fetch(input, { ...init, cache: 'no-store' });
 
 // Public Directus client for published content reads (ISR-cached).
-export const publicDirectus = createDirectus<Schema>(url, { globals: { fetch: isrFetch } }).with(rest());
+export const publicDirectus = createDirectus<Schema>(url, { globals: { fetch: isrFetch } }).with(
+  rest()
+);
 
 // Uncached Directus client for data that must always be fresh (e.g. auth checks, real-time counts).
-export const freshDirectus = createDirectus<Schema>(url, { globals: { fetch: noStoreFetch } }).with(rest());
+export const freshDirectus = createDirectus<Schema>(url, { globals: { fetch: noStoreFetch } }).with(
+  rest()
+);
 
 // Server-side client for mutations that must not rely on anonymous Directus access.
 export function createWriteDirectusClient(token = requireDirectusToken()) {

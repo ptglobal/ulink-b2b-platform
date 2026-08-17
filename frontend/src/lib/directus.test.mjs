@@ -21,3 +21,7 @@ test('requireDirectusToken throws when missing', () => {
 test('requireDirectusToken returns the provided token', () => {
   assert.equal(requireDirectusToken('token-123'), 'token-123');
 });
+
+test('requireDirectusToken strips BOM and surrounding whitespace', () => {
+  assert.equal(requireDirectusToken('\uFEFF  token-123  '), 'token-123');
+});

@@ -37,7 +37,10 @@ export async function POST(req: Request) {
       return jsonCreated({ id: (created as { id: number | string }).id });
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : String(err);
-      const errDetail = (err as Record<string, unknown>)?.errors ?? (err as Record<string, unknown>)?.response ?? '';
+      const errDetail =
+        (err as Record<string, unknown>)?.errors ??
+        (err as Record<string, unknown>)?.response ??
+        '';
       console.error('Sample request creation failed:', errMsg, JSON.stringify(errDetail, null, 2));
       return jsonErrorRaw(502, 'bad_gateway', `Failed to create sample request: ${errMsg}`);
     }
@@ -59,10 +62,10 @@ export async function GET(req: Request) {
     }
 
     const cookieHeader = getRequestCookieHeader(req);
-    const response = await proxyToDirectus(
-      '/items/sample_requests?fields=*&sort=-created_at,-id',
-      { method: 'GET', cookieHeader }
-    );
+    const response = await proxyToDirectus('/items/sample_requests?fields=*&sort=-created_at,-id', {
+      method: 'GET',
+      cookieHeader
+    });
 
     if (!response.ok) {
       const errorText = await response.text();

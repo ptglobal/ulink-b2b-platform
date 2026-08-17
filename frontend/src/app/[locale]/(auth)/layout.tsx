@@ -16,12 +16,13 @@ export default function AuthLayout({
   setRequestLocale(locale);
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-slate-50/50">
+    <div className="ulink-system flex min-h-screen w-full flex-col bg-background">
+      <a href="#auth-content" className="ulink-skip-link">
+        Skip to authentication form
+      </a>
       <SiteHeader />
-      <main className="flex-1 py-8">
-        <div className="mx-auto max-w-[1440px] px-4 sm:px-8 lg:px-16">
-          {children}
-        </div>
+      <main id="auth-content" className="flex-1 bg-[#f8faff]">
+        <div className="mx-auto w-full max-w-[1440px]">{children}</div>
       </main>
       <SiteFooter />
     </div>

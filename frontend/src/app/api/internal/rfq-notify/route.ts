@@ -15,6 +15,7 @@ import {
 } from '../../../../lib/rfq-notification';
 import { sendRfqSummaryEmail } from '../../../../lib/rfq-mailer';
 import { createWriteDirectusClient } from '../../../../lib/directus';
+import { requireDirectusToken } from '../../../../lib/directus-runtime.mjs';
 
 function readDirectusItem(...args: any[]) {
   return readItem(...(args as [never, never, never]));
@@ -63,7 +64,12 @@ function mapSalesOwner(value: unknown): RfqSalesOwnerRef | null {
 }
 
 function mapHub(value: unknown): RfqHubRef | null {
-  if (!isObjectRecord(value) || typeof value.id !== 'number' || typeof value.name !== 'string' || typeof value.slug !== 'string') {
+  if (
+    !isObjectRecord(value) ||
+    typeof value.id !== 'number' ||
+    typeof value.name !== 'string' ||
+    typeof value.slug !== 'string'
+  ) {
     return null;
   }
 
@@ -75,7 +81,12 @@ function mapHub(value: unknown): RfqHubRef | null {
 }
 
 function mapIndustry(value: unknown): RfqIndustryRef | null {
-  if (!isObjectRecord(value) || typeof value.id !== 'number' || typeof value.name !== 'string' || typeof value.slug !== 'string') {
+  if (
+    !isObjectRecord(value) ||
+    typeof value.id !== 'number' ||
+    typeof value.name !== 'string' ||
+    typeof value.slug !== 'string'
+  ) {
     return null;
   }
 
@@ -132,11 +143,9 @@ function mapRule(value: unknown): RfqAssignmentRule | null {
 }
 
 async function createDirectusNotification(payload: Record<string, unknown>) {
-  const baseUrl = process.env.DIRECTUS_URL ?? process.env.DIRECTUS_PUBLIC_URL ?? 'http://localhost:8055';
-  const token = process.env.DIRECTUS_TOKEN;
-  if (!token) {
-    throw new Error('DIRECTUS_TOKEN is required for notification writes.');
-  }
+  const baseUrl =
+    process.env.DIRECTUS_URL ?? process.env.DIRECTUS_PUBLIC_URL ?? 'http://localhost:8055';
+  const token = requireDirectusToken();
 
   const response = await fetch(`${baseUrl.replace(/\/$/, '')}/notifications`, {
     method: 'POST',
@@ -181,7 +190,11 @@ export async function POST(req: Request) {
   try {
     rfqId = parseRfqId(body);
   } catch (err) {
-    return errorJson(400, 'BAD_REQUEST', err instanceof Error ? err.message : 'RFQ id is required.');
+    return errorJson(
+      400,
+      'BAD_REQUEST',
+      err instanceof Error ? err.message : 'RFQ id is required.'
+    );
   }
 
   const directus = createWriteDirectusClient();
@@ -235,7 +248,9 @@ export async function POST(req: Request) {
 
     const rfq = mapRfqRecord(rfqRow);
     const siteSettings = siteSettingsRow as SiteSettingsRecord;
-    const rules = Array.isArray(rulesRow) ? rulesRow.map(mapRule).filter(Boolean) as RfqAssignmentRule[] : [];
+    const rules = Array.isArray(rulesRow)
+      ? (rulesRow.map(mapRule).filter(Boolean) as RfqAssignmentRule[])
+      : [];
     const assignment = resolveRfqAssignment({
       rfq,
       rules,
@@ -256,7 +271,9 @@ export async function POST(req: Request) {
           )
         : [];
     const industry =
-      Array.isArray(industryRows) && industryRows.length > 0 ? mapIndustry(industryRows[0]) : mapIndustry(rfq.industry);
+      Array.isArray(industryRows) && industryRows.length > 0
+        ? mapIndustry(industryRows[0])
+        : mapIndustry(rfq.industry);
     const assignedSales =
       rfq.assigned_sales ??
       (assignment.assignedSalesId
@@ -276,7 +293,9 @@ export async function POST(req: Request) {
       email: rfq.email,
       phone: rfq.phone,
       hubName: rfq.hub?.name ?? null,
-      industryName: industry?.name ?? (typeof rfq.industry === 'string' ? rfq.industry : rfq.industry?.name ?? null),
+      industryName:
+        industry?.name ??
+        (typeof rfq.industry === 'string' ? rfq.industry : (rfq.industry?.name ?? null)),
       message: rfq.message,
       lineItems: rfq.line_items,
       assignedSales

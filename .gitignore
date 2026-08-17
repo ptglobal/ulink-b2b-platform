@@ -5,6 +5,10 @@ node_modules/
 
 # next.js
 .next/
+.next.before-cloudflare/
+.open-next/
+.open-next.before-cloudflare/
+.wrangler/
 out/
 build/
 next-env.d.ts
@@ -37,5 +41,8 @@ Thumbs.db
 *.tsbuildinfo
 coverage/
 skills/
+.artifacts/
+.impeccable/
+.tmp-figma-audit-*/
 
 docs/index.html

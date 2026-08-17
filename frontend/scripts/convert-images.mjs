@@ -40,9 +40,7 @@ async function convert() {
       const beforeStat = await stat(pngPath);
       const beforeKb = beforeStat.size / 1024;
 
-      await sharp(pngPath)
-        .webp({ quality: WEBP_QUALITY })
-        .toFile(webpPath);
+      await sharp(pngPath).webp({ quality: WEBP_QUALITY }).toFile(webpPath);
 
       const afterStat = await stat(webpPath);
       const afterKb = afterStat.size / 1024;
@@ -66,7 +64,12 @@ async function convert() {
   }
 
   // Print results table
-  console.log('File'.padEnd(60), 'PNG (KB)'.padStart(10), 'WebP (KB)'.padStart(10), 'Saved'.padStart(8));
+  console.log(
+    'File'.padEnd(60),
+    'PNG (KB)'.padStart(10),
+    'WebP (KB)'.padStart(10),
+    'Saved'.padStart(8)
+  );
   console.log('─'.repeat(90));
 
   for (const r of results) {

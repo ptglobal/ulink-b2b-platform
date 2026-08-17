@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { MapPin, Phone, Mail, Clock, ArrowRight } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, ArrowRight } from '@/components/icons';
 import { useRouter } from '@/i18n/navigation';
 import { submitContactRequest } from '@/lib/contact-submit';
 
@@ -44,7 +44,7 @@ export function ContactInfoCards() {
   return (
     <section className="py-8 lg:py-12">
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        <div className="lg:col-span-4 rounded-xl border border-slate-100 bg-white p-6 shadow-sm flex flex-col gap-6">
+        <div className="flex flex-col gap-6 border border-slate-200 bg-white p-5 sm:p-6 lg:col-span-4">
           <h2 className="border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900">
             THÔNG TIN LIÊN HỆ
           </h2>
@@ -95,57 +95,66 @@ export function ContactInfoCards() {
           </div>
         </div>
 
-        <div className="lg:col-span-5 rounded-xl border border-slate-100 bg-white p-6 shadow-sm flex flex-col gap-4">
+        <div className="flex flex-col gap-4 border border-slate-200 bg-white p-5 sm:p-6 lg:col-span-5">
           <div>
             <h2 className="mb-1 text-xs font-bold uppercase tracking-wider text-slate-900">
               GỬI YÊU CẦU LIÊN HỆ
             </h2>
             <p className="text-[11px] text-slate-500">
-              Vui lòng điền thông tin, đội ngũ của chúng tôi sẽ liên hệ lại trong thời gian sớm nhất.
+              Vui lòng điền thông tin, đội ngũ của chúng tôi sẽ liên hệ lại trong thời gian sớm
+              nhất.
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-[11px] font-semibold text-slate-700">Họ và tên *</label>
+                <label className="mb-1 block text-[11px] font-semibold text-slate-700">
+                  Họ và tên *
+                </label>
                 <input
                   name="name"
                   type="text"
                   required
                   placeholder="Nhập họ và tên"
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                  className="h-11 w-full rounded-[3px] border border-slate-300 px-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-[11px] font-semibold text-slate-700">Email doanh nghiệp *</label>
+                <label className="mb-1 block text-[11px] font-semibold text-slate-700">
+                  Email doanh nghiệp *
+                </label>
                 <input
                   name="email"
                   type="email"
                   required
                   placeholder="contact@company.com"
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                  className="h-11 w-full rounded-[3px] border border-slate-300 px-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15"
                 />
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="mb-1 block text-[11px] font-semibold text-slate-700">Số điện thoại *</label>
+                <label className="mb-1 block text-[11px] font-semibold text-slate-700">
+                  Số điện thoại *
+                </label>
                 <input
                   name="phone"
                   type="tel"
                   required
                   placeholder="(+84) 123 456 789"
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                  className="h-11 w-full rounded-[3px] border border-slate-300 px-3 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15"
                 />
               </div>
               <div>
-                <label className="mb-1 block text-[11px] font-semibold text-slate-700">Chủ đề *</label>
+                <label className="mb-1 block text-[11px] font-semibold text-slate-700">
+                  Chủ đề *
+                </label>
                 <select
                   name="subject"
                   required
-                  className="w-full rounded-lg border border-slate-200 px-3 py-2 text-xs text-slate-700 outline-none focus:border-blue-600"
+                  className="h-11 w-full rounded-[3px] border border-slate-300 px-3 text-sm text-slate-700 outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15"
                 >
                   <option value="">Chọn chủ đề</option>
                   <option value="Báo giá vật tư MRO">Báo giá vật tư MRO</option>
@@ -157,24 +166,28 @@ export function ContactInfoCards() {
             </div>
 
             <div>
-              <label className="mb-1 block text-[11px] font-semibold text-slate-700">Nội dung yêu cầu *</label>
+              <label className="mb-1 block text-[11px] font-semibold text-slate-700">
+                Nội dung yêu cầu *
+              </label>
               <textarea
                 name="message"
                 rows={3}
                 required
                 placeholder="Nhập nội dung yêu cầu của bạn..."
-                className="w-full resize-none rounded-lg border border-slate-200 px-3 py-2 text-xs outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+                className="min-h-28 w-full resize-y rounded-[3px] border border-slate-300 px-3 py-2.5 text-sm outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/15"
               />
             </div>
 
             {error && (
-              <p className="rounded-lg bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700">{error}</p>
+              <p className="rounded-lg bg-rose-50 px-3 py-2 text-xs font-medium text-rose-700">
+                {error}
+              </p>
             )}
 
             <button
               type="submit"
               disabled={submitting}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-6 py-2.5 text-xs font-semibold text-white shadow-md transition-all hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+              className="ulink-pressable inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-[3px] bg-blue-600 px-6 text-sm font-semibold text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70 sm:w-auto"
             >
               {submitting ? 'Đang gửi...' : 'Gửi đi'}
               <ArrowRight className="h-3.5 w-3.5" />
@@ -182,7 +195,7 @@ export function ContactInfoCards() {
           </form>
         </div>
 
-        <div className="lg:col-span-3 rounded-xl border border-slate-100 bg-white p-6 shadow-sm flex flex-col justify-between gap-4">
+        <div className="flex flex-col justify-between gap-4 border border-slate-200 bg-white p-5 sm:p-6 lg:col-span-3">
           <div>
             <h2 className="border-b border-slate-100 pb-3 text-xs font-bold uppercase tracking-wider text-slate-900">
               VỊ TRÍ TRUNG TÂM
@@ -204,7 +217,7 @@ export function ContactInfoCards() {
             href="https://maps.google.com"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs font-semibold text-blue-600 hover:underline"
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-blue-600 hover:underline"
           >
             Xem bản đồ trên Google Maps
           </a>

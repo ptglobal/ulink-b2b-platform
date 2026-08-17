@@ -1,15 +1,17 @@
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingBag, ShieldCheck, Activity, Truck } from 'lucide-react';
+import { ShoppingBag, ShieldCheck, Activity, Truck } from '@/components/icons';
 import { getTranslations } from 'next-intl/server';
 
 interface FeaturedProductProps {
   locale: string;
+  copy?: Record<string, string>;
 }
 
-export default async function FeaturedProduct({ locale }: FeaturedProductProps) {
+export default async function FeaturedProduct({ locale, copy }: FeaturedProductProps) {
   const t = await getTranslations({ locale, namespace: 'solutions' });
+  const label = (key: string) => copy?.[key] || t(`featuredProduct.${key}`);
 
   return (
     <section className="w-full bg-white border-t border-gray-150 py-16 lg:py-24">
@@ -19,14 +21,14 @@ export default async function FeaturedProduct({ locale }: FeaturedProductProps) 
           <div className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-blue-600 shrink-0" />
             <span className="text-xs font-bold uppercase tracking-wider text-blue-600">
-              {t('featuredProduct.eyebrow')}
+              {label('eyebrow')}
             </span>
           </div>
           <h2 className="mt-4 text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-            {t('featuredProduct.title')}
+            {label('title')}
           </h2>
           <p className="mt-4 text-sm sm:text-base text-slate-500 max-w-4xl leading-relaxed">
-            {t('featuredProduct.subtitle')}
+            {label('subtitle')}
           </p>
         </div>
 
@@ -36,7 +38,7 @@ export default async function FeaturedProduct({ locale }: FeaturedProductProps) 
           <div className="lg:col-span-6 relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm bg-slate-50 border border-gray-100">
             <Image
               src="/images/home/section2/solution-packaging.webp"
-              alt={t('featuredProduct.title')}
+              alt={label('title')}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -51,7 +53,7 @@ export default async function FeaturedProduct({ locale }: FeaturedProductProps) 
                 <ShoppingBag className="h-5 w-5" />
               </div>
               <p className="text-sm text-slate-600 leading-relaxed font-medium">
-                {t('featuredProduct.feat1')}
+                {label('feat1')}
               </p>
             </div>
 
@@ -61,7 +63,7 @@ export default async function FeaturedProduct({ locale }: FeaturedProductProps) 
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <p className="text-sm text-slate-600 leading-relaxed font-medium">
-                {t('featuredProduct.feat2')}
+                {label('feat2')}
               </p>
             </div>
 
@@ -71,7 +73,7 @@ export default async function FeaturedProduct({ locale }: FeaturedProductProps) 
                 <Activity className="h-5 w-5" />
               </div>
               <p className="text-sm text-slate-600 leading-relaxed font-medium">
-                {t('featuredProduct.feat3')}
+                {label('feat3')}
               </p>
             </div>
 
@@ -81,7 +83,7 @@ export default async function FeaturedProduct({ locale }: FeaturedProductProps) 
                 <Truck className="h-5 w-5" />
               </div>
               <p className="text-sm text-slate-600 leading-relaxed font-medium">
-                {t('featuredProduct.feat4')}
+                {label('feat4')}
               </p>
             </div>
           </div>
@@ -93,7 +95,7 @@ export default async function FeaturedProduct({ locale }: FeaturedProductProps) 
           <div className="lg:col-span-6 relative aspect-[4/3] rounded-2xl overflow-hidden shadow-sm bg-slate-50 border border-gray-100">
             <Image
               src="/images/industries/pe_film.webp"
-              alt={t('featuredProduct.row2Heading')}
+              alt={label('row2Heading')}
               fill
               className="object-cover"
               sizes="(max-width: 1024px) 100vw, 50vw"
@@ -103,17 +105,17 @@ export default async function FeaturedProduct({ locale }: FeaturedProductProps) 
           {/* Right: Description & CTA */}
           <div className="lg:col-span-6 lg:pl-4">
             <h3 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight uppercase">
-              {t('featuredProduct.row2Heading')}
+              {label('row2Heading')}
             </h3>
             <p className="mt-5 text-sm sm:text-base text-slate-600 leading-relaxed font-medium">
-              {t('featuredProduct.row2Desc')}
+              {label('row2Desc')}
             </p>
             <div className="mt-8">
               <Link
-                href={`/${locale}/solutions/categories/industrial-packaging`}
+                href={`/${locale}/products/categories/industrial-packaging`}
                 className="inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-700 transition-colors"
               >
-                {t('featuredProduct.learnMore')}
+                {label('learnMore')}
               </Link>
             </div>
           </div>

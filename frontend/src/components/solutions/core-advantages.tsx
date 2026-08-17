@@ -1,5 +1,15 @@
 import React from 'react';
-import { ClipboardCheck, Globe, ShieldCheck, Award, CheckCircle2, Tag, BookOpen, Settings, Zap } from 'lucide-react';
+import {
+  ClipboardCheck,
+  Globe,
+  ShieldCheck,
+  Award,
+  CheckCircle2,
+  Tag,
+  BookOpen,
+  Settings,
+  Zap
+} from '@/components/icons';
 import { getTranslations } from 'next-intl/server';
 
 interface CoreAdvantagesProps {
@@ -12,23 +22,59 @@ export default async function CoreAdvantages({ locale }: CoreAdvantagesProps) {
   const summaryFeatures = [
     {
       icon: BookOpen,
-      title: locale === 'vi' ? 'Đội ngũ chuyên môn' : locale === 'ja' ? '専門家チーム' : 'Expert Team',
-      desc: locale === 'vi' ? 'Nhiều năm kinh nghiệm trong sản xuất và cung ứng cho nhiều ngành.' : locale === 'ja' ? 'さまざまな業界での多年にわたる製造と供給の実績。' : 'Years of experience in production & supply for various industries.'
+      title:
+        locale === 'vi' ? 'Đội ngũ chuyên môn' : locale === 'ja' ? '専門家チーム' : 'Expert Team',
+      desc:
+        locale === 'vi'
+          ? 'Nhiều năm kinh nghiệm trong sản xuất và cung ứng cho nhiều ngành.'
+          : locale === 'ja'
+            ? 'さまざまな業界での多年にわたる製造と供給の実績。'
+            : 'Years of experience in production & supply for various industries.'
     },
     {
       icon: Settings,
-      title: locale === 'vi' ? 'Giải pháp tùy chỉnh' : locale === 'ja' ? 'カスタムソリューション' : 'Custom Solutions',
-      desc: locale === 'vi' ? 'Sản xuất, tùy chỉnh linh hoạt theo yêu cầu đặc thù của từng Khách hàng.' : locale === 'ja' ? '各お客様の固有の要件に応じた柔軟な製造とカスタマイズ。' : 'Flexible manufacturing and customization tailored to each client.'
+      title:
+        locale === 'vi'
+          ? 'Giải pháp tùy chỉnh'
+          : locale === 'ja'
+            ? 'カスタムソリューション'
+            : 'Custom Solutions',
+      desc:
+        locale === 'vi'
+          ? 'Sản xuất, tùy chỉnh linh hoạt theo yêu cầu đặc thù của từng Khách hàng.'
+          : locale === 'ja'
+            ? '各お客様の固有の要件に応じた柔軟な製造とカスタマイズ。'
+            : 'Flexible manufacturing and customization tailored to each client.'
     },
     {
       icon: Globe,
-      title: locale === 'vi' ? 'Chuỗi cung ứng quốc tế' : locale === 'ja' ? 'グローバル供給' : 'Global Supply Chain',
-      desc: locale === 'vi' ? 'Nguồn hàng chất lượng, đạt chuẩn chất lượng theo tiêu chuẩn ISO.' : locale === 'ja' ? 'ISO規格に準拠した高品質な供給源。' : 'Quality sources conforming to ISO quality standards.'
+      title:
+        locale === 'vi'
+          ? 'Chuỗi cung ứng quốc tế'
+          : locale === 'ja'
+            ? 'グローバル供給'
+            : 'Global Supply Chain',
+      desc:
+        locale === 'vi'
+          ? 'Nguồn hàng chất lượng, đạt chuẩn chất lượng theo tiêu chuẩn ISO.'
+          : locale === 'ja'
+            ? 'ISO規格に準拠した高品質な供給源。'
+            : 'Quality sources conforming to ISO quality standards.'
     },
     {
       icon: Award,
-      title: locale === 'vi' ? 'Chất lượng & tiêu chuẩn' : locale === 'ja' ? '品質と規格' : 'Quality & Standards',
-      desc: locale === 'vi' ? 'Đầy đủ chứng nhận quốc tế ISO, GMP, RoHS.' : locale === 'ja' ? 'ISO、GMP、RoHSなどの主要な国際認証を取得。' : 'Full international certificates including ISO, GMP, RoHS.'
+      title:
+        locale === 'vi'
+          ? 'Chất lượng & tiêu chuẩn'
+          : locale === 'ja'
+            ? '品質と規格'
+            : 'Quality & Standards',
+      desc:
+        locale === 'vi'
+          ? 'Đầy đủ chứng nhận quốc tế ISO, GMP, RoHS.'
+          : locale === 'ja'
+            ? 'ISO、GMP、RoHSなどの主要な国際認証を取得。'
+            : 'Full international certificates including ISO, GMP, RoHS.'
     }
   ];
 
@@ -66,61 +112,59 @@ export default async function CoreAdvantages({ locale }: CoreAdvantagesProps) {
   ];
 
   return (
-    <div className="w-full flex flex-col">
-      {/* 4-Column Summary Bar */}
-      <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 divide-y md:divide-y-0 lg:divide-x divide-slate-100">
-        {summaryFeatures.map((feat, idx) => {
-          const IconComp = feat.icon;
-          return (
-            <div key={idx} className="flex items-start gap-4 pt-6 first:pt-0 md:pt-0 lg:px-4 lg:first:pl-0">
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
-                <IconComp className="h-5 w-5" />
+    <>
+      <section className="border-y border-[#e5e9f0] bg-white">
+        <div className="mx-auto grid w-[calc(100%_-_2rem)] max-w-[80rem] grid-cols-1 divide-y divide-[#e5e9f0] sm:w-[calc(100%_-_4rem)] md:grid-cols-2 md:divide-y-0 lg:grid-cols-4 lg:divide-x">
+          {summaryFeatures.map((feat, idx) => {
+            const IconComp = feat.icon;
+            return (
+              <div
+                key={idx}
+                className="flex min-h-[8.25rem] items-start gap-4 px-1 py-7 md:px-6 lg:first:pl-0 lg:last:pr-0"
+              >
+                <IconComp className="mt-0.5 h-5 w-5 shrink-0 text-[#27364f]" />
+                <div>
+                  <h3 className="text-[14px] font-semibold leading-snug text-[#17243b]">
+                    {feat.title}
+                  </h3>
+                  <p className="mt-2 text-[12px] leading-5 text-[#66738a]">{feat.desc}</p>
+                </div>
               </div>
-              <div className="space-y-1">
-                <h4 className="text-sm font-bold text-slate-900 leading-snug">
-                  {feat.title}
-                </h4>
-                <p className="text-xs text-slate-500 leading-relaxed font-medium">
-                  {feat.desc}
-                </p>
-              </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      </section>
 
-      {/* Core Advantages Heading */}
-      <div className="flex flex-col items-start mt-16 lg:mt-24 max-w-3xl">
-        <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight leading-tight">
-          {t('coreAdvantages.heading')}
-        </h2>
-        <p className="mt-3.5 text-sm text-slate-500 leading-relaxed font-medium">
-          {t('coreAdvantages.subtitle')}
-        </p>
-      </div>
+      <section className="bg-[#f4f6fa] py-12 sm:py-14 lg:py-16">
+        <div className="mx-auto w-[calc(100%_-_2rem)] max-w-[80rem] sm:w-[calc(100%_-_4rem)]">
+          <div className="max-w-3xl">
+            <h2 className="text-2xl font-semibold leading-tight tracking-[-0.025em] sm:text-[1.75rem]">
+              {t('coreAdvantages.heading')}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+              {t('coreAdvantages.subtitle')}
+            </p>
+          </div>
 
-      {/* Core Advantages Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
-        {advantages.map((adv, idx) => {
-          const IconComp = adv.icon;
-          return (
-            <div
-              key={idx}
-              className="group bg-white rounded-2xl border border-slate-100 p-8 shadow-sm hover:shadow-md transition-shadow flex flex-col items-start"
-            >
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0 mb-6">
-                <IconComp className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-bold text-[#0F1E36] mb-3">
-                {adv.title}
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-500 leading-relaxed font-medium">
-                {adv.desc}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-    </div>
+          <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {advantages.map((adv, idx) => {
+              const IconComp = adv.icon;
+              return (
+                <article
+                  key={idx}
+                  className="group min-h-[12.5rem] rounded-[3px] border border-[#e0e5ee] bg-white p-5 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-brand/40 hover:shadow-[0_10px_26px_rgba(20,42,92,.07)] sm:p-6"
+                >
+                  <span className="flex h-9 w-9 items-center justify-center rounded-[3px] bg-[#f0f3f9] text-[#283851]">
+                    <IconComp className="h-[18px] w-[18px]" />
+                  </span>
+                  <h3 className="mt-5 text-[15px] font-semibold text-foreground">{adv.title}</h3>
+                  <p className="mt-2 text-[12px] leading-5 text-muted-foreground">{adv.desc}</p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

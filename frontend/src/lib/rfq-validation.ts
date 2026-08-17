@@ -1,4 +1,3 @@
-
 export interface NormalizedRfqItem {
   sku: string;
   qty: number;
@@ -25,16 +24,16 @@ export interface NormalizedRfqPayload {
 export type RfqValidationResult =
   | { ok: true; value: NormalizedRfqPayload }
   | {
-    ok: false;
-    error: {
-      code: 'UNPROCESSABLE_ENTITY';
-      message: string;
-      details: {
-        missingFields?: string[];
-        invalidFields?: Record<string, string[]>;
+      ok: false;
+      error: {
+        code: 'UNPROCESSABLE_ENTITY';
+        message: string;
+        details: {
+          missingFields?: string[];
+          invalidFields?: Record<string, string[]>;
+        };
       };
     };
-  };
 
 interface ValidationState {
   missingFields: string[];
@@ -70,7 +69,11 @@ function cleanString(value: unknown): string | undefined {
   return trimmed.length > 0 ? trimmed : undefined;
 }
 
-function normalizeSlug(value: unknown, state: ValidationState, field: 'industry'): string | undefined {
+function normalizeSlug(
+  value: unknown,
+  state: ValidationState,
+  field: 'industry'
+): string | undefined {
   const raw = cleanString(value);
   if (!raw) {
     addMissing(state, field);
@@ -225,7 +228,11 @@ function normalizeScheduledDelivery(value: unknown): boolean {
   return false;
 }
 
-function normalizeDeliveryDate(value: unknown, scheduled: boolean, state: ValidationState): string | undefined {
+function normalizeDeliveryDate(
+  value: unknown,
+  scheduled: boolean,
+  state: ValidationState
+): string | undefined {
   if (!scheduled) {
     return undefined;
   }
@@ -306,7 +313,11 @@ export function validateRfqPayload(input: unknown): RfqValidationResult {
   const message = cleanString(record.message);
 
   const scheduledDelivery = normalizeScheduledDelivery(record.scheduled_delivery);
-  const requestedDeliveryDate = normalizeDeliveryDate(record.requested_delivery_date, scheduledDelivery, state);
+  const requestedDeliveryDate = normalizeDeliveryDate(
+    record.requested_delivery_date,
+    scheduledDelivery,
+    state
+  );
 
   const website = cleanString(record.website);
   const source = normalizeSource(record.source);

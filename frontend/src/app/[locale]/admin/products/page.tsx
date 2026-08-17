@@ -60,11 +60,23 @@ export default async function AdminProductsPage({ params: { locale } }: Props) {
       ),
       fetchProductCategories(),
       client.request(
-        readItems('product_attributes' as any, {
-          fields: ['id', 'name', 'slug', 'sort', 'options.id', 'options.value', 'options.sku_suffix', 'options.sort'],
-          sort: ['sort', 'id'],
-          limit: -1
-        } as any)
+        readItems(
+          'product_attributes' as any,
+          {
+            fields: [
+              'id',
+              'name',
+              'slug',
+              'sort',
+              'options.id',
+              'options.value',
+              'options.sku_suffix',
+              'options.sort'
+            ],
+            sort: ['sort', 'id'],
+            limit: -1
+          } as any
+        )
       )
     ]);
 
@@ -76,8 +88,12 @@ export default async function AdminProductsPage({ params: { locale } }: Props) {
   }
 
   return (
-    <section className="relative min-h-screen bg-slate-50">
-      <ProductsClient initialProducts={products} categories={categories} globalAttributes={globalAttributes} />
+    <section className="relative min-h-screen bg-background">
+      <ProductsClient
+        initialProducts={products}
+        categories={categories}
+        globalAttributes={globalAttributes}
+      />
     </section>
   );
 }

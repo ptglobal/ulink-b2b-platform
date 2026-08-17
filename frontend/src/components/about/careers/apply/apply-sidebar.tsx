@@ -1,4 +1,4 @@
-import { Briefcase, DollarSign, Clock, Calendar } from 'lucide-react';
+import { Briefcase, DollarSign, Clock, Calendar } from '@/components/icons';
 
 const processSteps = [
   { num: '1', title: 'Tiếp nhận hồ sơ' },
@@ -6,7 +6,7 @@ const processSteps = [
   { num: '3', title: 'Phỏng vấn' },
   { num: '4', title: 'Đánh giá' },
   { num: '5', title: 'Gửi Offer' },
-  { num: '6', title: 'Onboarding' },
+  { num: '6', title: 'Onboarding' }
 ];
 
 export function ApplySidebar() {

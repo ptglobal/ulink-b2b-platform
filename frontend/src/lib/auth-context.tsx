@@ -52,9 +52,9 @@ export interface AuthContextValue {
   user: AuthUser | null;
   error: string | null;
   /** Re-fetch /api/auth/me. */
-  refresh: () => Promise<void>;
+  refresh: () => Promise<AuthUser | null>;
   /** Sign in. Throws ApiError on failure. */
-  login: (email: string, password: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<AuthUser | null>;
   /** Register. Throws ApiError on failure. */
   register: (input: RegisterInput) => Promise<void>;
   /** Sign out and redirect to /login. */
@@ -80,7 +80,7 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
   // one tab, other tabs pick it up immediately without a manual reload.
   const channelRef = useRef<BroadcastChannel | null>(null);
 
-  const refresh = useCallback(async () => {
+  const refresh = useCallback(async (): Promise<AuthUser | null> => {
     setStatus((prev) => (prev === 'loading' ? prev : 'loading'));
     setError(null);
     try {
@@ -91,21 +91,24 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
       if (res.status === 401 || res.status === 403) {
         setUser(null);
         setStatus('unauthenticated');
-        return;
+        return null;
       }
       if (!res.ok) {
         setUser(null);
         setStatus('error');
         setError(`auth_me_failed_${res.status}`);
-        return;
+        return null;
       }
       const body = (await res.json()) as { data: AuthUser | null };
-      setUser(body.data ?? null);
-      setStatus(body.data ? 'authenticated' : 'unauthenticated');
+      const fetchedUser = body.data ?? null;
+      setUser(fetchedUser);
+      setStatus(fetchedUser ? 'authenticated' : 'unauthenticated');
+      return fetchedUser;
     } catch (err) {
       setUser(null);
       setStatus('error');
       setError(err instanceof Error ? err.message : 'network_error');
+      return null;
     }
   }, []);
 
@@ -125,7 +128,9 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
         localStorage.setItem('rfq-cart', saved);
         window.dispatchEvent(new Event('rfq-cart-changed'));
       }
-    } catch { /* ignore localStorage errors */ }
+    } catch {
+      /* ignore localStorage errors */
+    }
   }, [status, user?.id]);
 
   // Set up cross-tab BroadcastChannel listener
@@ -141,14 +146,18 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
         try {
           localStorage.removeItem('rfq-cart');
           window.dispatchEvent(new Event('rfq-cart-changed'));
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
         refresh().then(() => router.refresh());
       } else if (msg.type === 'logout') {
         // Another tab logged out — clear state and cart immediately
         try {
           localStorage.removeItem('rfq-cart');
           window.dispatchEvent(new Event('rfq-cart-changed'));
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
         setUser(null);
         setStatus('unauthenticated');
         setError(null);
@@ -162,76 +171,93 @@ export function AuthProvider({ children, initialUser = null }: AuthProviderProps
     };
   }, [refresh, router]);
 
-  const login = useCallback<AuthContextValue['login']>(async (email, password) => {
-    setError(null);
-    try {
-      // Clear anonymous/previous-session cart before logging in (TH2 fix)
-      try {
-        localStorage.removeItem('rfq-cart');
-        window.dispatchEvent(new Event('rfq-cart-changed'));
-      } catch { /* ignore localStorage errors */ }
-
-      await loginRequest(email, password);
-      await refresh();
-      // Notify other tabs that a login just happened
-      channelRef.current?.postMessage({ type: 'login' });
-    } catch (err) {
-      const message = err instanceof ApiError ? err.message : 'login_failed';
-      setError(message);
-      throw err;
-    }
-  }, [refresh]);
-
-  const register = useCallback<AuthContextValue['register']>(async (input) => {
-    setError(null);
-    try {
-      await registerRequest(input);
-      // Most registration flows auto-login on the server, so refresh the
-      // session shape and let the caller decide where to navigate.
-      await refresh();
-      channelRef.current?.postMessage({ type: 'login' });
-    } catch (err) {
-      const message = err instanceof ApiError ? err.message : 'register_failed';
-      setError(message);
-      throw err;
-    }
-  }, [refresh]);
-
-  const logout = useCallback<AuthContextValue['logout']>(async (redirectTo = '/login') => {
-    try {
-      await logoutRequest();
-    } finally {
-      // Save current cart to user-specific key before clearing
-      try {
-        if (user?.id) {
-          const cart = localStorage.getItem('rfq-cart');
-          if (cart) {
-            localStorage.setItem(`rfq-cart-${user.id}`, cart);
-          }
-        }
-        localStorage.removeItem('rfq-cart');
-        window.dispatchEvent(new Event('rfq-cart-changed'));
-      } catch { /* ignore localStorage errors */ }
-
-      setUser(null);
-      setStatus('unauthenticated');
+  const login = useCallback<AuthContextValue['login']>(
+    async (email, password) => {
       setError(null);
-      // Notify other tabs that a logout just happened
-      channelRef.current?.postMessage({ type: 'logout' });
-      router.push(redirectTo);
-      router.refresh();
-    }
-  }, [router, user]);
+      try {
+        // Clear anonymous/previous-session cart before logging in (TH2 fix)
+        try {
+          localStorage.removeItem('rfq-cart');
+          window.dispatchEvent(new Event('rfq-cart-changed'));
+        } catch {
+          /* ignore localStorage errors */
+        }
 
-  const value = useMemo<AuthContextValue>(() => ({
-    status,
-    user,
-    error,
-    refresh,
-    login,
-    register,
-    logout
-  }), [status, user, error, refresh, login, register, logout]);
+        await loginRequest(email, password);
+        const fetchedUser = await refresh();
+        // Notify other tabs that a login just happened
+        channelRef.current?.postMessage({ type: 'login' });
+        return fetchedUser;
+      } catch (err) {
+        const message = err instanceof ApiError ? err.message : 'login_failed';
+        setError(message);
+        throw err;
+      }
+    },
+    [refresh]
+  );
+
+  const register = useCallback<AuthContextValue['register']>(
+    async (input) => {
+      setError(null);
+      try {
+        await registerRequest(input);
+        // Most registration flows auto-login on the server, so refresh the
+        // session shape and let the caller decide where to navigate.
+        await refresh();
+        channelRef.current?.postMessage({ type: 'login' });
+      } catch (err) {
+        const message = err instanceof ApiError ? err.message : 'register_failed';
+        setError(message);
+        throw err;
+      }
+    },
+    [refresh]
+  );
+
+  const logout = useCallback<AuthContextValue['logout']>(
+    async (redirectTo = '/login') => {
+      try {
+        await logoutRequest();
+      } finally {
+        // Save current cart to user-specific key before clearing
+        try {
+          if (user?.id) {
+            const cart = localStorage.getItem('rfq-cart');
+            if (cart) {
+              localStorage.setItem(`rfq-cart-${user.id}`, cart);
+            }
+          }
+          localStorage.removeItem('rfq-cart');
+          window.dispatchEvent(new Event('rfq-cart-changed'));
+        } catch {
+          /* ignore localStorage errors */
+        }
+
+        setUser(null);
+        setStatus('unauthenticated');
+        setError(null);
+        // Notify other tabs that a logout just happened
+        channelRef.current?.postMessage({ type: 'logout' });
+        router.push(redirectTo);
+        router.refresh();
+      }
+    },
+    [router, user]
+  );
+
+  const value = useMemo<AuthContextValue>(
+    () => ({
+      status,
+      user,
+      error,
+      refresh,
+      login,
+      register,
+      logout
+    }),
+    [status, user, error, refresh, login, register, logout]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

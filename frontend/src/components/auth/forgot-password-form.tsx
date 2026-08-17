@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { Mail, ArrowRight, Loader2, CheckCircle2, RotateCw } from 'lucide-react';
+import { Mail, ArrowRight, Loader2, CheckCircle2, RotateCw } from '@/components/icons';
 import { Link } from '@/i18n/navigation';
 import { requestPasswordReset, AuthError } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -22,7 +22,9 @@ function readLockedUntil(): number | null {
         if (Number.isFinite(n) && n > Date.now()) return n;
       }
     }
-  } catch { /* SSR / quota */ }
+  } catch {
+    /* SSR / quota */
+  }
   return null;
 }
 
@@ -132,7 +134,10 @@ export function ForgotPasswordForm() {
             <p className="mt-1 text-xs">
               {t('resetPasswordLockedWithCountdown', {
                 mm: String(Math.max(0, Math.floor((lockedUntil! - now) / 60000))).padStart(2, '0'),
-                ss: String(Math.max(0, Math.floor(((lockedUntil! - now) % 60000) / 1000))).padStart(2, '0')
+                ss: String(Math.max(0, Math.floor(((lockedUntil! - now) % 60000) / 1000))).padStart(
+                  2,
+                  '0'
+                )
               })}
             </p>
           </div>
@@ -181,7 +186,10 @@ export function ForgotPasswordForm() {
         )}
 
         <p className="mt-6 text-sm text-muted-foreground">
-          <Link href="/login" className="inline-flex items-center gap-1 font-medium text-brand hover:underline">
+          <Link
+            href="/login"
+            className="inline-flex items-center gap-1 font-medium text-brand hover:underline"
+          >
             ← {t('backToLogin')}
           </Link>
         </p>
@@ -207,7 +215,10 @@ export function ForgotPasswordForm() {
           <p className="mt-1 text-xs">
             {t('resetPasswordLockedWithCountdown', {
               mm: String(Math.max(0, Math.floor((lockedUntil - now) / 60000))).padStart(2, '0'),
-              ss: String(Math.max(0, Math.floor(((lockedUntil - now) % 60000) / 1000))).padStart(2, '0')
+              ss: String(Math.max(0, Math.floor(((lockedUntil - now) % 60000) / 1000))).padStart(
+                2,
+                '0'
+              )
             })}
           </p>
         </div>
@@ -215,7 +226,10 @@ export function ForgotPasswordForm() {
 
       <form className="mt-6 space-y-4" onSubmit={onSubmit} noValidate>
         {formError && !isLocked && (
-          <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+          <p
+            role="alert"
+            className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+          >
             {formError}
           </p>
         )}
@@ -225,7 +239,10 @@ export function ForgotPasswordForm() {
             {t('emailLabel')}
           </label>
           <div className="relative">
-            <Mail className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Mail
+              className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <input
               id="email"
               name="email"
@@ -237,7 +254,11 @@ export function ForgotPasswordForm() {
               disabled={isLocked}
               aria-invalid={!!emailError}
               aria-describedby={emailError ? 'email-error' : undefined}
-              className={cn(inputBase, emailError ? 'border-destructive' : 'border-border', isLocked && 'opacity-50 cursor-not-allowed')}
+              className={cn(
+                inputBase,
+                emailError ? 'border-destructive' : 'border-border',
+                isLocked && 'opacity-50 cursor-not-allowed'
+              )}
             />
           </div>
           {emailError && (

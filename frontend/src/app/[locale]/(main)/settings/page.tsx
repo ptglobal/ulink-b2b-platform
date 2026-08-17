@@ -40,7 +40,9 @@ export default async function SettingsPage({ params: { locale } }: Props) {
     const cookieHeader = [
       session ? `directus_session_token=${session}` : null,
       refresh ? `directus_refresh_token=${refresh}` : null
-    ].filter(Boolean).join('; ');
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     if (cookieHeader) {
       const url = `${getDirectusUrl()}/items/customers?filter[user][_eq]=${encodeURIComponent(me!.id)}&limit=1&fields=id,company_name,contact_name,phone`;

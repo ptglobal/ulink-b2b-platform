@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Briefcase, MapPin, Clock, Calendar, DollarSign, Award, Share2 } from 'lucide-react';
+import { Briefcase, MapPin, Clock, Calendar, DollarSign, Award, Share2 } from '@/components/icons';
 
 export function JobDetailHeader() {
   return (
@@ -15,22 +15,26 @@ export function JobDetailHeader() {
               Chuyên viên Phát triển Kinh doanh B2B - Khu Công nghiệp
             </h1>
             <div className="mt-2.5 flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-600">
-              <span className="rounded-md bg-blue-50 px-2.5 py-1 text-blue-700">Phòng Kinh doanh B2B</span>
+              <span className="rounded-md bg-blue-50 px-2.5 py-1 text-blue-700">
+                Phòng Kinh doanh B2B
+              </span>
               <span className="rounded-md bg-slate-100 px-2.5 py-1 text-slate-700">Hà Nội</span>
               <span className="rounded-md bg-slate-100 px-2.5 py-1 text-slate-700">Full-time</span>
-              <span className="rounded-md bg-amber-50 px-2.5 py-1 text-amber-700">Hạn nộp: 30/08/2026</span>
+              <span className="rounded-md bg-amber-50 px-2.5 py-1 text-amber-700">
+                Hạn nộp: 30/08/2026
+              </span>
             </div>
           </div>
         </div>
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3 shrink-0">
-          <button className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-all">
+          <button className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-[color,background-color,border-color,box-shadow,opacity,transform]">
             <Share2 className="h-4 w-4" /> Chia sẻ
           </button>
           <Link
             href="/about/careers/b2b-sales/apply"
-            className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-blue-700 transition-all"
+            className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-6 py-2.5 text-xs font-semibold text-white shadow-md hover:bg-blue-700 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
           >
             Ứng tuyển ngay
           </Link>

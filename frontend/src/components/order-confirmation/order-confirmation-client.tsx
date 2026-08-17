@@ -12,7 +12,7 @@ import {
   ArrowLeft,
   ChevronRight,
   FileText
-} from 'lucide-react';
+} from '@/components/icons';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import Image from 'next/image';
@@ -42,7 +42,12 @@ export default function OrderConfirmationClient({
     if (locale === 'vi') {
       return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
     }
-    return '$' + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount / 25000);
+    return (
+      '$' +
+      new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        amount / 25000
+      )
+    );
   };
 
   const handleCopyTracking = () => {
@@ -53,9 +58,11 @@ export default function OrderConfirmationClient({
 
   return (
     <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 sm:px-8 lg:px-16 text-slate-800 text-left">
-      
       {/* Breadcrumbs */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+      <nav
+        aria-label="Breadcrumb"
+        className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium"
+      >
         <Link href="/" className="hover:text-brand transition-colors">
           Trang chủ
         </Link>
@@ -91,7 +98,7 @@ export default function OrderConfirmationClient({
         </div>
         <Link
           href="/order-tracking"
-          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-brand transition-all md:self-center"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-brand transition-[color,background-color,border-color,box-shadow,opacity,transform] md:self-center"
         >
           <ArrowLeft className="h-4 w-4" />
           Quay lại danh sách đơn hàng
@@ -103,7 +110,7 @@ export default function OrderConfirmationClient({
         <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
           Hành trình đơn hàng B2B
         </h3>
-        
+
         {/* Step Progress Bar - Checkout styled */}
         <div className="flex w-full overflow-hidden text-xs sm:text-sm font-semibold rounded border border-slate-100">
           {/* Step 1: Giỏ hàng */}
@@ -145,10 +152,8 @@ export default function OrderConfirmationClient({
 
       {/* Grid Columns */}
       <div className="grid gap-6 lg:grid-cols-12 pt-2">
-        
         {/* LEFT COLUMN: Shipping details, journey log, items list */}
         <div className="lg:col-span-8 space-y-6">
-          
           {/* Carrier Info Card */}
           <div className="bg-white border border-slate-200/80 p-5 rounded-lg shadow-sm space-y-4">
             <div className="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -161,7 +166,7 @@ export default function OrderConfirmationClient({
                 Dự kiến nhận: 16/03/2026
               </div>
             </div>
-            
+
             <div className="grid gap-4 sm:grid-cols-2 text-xs">
               <div className="space-y-1">
                 <span className="text-slate-400 font-medium">Phương thức giao hàng:</span>
@@ -170,7 +175,9 @@ export default function OrderConfirmationClient({
               <div className="space-y-1">
                 <span className="text-slate-400 font-medium">Mã vận đơn B2B:</span>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className="font-mono font-bold text-slate-800 text-[13px]">TRK-HA-9817245</span>
+                  <span className="font-mono font-bold text-slate-800 text-[13px]">
+                    TRK-HA-9817245
+                  </span>
                   <button
                     onClick={handleCopyTracking}
                     className="inline-flex items-center gap-1 bg-blue-50 text-blue-600 px-2 py-1 rounded text-[10px] font-bold hover:bg-blue-100 transition-colors border border-blue-100"
@@ -188,7 +195,7 @@ export default function OrderConfirmationClient({
             <h4 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 uppercase tracking-wider">
               Lịch sử hành trình chi tiết
             </h4>
-            
+
             {/* Vertical timeline items */}
             <div className="relative pl-6 border-l border-slate-200 space-y-6 text-xs">
               {/* Event 1 */}
@@ -214,7 +221,9 @@ export default function OrderConfirmationClient({
                 </div>
                 <div className="space-y-1">
                   <span className="font-medium text-slate-400">09:15 - 15/03/2026</span>
-                  <p className="font-bold text-slate-800 text-sm">Nhà máy bao bì ULink, Kim Bảng, Hà Nam</p>
+                  <p className="font-bold text-slate-800 text-sm">
+                    Nhà máy bao bì ULink, Kim Bảng, Hà Nam
+                  </p>
                   <p className="text-slate-500 leading-relaxed">
                     Hoàn tất kiểm định xuất xưởng (QA/QC Đạt), niêm phong Pallet thành công.
                   </p>
@@ -286,7 +295,7 @@ export default function OrderConfirmationClient({
                 <div className="min-w-0 flex-1 space-y-1 text-left">
                   <Link
                     href="/solutions/mang-quan-pallet-stretch-film"
-                    className="font-bold text-slate-900 text-xs sm:text-sm hover:text-brand transition-all block leading-tight"
+                    className="font-bold text-slate-900 text-xs sm:text-sm hover:text-brand transition-[color,background-color,border-color,box-shadow,opacity,transform] block leading-tight"
                   >
                     Màng quấn Pallet - Stretch Film (Bản rộng 50cm, 2.4kg)
                   </Link>
@@ -320,7 +329,7 @@ export default function OrderConfirmationClient({
                 <div className="min-w-0 flex-1 space-y-1 text-left">
                   <Link
                     href="/solutions/tui-pe-trong-suot-dung-thuc-pham"
-                    className="font-bold text-slate-900 text-xs sm:text-sm hover:text-brand transition-all block leading-tight"
+                    className="font-bold text-slate-900 text-xs sm:text-sm hover:text-brand transition-[color,background-color,border-color,box-shadow,opacity,transform] block leading-tight"
                   >
                     Túi PE trong suốt siêu dai - Đóng kiện hàng công nghiệp
                   </Link>
@@ -338,7 +347,6 @@ export default function OrderConfirmationClient({
 
         {/* RIGHT COLUMN: Recipient Information & Totals Summary */}
         <div className="lg:col-span-4 space-y-6">
-          
           {/* Business Recipient Info */}
           <div className="bg-white border border-slate-200/80 p-5 rounded-lg shadow-sm space-y-4">
             <h4 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 uppercase tracking-wider">
@@ -347,7 +355,9 @@ export default function OrderConfirmationClient({
             <div className="space-y-3.5 text-xs text-left">
               <div className="space-y-1">
                 <span className="text-slate-400 font-medium">Tên doanh nghiệp nhận:</span>
-                <p className="font-bold text-slate-800 text-[13px]">CÔNG TY TNHH ULINK PARTNER VIỆT NAM</p>
+                <p className="font-bold text-slate-800 text-[13px]">
+                  CÔNG TY TNHH ULINK PARTNER VIỆT NAM
+                </p>
               </div>
               <div className="space-y-1">
                 <span className="text-slate-400 font-medium">Mã số thuế doanh nghiệp:</span>
@@ -355,7 +365,9 @@ export default function OrderConfirmationClient({
               </div>
               <div className="space-y-1">
                 <span className="text-slate-400 font-medium">Người nhận bàn giao:</span>
-                <p className="font-bold text-slate-800 text-[13px]">Nguyễn Văn A - ĐT: 0912345678</p>
+                <p className="font-bold text-slate-800 text-[13px]">
+                  Nguyễn Văn A - ĐT: 0912345678
+                </p>
               </div>
               <div className="space-y-1">
                 <span className="text-slate-400 font-medium">Địa chỉ bàn giao pallet:</span>
@@ -367,11 +379,11 @@ export default function OrderConfirmationClient({
           </div>
 
           {/* Totals Summary */}
-          <div className="bg-[#F8FAFC] border border-slate-200/80 p-5 rounded-lg shadow-sm space-y-4 text-left">
+          <div className="bg-background border border-slate-200/80 p-5 rounded-lg shadow-sm space-y-4 text-left">
             <h4 className="text-sm font-bold text-slate-900 border-b border-slate-200/60 pb-3 uppercase tracking-wider">
               Tổng cộng đơn hàng B2B
             </h4>
-            
+
             <div className="space-y-3 text-xs">
               <div className="flex justify-between">
                 <span className="text-slate-500">Tạm tính mặt hàng</span>
@@ -391,7 +403,7 @@ export default function OrderConfirmationClient({
               <div className="flex items-baseline justify-between pt-1">
                 <span className="text-sm font-bold text-slate-900">Tổng thanh toán</span>
                 <div className="text-right">
-                  <span className="text-xl font-extrabold text-[#006AA7] block leading-none">
+                  <span className="text-xl font-extrabold text-brand block leading-none">
                     {formatPrice(27378000)}
                   </span>
                   <span className="text-[9px] text-slate-400 font-medium block mt-1.5">
@@ -401,11 +413,8 @@ export default function OrderConfirmationClient({
               </div>
             </div>
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

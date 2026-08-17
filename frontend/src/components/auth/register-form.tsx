@@ -2,7 +2,18 @@
 
 import { useState, type FormEvent } from 'react';
 import { useTranslations } from 'next-intl';
-import { User, Mail, Phone, Lock, Eye, EyeOff, ArrowRight, Loader2, CheckCircle2, Building2 } from 'lucide-react';
+import {
+  User,
+  Mail,
+  Phone,
+  Lock,
+  Eye,
+  EyeOff,
+  ArrowRight,
+  Loader2,
+  CheckCircle2,
+  Building2
+} from '@/components/icons';
 import { Link, useRouter } from '@/i18n/navigation';
 import { register, AuthError } from '@/lib/auth';
 import { SocialAuth } from '@/components/auth/social-auth';
@@ -15,7 +26,8 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_RE = /^\d{6,}$/;
 // Server enforces this — same regex in src/lib/validators.ts and Directus
 // customer-onboarding-endpoint/service.js. Keep in sync.
-const PASSWORD_RE = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
+const PASSWORD_RE =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).{8,}$/;
 
 type Fields = 'company_name' | 'contact_name' | 'email' | 'phone' | 'password' | 'confirm_password';
 
@@ -95,9 +107,21 @@ export function RegisterForm() {
       // OTP step is currently disabled — call /api/auth/register directly.
       // The legacy draft key is cleared so a stale draft from a previous
       // OTP-enabled session can't bleed into the new flow.
-      try { sessionStorage.removeItem(REGISTER_DRAFT_KEY); } catch { /* ignore */ }
-      try { sessionStorage.removeItem('verified_tokens'); } catch { /* ignore */ }
-      try { sessionStorage.removeItem('verified_token'); } catch { /* ignore */ }
+      try {
+        sessionStorage.removeItem(REGISTER_DRAFT_KEY);
+      } catch {
+        /* ignore */
+      }
+      try {
+        sessionStorage.removeItem('verified_tokens');
+      } catch {
+        /* ignore */
+      }
+      try {
+        sessionStorage.removeItem('verified_token');
+      } catch {
+        /* ignore */
+      }
 
       await register({
         company_name: values.company_name.trim(),
@@ -154,7 +178,13 @@ export function RegisterForm() {
 
   const field = (
     name: Fields,
-    opts: { label: string; placeholder: string; type?: string; icon: typeof Mail; autoComplete?: string }
+    opts: {
+      label: string;
+      placeholder: string;
+      type?: string;
+      icon: typeof Mail;
+      autoComplete?: string;
+    }
   ) => {
     const Icon = opts.icon;
     const err = errors[name];
@@ -164,7 +194,10 @@ export function RegisterForm() {
           {opts.label}
         </label>
         <div className="relative">
-          <Icon className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+          <Icon
+            className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+            aria-hidden="true"
+          />
           <input
             id={name}
             name={name}
@@ -194,15 +227,40 @@ export function RegisterForm() {
 
       <form className="mt-6 space-y-3.5" onSubmit={onSubmit} noValidate>
         {formError && (
-          <p role="alert" className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
+          <p
+            role="alert"
+            className="rounded-lg border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive"
+          >
             {formError}
           </p>
         )}
 
-        {field('company_name', { label: t('companyLabel'), placeholder: t('companyPlaceholder'), icon: Building2, autoComplete: 'organization' })}
-        {field('contact_name', { label: t('contactLabel'), placeholder: t('contactPlaceholder'), icon: User, autoComplete: 'name' })}
-        {field('email', { label: t('emailLabel'), placeholder: t('emailPlaceholder'), icon: Mail, type: 'email', autoComplete: 'email' })}
-        {field('phone', { label: t('phoneLabel'), placeholder: t('phonePlaceholder'), icon: Phone, type: 'tel', autoComplete: 'tel' })}
+        {field('company_name', {
+          label: t('companyLabel'),
+          placeholder: t('companyPlaceholder'),
+          icon: Building2,
+          autoComplete: 'organization'
+        })}
+        {field('contact_name', {
+          label: t('contactLabel'),
+          placeholder: t('contactPlaceholder'),
+          icon: User,
+          autoComplete: 'name'
+        })}
+        {field('email', {
+          label: t('emailLabel'),
+          placeholder: t('emailPlaceholder'),
+          icon: Mail,
+          type: 'email',
+          autoComplete: 'email'
+        })}
+        {field('phone', {
+          label: t('phoneLabel'),
+          placeholder: t('phonePlaceholder'),
+          icon: Phone,
+          type: 'tel',
+          autoComplete: 'tel'
+        })}
 
         {/* Password */}
         <div>
@@ -210,7 +268,10 @@ export function RegisterForm() {
             {t('passwordLabel')}
           </label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
+            <Lock
+              className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+              aria-hidden="true"
+            />
             <input
               id="password"
               name="password"
@@ -221,7 +282,11 @@ export function RegisterForm() {
               placeholder={t('passwordPlaceholder')}
               aria-invalid={!!errors.password}
               aria-describedby={errors.password ? 'password-error' : undefined}
-              className={cn(inputBase, 'pr-11', errors.password ? 'border-destructive' : 'border-border')}
+              className={cn(
+                inputBase,
+                'pr-11',
+                errors.password ? 'border-destructive' : 'border-border'
+              )}
             />
             <button
               type="button"
@@ -281,8 +346,6 @@ export function RegisterForm() {
           )}
         </button>
       </form>
-
-
 
       <p className="mt-6 text-center text-sm text-muted-foreground">
         {t('haveAccount')}{' '}

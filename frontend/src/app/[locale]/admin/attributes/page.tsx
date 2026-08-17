@@ -15,8 +15,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -52,20 +54,23 @@ export default async function AdminAttributesPage({ params }: PageProps) {
     const client = await getSessionClient();
     // 2. Fetch attributes & options
     const res = await client.request(
-      readItems('product_attributes' as any, {
-        fields: [
-          'id',
-          'name',
-          'slug',
-          'sort',
-          'options.id',
-          'options.value',
-          'options.sku_suffix',
-          'options.sort'
-        ],
-        sort: ['sort', 'name'],
-        limit: -1
-      } as any)
+      readItems(
+        'product_attributes' as any,
+        {
+          fields: [
+            'id',
+            'name',
+            'slug',
+            'sort',
+            'options.id',
+            'options.value',
+            'options.sku_suffix',
+            'options.sort'
+          ],
+          sort: ['sort', 'name'],
+          limit: -1
+        } as any
+      )
     );
     attributes = res || [];
   } catch (err) {

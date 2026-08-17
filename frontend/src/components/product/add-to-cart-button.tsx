@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { ShoppingCart, Check } from 'lucide-react';
+import { ShoppingCart, Check } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 interface AddToCartButtonProps {
@@ -22,7 +22,9 @@ export default function AddToCartButton({
   const handleClick = useCallback(() => {
     try {
       const raw = localStorage.getItem('rfq-cart');
-      const cart: Array<{ sku: string; product_name: string; note: string }> = raw ? JSON.parse(raw) : [];
+      const cart: Array<{ sku: string; product_name: string; note: string }> = raw
+        ? JSON.parse(raw)
+        : [];
 
       const existing = cart.find((item) => item.sku === skuCode);
       if (!existing) {

@@ -1,4 +1,4 @@
-import { MapPin, Phone, Mail } from 'lucide-react';
+import { MapPin, Phone, Mail } from '@/components/icons';
 
 export function CareersContact() {
   return (
@@ -22,7 +22,9 @@ export function CareersContact() {
               </div>
               <div>
                 <span className="block text-xs font-semibold text-slate-500">Trụ sở Hà Nội</span>
-                <span className="text-xs font-bold text-slate-800">Tầng 8, Tòa nhà HL Building, Cầu Giấy, Hà Nội</span>
+                <span className="text-xs font-bold text-slate-800">
+                  Tầng 8, Tòa nhà HL Building, Cầu Giấy, Hà Nội
+                </span>
               </div>
             </div>
 
@@ -31,7 +33,9 @@ export function CareersContact() {
                 <Phone className="h-5 w-5" />
               </div>
               <div>
-                <span className="block text-xs font-semibold text-slate-500">Hotline tuyển dụng</span>
+                <span className="block text-xs font-semibold text-slate-500">
+                  Hotline tuyển dụng
+                </span>
                 <span className="text-xs font-bold text-slate-800">024 7300 9899</span>
               </div>
             </div>

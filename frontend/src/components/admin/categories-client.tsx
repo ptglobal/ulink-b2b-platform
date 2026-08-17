@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { Plus, Search, FolderTree, AlertTriangle, Edit, Trash, Folder, X } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Plus, Search, FolderTree, AlertTriangle, Edit, Trash, Folder, X } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { saveCategory, deleteCategory } from '@/app/[locale]/admin/categories/actions';
 
@@ -27,6 +28,7 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
   // Modal State
   const [modalOpen, setModalOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<Partial<Category> | null>(null);
+  const [formError, setFormError] = useState('');
 
   // Filter categories based on search query
   const filteredCategories = categories.filter((cat) => {
@@ -45,8 +47,9 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
         const res = await deleteCategory(id);
         if (res.success) {
           setCategories((prev) => prev.filter((c) => c.id !== id));
+          toast.success('Đã xóa danh mục thành công.');
         } else {
-          alert(res.error);
+          toast.error('Không thể xóa danh mục: ' + res.error);
         }
       });
     }
@@ -55,8 +58,9 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
   // Submit Create or Update Category
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
     if (!activeCategory?.name || !activeCategory?.slug) {
-      alert('Vui lòng điền tên danh mục và slug.');
+      setFormError('Vui lòng điền tên danh mục và slug.');
       return;
     }
 
@@ -73,9 +77,10 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
       if (res.success) {
         setModalOpen(false);
         setActiveCategory(null);
+        setFormError('');
         window.location.reload(); // Reload to fetch updated hierarchical data
       } else {
-        alert('Không thể lưu danh mục: ' + res.error);
+        setFormError(res.error || 'Không thể lưu danh mục. Vui lòng thử lại.');
       }
     });
   };
@@ -88,7 +93,7 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
           <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
             Cơ cấu sản phẩm
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
             Quản lý Danh mục
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
@@ -100,6 +105,7 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
           onClick={() => {
             setActiveCategory({ status: 'published', parent: null });
             setModalOpen(true);
+            setFormError('');
           }}
           className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition-colors shrink-0"
         >
@@ -142,7 +148,7 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
         {filteredCategories.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <FolderTree className="h-12 w-12 text-slate-300 mb-3" />
-            <span className="text-sm font-extrabold text-[#0F1E36]">
+            <span className="text-sm font-extrabold text-foreground">
               Không tìm thấy danh mục nào
             </span>
             <span className="text-xs text-slate-400 mt-1">
@@ -166,7 +172,7 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
                 {filteredCategories.map((cat) => (
                   <tr key={cat.id} className="hover:bg-slate-50/30 transition-colors">
                     {/* Name */}
-                    <td className="px-6 py-4 font-extrabold text-[#0F1E36]">
+                    <td className="px-6 py-4 font-extrabold text-foreground">
                       <div className="flex items-center gap-2">
                         <Folder className="h-4 w-4 text-blue-500 shrink-0" />
                         {cat.name}
@@ -198,15 +204,19 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
                     <td className="px-6 py-4">
                       <span
                         className={cn(
-                          "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold",
+                          'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold',
                           cat.status === 'published'
-                            ? "bg-emerald-50 text-emerald-700"
+                            ? 'bg-emerald-50 text-emerald-700'
                             : cat.status === 'draft'
-                            ? "bg-amber-50 text-amber-700"
-                            : "bg-rose-50 text-rose-700"
+                              ? 'bg-amber-50 text-amber-700'
+                              : 'bg-rose-50 text-rose-700'
                         )}
                       >
-                        {cat.status === 'published' ? 'Đã xuất bản' : cat.status === 'draft' ? 'Bản thảo' : 'Lưu trữ'}
+                        {cat.status === 'published'
+                          ? 'Đã xuất bản'
+                          : cat.status === 'draft'
+                            ? 'Bản thảo'
+                            : 'Lưu trữ'}
                       </span>
                     </td>
 
@@ -220,11 +230,14 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
                               name: cat.name,
                               slug: cat.slug,
                               description: cat.description,
-                              parent: cat.parent ? { id: cat.parent.id, name: cat.parent.name } : null,
+                              parent: cat.parent
+                                ? { id: cat.parent.id, name: cat.parent.name }
+                                : null,
                               status: cat.status
                             });
-                            setModalOpen(true);
-                          }}
+                             setModalOpen(true);
+                             setFormError('');
+                           }}
                           className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-slate-700 transition-colors"
                           title="Sửa danh mục"
                         >
@@ -253,14 +266,15 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
           <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36]">
+              <h2 className="text-base sm:text-lg font-extrabold text-foreground">
                 {activeCategory.id ? 'Cập nhật danh mục' : 'Tạo danh mục mới'}
               </h2>
               <button
                 onClick={() => {
-                  setModalOpen(false);
-                  setActiveCategory(null);
-                }}
+                   setModalOpen(false);
+                   setActiveCategory(null);
+                   setFormError('');
+                 }}
                 className="p-1 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
               >
                 <X className="h-5 w-5" />
@@ -269,6 +283,12 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
 
             {/* Form */}
             <form onSubmit={handleSubmit} className="p-6 flex flex-col gap-5">
+              {formError && (
+                <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200">
+                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                  <span>{formError}</span>
+                </div>
+              )}
               {/* Category Name */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-slate-500 uppercase">Tên danh mục *</label>
@@ -294,12 +314,19 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
 
               {/* Slug */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Slug (Đường dẫn tĩnh) *</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Slug (Đường dẫn tĩnh) *
+                </label>
                 <input
                   type="text"
                   required
                   value={activeCategory.slug || ''}
-                  onChange={(e) => setActiveCategory({ ...activeCategory, slug: e.target.value.toLowerCase().replace(/\s+/g, '-') })}
+                  onChange={(e) =>
+                    setActiveCategory({
+                      ...activeCategory,
+                      slug: e.target.value.toLowerCase().replace(/\s+/g, '-')
+                    })
+                  }
                   placeholder="gang-tay-phong-sach"
                   className="px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-mono focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                 />
@@ -337,7 +364,9 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
                 <textarea
                   rows={3}
                   value={activeCategory.description || ''}
-                  onChange={(e) => setActiveCategory({ ...activeCategory, description: e.target.value })}
+                  onChange={(e) =>
+                    setActiveCategory({ ...activeCategory, description: e.target.value })
+                  }
                   placeholder="Mô tả sơ lược về danh mục sản phẩm này..."
                   className="px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-medium focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
                 />
@@ -345,10 +374,14 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
 
               {/* Status */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Trạng thái phát hành</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Trạng thái phát hành
+                </label>
                 <select
                   value={activeCategory.status || 'published'}
-                  onChange={(e) => setActiveCategory({ ...activeCategory, status: e.target.value as any })}
+                  onChange={(e) =>
+                    setActiveCategory({ ...activeCategory, status: e.target.value as any })
+                  }
                   className="px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-bold text-slate-700 focus:outline-none bg-white"
                 >
                   <option value="published">Đã xuất bản (Công khai)</option>
@@ -362,6 +395,7 @@ export function CategoriesClient({ initialCategories, error }: CategoriesClientP
                   type="button"
                   onClick={() => {
                     setModalOpen(false);
+                    setFormError('');
                     setActiveCategory(null);
                   }}
                   className="px-4 py-2.5 rounded-lg border border-slate-200 text-xs sm:text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors"

@@ -1,22 +1,22 @@
-import Image from 'next/image';
-import { MapPin, Building2, ShieldCheck } from 'lucide-react';
+import { BrandedMedia } from '@/components/media/branded-media';
+import { MapPin, Building2, ShieldCheck } from '@/components/icons';
 
 const valueProps = [
   {
     icon: MapPin,
     title: 'Vị trí chiến lược',
-    desc: 'Kết nối nhanh đến các KCN và cảng biển lớn',
+    desc: 'Kết nối nhanh đến các KCN và cảng biển lớn'
   },
   {
     icon: Building2,
     title: 'Kho vận hiện đại',
-    desc: 'Hệ thống quản lý chuẩn quốc tế, tối ưu quy trình xử lý',
+    desc: 'Hệ thống quản lý chuẩn quốc tế, tối ưu quy trình xử lý'
   },
   {
     icon: ShieldCheck,
     title: 'Vận hành tin cậy',
-    desc: 'Quy trình kiểm soát, an toàn và minh bạch',
-  },
+    desc: 'Quy trình kiểm soát, an toàn và minh bạch'
+  }
 ];
 
 export function ContactHero() {
@@ -32,14 +32,18 @@ export function ContactHero() {
             Hub Hà Nam - Trung tâm phân phối
           </h1>
           <p className="text-sm leading-relaxed text-slate-600 sm:text-base">
-            Trung tâm phân phối chiến lược tại cửa ngõ phía Nam Hà Nội, kết nối linh hoạt với các cụm công nghiệp trọng điểm và hệ thống logistics toàn quốc.
+            Trung tâm phân phối chiến lược tại cửa ngõ phía Nam Hà Nội, kết nối linh hoạt với các
+            cụm công nghiệp trọng điểm và hệ thống logistics toàn quốc.
           </p>
 
           <div className="mt-4 flex flex-col gap-3">
             {valueProps.map((item, idx) => {
               const Icon = item.icon;
               return (
-                <div key={idx} className="flex items-start gap-3.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                <div
+                  key={idx}
+                  className="flex items-start gap-3.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100"
+                >
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-600 text-white">
                     <Icon className="h-5 w-5" />
                   </div>
@@ -56,11 +60,11 @@ export function ContactHero() {
         {/* Right Column: Photo */}
         <div className="lg:col-span-6">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl shadow-xl ring-1 ring-slate-900/10">
-            <Image
+            <BrandedMedia
               src="/images/about/kho.png"
               alt="Trung tâm phân phối ULink Hub Hà Nam"
-              fill
-              className="object-cover"
+              className="absolute inset-0"
+              sizes="(max-width: 1023px) 100vw, 50vw"
               priority
             />
           </div>

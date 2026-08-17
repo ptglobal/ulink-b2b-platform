@@ -1,4 +1,4 @@
-import { ArrowLeft, CalendarClock, Mail, MessageSquare, Phone, User } from 'lucide-react';
+import { ArrowLeft, CalendarClock, Mail, MessageSquare, Phone, User } from '@/components/icons';
 import type { ReactNode } from 'react';
 import { Link } from '@/i18n/navigation';
 import type { ContactRequest } from '@/lib/directus';
@@ -18,9 +18,8 @@ export function ContactRequestDetail({ request, locale }: ContactRequestDetailPr
     : '---';
   const status = request.status ?? 'unread';
   const statusLabel = status === 'read' ? 'Đã đọc' : 'Chưa đọc';
-  const statusClasses = status === 'read'
-    ? 'bg-emerald-50 text-emerald-700'
-    : 'bg-amber-50 text-amber-700';
+  const statusClasses =
+    status === 'read' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700';
 
   return (
     <div className="space-y-6">
@@ -39,13 +38,13 @@ export function ContactRequestDetail({ request, locale }: ContactRequestDetailPr
           <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
             Chi tiết liên hệ
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
             {request.full_name}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">
-            #{request.id}
-          </p>
-          <span className={`mt-3 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${statusClasses}`}>
+          <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1">#{request.id}</p>
+          <span
+            className={`mt-3 inline-flex items-center rounded-full px-3 py-1 text-xs font-bold ${statusClasses}`}
+          >
             {statusLabel}
           </span>
         </div>
@@ -68,12 +67,16 @@ export function ContactRequestDetail({ request, locale }: ContactRequestDetailPr
 
           <div className="mt-5 space-y-5">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Chủ đề</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                Chủ đề
+              </p>
               <p className="mt-1 text-sm font-semibold text-slate-900">{request.subject}</p>
             </div>
 
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Nội dung</p>
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                Nội dung
+              </p>
               <div className="mt-1 rounded-lg border border-slate-100 bg-slate-50 p-4 text-sm leading-7 text-slate-700 whitespace-pre-wrap">
                 {request.message}
               </div>
@@ -89,10 +92,22 @@ export function ContactRequestDetail({ request, locale }: ContactRequestDetailPr
 
           <dl className="mt-5 space-y-4 text-sm">
             <InfoRow label="Họ và tên" value={request.full_name} />
-            <InfoRow label="Email" value={request.email} icon={<Mail className="h-3.5 w-3.5 text-slate-400" />} />
-            <InfoRow label="Số điện thoại" value={request.phone} icon={<Phone className="h-3.5 w-3.5 text-slate-400" />} />
+            <InfoRow
+              label="Email"
+              value={request.email}
+              icon={<Mail className="h-3.5 w-3.5 text-slate-400" />}
+            />
+            <InfoRow
+              label="Số điện thoại"
+              value={request.phone}
+              icon={<Phone className="h-3.5 w-3.5 text-slate-400" />}
+            />
             <InfoRow label="Trạng thái" value={statusLabel} />
-            <InfoRow label="Thời gian tạo" value={createdAt} icon={<CalendarClock className="h-3.5 w-3.5 text-slate-400" />} />
+            <InfoRow
+              label="Thời gian tạo"
+              value={createdAt}
+              icon={<CalendarClock className="h-3.5 w-3.5 text-slate-400" />}
+            />
           </dl>
         </section>
       </div>
@@ -100,15 +115,7 @@ export function ContactRequestDetail({ request, locale }: ContactRequestDetailPr
   );
 }
 
-function InfoRow({
-  label,
-  value,
-  icon
-}: {
-  label: string;
-  value: string;
-  icon?: ReactNode;
-}) {
+function InfoRow({ label, value, icon }: { label: string; value: string; icon?: ReactNode }) {
   return (
     <div className="flex items-start gap-3 rounded-lg border border-slate-100 bg-slate-50/50 px-4 py-3">
       <div className="mt-0.5">{icon ?? <span className="inline-block h-3.5 w-3.5" />}</div>

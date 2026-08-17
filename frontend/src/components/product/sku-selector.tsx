@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo, useCallback } from 'react';
-import { ShoppingCart, Check, Package } from 'lucide-react';
+import { ShoppingCart, Check, Package } from '@/components/icons';
 import { cn } from '@/lib/utils';
 
 interface SkuItem {
@@ -47,10 +47,7 @@ function extractAttributes(skus: SkuItem[]): { name: string; values: string[] }[
 /**
  * Find the SKU that matches all selected attribute values.
  */
-function findMatchingSku(
-  skus: SkuItem[],
-  selections: Record<string, string>
-): SkuItem | null {
+function findMatchingSku(skus: SkuItem[], selections: Record<string, string>): SkuItem | null {
   const selKeys = Object.keys(selections);
   if (selKeys.length === 0) return skus[0] ?? null;
 
@@ -76,10 +73,7 @@ export default function SkuSelector({ skus, labels }: SkuSelectorProps) {
 
   const [added, setAdded] = useState(false);
 
-  const selectedSku = useMemo(
-    () => findMatchingSku(skus, selections),
-    [skus, selections]
-  );
+  const selectedSku = useMemo(() => findMatchingSku(skus, selections), [skus, selections]);
 
   const handleSelect = useCallback((attrName: string, value: string) => {
     setSelections((prev) => ({ ...prev, [attrName]: value }));
@@ -91,7 +85,9 @@ export default function SkuSelector({ skus, labels }: SkuSelectorProps) {
 
     try {
       const raw = localStorage.getItem('rfq-cart');
-      const cart: Array<{ sku: string; product_name: string; note: string }> = raw ? JSON.parse(raw) : [];
+      const cart: Array<{ sku: string; product_name: string; note: string }> = raw
+        ? JSON.parse(raw)
+        : [];
 
       const existing = cart.find((item) => item.sku === selectedSku.sku_code);
       if (!existing) {
@@ -127,9 +123,11 @@ export default function SkuSelector({ skus, labels }: SkuSelectorProps) {
                     type="button"
                     onClick={() => handleSelect(attr.name, val)}
                     className={cn(
-                      'inline-flex items-center px-3.5 py-2 rounded-lg text-sm font-medium border transition-all',
-                      !isSelected && 'bg-background hover:border-primary hover:text-primary border-border',
-                      isSelected && 'border-primary bg-primary/10 text-primary ring-1 ring-primary/30'
+                      'inline-flex items-center px-3.5 py-2 rounded-lg text-sm font-medium border transition-[color,background-color,border-color,box-shadow,opacity,transform]',
+                      !isSelected &&
+                        'bg-background hover:border-primary hover:text-primary border-border',
+                      isSelected &&
+                        'border-primary bg-primary/10 text-primary ring-1 ring-primary/30'
                     )}
                   >
                     {val}
@@ -152,8 +150,9 @@ export default function SkuSelector({ skus, labels }: SkuSelectorProps) {
                   type="button"
                   onClick={() => setSelections({})}
                   className={cn(
-                    'inline-flex items-center px-3.5 py-2 rounded-lg text-sm font-medium border transition-all',
-                    !isSelected && 'bg-background hover:border-primary hover:text-primary border-border',
+                    'inline-flex items-center px-3.5 py-2 rounded-lg text-sm font-medium border transition-[color,background-color,border-color,box-shadow,opacity,transform]',
+                    !isSelected &&
+                      'bg-background hover:border-primary hover:text-primary border-border',
                     isSelected && 'border-primary bg-primary/10 text-primary ring-1 ring-primary/30'
                   )}
                 >
@@ -180,7 +179,7 @@ export default function SkuSelector({ skus, labels }: SkuSelectorProps) {
         onClick={handleAddToCart}
         disabled={!selectedSku}
         className={cn(
-          'w-full inline-flex items-center justify-center gap-2 h-11 rounded-lg font-semibold text-sm transition-all',
+          'w-full inline-flex items-center justify-center gap-2 h-11 rounded-lg font-semibold text-sm transition-[color,background-color,border-color,box-shadow,opacity,transform]',
           added
             ? 'bg-green-600 text-white'
             : 'bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20',

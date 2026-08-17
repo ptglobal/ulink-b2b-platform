@@ -34,11 +34,7 @@ export default async function CheckoutPage({ params: { locale } }: Props) {
 
   return (
     <section className="relative overflow-hidden bg-white min-h-screen py-8 lg:py-12">
-      <CheckoutClient
-        user={user}
-        locale={locale}
-        dbProductMap={dbProductMap}
-      />
+      <CheckoutClient user={user} locale={locale} dbProductMap={dbProductMap} />
     </section>
   );
 }

@@ -1,7 +1,7 @@
 'use server';
 
 import { createWriteDirectusClient, Schema } from '@/lib/directus';
-import { createDirectus, rest, updateItem, createItem, deleteItem } from '@directus/sdk';
+import { createDirectus, rest, updateItem, createItem, deleteItem, readItems } from '@directus/sdk';
 import { revalidatePath } from 'next/cache';
 import { getCurrentUser } from '@/lib/auth-helpers';
 import { getDirectusUrl } from '@/lib/directus-runtime.mjs';
@@ -9,19 +9,31 @@ import { cookies } from 'next/headers';
 
 function formatError(err: any): string {
   if (err && typeof err === 'object') {
-    // Trích xuất và stringify toàn bộ thông tin lỗi gốc để dễ debug trên giao diện
-    try {
-      const errorObj = {
-        message: err.message,
-        errors: err.errors,
-        status: err.status,
-        code: err.code,
-        extensions: err.extensions,
-        stack: err.stack
-      };
-      return JSON.stringify(errorObj, null, 2);
-    } catch {
-      return String(err);
+    if (err.errors && Array.isArray(err.errors) && err.errors.length > 0) {
+      const firstError = err.errors[0];
+      const code = firstError.code || firstError.extensions?.code;
+      const field = firstError.extensions?.field || '';
+      const message = firstError.message || '';
+
+      if (code === 'RECORD_NOT_UNIQUE') {
+        if (field.includes('sku_code') || message.includes('sku_code') || message.includes('product_skus')) {
+          return 'Mã SKU này đã tồn tại trên hệ thống. Vui lòng nhập một mã SKU khác.';
+        }
+        if (field.includes('slug') || message.includes('slug')) {
+          return 'Đường dẫn (slug) này đã tồn tại. Vui lòng chọn đường dẫn khác.';
+        }
+        if (field.includes('email') || message.includes('email')) {
+          return 'Địa chỉ email này đã tồn tại trên hệ thống.';
+        }
+        return `Dữ liệu bị trùng lặp ở cột ${field || 'duy nhất'}. Vui lòng kiểm tra lại.`;
+      }
+
+      if (firstError.message) {
+        return firstError.message;
+      }
+    }
+    if (err.message) {
+      return err.message;
     }
   }
   return String(err);
@@ -41,8 +53,10 @@ async function getSessionClient() {
   if (sessionToken) {
     const cookieHeader = [
       `directus_session_token=${sessionToken}`,
-      refreshToken ? `directus_refresh_token=${refreshToken}` : null,
-    ].filter(Boolean).join('; ');
+      refreshToken ? `directus_refresh_token=${refreshToken}` : null
+    ]
+      .filter(Boolean)
+      .join('; ');
 
     const cookieFetch: typeof globalThis.fetch = (input, init) => {
       const headers = new Headers(init?.headers);
@@ -70,7 +84,10 @@ async function checkAuth() {
 /**
  * Action: Update the stock status of a specific SKU.
  */
-export async function updateSkuStock(skuId: number, stockStatus: 'in_stock' | 'low_stock' | 'out_of_stock') {
+export async function updateSkuStock(
+  skuId: number,
+  stockStatus: 'in_stock' | 'low_stock' | 'out_of_stock'
+) {
   await checkAuth();
 
   try {
@@ -154,13 +171,16 @@ export async function saveProduct(data: {
     if (data.assignedAttributeIds !== undefined) {
       // 1. Fetch current assignments with attribute slug
       const { readItems } = await import('@directus/sdk');
-      const existing = await client.request(
-        readItems('products_product_attributes' as any, {
-          filter: { products_id: { _eq: productId } },
-          fields: ['id', 'product_attributes_id'],
-          limit: -1
-        } as any)
-      ) as any[];
+      const existing = (await client.request(
+        readItems(
+          'products_product_attributes' as any,
+          {
+            filter: { products_id: { _eq: productId } },
+            fields: ['id', 'product_attributes_id'],
+            limit: -1
+          } as any
+        )
+      )) as any[];
 
       const existingAttrIds = new Set(existing.map((e: any) => e.product_attributes_id));
       const desiredAttrIds = new Set(data.assignedAttributeIds);
@@ -171,26 +191,32 @@ export async function saveProduct(data: {
       if (toDelete.length > 0) {
         // Fetch attribute slugs for the ones being removed
         const removedAttrIds = toDelete.map((e: any) => e.product_attributes_id);
-        const attrs = await client.request(
-          readItems('product_attributes' as any, {
-            filter: { id: { _in: removedAttrIds } },
-            fields: ['id', 'name', 'slug'],
-            limit: -1
-          } as any)
-        ) as any[];
+        const attrs = (await client.request(
+          readItems(
+            'product_attributes' as any,
+            {
+              filter: { id: { _in: removedAttrIds } },
+              fields: ['id', 'name', 'slug'],
+              limit: -1
+            } as any
+          )
+        )) as any[];
         const attrSlugMap = new Map(attrs.map((a: any) => [a.id, { name: a.name, slug: a.slug }]));
 
         // Fetch SKUs of this product that have attributes JSON
-        const skus = await client.request(
-          readItems('product_skus' as any, {
-            filter: {
-              product: { _eq: productId },
-              status: { _in: ['published', 'draft'] }
-            },
-            fields: ['id', 'sku_code', 'attributes'],
-            limit: -1
-          } as any)
-        ) as any[];
+        const skus = (await client.request(
+          readItems(
+            'product_skus' as any,
+            {
+              filter: {
+                product: { _eq: productId },
+                status: { _in: ['published', 'draft'] }
+              },
+              fields: ['id', 'sku_code', 'attributes'],
+              limit: -1
+            } as any
+          )
+        )) as any[];
 
         // Check which removed attributes are still referenced in SKU attributes JSON
         const conflicting: string[] = [];
@@ -224,10 +250,12 @@ export async function saveProduct(data: {
       // 3. Create new assignments
       const toCreate = data.assignedAttributeIds.filter((id) => !existingAttrIds.has(id));
       for (const attrId of toCreate) {
-        await client.request(createItem('products_product_attributes' as any, {
-          products_id: productId,
-          product_attributes_id: attrId
-        }));
+        await client.request(
+          createItem('products_product_attributes' as any, {
+            products_id: productId,
+            product_attributes_id: attrId
+          })
+        );
       }
     }
 
@@ -257,6 +285,25 @@ export async function saveSku(data: {
 
   try {
     const client = await getSessionClient();
+    const productLookup = (await client.request(
+      readItems('products', {
+        filter: { id: { _eq: data.productId } },
+        fields: ['id', 'slug', 'assigned_attributes.id'],
+        limit: 1
+      } as any)
+    )) as any[];
+    const product = productLookup[0];
+    const assignedAttributes = Array.isArray(product?.assigned_attributes)
+      ? product.assigned_attributes
+      : [];
+
+    if (assignedAttributes.length === 0) {
+      return {
+        success: false,
+        error: 'Sản phẩm phải có ít nhất 1 thuộc tính trước khi tạo SKU.'
+      };
+    }
+
     const payload = {
       sku_code: data.sku_code,
       product: data.productId,

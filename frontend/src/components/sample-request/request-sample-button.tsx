@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Package } from 'lucide-react';
+import { Package } from '@/components/icons';
 import SampleRequestModal from '@/components/sample-request/sample-request-modal';
 
 interface RequestSampleButtonProps {

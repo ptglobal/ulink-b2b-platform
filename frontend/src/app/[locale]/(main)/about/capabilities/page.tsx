@@ -1,6 +1,10 @@
 import { setRequestLocale, getTranslations } from 'next-intl/server';
 
-export default async function AboutCapabilitiesPage({ params: { locale } }: { params: { locale: string } }) {
+export default async function AboutCapabilitiesPage({
+  params: { locale }
+}: {
+  params: { locale: string };
+}) {
   setRequestLocale(locale);
   const t = await getTranslations('aboutSidebar');
 

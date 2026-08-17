@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useTransition } from 'react';
-import { Search, Mail, Plus, Edit2, Trash2, Download, X, AlertTriangle, Clock } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Search, Mail, Plus, Edit2, Trash2, Download, X, AlertTriangle, Clock } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import { saveSubscriber, deleteSubscriber } from '@/app/[locale]/admin/subscribers/actions';
 
@@ -26,6 +27,7 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
   // CRUD Form State
   const [formOpen, setFormOpen] = useState(false);
   const [activeSub, setActiveSub] = useState<any | null>(null);
+  const [formError, setFormError] = useState('');
 
   // Filter subscribers
   const filteredSubscribers = subscribers.filter((s) => {
@@ -44,6 +46,7 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
       status: 'active'
     });
     setFormOpen(true);
+    setFormError('');
   };
 
   const handleOpenEditForm = (s: SubscriberItem) => {
@@ -53,6 +56,7 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
       status: s.status
     });
     setFormOpen(true);
+    setFormError('');
   };
 
   const handleDeleteSub = async (id: number) => {
@@ -62,8 +66,9 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
       const res = await deleteSubscriber(id);
       if (res.success) {
         setSubscribers((prev) => prev.filter((s) => s.id !== id));
+        toast.success('Đã xóa email đăng ký thành công.');
       } else {
-        alert('Không thể xóa email đăng ký: ' + res.error);
+        toast.error('Không thể xóa email đăng ký: ' + res.error);
       }
     });
   };
@@ -72,8 +77,9 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
     e.preventDefault();
     if (!activeSub) return;
 
+    setFormError('');
     if (!activeSub.email) {
-      alert('Vui lòng nhập địa chỉ email.');
+      setFormError('Vui lòng nhập địa chỉ email.');
       return;
     }
 
@@ -87,9 +93,10 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
       if (res.success) {
         setFormOpen(false);
         setActiveSub(null);
+        setFormError('');
         window.location.reload();
       } else {
-        alert('Thao tác thất bại: ' + res.error);
+        setFormError(res.error || 'Thao tác thất bại. Vui lòng thử lại.');
       }
     });
   };
@@ -97,21 +104,24 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
   // Export CSV Handler
   const handleExportCSV = () => {
     if (filteredSubscribers.length === 0) {
-      alert('Không có dữ liệu để xuất.');
+      toast.error('Không có dữ liệu để xuất.');
       return;
     }
+    toast.success('Đang chuẩn bị tải xuống file CSV...');
 
     // CSV format headers and rows
     const headers = 'ID,Email,Trang thai,Ngay dang ky\n';
     const rows = filteredSubscribers
       .map((s) => {
-        const dateStr = s.created_at ? new Date(s.created_at).toLocaleString('vi-VN').replace(/,/g, '') : '';
+        const dateStr = s.created_at
+          ? new Date(s.created_at).toLocaleString('vi-VN').replace(/,/g, '')
+          : '';
         return `${s.id},"${s.email}",${s.status === 'active' ? 'Active' : 'Inactive'},"${dateStr}"`;
       })
       .join('\n');
 
     const csvContent = 'data:text/csv;charset=utf-8,\uFEFF' + encodeURIComponent(headers + rows);
-    
+
     // Create temporary download link
     const link = document.createElement('a');
     link.setAttribute('href', csvContent);
@@ -129,11 +139,12 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
           <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
             Chiến dịch tiếp thị & Marketing
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
             Đăng ký bản tin (Newsletter Subscribers)
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
-            Xem danh sách khách hàng gửi email đăng ký nhận tin khuyến mãi, bảng giá ở chân trang web và xuất file CSV phục vụ Mailchimp.
+            Xem danh sách khách hàng gửi email đăng ký nhận tin khuyến mãi, bảng giá ở chân trang
+            web và xuất file CSV phục vụ Mailchimp.
           </p>
         </div>
 
@@ -146,7 +157,7 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
             <Download className="h-4 w-4" />
             Xuất file CSV
           </button>
-          
+
           <button
             type="button"
             onClick={handleOpenCreateForm}
@@ -206,7 +217,7 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
         {filteredSubscribers.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Mail className="h-12 w-12 text-slate-300 mb-3" />
-            <span className="text-sm font-extrabold text-[#0F1E36]">
+            <span className="text-sm font-extrabold text-foreground">
               Không có email đăng ký nhận tin nào
             </span>
             <span className="text-xs text-slate-400 mt-1">
@@ -229,21 +240,19 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
                 {filteredSubscribers.map((sub) => {
                   return (
                     <tr key={sub.id} className="hover:bg-slate-50/30 transition-colors">
-                      <td className="px-6 py-4 font-mono text-slate-400 text-xs">
-                        #{sub.id}
-                      </td>
+                      <td className="px-6 py-4 font-mono text-slate-400 text-xs">#{sub.id}</td>
                       <td className="px-6 py-4">
-                        <span className="font-extrabold text-[#0F1E36] leading-tight select-all">
+                        <span className="font-extrabold text-foreground leading-tight select-all">
                           {sub.email}
                         </span>
                       </td>
                       <td className="px-6 py-4">
                         <span
                           className={cn(
-                            "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold",
+                            'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold',
                             sub.status === 'active'
-                              ? "bg-emerald-50 text-emerald-700"
-                              : "bg-slate-100 text-slate-650"
+                              ? 'bg-emerald-50 text-emerald-700'
+                              : 'bg-slate-100 text-slate-650'
                           )}
                         >
                           {sub.status === 'active' ? 'Hoạt động' : 'Ngừng nhận tin'}
@@ -252,7 +261,9 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
                       <td className="px-6 py-4 text-slate-500 font-medium">
                         <span className="flex items-center gap-1">
                           <Clock className="h-3.5 w-3.5 text-slate-400" />
-                          {sub.created_at ? new Date(sub.created_at).toLocaleString('vi-VN') : '---'}
+                          {sub.created_at
+                            ? new Date(sub.created_at).toLocaleString('vi-VN')
+                            : '---'}
                         </span>
                       </td>
                       <td className="px-6 py-4 text-right">
@@ -260,7 +271,7 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
                           <button
                             type="button"
                             onClick={() => handleOpenEditForm(sub)}
-                            className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-[#0F1E36] transition-colors"
+                            className="p-1 rounded hover:bg-slate-100 text-slate-500 hover:text-foreground transition-colors"
                             title="Sửa email"
                           >
                             <Edit2 className="h-4 w-4" />
@@ -291,7 +302,7 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
             {/* Modal Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div>
-                <h2 className="text-base sm:text-lg font-extrabold text-[#0F1E36] flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-extrabold text-foreground flex items-center gap-2">
                   <Mail className="h-5 w-5 text-blue-500" />
                   {activeSub.id ? `Cập nhật email: ${activeSub.email}` : 'Thêm email đăng ký mới'}
                 </h2>
@@ -303,6 +314,7 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
                 onClick={() => {
                   setFormOpen(false);
                   setActiveSub(null);
+                  setFormError('');
                 }}
                 className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-655"
               >
@@ -313,10 +325,17 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
             {/* Modal Form Body */}
             <form onSubmit={handleFormSubmit} className="flex flex-col">
               <div className="p-6 flex flex-col gap-4 bg-white">
-                
+                {formError && (
+                  <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200">
+                    <AlertTriangle className="h-4 w-4 shrink-0" />
+                    <span>{formError}</span>
+                  </div>
+                )}
                 {/* Email Address */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Địa chỉ Email *</label>
+                  <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                    Địa chỉ Email *
+                  </label>
                   <input
                     type="email"
                     required
@@ -329,7 +348,9 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
 
                 {/* Status Dropdown */}
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">Trạng thái đăng ký</label>
+                  <label className="text-[10px] font-extrabold text-slate-450 uppercase tracking-wider">
+                    Trạng thái đăng ký
+                  </label>
                   <select
                     value={activeSub.status || 'active'}
                     onChange={(e) => setActiveSub({ ...activeSub, status: e.target.value })}
@@ -339,7 +360,6 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
                     <option value="inactive">Đã ngừng nhận tin (Inactive)</option>
                   </select>
                 </div>
-
               </div>
 
               {/* Form Buttons */}
@@ -366,7 +386,6 @@ export function SubscribersClient({ initialSubscribers, error }: SubscribersClie
           </div>
         </div>
       )}
-
     </div>
   );
 }

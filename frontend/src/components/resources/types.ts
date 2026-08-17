@@ -30,7 +30,7 @@ export interface ResourceItem {
   title: TranslatedString;
   description: TranslatedString;
   date: string;
-  image: string;
+  image?: string;
   industryId?: 'electronics' | 'pharmaceutical' | 'cosmetics' | 'food';
   topicId?: 'cleanroom' | 'packaging' | 'esd';
   contentType?: 'article' | 'tech-doc' | 'certificate';

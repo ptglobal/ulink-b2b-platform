@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Search, MapPin, Briefcase, Clock, CheckCircle2 } from 'lucide-react';
+import { Search, MapPin, Briefcase, Clock, CheckCircle2 } from '@/components/icons';
 
 const jobsData = [
   {
@@ -11,7 +11,7 @@ const jobsData = [
     title: 'Chuyên viên Quản lý Khách hàng (Account Manager)',
     type: 'Full-time',
     location: 'Hà Nội',
-    department: 'Kinh doanh B2B',
+    department: 'Kinh doanh B2B'
   },
   {
     id: '2',
@@ -19,7 +19,7 @@ const jobsData = [
     title: 'Kỹ sư Vận hành & Bảo trì Kho (Warehouse Ops Engineer)',
     type: 'Full-time',
     location: 'Hà Nam',
-    department: 'Vận hành Kho bãi',
+    department: 'Vận hành Kho bãi'
   },
   {
     id: '3',
@@ -27,8 +27,8 @@ const jobsData = [
     title: 'Chuyên viên Mua hàng & Chuỗi cung ứng (Procurement Specialist)',
     type: 'Full-time',
     location: 'Hà Nội',
-    department: 'Chuỗi cung ứng',
-  },
+    department: 'Chuỗi cung ứng'
+  }
 ];
 
 const benefits = [
@@ -36,15 +36,13 @@ const benefits = [
   'Cơ hội thăng tiến rõ ràng theo lộ trình cá nhân',
   'Môi trường chuyên nghiệp, đồng nghiệp hòa đồng',
   'Bảo hiểm sức khỏe cao cấp & Khám sức khỏe định kỳ',
-  'Khóa đào tạo chuyên sâu về kỹ thuật & chuỗi cung ứng B2B',
+  'Khóa đào tạo chuyên sâu về kỹ thuật & chuỗi cung ứng B2B'
 ];
 
 export function CareersJobList() {
   const [search, setSearch] = useState('');
 
-  const filteredJobs = jobsData.filter((j) =>
-    j.title.toLowerCase().includes(search.toLowerCase())
-  );
+  const filteredJobs = jobsData.filter((j) => j.title.toLowerCase().includes(search.toLowerCase()));
 
   return (
     <section className="py-12" id="openings">
@@ -88,7 +86,7 @@ export function CareersJobList() {
             {filteredJobs.map((job) => (
               <div
                 key={job.id}
-                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl bg-white p-5 shadow-sm border border-slate-100 transition-all hover:border-blue-200 hover:shadow-md"
+                className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-xl bg-white p-5 shadow-sm border border-slate-100 transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:border-blue-200 hover:shadow-md"
               >
                 <div className="flex flex-col gap-1.5">
                   <Link
@@ -111,7 +109,7 @@ export function CareersJobList() {
                 </div>
                 <Link
                   href={`/about/careers/${job.slug}`}
-                  className="inline-flex shrink-0 items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-700 transition-all"
+                  className="inline-flex shrink-0 items-center justify-center rounded-lg bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-700 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
                 >
                   Ứng tuyển
                 </Link>

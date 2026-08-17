@@ -1,23 +1,23 @@
-import Image from 'next/image';
-import { Ship, Plane, Route, Building2 } from 'lucide-react';
+import { BrandedMedia } from '@/components/media/branded-media';
+import { Ship, Plane, Route, Building2 } from '@/components/icons';
 
 const connectivityList = [
   {
     icon: Ship,
-    title: 'Cách Cảng Hải Phòng: 100km (~1.5h vận chuyển)',
+    title: 'Cách Cảng Hải Phòng: 100km (~1.5h vận chuyển)'
   },
   {
     icon: Plane,
-    title: 'Cách Sân bay Quốc tế Nội Bài: 80km',
+    title: 'Cách Sân bay Quốc tế Nội Bài: 80km'
   },
   {
     icon: Route,
-    title: 'Kết nối trực tiếp đường cao tốc Cầu Giẽ - Ninh Bình',
+    title: 'Kết nối trực tiếp đường cao tốc Cầu Giẽ - Ninh Bình'
   },
   {
     icon: Building2,
-    title: 'Tiếp cận nhanh các KCN: Hà Nam, Nam Định, Thái Bình...',
-  },
+    title: 'Tiếp cận nhanh các KCN: Hà Nam, Nam Định, Thái Bình...'
+  }
 ];
 
 export function AboutLocation() {
@@ -32,7 +32,8 @@ export function AboutLocation() {
             Trung tâm kết nối thuận tiện
           </h2>
           <p className="text-base leading-relaxed text-slate-600">
-            Nằm tại vị trí nút giao thông huyết mạch, dễ dàng tiếp cận các khu công nghiệp trọng điểm miền Bắc và kết nối nhanh chóng đến cảng biển/sân bay.
+            Nằm tại vị trí nút giao thông huyết mạch, dễ dàng tiếp cận các khu công nghiệp trọng
+            điểm miền Bắc và kết nối nhanh chóng đến cảng biển/sân bay.
           </p>
           <ul className="mt-2 space-y-3.5">
             {connectivityList.map((item, idx) => {
@@ -50,11 +51,11 @@ export function AboutLocation() {
         </div>
         <div className="lg:col-span-6">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-xl shadow-lg ring-1 ring-slate-900/10">
-            <Image
-              src="/images/about/location-aerial.webp"
+            <BrandedMedia
+              src="/images/about/kho_1.png"
               alt="Vị trí kết nối giao thông Hub Hà Nam"
-              fill
-              className="object-cover"
+              className="absolute inset-0"
+              sizes="(max-width: 1023px) 100vw, 50vw"
             />
           </div>
         </div>

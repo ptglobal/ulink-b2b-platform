@@ -90,6 +90,11 @@ export const TRANSLATION_FIELDS = {
   pages: [
     { field: 'title', type: 'string', meta: { interface: 'input', required: true } },
     { field: 'body', type: 'text', meta: { interface: 'wysiwyg' } },
+    {
+      field: 'content',
+      type: 'json',
+      meta: { interface: 'input-code', options: { language: 'json' } }
+    },
     { field: 'meta_title', type: 'string', meta: { interface: 'input' } },
     { field: 'meta_description', type: 'text', meta: { interface: 'textarea' } }
   ],
@@ -98,7 +103,14 @@ export const TRANSLATION_FIELDS = {
     { field: 'meta_description', type: 'text', meta: { interface: 'textarea' } },
     { field: 'address', type: 'text', meta: { interface: 'textarea' } }
   ],
-  homepage: [{ field: 'title', type: 'string', meta: { interface: 'input' } }]
+  homepage: [
+    { field: 'title', type: 'string', meta: { interface: 'input' } },
+    {
+      field: 'content',
+      type: 'json',
+      meta: { interface: 'input-code', options: { language: 'json' } }
+    }
+  ]
 };
 
 function cloneField(field) {

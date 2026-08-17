@@ -1,8 +1,16 @@
-import { setRequestLocale, getTranslations } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
+import { AboutSustainability } from '@/components/about/about-sustainability';
+import { getPagePresentation } from '@/lib/page-presentation';
 
 export default async function AboutSustainabilityPage({ params: { locale } }: { params: { locale: string } }) {
   setRequestLocale(locale);
-  const t = await getTranslations('aboutSidebar');
+  const presentation = await getPagePresentation('about-sustainability', locale);
 
-  return <h1 className="mt-2 text-[24px] font-bold text-primary">{t('sustainability')}</h1>;
+  return (
+    <div className="bg-background">
+      <div className="ulink-container">
+        <AboutSustainability locale={locale} media={presentation?.heroMedia} standalone />
+      </div>
+    </div>
+  );
 }

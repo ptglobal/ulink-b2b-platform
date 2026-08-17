@@ -43,7 +43,9 @@ export async function POST(req: Request) {
             email = peekJson.data.email;
           }
         }
-      } catch { /* non-fatal */ }
+      } catch {
+        /* non-fatal */
+      }
     } else {
       // Session mode: identify via cookie
       const cookieHeader = req.headers.get('cookie') ?? '';
@@ -60,7 +62,9 @@ export async function POST(req: Request) {
             email = meJson.data.email;
           }
         }
-      } catch { /* non-fatal */ }
+      } catch {
+        /* non-fatal */
+      }
     }
 
     if (!email) {
@@ -92,7 +96,9 @@ export async function POST(req: Request) {
           return NextResponse.json({ data: statusJson.data });
         }
       }
-    } catch { /* non-fatal */ }
+    } catch {
+      /* non-fatal */
+    }
 
     return NextResponse.json({ data: { locked: false } });
   } catch {

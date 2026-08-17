@@ -54,7 +54,9 @@ export async function POST(req: Request) {
         };
         if (peekJson?.data?.valid) resolvedEmail = peekJson.data.email ?? null;
       }
-    } catch { /* non-fatal */ }
+    } catch {
+      /* non-fatal */
+    }
 
     // 1. Pre-check the shared lock keyed on the token's email. Mirrors
     //    the change-password form's behaviour so a user locked out of
@@ -109,7 +111,11 @@ export async function POST(req: Request) {
 
     if (!res.ok) {
       let body: EndpointErrorBody | null = null;
-      try { body = (await res.json()) as EndpointErrorBody; } catch { /* not JSON */ }
+      try {
+        body = (await res.json()) as EndpointErrorBody;
+      } catch {
+        /* not JSON */
+      }
       const message = body?.message ?? body?.error ?? 'Password reset failed.';
       const code = body?.error ?? 'reset_failed';
       let payload = body?.payload ?? undefined;
@@ -151,7 +157,9 @@ export async function POST(req: Request) {
               payload = failJson.data as Record<string, unknown>;
             }
           }
-        } catch { /* best-effort */ }
+        } catch {
+          /* best-effort */
+        }
         throw new ApiError(422, code, message, undefined, payload);
       }
 

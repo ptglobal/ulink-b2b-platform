@@ -4,7 +4,7 @@ import { ContactNextSteps } from '@/components/about/contact-success/contact-nex
 import { ContactFeaturedSolutions } from '@/components/about/contact-success/contact-featured-solutions';
 
 export default async function ContactSuccessPage({
-  params: { locale },
+  params: { locale }
 }: {
   params: { locale: string };
 }) {

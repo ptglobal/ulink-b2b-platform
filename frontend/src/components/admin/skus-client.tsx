@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useTransition, useMemo } from 'react';
-import { Search, Plus, Edit2, Archive, Loader2, Layers, Tag, X, AlertTriangle } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { Search, Plus, Edit2, Archive, Loader2, Layers, Tag, X, AlertTriangle } from '@/components/icons';
 import { cn } from '@/lib/utils';
 import type { Product, ProductSku, ProductAttribute } from '@/lib/directus';
 import { updateSkuStock, saveSku } from '@/app/[locale]/admin/products/actions';
@@ -20,10 +21,13 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
 
   // Modal states
   const [skuModalOpen, setSkuModalOpen] = useState(false);
-  const [activeSku, setActiveSku] = useState<Partial<ProductSku> & { productId?: number } | null>(null);
+  const [activeSku, setActiveSku] = useState<(Partial<ProductSku> & { productId?: number }) | null>(
+    null
+  );
 
   // Attribute selections state: { [attributeId]: optionId }
   const [selectedOptions, setSelectedOptions] = useState<Record<number, number>>({});
+  const [formError, setFormError] = useState('');
 
   // Get the attributes for the currently selected product (unwrap M2M junction)
   const activeProductAttrs = useMemo(() => {
@@ -42,7 +46,11 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
   }, [activeSku?.productId, products]);
 
   // Compute SKU code from selected options
-  const computeSkuCode = (productId: number, options: Record<number, number>, attrs: ProductAttribute[]) => {
+  const computeSkuCode = (
+    productId: number,
+    options: Record<number, number>,
+    attrs: ProductAttribute[]
+  ) => {
     const p = products.find((prod) => prod.id === productId);
     if (!p) return '';
     const prefix = p.slug.toUpperCase();
@@ -61,7 +69,10 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
 
   // Build attributes JSON from selected options using attr.slug as key
   // e.g. { "size": "M", "color": "Xanh dương" }
-  const buildAttributesJson = (options: Record<number, number>, attrs: ProductAttribute[]): Record<string, string> => {
+  const buildAttributesJson = (
+    options: Record<number, number>,
+    attrs: ProductAttribute[]
+  ): Record<string, string> => {
     const result: Record<string, string> = {};
     for (const attr of attrs) {
       const selectedOptId = options[attr.id];
@@ -79,7 +90,7 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
     const p = products.find((prod) => prod.id === productId);
     const prefix = p ? p.slug.toUpperCase() : '';
 
-    setActiveSku((prev) => prev ? { ...prev, productId, sku_code: prefix } : null);
+    setActiveSku((prev) => (prev ? { ...prev, productId, sku_code: prefix } : null));
   };
 
   // Handle option dropdown change
@@ -89,20 +100,23 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
 
     if (activeSku?.productId) {
       const code = computeSkuCode(activeSku.productId, newOptions, activeProductAttrs);
-      setActiveSku((prev) => prev ? { ...prev, sku_code: code } : null);
+      setActiveSku((prev) => (prev ? { ...prev, sku_code: code } : null));
     }
   };
 
   // Inline Stock Update
-  const handleSkuStockChange = async (skuId: number, newStock: 'in_stock' | 'low_stock' | 'out_of_stock') => {
-    setSkus((prev) =>
-      prev.map((s) => (s.id === skuId ? { ...s, stock_status: newStock } : s))
-    );
+  const handleSkuStockChange = async (
+    skuId: number,
+    newStock: 'in_stock' | 'low_stock' | 'out_of_stock'
+  ) => {
+    setSkus((prev) => prev.map((s) => (s.id === skuId ? { ...s, stock_status: newStock } : s)));
 
     const res = await updateSkuStock(skuId, newStock);
     if (!res.success) {
-      alert('Không thể cập nhật trạng thái kho: ' + res.error);
+      toast.error('Không thể cập nhật trạng thái kho: ' + res.error);
       window.location.reload();
+    } else {
+      toast.success('Cập nhật trạng thái kho thành công.');
     }
   };
 
@@ -116,7 +130,10 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
         const res = await saveSku({
           id: skuId,
           sku_code: skuToUpdate.sku_code,
-          productId: typeof skuToUpdate.product === 'object' ? (skuToUpdate.product as any).id : Number(skuToUpdate.product),
+          productId:
+            typeof skuToUpdate.product === 'object'
+              ? (skuToUpdate.product as any).id
+              : Number(skuToUpdate.product),
           unit: skuToUpdate.unit || undefined,
           pack_size: skuToUpdate.pack_size || undefined,
           stock_status: skuToUpdate.stock_status || undefined,
@@ -125,8 +142,9 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
 
         if (res.success) {
           setSkus((prev) => prev.filter((s) => s.id !== skuId));
+          toast.success('Đã lưu trữ mã SKU thành công.');
         } else {
-          alert('Không thể lưu trữ SKU: ' + res.error);
+          toast.error('Không thể lưu trữ SKU: ' + res.error);
         }
       });
     }
@@ -135,15 +153,17 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
   // Submit Add/Edit SKU
   const handleSaveSkuSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFormError('');
     if (!activeSku?.sku_code || !activeSku.productId) {
-      alert('Vui lòng điền đầy đủ mã SKU và chọn sản phẩm.');
+      setFormError('Vui lòng điền đầy đủ mã SKU và chọn sản phẩm.');
       return;
     }
 
     // Build attributes JSON from selected options
-    const attributesJson = activeProductAttrs.length > 0
-      ? buildAttributesJson(selectedOptions, activeProductAttrs)
-      : undefined;
+    const attributesJson =
+      activeProductAttrs.length > 0
+        ? buildAttributesJson(selectedOptions, activeProductAttrs)
+        : undefined;
 
     startTransition(async () => {
       const res = await saveSku({
@@ -161,9 +181,10 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
         setSkuModalOpen(false);
         setActiveSku(null);
         setSelectedOptions({});
+        setFormError('');
         window.location.reload();
       } else {
-        alert('Không thể lưu mã SKU: ' + res.error);
+        setFormError(res.error || 'Không thể lưu mã SKU. Vui lòng thử lại.');
       }
     });
   };
@@ -174,18 +195,16 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
     const product = sku.product && typeof sku.product === 'object' ? (sku.product as any) : null;
     const productName = product?.name ?? '';
     const productSlug = product?.slug ?? '';
-    
+
     const matchesSearch =
       sku.sku_code.toLowerCase().includes(q) ||
       productName.toLowerCase().includes(q) ||
       productSlug.toLowerCase().includes(q);
 
-    const matchesStock =
-      selectedStockStatus === 'all' || sku.stock_status === selectedStockStatus;
+    const matchesStock = selectedStockStatus === 'all' || sku.stock_status === selectedStockStatus;
 
     const parentId = product ? String(product.id) : String(sku.product ?? '');
-    const matchesProduct =
-      selectedProduct === 'all' || parentId === selectedProduct;
+    const matchesProduct = selectedProduct === 'all' || parentId === selectedProduct;
 
     return matchesSearch && matchesStock && matchesProduct;
   });
@@ -198,11 +217,12 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
           <span className="text-xs uppercase text-slate-400 font-extrabold tracking-wider">
             Hệ thống danh mục SKUs
           </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0F1E36] tracking-tight mt-1">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight mt-1">
             Quản lý mã SKUs B2B
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 font-medium mt-1 leading-relaxed">
-            Xem và cập nhật nhanh tồn kho, quy cách đóng gói và đơn vị tính cho từng biến thể sản phẩm.
+            Xem và cập nhật nhanh tồn kho, quy cách đóng gói và đơn vị tính cho từng biến thể sản
+            phẩm.
           </p>
         </div>
 
@@ -211,6 +231,7 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
             setSelectedOptions({});
             setActiveSku({ stock_status: 'in_stock', status: 'published', sku_code: '' });
             setSkuModalOpen(true);
+            setFormError('');
           }}
           className="inline-flex h-11 items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 text-xs sm:text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition-colors shrink-0"
         >
@@ -274,9 +295,7 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
         {filteredSkus.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <Layers className="h-12 w-12 text-slate-300 mb-3" />
-            <span className="text-sm font-extrabold text-[#0F1E36]">
-              Không tìm thấy mã SKU nào
-            </span>
+            <span className="text-sm font-extrabold text-foreground">Không tìm thấy mã SKU nào</span>
             <span className="text-xs text-slate-400 mt-1">
               Thử thay đổi bộ lọc hoặc từ khóa tìm kiếm của bạn.
             </span>
@@ -296,7 +315,8 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
               </thead>
               <tbody className="divide-y divide-slate-100 text-xs sm:text-sm">
                 {filteredSkus.map((sku) => {
-                  const parent = sku.product && typeof sku.product === 'object' ? (sku.product as any) : null;
+                  const parent =
+                    sku.product && typeof sku.product === 'object' ? (sku.product as any) : null;
                   const parentName = parent?.name ?? 'Sản phẩm không khả dụng';
                   const parentSlug = parent?.slug ?? '';
                   return (
@@ -309,7 +329,7 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                       {/* Parent Product */}
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className="font-extrabold text-[#0F1E36] leading-tight">
+                          <span className="font-extrabold text-foreground leading-tight">
                             {parentName}
                           </span>
                           {parentSlug && (
@@ -333,10 +353,13 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                           value={sku.stock_status || 'in_stock'}
                           onChange={(e) => handleSkuStockChange(sku.id, e.target.value as any)}
                           className={cn(
-                            "px-2.5 py-1 rounded-lg text-xs font-bold border focus:outline-none",
-                            sku.stock_status === 'in_stock' && "bg-green-50 border-green-200 text-green-700",
-                            sku.stock_status === 'low_stock' && "bg-orange-50 border-orange-200 text-orange-700",
-                            sku.stock_status === 'out_of_stock' && "bg-red-50 border-red-200 text-red-700"
+                            'px-2.5 py-1 rounded-lg text-xs font-bold border focus:outline-none',
+                            sku.stock_status === 'in_stock' &&
+                              'bg-green-50 border-green-200 text-green-700',
+                            sku.stock_status === 'low_stock' &&
+                              'bg-orange-50 border-orange-200 text-orange-700',
+                            sku.stock_status === 'out_of_stock' &&
+                              'bg-red-50 border-red-200 text-red-700'
                           )}
                         >
                           <option value="in_stock">Còn hàng (In stock)</option>
@@ -349,13 +372,17 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                       <td className="px-6 py-4">
                         <span
                           className={cn(
-                            "inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase",
-                            sku.status === 'published' && "bg-green-50 text-green-600",
-                            sku.status === 'draft' && "bg-slate-100 text-slate-600",
-                            sku.status === 'archived' && "bg-red-50 text-red-650"
+                            'inline-flex items-center px-2 py-0.5 rounded text-[10px] font-bold uppercase',
+                            sku.status === 'published' && 'bg-green-50 text-green-600',
+                            sku.status === 'draft' && 'bg-slate-100 text-slate-600',
+                            sku.status === 'archived' && 'bg-red-50 text-red-650'
                           )}
                         >
-                          {sku.status === 'published' ? 'Đang bật' : sku.status === 'draft' ? 'Nháp' : 'Lưu trữ'}
+                          {sku.status === 'published'
+                            ? 'Đang bật'
+                            : sku.status === 'draft'
+                              ? 'Nháp'
+                              : 'Lưu trữ'}
                         </span>
                       </td>
 
@@ -365,22 +392,28 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                           {/* Edit SKU */}
                           <button
                             onClick={() => {
-                              const pId = sku.product && typeof sku.product === 'object'
-                                ? (sku.product as any).id
-                                : Number(sku.product);
+                              const pId =
+                                sku.product && typeof sku.product === 'object'
+                                  ? (sku.product as any).id
+                                  : Number(sku.product);
                               const p = products.find((prod) => prod.id === pId);
 
                               // Reconstruct selectedOptions from sku.attributes JSON
                               const opts: Record<number, number> = {};
                               if (p?.assigned_attributes && sku.attributes) {
                                 for (const junction of p.assigned_attributes) {
-                                  const attr = typeof (junction as any).product_attributes_id === 'object'
-                                    ? (junction as any).product_attributes_id
-                                    : null;
+                                  const attr =
+                                    typeof (junction as any).product_attributes_id === 'object'
+                                      ? (junction as any).product_attributes_id
+                                      : null;
                                   if (!attr) continue;
-                                  const attrVal = (sku.attributes as Record<string, unknown>)[attr.slug];
+                                  const attrVal = (sku.attributes as Record<string, unknown>)[
+                                    attr.slug
+                                  ];
                                   if (attrVal && attr.options) {
-                                    const matchOpt = attr.options.find((o: any) => o.value === attrVal);
+                                    const matchOpt = attr.options.find(
+                                      (o: any) => o.value === attrVal
+                                    );
                                     if (matchOpt) opts[attr.id] = matchOpt.id;
                                   }
                                 }
@@ -397,6 +430,7 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                                 status: sku.status
                               });
                               setSkuModalOpen(true);
+                              setFormError('');
                             }}
                             title="Sửa mã SKU"
                             className="p-1 text-slate-400 hover:text-blue-600 hover:bg-slate-100 rounded transition-colors"
@@ -431,11 +465,14 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
           <div className="bg-white rounded-2xl w-full max-w-lg shadow-xl border border-slate-100 overflow-hidden max-h-[90vh] overflow-y-auto">
             {/* Header */}
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 sticky top-0 bg-white z-10">
-              <h3 className="text-base font-extrabold text-[#0F1E36]">
+              <h3 className="text-base font-extrabold text-foreground">
                 {activeSku.id ? 'Sửa thông tin SKU' : 'Thêm mã SKU mới'}
               </h3>
               <button
-                onClick={() => { setSkuModalOpen(false); setSelectedOptions({}); }}
+                onClick={() => {
+                  setSkuModalOpen(false);
+                  setSelectedOptions({});
+                }}
                 className="p-1.5 rounded-full hover:bg-slate-100 text-slate-400 transition-colors"
               >
                 <X className="h-5 w-5" />
@@ -444,6 +481,12 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
 
             {/* Form */}
             <form onSubmit={handleSaveSkuSubmit} className="p-6 space-y-5">
+              {formError && (
+                <div className="p-3 bg-rose-50 border border-rose-100 rounded-lg text-xs font-bold text-rose-600 flex items-center gap-2 animate-in fade-in duration-200">
+                  <AlertTriangle className="h-4 w-4 shrink-0" />
+                  <span>{formError}</span>
+                </div>
+              )}
               {/* Product Selection */}
               <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-bold text-slate-500 uppercase">Sản phẩm cha *</label>
@@ -474,11 +517,17 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                     <>
                       {/* Prefix Display */}
                       <div className="flex flex-col gap-1">
-                        <span className="text-[10px] font-bold text-slate-500">Tiền tố sản phẩm</span>
+                        <span className="text-[10px] font-bold text-slate-500">
+                          Tiền tố sản phẩm
+                        </span>
                         <input
                           type="text"
                           readOnly
-                          value={products.find((p) => p.id === activeSku.productId)?.slug.toUpperCase() || ''}
+                          value={
+                            products
+                              .find((p) => p.id === activeSku.productId)
+                              ?.slug.toUpperCase() || ''
+                          }
                           className="px-3 py-1.5 rounded bg-slate-100 border border-slate-200 text-xs font-bold font-mono text-slate-500 cursor-not-allowed select-none focus:outline-none"
                         />
                       </div>
@@ -497,7 +546,9 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                               <select
                                 required
                                 value={selectedOptions[attr.id] || ''}
-                                onChange={(e) => handleOptionChange(attr.id, Number(e.target.value))}
+                                onChange={(e) =>
+                                  handleOptionChange(attr.id, Number(e.target.value))
+                                }
                                 className="px-3 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600 bg-white"
                               >
                                 <option value="">-- Chọn --</option>
@@ -521,7 +572,8 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                           Sản phẩm này chưa có thuộc tính phân loại.
                         </span>
                         <span className="text-[10px] text-amber-600">
-                          Hãy thêm thuộc tính (Size, Color...) trong Directus Admin trước, hoặc nhập mã SKU thủ công bên dưới.
+                          Hãy thêm thuộc tính (Size, Color...) trong Directus Admin trước, hoặc nhập
+                          mã SKU thủ công bên dưới.
                         </span>
                       </div>
                     </div>
@@ -532,9 +584,13 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
               {/* SKU Code */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold text-slate-500 uppercase">Mã SKU Code *</label>
+                  <label className="text-xs font-bold text-slate-500 uppercase">
+                    Mã SKU Code *
+                  </label>
                   {activeProductAttrs.length > 0 ? (
-                    <span className="text-[10px] text-blue-600 font-bold">Khóa tự động từ thuộc tính</span>
+                    <span className="text-[10px] text-blue-600 font-bold">
+                      Khóa tự động từ thuộc tính
+                    </span>
                   ) : (
                     <span className="text-[10px] text-amber-600 font-bold">Nhập thủ công</span>
                   )}
@@ -544,16 +600,25 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
                   required
                   readOnly={activeProductAttrs.length > 0}
                   value={activeSku.sku_code || ''}
-                  onChange={activeProductAttrs.length === 0
-                    ? (e) => setActiveSku({ ...activeSku, sku_code: e.target.value.toUpperCase().replace(/\s+/g, '') })
-                    : undefined
+                  onChange={
+                    activeProductAttrs.length === 0
+                      ? (e) =>
+                          setActiveSku({
+                            ...activeSku,
+                            sku_code: e.target.value.toUpperCase().replace(/\s+/g, '')
+                          })
+                      : undefined
                   }
-                  placeholder={activeProductAttrs.length > 0 ? 'Chọn thuộc tính ở trên...' : 'Nhập mã SKU thủ công...'}
-                  className={cn(
-                    "px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-extrabold text-[#0F1E36] font-mono focus:outline-none",
+                  placeholder={
                     activeProductAttrs.length > 0
-                      ? "bg-slate-100 cursor-not-allowed select-all"
-                      : "bg-white focus:ring-1 focus:ring-blue-600 focus:border-blue-600"
+                      ? 'Chọn thuộc tính ở trên...'
+                      : 'Nhập mã SKU thủ công...'
+                  }
+                  className={cn(
+                    'px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-extrabold text-foreground font-mono focus:outline-none',
+                    activeProductAttrs.length > 0
+                      ? 'bg-slate-100 cursor-not-allowed select-all'
+                      : 'bg-white focus:ring-1 focus:ring-blue-600 focus:border-blue-600'
                   )}
                 />
               </div>
@@ -572,7 +637,9 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
 
               {/* Pack Size */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Quy cách đóng gói</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Quy cách đóng gói
+                </label>
                 <input
                   type="text"
                   value={activeSku.pack_size || ''}
@@ -584,10 +651,14 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
 
               {/* Stock Status */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Tình trạng tồn kho</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Tình trạng tồn kho
+                </label>
                 <select
                   value={activeSku.stock_status || 'in_stock'}
-                  onChange={(e) => setActiveSku({ ...activeSku, stock_status: e.target.value as any })}
+                  onChange={(e) =>
+                    setActiveSku({ ...activeSku, stock_status: e.target.value as any })
+                  }
                   className="px-3.5 py-2 rounded-lg border border-slate-200 text-xs sm:text-sm font-bold text-slate-750 focus:outline-none"
                 >
                   <option value="in_stock">Còn hàng (In Stock)</option>
@@ -598,7 +669,9 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
 
               {/* Status Select */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-slate-500 uppercase">Trạng thái phát hành</label>
+                <label className="text-xs font-bold text-slate-500 uppercase">
+                  Trạng thái phát hành
+                </label>
                 <select
                   value={activeSku.status || 'published'}
                   onChange={(e) => setActiveSku({ ...activeSku, status: e.target.value as any })}
@@ -614,7 +687,10 @@ export function SkusClient({ initialSkus, products }: SkusClientProps) {
               <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <button
                   type="button"
-                  onClick={() => { setSkuModalOpen(false); setSelectedOptions({}); }}
+                  onClick={() => {
+                    setSkuModalOpen(false);
+                    setSelectedOptions({});
+                  }}
                   className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-bold text-slate-500 hover:bg-slate-50 transition-colors"
                 >
                   Hủy

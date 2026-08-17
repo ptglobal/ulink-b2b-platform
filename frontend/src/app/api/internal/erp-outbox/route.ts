@@ -19,7 +19,11 @@ function mapRow(value: unknown): ErpOutboxRow {
   }
 
   const row = value as Record<string, unknown>;
-  if ((typeof row.id !== 'number' && typeof row.id !== 'string') || typeof row.entity !== 'string' || typeof row.op !== 'string') {
+  if (
+    (typeof row.id !== 'number' && typeof row.id !== 'string') ||
+    typeof row.entity !== 'string' ||
+    typeof row.op !== 'string'
+  ) {
     throw new Error('integration_events row is invalid.');
   }
 
@@ -68,7 +72,9 @@ export async function POST(req: Request) {
   }
 
   const batchSize =
-    body && typeof body === 'object' && typeof (body as Record<string, unknown>).batch_size === 'number'
+    body &&
+    typeof body === 'object' &&
+    typeof (body as Record<string, unknown>).batch_size === 'number'
       ? Math.max(1, Math.floor((body as Record<string, unknown>).batch_size as number))
       : Number(process.env.ERP_OUTBOX_BATCH_SIZE ?? '20');
 

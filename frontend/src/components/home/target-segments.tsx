@@ -1,125 +1,186 @@
-import { ArrowRight, Check, Building2, Factory } from 'lucide-react';
-import { getTranslations } from 'next-intl/server';
+import { ArrowRight, Building2, CheckCircle, Factory } from '@/components/icons';
 import { Link } from '@/i18n/navigation';
+import type { HomePageContent } from '@/lib/directus';
+import { cn } from '@/lib/utils';
 
-export async function TargetSegments() {
-  const t = await getTranslations('home');
+const audienceIcons = {
+  building: Building2,
+  factory: Factory
+} as const;
+
+export function TargetSegments({
+  content,
+  variant = 'default',
+  sectionTitle,
+  sectionSubtitle
+}: {
+  content: HomePageContent['audiences'];
+  variant?: 'default' | 'industries';
+  sectionTitle?: string;
+  sectionSubtitle?: string;
+}) {
+  const isIndustries = variant === 'industries';
 
   return (
-    <section className="w-full py-8 lg:py-12">
-      {/* ── SECTION HEADER BAR ── */}
-      <div className="mx-auto w-full max-w-[1800px] px-4">
-        <div className="flex items-start gap-3">
-          {/* 3 dots cyan accent indicator */}
-          <div className="mt-1.5 flex flex-col gap-1.5">
-            <span className="h-2 w-2 rounded-full bg-brand" />
-            <span className="h-2 w-2 rounded-full bg-brand/60" />
-            <span className="h-2 w-2 rounded-full bg-brand/30" />
+    <section className={cn('w-full', isIndustries ? 'bg-white' : 'bg-[#f7f8fc]')}>
+      {isIndustries && sectionTitle ? (
+        <div className="mx-auto w-[calc(100%_-_2rem)] max-w-[80rem] py-8 sm:w-[calc(100%_-_4rem)] sm:py-10">
+          <div className="flex items-start gap-3">
+            <span className="mt-1 flex flex-col gap-1" aria-hidden="true">
+              <i className="h-1.5 w-1.5 rounded-full bg-brand" />
+              <i className="h-1.5 w-1.5 rounded-full bg-brand/55" />
+              <i className="h-1.5 w-1.5 rounded-full bg-brand/25" />
+            </span>
+            <div>
+              <h2 className="text-[22px] font-semibold tracking-[-0.02em] text-foreground sm:text-2xl">
+                {sectionTitle}
+              </h2>
+              {sectionSubtitle ? (
+                <p className="mt-2 text-[13px] leading-5 text-muted-foreground">
+                  {sectionSubtitle}
+                </p>
+              ) : null}
+            </div>
           </div>
-          <div>
-            <h2 className="text-[24px] font-extrabold tracking-tight text-primary sm:text-[28px] lg:text-[32px]">
-              {t('targetSegments.sectionTitle')}
-            </h2>
-            <p className="mt-1 text-[13px] text-muted-foreground sm:text-[14px]">
-              {t('targetSegments.sectionSubTitle')}
+        </div>
+      ) : null}
+
+      <div
+        className={cn(
+          isIndustries ? 'bg-[#f4f6fa] py-12 sm:py-14 lg:py-16' : 'py-14 sm:py-16 lg:py-20'
+        )}
+      >
+        <div
+          className={cn(
+            'mx-auto w-full px-4 sm:px-8',
+            isIndustries ? 'max-w-[84rem]' : 'max-w-[1240px]'
+          )}
+        >
+          <header className="mx-auto max-w-[760px] text-center">
+            <p
+              className={cn(
+                'font-semibold leading-tight text-brand',
+                isIndustries
+                  ? 'text-[11px] uppercase tracking-[0.08em]'
+                  : 'text-[20px] sm:text-[24px] lg:text-[28px]'
+              )}
+            >
+              {content.title}
             </p>
-          </div>
-        </div>
-      </div>
-
-      {/* ── 2 CARDS GRID FULL-WIDTH (FDI vs SME) ── */}
-      <div className="mt-8 grid w-full grid-cols-1 lg:grid-cols-2">
-        {/* CARD 1: DOANH NGHIỆP FDI (Dark Blue Theme) */}
-        <div className="flex flex-col justify-between bg-[#4A6FA5] text-white shadow-sm">
-          {/* ROW 1: TEXT CONTENT (With Left Padding Inset) */}
-          <div className="p-6 sm:p-10 lg:pb-6 lg:pt-12 lg:pl-32 lg:pr-16 xl:pl-48">
-            {/* Header: Circle Icon & Title */}
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-white text-[#4A6FA5] sm:h-14 sm:w-14">
-                <Building2 className="h-7 w-7 text-[#4A6FA5]" aria-hidden="true" />
-              </div>
-              <h3 className="text-[20px] font-bold text-white sm:text-[22px] lg:text-[24px]">
-                {t('targetSegments.fdiTitle')}
-              </h3>
-            </div>
-
-            {/* Checklist */}
-            <ul className="mt-8 space-y-4 text-[14px] text-white/95 sm:text-[15px] lg:text-[16px]">
-              <li className="flex items-center gap-3">
-                <Check className="h-5 w-5 shrink-0 text-white" aria-hidden="true" />
-                <span>{t('targetSegments.fdiCheck1')}</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="h-5 w-5 shrink-0 text-white" aria-hidden="true" />
-                <span>{t('targetSegments.fdiCheck2')}</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="h-5 w-5 shrink-0 text-white" aria-hidden="true" />
-                <span>{t('targetSegments.fdiCheck3')}</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="h-5 w-5 shrink-0 text-white" aria-hidden="true" />
-                <span>{t('targetSegments.fdiCheck4')}</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* ROW 2: BUTTON ROW (Full Width Centered, Unaffected by Text Padding) */}
-          <div className="flex w-full items-center justify-center px-6 pb-8 pt-4 sm:pb-10">
-            <Link
-              href="/solutions/categories/cleanroom-consumables"
-              className="inline-flex items-center gap-2 rounded bg-white px-8 py-3 text-[14px] font-bold text-[#4A6FA5] shadow transition-transform hover:scale-102 hover:bg-white/95 sm:text-[15px]"
+            <h2
+              className={cn(
+                'tracking-[-0.02em] text-[#162233]',
+                isIndustries
+                  ? 'mt-2 text-[24px] font-semibold leading-[1.2] sm:text-[28px]'
+                  : 'mt-3 text-[26px] font-bold leading-[1.16] sm:text-[30px] lg:text-[34px]'
+              )}
             >
-              {t('targetSegments.viewDetail')}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
-          </div>
-        </div>
+              {content.subtitle}
+            </h2>
+          </header>
 
-        {/* CARD 2: DOANH NGHIỆP SME (Light Blue Pastel Theme) */}
-        <div className="flex flex-col justify-between bg-[#D8E6FC] text-slate-800 shadow-sm">
-          {/* ROW 1: TEXT CONTENT (With Left Padding Inset) */}
-          <div className="p-6 sm:p-10 lg:pb-6 lg:pt-12 lg:pl-32 lg:pr-16 xl:pl-48">
-            {/* Header: Icon & Title */}
-            <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center text-brand sm:h-14 sm:w-14">
-                <Factory className="h-8 w-8 text-brand" aria-hidden="true" />
-              </div>
-              <h3 className="text-[20px] font-bold text-slate-900 sm:text-[22px] lg:text-[24px]">
-                {t('targetSegments.smeTitle')}
-              </h3>
-            </div>
+          <div
+            className={cn(
+              'grid lg:grid-cols-2',
+              isIndustries ? 'mt-8 gap-5 lg:gap-6' : 'mt-9 gap-5 lg:mt-12 lg:gap-8'
+            )}
+          >
+            {content.items.map((item) => {
+              const Icon = audienceIcons[item.icon] ?? Factory;
 
-            {/* Checklist */}
-            <ul className="mt-8 space-y-4 text-[14px] text-slate-800 sm:text-[15px] lg:text-[16px]">
-              <li className="flex items-center gap-3">
-                <Check className="h-5 w-5 shrink-0 text-brand" aria-hidden="true" />
-                <span>{t('targetSegments.smeCheck1')}</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="h-5 w-5 shrink-0 text-brand" aria-hidden="true" />
-                <span>{t('targetSegments.smeCheck2')}</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="h-5 w-5 shrink-0 text-brand" aria-hidden="true" />
-                <span>{t('targetSegments.smeCheck3')}</span>
-              </li>
-              <li className="flex items-center gap-3">
-                <Check className="h-5 w-5 shrink-0 text-brand" aria-hidden="true" />
-                <span>{t('targetSegments.smeCheck4')}</span>
-              </li>
-            </ul>
-          </div>
+              return (
+                <article
+                  key={item.title}
+                  className={cn(
+                    'flex flex-col overflow-hidden rounded-[3px] border border-[#d8e0f0] bg-white',
+                    isIndustries ? 'min-h-[380px]' : 'min-h-[460px]'
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'bg-[#f7f8fc]',
+                      isIndustries ? 'min-h-[148px] p-5 sm:p-6' : 'min-h-[184px] p-6 sm:p-8'
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        'flex items-center justify-center border border-[#d8e0f0] bg-white text-brand',
+                        isIndustries
+                          ? 'h-10 w-10 rounded-[3px]'
+                          : 'h-14 w-14 rounded-[8px] sm:h-16 sm:w-16'
+                      )}
+                    >
+                      <Icon
+                        className={cn(isIndustries ? 'h-5 w-5' : 'h-7 w-7 sm:h-8 sm:w-8')}
+                        aria-hidden="true"
+                      />
+                    </span>
+                    <h3
+                      className={cn(
+                        'font-bold leading-tight text-[#162233]',
+                        isIndustries ? 'mt-4 text-[17px]' : 'mt-5 text-[22px]'
+                      )}
+                    >
+                      {item.title}
+                    </h3>
+                    <p
+                      className={cn(
+                        'mt-2 max-w-[54ch] text-[#52627d]',
+                        isIndustries ? 'text-[12px] leading-5' : 'text-[14px] leading-6'
+                      )}
+                    >
+                      {item.description}
+                    </p>
+                  </div>
 
-          {/* ROW 2: BUTTON ROW (Full Width Centered, Unaffected by Text Padding) */}
-          <div className="flex w-full items-center justify-center px-6 pb-8 pt-4 sm:pb-10">
-            <Link
-              href="/solutions/categories/cleanroom-consumables"
-              className="inline-flex items-center gap-2 rounded-lg bg-brand px-8 py-3 text-[14px] font-bold text-white shadow transition-transform hover:scale-102 hover:bg-brand-strong sm:text-[15px]"
-            >
-              {t('targetSegments.viewDetail')}
-              <ArrowRight className="h-4 w-4" aria-hidden="true" />
-            </Link>
+                  <div
+                    className={cn(
+                      'flex flex-1 flex-col border-t border-[#d8e0f0]',
+                      isIndustries ? 'p-5 sm:p-6' : 'p-6 sm:p-8'
+                    )}
+                  >
+                    <ul className={cn(isIndustries ? 'space-y-2.5' : 'space-y-4')}>
+                      {item.bullets.map((bullet) => (
+                        <li
+                          key={bullet}
+                          className={cn(
+                            'flex items-start text-[#162233]',
+                            isIndustries
+                              ? 'gap-2.5 text-[12px] leading-5'
+                              : 'gap-3 text-[15px] leading-6'
+                          )}
+                        >
+                          <CheckCircle
+                            className={cn(
+                              'mt-0.5 shrink-0 text-brand',
+                              isIndustries ? 'h-4 w-4' : 'h-5 w-5'
+                            )}
+                            aria-hidden="true"
+                          />
+                          <span>{bullet}</span>
+                        </li>
+                      ))}
+                    </ul>
+
+                    <Link
+                      href={item.action.href}
+                      className={cn(
+                        'group inline-flex min-h-11 w-fit items-center font-semibold text-brand hover:text-brand-strong sm:mt-auto',
+                        isIndustries
+                          ? 'mt-5 gap-2 text-[12px] sm:pt-4'
+                          : 'mt-8 gap-3 text-[14px] sm:pt-8'
+                      )}
+                    >
+                      {item.action.label}
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+                        aria-hidden="true"
+                      />
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </div>

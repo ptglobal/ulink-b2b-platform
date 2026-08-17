@@ -5,7 +5,7 @@ import { ApplyForm } from '@/components/about/careers/apply/apply-form';
 import { ApplySidebar } from '@/components/about/careers/apply/apply-sidebar';
 
 export default async function ApplyJobPage({
-  params: { locale },
+  params: { locale }
 }: {
   params: { locale: string; slug: string };
 }) {

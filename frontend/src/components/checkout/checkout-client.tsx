@@ -16,7 +16,7 @@ import {
   CreditCard,
   Truck,
   X
-} from 'lucide-react';
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import type { AuthUser } from '@/lib/auth-helpers';
 import { readCart, persistCart, type CartItem } from '@/components/rfq/cart-types';
@@ -150,7 +150,12 @@ export default function CheckoutClient({
     if (locale === 'vi') {
       return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
     }
-    return '$' + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount / 25000);
+    return (
+      '$' +
+      new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        amount / 25000
+      )
+    );
   };
 
   const handleCopy = () => {
@@ -185,42 +190,62 @@ export default function CheckoutClient({
     switch (name) {
       case 'Viettel Post':
         return (
-          <div className="w-14 h-10 shrink-0 rounded bg-[#EE0000] text-white flex flex-col items-center justify-center font-extrabold text-[9px] shadow-sm select-none" title="Viettel Post">
+          <div
+            className="w-14 h-10 shrink-0 rounded bg-[#EE0000] text-white flex flex-col items-center justify-center font-extrabold text-[9px] shadow-sm select-none"
+            title="Viettel Post"
+          >
             <span className="leading-none tracking-tighter">VIETTEL</span>
             <span className="text-[7px] opacity-90 leading-none mt-0.5">POST</span>
           </div>
         );
       case 'Nhất Tín Logistics':
         return (
-          <div className="w-14 h-10 shrink-0 rounded bg-[#FFCC00] text-black flex flex-col items-center justify-center font-extrabold text-[8px] shadow-sm select-none font-bold" title="Nhất Tín Logistics">
+          <div
+            className="w-14 h-10 shrink-0 rounded bg-[#FFCC00] text-black flex flex-col items-center justify-center font-extrabold text-[8px] shadow-sm select-none font-bold"
+            title="Nhất Tín Logistics"
+          >
             <span className="leading-none tracking-tight">NHẤT TÍN</span>
             <span className="text-[6px] opacity-80 leading-none mt-0.5 font-bold">LOGISTICS</span>
           </div>
         );
       case 'Giao Hàng Tiết Kiệm (GHTK)':
         return (
-          <div className="w-14 h-10 shrink-0 rounded bg-[#069A57] text-white flex flex-col items-center justify-center font-extrabold text-[9px] shadow-sm select-none" title="GHTK">
+          <div
+            className="w-14 h-10 shrink-0 rounded bg-[#069A57] text-white flex flex-col items-center justify-center font-extrabold text-[9px] shadow-sm select-none"
+            title="GHTK"
+          >
             <span className="leading-none tracking-tighter font-black">GHTK</span>
             <span className="text-[6px] opacity-90 leading-none mt-0.5">TIẾT KIỆM</span>
           </div>
         );
       case 'Giao Hàng Nhanh (GHN)':
         return (
-          <div className="w-14 h-10 shrink-0 rounded bg-[#F26522] text-white flex flex-col items-center justify-center font-extrabold text-[9px] shadow-sm select-none font-bold" title="GHN">
+          <div
+            className="w-14 h-10 shrink-0 rounded bg-[#F26522] text-white flex flex-col items-center justify-center font-extrabold text-[9px] shadow-sm select-none font-bold"
+            title="GHN"
+          >
             <span className="leading-none tracking-tighter font-black">GHN</span>
             <span className="text-[6px] opacity-90 leading-none mt-0.5 font-bold">EXPRESS</span>
           </div>
         );
       case 'J&T Express':
         return (
-          <div className="w-14 h-10 shrink-0 rounded bg-[#FF0000] text-white flex flex-col items-center justify-center font-extrabold text-[9px] shadow-sm select-none" title="J&T Express">
+          <div
+            className="w-14 h-10 shrink-0 rounded bg-[#FF0000] text-white flex flex-col items-center justify-center font-extrabold text-[9px] shadow-sm select-none"
+            title="J&T Express"
+          >
             <span className="leading-none italic font-black">J&T</span>
-            <span className="text-[6px] opacity-95 tracking-widest leading-none mt-0.5">EXPRESS</span>
+            <span className="text-[6px] opacity-95 tracking-widest leading-none mt-0.5">
+              EXPRESS
+            </span>
           </div>
         );
       default:
         return (
-          <div className="w-14 h-10 shrink-0 rounded bg-slate-400 text-white flex items-center justify-center font-extrabold text-xs shadow-sm select-none" title="Other">
+          <div
+            className="w-14 h-10 shrink-0 rounded bg-slate-400 text-white flex items-center justify-center font-extrabold text-xs shadow-sm select-none"
+            title="Other"
+          >
             <Truck className="h-5 w-5" />
           </div>
         );
@@ -251,14 +276,15 @@ export default function CheckoutClient({
     setClickCount((prev) => prev + 1);
   };
 
-
-
   return (
     <div className="space-y-10 w-full">
       {/* SECTION 1: Breadcrumbs, Progress, Checkout Form */}
       <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 sm:px-8 lg:px-16">
         {/* Breadcrumbs */}
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-[12px] text-muted-foreground pb-2">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-2 text-[12px] text-muted-foreground pb-2"
+        >
           <Link href="/" className="transition-colors hover:text-brand">
             {t('breadcrumbHome')}
           </Link>
@@ -327,11 +353,13 @@ export default function CheckoutClient({
                     value={formData.fullName}
                     onChange={(e) => handleInputChange('fullName', e.target.value)}
                     className={cn(
-                      "w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                      errors.fullName && "border-rose-500 focus:border-rose-500 focus:ring-rose-500"
+                      'w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                      errors.fullName && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500'
                     )}
                   />
-                  {errors.fullName && <span className="text-xs text-rose-500 block">{errors.fullName}</span>}
+                  {errors.fullName && (
+                    <span className="text-xs text-rose-500 block">{errors.fullName}</span>
+                  )}
                 </div>
 
                 <div className="space-y-1.5">
@@ -344,11 +372,13 @@ export default function CheckoutClient({
                     value={formData.phone}
                     onChange={(e) => handleInputChange('phone', e.target.value)}
                     className={cn(
-                      "w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                      errors.phone && "border-rose-500 focus:border-rose-500 focus:ring-rose-500"
+                      'w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                      errors.phone && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500'
                     )}
                   />
-                  {errors.phone && <span className="text-xs text-rose-500 block">{errors.phone}</span>}
+                  {errors.phone && (
+                    <span className="text-xs text-rose-500 block">{errors.phone}</span>
+                  )}
                 </div>
 
                 <div className="sm:col-span-2 space-y-1.5">
@@ -361,11 +391,13 @@ export default function CheckoutClient({
                     value={formData.email}
                     onChange={(e) => handleInputChange('email', e.target.value)}
                     className={cn(
-                      "w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                      errors.email && "border-rose-500 focus:border-rose-500 focus:ring-rose-500"
+                      'w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                      errors.email && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500'
                     )}
                   />
-                  {errors.email && <span className="text-xs text-rose-500 block">{errors.email}</span>}
+                  {errors.email && (
+                    <span className="text-xs text-rose-500 block">{errors.email}</span>
+                  )}
                 </div>
 
                 <div className="space-y-1.5">
@@ -376,7 +408,7 @@ export default function CheckoutClient({
                     id="province"
                     value={formData.province}
                     onChange={(e) => handleInputChange('province', e.target.value)}
-                    className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand"
+                    className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand"
                   >
                     <option value="Hà Nam">Hà Nam</option>
                     <option value="Hà Nội">Hà Nội</option>
@@ -394,7 +426,7 @@ export default function CheckoutClient({
                     id="district"
                     value={formData.district}
                     onChange={(e) => handleInputChange('district', e.target.value)}
-                    className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand"
+                    className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand"
                   >
                     <option value="Kim Bảng">Kim Bảng</option>
                     <option value="Dĩ An">Dĩ An</option>
@@ -412,7 +444,7 @@ export default function CheckoutClient({
                     id="ward"
                     value={formData.ward}
                     onChange={(e) => handleInputChange('ward', e.target.value)}
-                    className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand"
+                    className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand"
                   >
                     <option value="Đại Cương">Đại Cương</option>
                     <option value="Bến Nghé">Bến Nghé</option>
@@ -430,11 +462,13 @@ export default function CheckoutClient({
                     value={formData.address}
                     onChange={(e) => handleInputChange('address', e.target.value)}
                     className={cn(
-                      "w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                      errors.address && "border-rose-500 focus:border-rose-500 focus:ring-rose-500"
+                      'w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                      errors.address && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500'
                     )}
                   />
-                  {errors.address && <span className="text-xs text-rose-500 block">{errors.address}</span>}
+                  {errors.address && (
+                    <span className="text-xs text-rose-500 block">{errors.address}</span>
+                  )}
                 </div>
 
                 <div className="sm:col-span-2 space-y-1.5">
@@ -447,7 +481,7 @@ export default function CheckoutClient({
                     onChange={(e) => handleInputChange('note', e.target.value)}
                     placeholder={t('notePlaceholder')}
                     rows={3}
-                    className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand"
+                    className="w-full rounded border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand"
                   />
                 </div>
               </div>
@@ -465,8 +499,8 @@ export default function CheckoutClient({
                 <label
                   onClick={() => setPaymentMethod('bank')}
                   className={cn(
-                    "flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-all hover:bg-slate-50/50",
-                    paymentMethod === 'bank' ? "border-[#3B82F6] bg-blue-50/20" : "border-slate-200"
+                    'flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:bg-slate-50/50',
+                    paymentMethod === 'bank' ? 'border-brand bg-blue-50/20' : 'border-slate-200'
                   )}
                 >
                   <input
@@ -477,9 +511,7 @@ export default function CheckoutClient({
                     className="mt-1 h-4 w-4 text-brand focus:ring-brand border-slate-300"
                   />
                   <div className="space-y-1 select-none">
-                    <span className="text-sm font-bold text-slate-800 block">
-                      {t('payBank')}
-                    </span>
+                    <span className="text-sm font-bold text-slate-800 block">{t('payBank')}</span>
                     <span className="text-xs text-slate-400 block leading-relaxed">
                       {t('payBankDesc')}
                     </span>
@@ -490,8 +522,8 @@ export default function CheckoutClient({
                 <label
                   onClick={() => setPaymentMethod('cod')}
                   className={cn(
-                    "flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-all hover:bg-slate-50/50",
-                    paymentMethod === 'cod' ? "border-[#3B82F6] bg-blue-50/20" : "border-slate-200"
+                    'flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:bg-slate-50/50',
+                    paymentMethod === 'cod' ? 'border-brand bg-blue-50/20' : 'border-slate-200'
                   )}
                 >
                   <input
@@ -502,9 +534,7 @@ export default function CheckoutClient({
                     className="mt-1 h-4 w-4 text-brand focus:ring-brand border-slate-300"
                   />
                   <div className="space-y-1 select-none">
-                    <span className="text-sm font-bold text-slate-800 block">
-                      {t('payCod')}
-                    </span>
+                    <span className="text-sm font-bold text-slate-800 block">{t('payCod')}</span>
                     <span className="text-xs text-slate-400 block leading-relaxed">
                       {t('payCodDesc')}
                     </span>
@@ -515,8 +545,10 @@ export default function CheckoutClient({
                 <label
                   onClick={() => setPaymentMethod('wallet')}
                   className={cn(
-                    "flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-all hover:bg-slate-50/50",
-                    paymentMethod === 'wallet' ? "border-[#3B82F6] bg-blue-50/20" : "border-slate-200"
+                    'flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:bg-slate-50/50',
+                    paymentMethod === 'wallet'
+                      ? 'border-brand bg-blue-50/20'
+                      : 'border-slate-200'
                   )}
                 >
                   <input
@@ -527,9 +559,7 @@ export default function CheckoutClient({
                     className="mt-1 h-4 w-4 text-brand focus:ring-brand border-slate-300"
                   />
                   <div className="space-y-1 select-none">
-                    <span className="text-sm font-bold text-slate-800 block">
-                      {t('payWallet')}
-                    </span>
+                    <span className="text-sm font-bold text-slate-800 block">{t('payWallet')}</span>
                     <span className="text-xs text-slate-400 block leading-relaxed">
                       {t('payWalletDesc')}
                     </span>
@@ -550,7 +580,10 @@ export default function CheckoutClient({
                   {/* Styled QR Code SVG */}
                   <div className="border border-slate-200 p-3 bg-white rounded flex flex-col items-center justify-center shrink-0 w-[145px] h-[145px] shadow-sm">
                     <svg width="90" height="90" viewBox="0 0 100 100" className="text-slate-800">
-                      <path d="M0 0h28v8H8v20H0V0zm72 0h28v28h-8V8H72V0zM0 72h8v20h20v8H0V72zm92 0h8v28H72v-8h20V72z" fill="currentColor" />
+                      <path
+                        d="M0 0h28v8H8v20H0V0zm72 0h28v28h-8V8H72V0zM0 72h8v20h20v8H0V72zm92 0h8v28H72v-8h20V72z"
+                        fill="currentColor"
+                      />
                       <rect x="12" y="12" width="16" height="16" fill="currentColor" />
                       <rect x="72" y="12" width="16" height="16" fill="currentColor" />
                       <rect x="12" y="72" width="16" height="16" fill="currentColor" />
@@ -580,21 +613,33 @@ export default function CheckoutClient({
                     <div className="grid grid-cols-3 gap-2 py-1 border-b border-slate-100 items-center">
                       <span className="text-slate-500">{t('bankAccountLabel')}</span>
                       <div className="col-span-2 flex items-center gap-2">
-                        <span className="font-mono font-bold text-base text-slate-800">0071 0012 3456 789</span>
+                        <span className="font-mono font-bold text-base text-slate-800">
+                          0071 0012 3456 789
+                        </span>
                         <button
                           type="button"
                           onClick={handleCopy}
-                          className="p-1.5 border border-slate-200 rounded hover:bg-slate-50 text-slate-400 hover:text-slate-700 transition-all"
+                          className="p-1.5 border border-slate-200 rounded hover:bg-slate-50 text-slate-400 hover:text-slate-700 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
                           title="Copy account number"
                         >
-                          {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                          {copied ? (
+                            <Check className="h-3.5 w-3.5 text-emerald-600" />
+                          ) : (
+                            <Copy className="h-3.5 w-3.5" />
+                          )}
                         </button>
-                        {copied && <span className="text-[10px] text-emerald-600 font-semibold">Đã sao chép!</span>}
+                        {copied && (
+                          <span className="text-[10px] text-emerald-600 font-semibold">
+                            Đã sao chép!
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="grid grid-cols-3 gap-2 py-1 border-b border-slate-100">
                       <span className="text-slate-500">{t('bankAccountOwnerLabel')}</span>
-                      <span className="col-span-2 font-bold text-slate-800 uppercase">CÔNG TY TNHH ULINK VIỆT NAM</span>
+                      <span className="col-span-2 font-bold text-slate-800 uppercase">
+                        CÔNG TY TNHH ULINK VIỆT NAM
+                      </span>
                     </div>
                     <div className="grid grid-cols-3 gap-2 py-1 border-b border-slate-100">
                       <span className="text-slate-500">{t('bankMemoLabel')}</span>
@@ -623,8 +668,10 @@ export default function CheckoutClient({
                 <label
                   onClick={() => setShippingMethod('standard')}
                   className={cn(
-                    "flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-all hover:bg-slate-50/50",
-                    shippingMethod === 'standard' ? "border-[#3B82F6] bg-blue-50/20" : "border-slate-200"
+                    'flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:bg-slate-50/50',
+                    shippingMethod === 'standard'
+                      ? 'border-brand bg-blue-50/20'
+                      : 'border-slate-200'
                   )}
                 >
                   <input
@@ -636,9 +683,7 @@ export default function CheckoutClient({
                   />
                   <div className="flex-1 space-y-1 select-none">
                     <div className="flex justify-between items-baseline">
-                      <span className="text-sm font-bold text-slate-800">
-                        {t('shipStandard')}
-                      </span>
+                      <span className="text-sm font-bold text-slate-800">{t('shipStandard')}</span>
                       <span className="text-sm font-bold text-emerald-600">
                         {t('shipStandardPrice')}
                       </span>
@@ -653,8 +698,10 @@ export default function CheckoutClient({
                 <label
                   onClick={() => setShippingMethod('express')}
                   className={cn(
-                    "flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-all hover:bg-slate-50/50",
-                    shippingMethod === 'express' ? "border-[#3B82F6] bg-blue-50/20" : "border-slate-200"
+                    'flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:bg-slate-50/50',
+                    shippingMethod === 'express'
+                      ? 'border-brand bg-blue-50/20'
+                      : 'border-slate-200'
                   )}
                 >
                   <input
@@ -666,10 +713,8 @@ export default function CheckoutClient({
                   />
                   <div className="flex-1 space-y-1 select-none">
                     <div className="flex justify-between items-baseline">
-                      <span className="text-sm font-bold text-slate-800">
-                        {t('shipExpress')}
-                      </span>
-                      <span className="text-sm font-bold text-[#006AA7]">
+                      <span className="text-sm font-bold text-slate-800">{t('shipExpress')}</span>
+                      <span className="text-sm font-bold text-brand">
                         {formatPrice(250000)}
                       </span>
                     </div>
@@ -683,8 +728,8 @@ export default function CheckoutClient({
                 <label
                   onClick={() => setShippingMethod('3pl')}
                   className={cn(
-                    "flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-all hover:bg-slate-50/50",
-                    shippingMethod === '3pl' ? "border-[#3B82F6] bg-blue-50/20" : "border-slate-200"
+                    'flex gap-4 p-4 rounded-md border text-left cursor-pointer transition-[color,background-color,border-color,box-shadow,opacity,transform] hover:bg-slate-50/50',
+                    shippingMethod === '3pl' ? 'border-brand bg-blue-50/20' : 'border-slate-200'
                   )}
                 >
                   <input
@@ -696,12 +741,8 @@ export default function CheckoutClient({
                   />
                   <div className="flex-1 space-y-1 select-none">
                     <div className="flex justify-between items-baseline">
-                      <span className="text-sm font-bold text-slate-800">
-                        {t('ship3pl')}
-                      </span>
-                      <span className="text-xs font-bold text-slate-500">
-                        {t('ship3plPrice')}
-                      </span>
+                      <span className="text-sm font-bold text-slate-800">{t('ship3pl')}</span>
+                      <span className="text-xs font-bold text-slate-500">{t('ship3plPrice')}</span>
                     </div>
                     <span className="text-xs text-slate-400 block leading-relaxed max-w-2xl">
                       {t('ship3plDesc')}
@@ -712,12 +753,16 @@ export default function CheckoutClient({
                 {shippingMethod === '3pl' && (
                   <div className="mt-2 p-4 border border-dashed border-slate-200 bg-slate-50/50 rounded space-y-4 text-left animate-fadeIn">
                     <p className="text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                      {locale === 'vi' ? 'Thông tin đối tác vận chuyển 3PL' : '3PL Carrier Partner Information'}
+                      {locale === 'vi'
+                        ? 'Thông tin đối tác vận chuyển 3PL'
+                        : '3PL Carrier Partner Information'}
                     </p>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="space-y-1.5">
                         <label className="text-xs font-bold text-slate-500" htmlFor="carrierName">
-                          {locale === 'vi' ? 'Đơn vị vận chuyển B2B/3PL đối tác' : 'Partner B2B/3PL Carrier'}
+                          {locale === 'vi'
+                            ? 'Đơn vị vận chuyển B2B/3PL đối tác'
+                            : 'Partner B2B/3PL Carrier'}
                         </label>
                         <div className="flex gap-3 items-center">
                           {renderCarrierIcon(carrierName)}
@@ -725,11 +770,13 @@ export default function CheckoutClient({
                             id="carrierName"
                             value={carrierName}
                             onChange={(e) => setCarrierName(e.target.value)}
-                            className="flex-1 rounded border border-slate-200 bg-white px-3 py-2.5 text-xs outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand font-medium cursor-pointer"
+                            className="flex-1 rounded border border-slate-200 bg-white px-3 py-2.5 text-xs outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand font-medium cursor-pointer"
                           >
                             <option value="Viettel Post">Viettel Post</option>
                             <option value="Nhất Tín Logistics">Nhất Tín Logistics</option>
-                            <option value="Giao Hàng Tiết Kiệm (GHTK)">Giao Hàng Tiết Kiệm (GHTK)</option>
+                            <option value="Giao Hàng Tiết Kiệm (GHTK)">
+                              Giao Hàng Tiết Kiệm (GHTK)
+                            </option>
                             <option value="Giao Hàng Nhanh (GHN)">Giao Hàng Nhanh (GHN)</option>
                             <option value="J&T Express">J&T Express</option>
                             <option value="Khác">Khác / Tự thỏa thuận</option>
@@ -737,8 +784,13 @@ export default function CheckoutClient({
                         </div>
                       </div>
                       <div className="space-y-1.5">
-                        <label className="text-xs font-bold text-slate-500" htmlFor="carrierAccount">
-                          {locale === 'vi' ? 'Mã khách hàng / Mã hợp đồng (nếu có)' : 'Carrier Account/Contract ID (if any)'}
+                        <label
+                          className="text-xs font-bold text-slate-500"
+                          htmlFor="carrierAccount"
+                        >
+                          {locale === 'vi'
+                            ? 'Mã khách hàng / Mã hợp đồng (nếu có)'
+                            : 'Carrier Account/Contract ID (if any)'}
                         </label>
                         <input
                           type="text"
@@ -746,15 +798,14 @@ export default function CheckoutClient({
                           placeholder="Ví dụ: Corporate-12345"
                           value={carrierAccount}
                           onChange={(e) => setCarrierAccount(e.target.value)}
-                          className="w-full rounded border border-slate-200 bg-white px-3 py-2 text-xs outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand font-medium"
+                          className="w-full rounded border border-slate-200 bg-white px-3 py-2 text-xs outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand font-medium"
                         />
                       </div>
                     </div>
                     <div className="bg-sky-50 border border-sky-100 p-3 rounded text-xs text-sky-700 leading-relaxed">
-                      {locale === 'vi' 
+                      {locale === 'vi'
                         ? 'Lưu ý: ULink sẽ chuẩn bị hàng hóa và bàn giao trực tiếp cho đơn vị vận chuyển đối tác của bạn. Chi phí vận chuyển thực tế do doanh nghiệp thanh toán trực tiếp cho bên thứ 3 (3PL) theo thỏa thuận riêng.'
-                        : 'Note: ULink will pack and hand over the goods directly to your partner carrier. Actual shipping fees are paid directly to the 3PL carrier according to your contract.'
-                      }
+                        : 'Note: ULink will pack and hand over the goods directly to your partner carrier. Actual shipping fees are paid directly to the 3PL carrier according to your contract.'}
                     </div>
                   </div>
                 )}
@@ -764,7 +815,7 @@ export default function CheckoutClient({
 
           {/* RIGHT COLUMN: Order Summary */}
           <div className="lg:col-span-4 space-y-6">
-            <div className="rounded-md border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm space-y-5 text-left">
+            <div className="rounded-md border border-slate-200 bg-background p-6 shadow-sm space-y-5 text-left">
               <h3 className="text-lg font-bold text-slate-900 border-b border-slate-200/60 pb-3">
                 {t('orderSummaryTitle')}
               </h3>
@@ -799,7 +850,7 @@ export default function CheckoutClient({
                       {item.slug ? (
                         <Link
                           href={`/solutions/${item.slug}`}
-                          className="font-bold text-slate-800 text-xs hover:text-brand transition-all block truncate"
+                          className="font-bold text-slate-800 text-xs hover:text-brand transition-[color,background-color,border-color,box-shadow,opacity,transform] block truncate"
                         >
                           {item.product_name}
                         </Link>
@@ -837,8 +888,7 @@ export default function CheckoutClient({
                       ? formatPrice(250000)
                       : shippingMethod === '3pl'
                         ? t('ship3plPrice')
-                        : t('shipStandardPrice')
-                    }
+                        : t('shipStandardPrice')}
                   </span>
                 </div>
 
@@ -848,7 +898,7 @@ export default function CheckoutClient({
                 <div className="flex items-baseline justify-between pt-1">
                   <span className="text-base font-bold text-slate-900">{t('total')}</span>
                   <div className="text-right">
-                    <span className="text-2xl font-extrabold text-[#006AA7] block leading-none">
+                    <span className="text-2xl font-extrabold text-brand block leading-none">
                       {formatPrice(grandTotal)}
                     </span>
                     <span className="text-[10px] text-slate-400 font-medium block mt-1.5">
@@ -863,13 +913,13 @@ export default function CheckoutClient({
                 <button
                   type="button"
                   onClick={handleSubmitOrder}
-                  className="inline-flex items-center justify-center gap-2 w-full rounded-md bg-brand py-3.5 text-sm font-bold text-white shadow hover:bg-brand/95 transition-all text-center"
+                  className="inline-flex items-center justify-center gap-2 w-full rounded-md bg-brand py-3.5 text-sm font-bold text-white shadow hover:bg-brand/95 transition-[color,background-color,border-color,box-shadow,opacity,transform] text-center"
                 >
                   {t('btnPayNow')}
                 </button>
                 <Link
                   href="/cart"
-                  className="inline-flex items-center justify-center gap-2 w-full rounded-md border border-brand text-brand hover:bg-brand/5 py-3.5 text-sm font-bold transition-all text-center"
+                  className="inline-flex items-center justify-center gap-2 w-full rounded-md border border-brand text-brand hover:bg-brand/5 py-3.5 text-sm font-bold transition-[color,background-color,border-color,box-shadow,opacity,transform] text-center"
                 >
                   <ArrowLeft className="h-4 w-4" />
                   {t('btnBackToCart')}
@@ -907,18 +957,17 @@ export default function CheckoutClient({
               <Check className="h-8 w-8 stroke-[3]" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-xl font-extrabold text-slate-900">
-                Thanh toán thành công!
-              </h3>
+              <h3 className="text-xl font-extrabold text-slate-900">Thanh toán thành công!</h3>
               <p className="text-xs text-slate-500 leading-relaxed px-2">
-                Đơn hàng #{orderId} của bạn đã được thanh toán thành công. Chúng tôi sẽ xử lý và giao hàng trong thời gian sớm nhất.
+                Đơn hàng #{orderId} của bạn đã được thanh toán thành công. Chúng tôi sẽ xử lý và
+                giao hàng trong thời gian sớm nhất.
               </p>
             </div>
-            <div className="bg-[#F8FAFC] rounded-md p-4 w-full flex flex-col items-center justify-center">
-              <span className="text-[10px] font-bold text-[#3B82F6] tracking-wider uppercase">
+            <div className="bg-background rounded-md p-4 w-full flex flex-col items-center justify-center">
+              <span className="text-[10px] font-bold text-brand tracking-wider uppercase">
                 TỔNG TIỀN THANH TOÁN
               </span>
-              <span className="text-2xl font-extrabold text-[#1D4ED8] mt-1.5">
+              <span className="text-2xl font-extrabold text-brand mt-1.5">
                 {formatPrice(grandTotal)}
               </span>
             </div>
@@ -950,16 +999,26 @@ export default function CheckoutClient({
             <div className="h-16 w-16 rounded-full bg-[#FEF3C7] text-[#D97706] flex items-center justify-center">
               {/* Golden dashed loader circle */}
               <svg className="animate-spin h-8 w-8 text-[#D97706]" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
               </svg>
             </div>
             <div className="space-y-2">
-              <h3 className="text-xl font-extrabold text-slate-900">
-                Đang chờ xác nhận
-              </h3>
+              <h3 className="text-xl font-extrabold text-slate-900">Đang chờ xác nhận</h3>
               <p className="text-xs text-slate-500 leading-relaxed px-2">
-                Giao dịch của bạn đang được xử lý. Thời gian xác nhận có thể mất từ 5-15 phút. Bạn sẽ nhận được thông báo khi thanh toán hoàn tất.
+                Giao dịch của bạn đang được xử lý. Thời gian xác nhận có thể mất từ 5-15 phút. Bạn
+                sẽ nhận được thông báo khi thanh toán hoàn tất.
               </p>
             </div>
             <div className="bg-[#FFFBEB] rounded-md p-4 w-full flex flex-col items-center justify-center border border-amber-100">
@@ -994,14 +1053,15 @@ export default function CheckoutClient({
               <X className="h-5 w-5" />
             </button>
             <div className="h-16 w-16 rounded-full bg-[#FEE2E2] text-[#DC2626] flex items-center justify-center">
-              <div className="border-4 border-[#DC2626] rounded-md p-1.5 flex items-center justify-center h-8 w-8 font-black text-lg leading-none">!</div>
+              <div className="border-4 border-[#DC2626] rounded-md p-1.5 flex items-center justify-center h-8 w-8 font-black text-lg leading-none">
+                !
+              </div>
             </div>
             <div className="space-y-2">
-              <h3 className="text-xl font-extrabold text-slate-900">
-                Thanh toán thất bại
-              </h3>
+              <h3 className="text-xl font-extrabold text-slate-900">Thanh toán thất bại</h3>
               <p className="text-xs text-slate-500 leading-relaxed px-2">
-                Giao dịch không thể hoàn tất. Vui lòng kiểm tra lại số dư, thông tin tài khoản hoặc thử phương thức thanh toán khác.
+                Giao dịch không thể hoàn tất. Vui lòng kiểm tra lại số dư, thông tin tài khoản hoặc
+                thử phương thức thanh toán khác.
               </p>
             </div>
             <div className="bg-[#FEF2F2] rounded-md p-4 w-full flex flex-col items-center justify-center border border-red-100">
@@ -1012,18 +1072,12 @@ export default function CheckoutClient({
                 ERR_BANK_DECLINED
               </span>
             </div>
-            <div className="flex gap-4 items-center justify-center text-xs font-bold text-[#1D4ED8] pt-2">
-              <button
-                onClick={() => setShowFailureModal(false)}
-                className="hover:underline"
-              >
+            <div className="flex gap-4 items-center justify-center text-xs font-bold text-brand pt-2">
+              <button onClick={() => setShowFailureModal(false)} className="hover:underline">
                 Đổi phương thức thanh toán
               </button>
               <span className="text-slate-300">|</span>
-              <a
-                href="mailto:support@ulinkindustries.com"
-                className="hover:underline"
-              >
+              <a href="mailto:support@ulinkindustries.com" className="hover:underline">
                 Liên hệ hỗ trợ
               </a>
             </div>

@@ -9,7 +9,7 @@ import {
   ChevronRight,
   Image as ImageIcon,
   Check
-} from 'lucide-react';
+} from '@/components/icons';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
 import type { AuthUser } from '@/lib/auth-helpers';
@@ -55,7 +55,12 @@ export default function DeliveryConfirmationClient({
     if (locale === 'vi') {
       return new Intl.NumberFormat('vi-VN').format(amount) + 'đ';
     }
-    return '$' + new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(amount / 25000);
+    return (
+      '$' +
+      new Intl.NumberFormat('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
+        amount / 25000
+      )
+    );
   };
 
   const handleStarClick = (index: number) => {
@@ -101,9 +106,11 @@ export default function DeliveryConfirmationClient({
 
   return (
     <div className="mx-auto flex w-full max-w-[1440px] flex-col gap-6 px-4 sm:px-8 lg:px-16 text-slate-800 text-left">
-      
       {/* Breadcrumbs */}
-      <nav aria-label="Breadcrumb" className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium">
+      <nav
+        aria-label="Breadcrumb"
+        className="flex items-center gap-1.5 text-[11px] text-slate-400 font-medium"
+      >
         <Link href="/" className="hover:text-brand transition-colors">
           Trang chủ
         </Link>
@@ -124,7 +131,7 @@ export default function DeliveryConfirmationClient({
         <div className="h-11 w-11 rounded-full bg-[#10B981] text-white flex items-center justify-center shrink-0 shadow-sm">
           <Check className="h-5.5 w-5.5 stroke-[3.5]" />
         </div>
-        
+
         <div className="space-y-1.5">
           <h3 className="text-[17px] font-extrabold text-[#064E3B] leading-none">
             {t('deliverySuccess')}
@@ -148,16 +155,14 @@ export default function DeliveryConfirmationClient({
 
       {/* Grid Columns */}
       <div className="grid gap-6 lg:grid-cols-12 pt-2">
-        
         {/* LEFT COLUMN: Shipment Info and Delivery Rating Form */}
         <div className="lg:col-span-8 space-y-6">
-          
           {/* Shipment Info Card */}
           <div className="bg-white border border-slate-200/80 p-5 rounded-lg shadow-sm space-y-4">
             <h4 className="text-sm font-bold text-slate-900 border-b border-slate-100 pb-3 uppercase tracking-wider">
               {t('shipmentInfoTitle')}
             </h4>
-            
+
             <div className="grid gap-4 sm:grid-cols-3 text-xs">
               <div className="space-y-1">
                 <span className="text-slate-400 font-medium">{t('shipMethodLabel')}:</span>
@@ -169,7 +174,7 @@ export default function DeliveryConfirmationClient({
               </div>
               <div className="space-y-1">
                 <span className="text-slate-400 font-medium">{t('totalPaidLabel')}:</span>
-                <p className="font-extrabold text-[#006AA7] text-sm">{formatPrice(27378000)}</p>
+                <p className="font-extrabold text-brand text-sm">{formatPrice(27378000)}</p>
               </div>
             </div>
           </div>
@@ -180,9 +185,7 @@ export default function DeliveryConfirmationClient({
               <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
                 {t('feedbackTitle')}
               </h4>
-              <p className="text-xs text-slate-400 leading-relaxed">
-                {t('feedbackSubtitle')}
-              </p>
+              <p className="text-xs text-slate-400 leading-relaxed">{t('feedbackSubtitle')}</p>
             </div>
 
             {showFeedbackSuccess ? (
@@ -192,13 +195,13 @@ export default function DeliveryConfirmationClient({
               </div>
             ) : (
               <form onSubmit={handleFeedbackSubmit} className="space-y-6">
-                
                 {/* Overall Stars Rating */}
                 <div className="flex items-center gap-4 text-xs font-semibold text-slate-500 py-1">
                   <span>{t('overallRating')}</span>
                   <div className="flex items-center gap-1">
                     {[1, 2, 3, 4, 5].map((starIdx) => {
-                      const isHighlighted = hoverRating !== null ? starIdx <= hoverRating : starIdx <= rating;
+                      const isHighlighted =
+                        hoverRating !== null ? starIdx <= hoverRating : starIdx <= rating;
                       return (
                         <button
                           type="button"
@@ -320,7 +323,7 @@ export default function DeliveryConfirmationClient({
                     placeholder={t('placeholderComments')}
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    className="w-full rounded border border-slate-200 bg-white p-3 outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand font-medium leading-relaxed"
+                    className="w-full rounded border border-slate-200 bg-white p-3 outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand font-medium leading-relaxed"
                   />
                 </div>
 
@@ -328,27 +331,24 @@ export default function DeliveryConfirmationClient({
                 <div className="flex justify-end gap-3 pt-2">
                   <Link
                     href="/order-tracking"
-                    className="inline-flex items-center justify-center rounded border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 py-2.5 px-6 text-xs font-bold transition-all shadow-sm"
+                    className="inline-flex items-center justify-center rounded border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 py-2.5 px-6 text-xs font-bold transition-[color,background-color,border-color,box-shadow,opacity,transform] shadow-sm"
                   >
                     {t('btnSkip')}
                   </Link>
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center rounded bg-brand text-white hover:bg-brand/95 py-2.5 px-6 text-xs font-bold transition-all shadow"
+                    className="inline-flex items-center justify-center rounded bg-brand text-white hover:bg-brand/95 py-2.5 px-6 text-xs font-bold transition-[color,background-color,border-color,box-shadow,opacity,transform] shadow"
                   >
                     {t('btnSubmit')}
                   </button>
                 </div>
-
               </form>
             )}
           </div>
-
         </div>
 
         {/* RIGHT COLUMN: Dispute incident report form */}
         <div className="lg:col-span-4 space-y-6">
-          
           <div className="bg-white border border-slate-200/80 p-5 rounded-lg shadow-sm space-y-5 text-left">
             <div className="space-y-1 border-b border-slate-100 pb-3">
               <h4 className="text-sm font-bold text-slate-900 uppercase tracking-wider">
@@ -366,7 +366,6 @@ export default function DeliveryConfirmationClient({
               </div>
             ) : (
               <form onSubmit={handleIncidentSubmit} className="space-y-4">
-                
                 {/* Incident Checklist options */}
                 <div className="space-y-2.5 text-xs pt-1">
                   <label className="flex items-center gap-2 cursor-pointer py-0.5">
@@ -376,7 +375,9 @@ export default function DeliveryConfirmationClient({
                       onChange={() => toggleIncidentOption('damaged')}
                       className="rounded border-slate-300 text-brand focus:ring-brand h-4 w-4"
                     />
-                    <span className="text-slate-700 font-semibold">{t('incidentOptionDamaged')}</span>
+                    <span className="text-slate-700 font-semibold">
+                      {t('incidentOptionDamaged')}
+                    </span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer py-0.5">
@@ -386,7 +387,9 @@ export default function DeliveryConfirmationClient({
                       onChange={() => toggleIncidentOption('missing')}
                       className="rounded border-slate-300 text-brand focus:ring-brand h-4 w-4"
                     />
-                    <span className="text-slate-700 font-semibold">{t('incidentOptionMissing')}</span>
+                    <span className="text-slate-700 font-semibold">
+                      {t('incidentOptionMissing')}
+                    </span>
                   </label>
 
                   <label className="flex items-center gap-2 cursor-pointer py-0.5">
@@ -415,7 +418,7 @@ export default function DeliveryConfirmationClient({
                   <span className="font-bold text-slate-500">{t('evidenceLabel')}</span>
                   <div
                     onClick={triggerSimulatedUpload}
-                    className="border-2 border-dashed border-slate-200 hover:border-brand/40 bg-slate-50/50 hover:bg-slate-50 p-5 rounded-md text-center cursor-pointer transition-all flex flex-col items-center justify-center space-y-2"
+                    className="border-2 border-dashed border-slate-200 hover:border-brand/40 bg-slate-50/50 hover:bg-slate-50 p-5 rounded-md text-center cursor-pointer transition-[color,background-color,border-color,box-shadow,opacity,transform] flex flex-col items-center justify-center space-y-2"
                   >
                     {uploadedImage ? (
                       <div className="space-y-1">
@@ -438,26 +441,22 @@ export default function DeliveryConfirmationClient({
                 <div className="flex justify-end gap-3 pt-2.5 border-t border-slate-100">
                   <Link
                     href="/order-tracking"
-                    className="inline-flex items-center justify-center rounded border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 py-2 px-4 text-xs font-bold transition-all shadow-sm"
+                    className="inline-flex items-center justify-center rounded border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 py-2 px-4 text-xs font-bold transition-[color,background-color,border-color,box-shadow,opacity,transform] shadow-sm"
                   >
                     {t('btnSkip')}
                   </Link>
                   <button
                     type="submit"
-                    className="inline-flex items-center justify-center rounded bg-brand text-white hover:bg-brand/95 py-2 px-4 text-xs font-bold transition-all shadow"
+                    className="inline-flex items-center justify-center rounded bg-brand text-white hover:bg-brand/95 py-2 px-4 text-xs font-bold transition-[color,background-color,border-color,box-shadow,opacity,transform] shadow"
                   >
                     {t('btnSubmit')}
                   </button>
                 </div>
-
               </form>
             )}
           </div>
-
         </div>
-
       </div>
-
     </div>
   );
 }

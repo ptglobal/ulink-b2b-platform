@@ -1,12 +1,23 @@
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { ASSETS } from '@/lib/assets';
+import { cn } from '@/lib/utils';
 
-export async function PartnersCertifications() {
+export async function PartnersCertifications({
+  variant = 'default'
+}: {
+  variant?: 'default' | 'industries';
+} = {}) {
   const t = await getTranslations('home');
+  const isIndustries = variant === 'industries';
 
   return (
-    <section className="mx-auto w-full max-w-[1800px] px-4 py-12 lg:py-16">
+    <section
+      className={cn(
+        'mx-auto w-full bg-white px-4 py-12',
+        isIndustries ? 'max-w-[1344px] sm:px-8 lg:py-14' : 'max-w-[1440px] lg:py-16'
+      )}
+    >
       {/* ── SECTION HEADER BAR ── */}
       <div className="flex items-start gap-3">
         {/* 3 dots cyan accent indicator */}
@@ -16,7 +27,14 @@ export async function PartnersCertifications() {
           <span className="h-2 w-2 rounded-full bg-brand/30" />
         </div>
         <div>
-          <h2 className="text-[24px] font-extrabold tracking-tight text-primary sm:text-[28px] lg:text-[32px]">
+          <h2
+            className={cn(
+              'tracking-tight text-primary',
+              isIndustries
+                ? 'text-[22px] font-semibold sm:text-2xl'
+                : 'text-[24px] font-extrabold sm:text-[28px] lg:text-[32px]'
+            )}
+          >
             {t('partners.sectionTitle')}
           </h2>
           <p className="mt-1 text-[13px] text-muted-foreground sm:text-[14px]">
@@ -26,7 +44,14 @@ export async function PartnersCertifications() {
       </div>
 
       {/* ── PARTNERS LOGO GRID (6 COLS x 2 ROWS) ── */}
-      <div className="mt-12 grid grid-cols-2 gap-8 sm:grid-cols-3 lg:grid-cols-6 lg:gap-12">
+      <div
+        className={cn(
+          'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6',
+          isIndustries
+            ? 'mt-9 gap-x-6 gap-y-4 [&>div]:!h-20 [&_img]:!h-12 [&_img]:!max-h-12 lg:gap-x-8'
+            : 'mt-12 gap-8 lg:gap-12'
+        )}
+      >
         {/* 1. Samsung */}
         <div className="flex h-32 items-center justify-center p-2 transition-transform hover:scale-105 sm:h-36">
           <Image
@@ -151,11 +176,23 @@ export async function PartnersCertifications() {
       </div>
 
       {/* ── CERTIFICATIONS & ISO STANDARDS ROW (5 COLUMNS) ── */}
-      <div className="mt-16  border-border pt-12">
-        <div className="grid grid-cols-1 gap-8 items-center sm:grid-cols-2 lg:grid-cols-5">
+      <div className={cn(isIndustries ? 'mt-11 pt-8' : 'mt-16 border-border pt-12')}>
+        <div
+          className={cn(
+            'grid grid-cols-1 items-center sm:grid-cols-2 lg:grid-cols-5',
+            isIndustries
+              ? 'gap-5 [&>div:not(:first-child)]:!h-24 [&_img]:!h-20 [&_img]:!max-h-20 lg:gap-7'
+              : 'gap-8'
+          )}
+        >
           {/* Col 1: Title & Desc */}
           <div className="flex flex-col justify-center pr-4">
-            <h3 className="text-[18px] font-bold text-primary sm:text-[20px]">
+            <h3
+              className={cn(
+                'text-primary',
+                isIndustries ? 'text-[17px] font-semibold' : 'text-[18px] font-bold sm:text-[20px]'
+              )}
+            >
               {t('partners.isoTitle')}
             </h3>
             <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">

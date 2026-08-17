@@ -17,7 +17,7 @@ import {
   Plus,
   CheckCircle2,
   Sparkles
-} from 'lucide-react';
+} from '@/components/icons';
 import { cn } from '@/lib/utils';
 import type { RfqRequest } from '@/lib/directus';
 import type { AuthUser } from '@/lib/auth-helpers';
@@ -26,26 +26,33 @@ import { Link } from '@/i18n/navigation';
 // Status labels & styles mapping
 type MappedStatus = 'pending' | 'approved' | 'rejected';
 
-function getStatusMapping(status: string | undefined): { label: string; type: MappedStatus; classes: string } {
+function getStatusMapping(status: string | undefined): {
+  label: string;
+  type: MappedStatus;
+  classes: string;
+} {
   const norm = (status || '').toLowerCase();
   if (norm === 'quoted' || norm === 'won') {
     return {
       label: 'Duyệt',
       type: 'approved',
-      classes: 'bg-emerald-50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
+      classes:
+        'bg-emerald-50 text-emerald-700 border-emerald-200/50 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20'
     };
   }
   if (norm === 'lost') {
     return {
       label: 'Từ chối',
       type: 'rejected',
-      classes: 'bg-rose-50 text-rose-700 border-rose-200/50 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20'
+      classes:
+        'bg-rose-50 text-rose-700 border-rose-200/50 dark:bg-rose-500/10 dark:text-rose-400 dark:border-rose-500/20'
     };
   }
   return {
     label: 'Đang chờ',
     type: 'pending',
-    classes: 'bg-amber-50 text-amber-700 border-amber-200/50 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
+    classes:
+      'bg-amber-50 text-amber-700 border-amber-200/50 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20'
   };
 }
 
@@ -88,7 +95,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
   const [formMessage, setFormMessage] = useState('');
   const [formScheduled, setFormScheduled] = useState(false);
   const [formDeliveryDate, setFormDeliveryDate] = useState('');
-  
+
   const [formError, setFormError] = useState<string | null>(null);
   const [formFieldErrors, setFormFieldErrors] = useState<Record<string, string>>({});
   const [submitting, setSubmitting] = useState(false);
@@ -130,7 +137,12 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
 
   const openCreateModal = () => {
     setFormCompany(customerMeta?.customer?.company_name || '');
-    setFormContact(customerMeta?.customer?.contact_name || (user?.last_name || user?.first_name ? `${user.last_name ?? ''} ${user.first_name ?? ''}`.trim() : ''));
+    setFormContact(
+      customerMeta?.customer?.contact_name ||
+        (user?.last_name || user?.first_name
+          ? `${user.last_name ?? ''} ${user.first_name ?? ''}`.trim()
+          : '')
+    );
     setFormEmail(customerMeta?.customer?.email || user?.email || '');
     setFormPhone(customerMeta?.customer?.phone || '');
     setFormAddress(customerMeta?.customer?.address || '');
@@ -180,11 +192,11 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
         today.setHours(0, 0, 0, 0);
         const parsedDate = new Date(dateVal.getFullYear(), dateVal.getMonth(), dateVal.getDate());
         if (parsedDate.getTime() < today.getTime()) {
-          errors.requested_delivery_date = 'Ngày giao hàng mong muốn phải ở hiện tại hoặc tương lai.';
+          errors.requested_delivery_date =
+            'Ngày giao hàng mong muốn phải ở hiện tại hoặc tương lai.';
         }
       }
     }
-
 
     if (Object.keys(errors).length > 0) {
       setFormFieldErrors(errors);
@@ -256,7 +268,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
   const handleActionSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedRfq) return;
-    
+
     if (actionModalType === 'reject' && !actionNote.trim()) {
       setActionError('Vui lòng nhập lý do từ chối.');
       return;
@@ -305,12 +317,12 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
         const query = searchQuery.trim().toLowerCase();
         const idStr = String(rfq.id || '');
         const parsedQuery = parseInt(query, 10);
-        
+
         const matchesRaw = idStr.includes(query);
         const matchesNumeric = !isNaN(parsedQuery) && rfq.id === parsedQuery;
         const matchesCompany = (rfq.company || '').toLowerCase().includes(query);
         const matchesContact = (rfq.contact_name || '').toLowerCase().includes(query);
-        
+
         if (!matchesRaw && !matchesNumeric && !matchesCompany && !matchesContact) {
           return false;
         }
@@ -336,7 +348,10 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
           return false;
         }
         if (timeFilter === 'thismonth') {
-          if (createdAt.getMonth() !== now.getMonth() || createdAt.getFullYear() !== now.getFullYear()) {
+          if (
+            createdAt.getMonth() !== now.getMonth() ||
+            createdAt.getFullYear() !== now.getFullYear()
+          ) {
             return false;
           }
         }
@@ -390,7 +405,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
         <h2 className="text-lg font-semibold text-foreground">Danh sách yêu cầu</h2>
         <Link
           href="/quick-order"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-brand/90 hover:scale-[1.01] active:scale-[0.99] transition-all shrink-0"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand px-4 py-2.5 text-sm font-semibold text-white shadow-md hover:bg-brand/90 hover:scale-[1.01] active:scale-[0.99] transition-[color,background-color,border-color,box-shadow,opacity,transform] shrink-0"
         >
           <Plus className="h-4.5 w-4.5" />
           Tạo yêu cầu mới
@@ -415,7 +430,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
             placeholder="Tìm kiếm theo mã RFQ, tên khách hàng..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-xl border border-border/80 bg-background/50 py-2 pl-10 pr-4 text-sm outline-none transition-all placeholder:text-muted-foreground focus:border-brand focus:ring-1 focus:ring-brand"
+            className="w-full rounded-xl border border-border/80 bg-background/50 py-2 pl-10 pr-4 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] placeholder:text-muted-foreground focus:border-brand focus:ring-1 focus:ring-brand"
           />
           {searchQuery && (
             <button
@@ -432,7 +447,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as any)}
-            className="w-full rounded-xl border border-border/80 bg-background/50 px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand"
+            className="w-full rounded-xl border border-border/80 bg-background/50 px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand"
           >
             <option value="all">Tất cả trạng thái</option>
             <option value="pending">Đang chờ</option>
@@ -446,7 +461,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
           <select
             value={timeFilter}
             onChange={(e) => setTimeFilter(e.target.value as any)}
-            className="w-full rounded-xl border border-border/80 bg-background/50 px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand"
+            className="w-full rounded-xl border border-border/80 bg-background/50 px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand"
           >
             <option value="all">Mọi thời gian</option>
             <option value="7days">7 ngày qua</option>
@@ -499,13 +514,8 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                 {filteredRfqs.map((rfq) => {
                   const statusInfo = getStatusMapping(rfq.status);
                   return (
-                    <tr
-                      key={rfq.id}
-                      className="transition-colors hover:bg-muted/20"
-                    >
-                      <td className="px-6 py-4 font-mono font-medium text-foreground">
-                        {rfq.id}
-                      </td>
+                    <tr key={rfq.id} className="transition-colors hover:bg-muted/20">
+                      <td className="px-6 py-4 font-mono font-medium text-foreground">{rfq.id}</td>
                       <td className="px-6 py-4 text-muted-foreground">
                         <div>{formatDate(rfq.created_at)}</div>
                         {rfq.scheduled_delivery && (
@@ -515,12 +525,8 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                           </div>
                         )}
                       </td>
-                      <td className="px-6 py-4 text-foreground font-medium">
-                        {rfq.company}
-                      </td>
-                      <td className="px-6 py-4 text-muted-foreground">
-                        {rfq.contact_name}
-                      </td>
+                      <td className="px-6 py-4 text-foreground font-medium">{rfq.company}</td>
+                      <td className="px-6 py-4 text-muted-foreground">{rfq.contact_name}</td>
                       <td className="px-6 py-4">
                         <span
                           className={cn(
@@ -535,7 +541,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         <button
                           type="button"
                           onClick={() => setSelectedRfq(rfq)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:border-brand hover:text-brand hover:bg-brand/5 transition-all"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:border-brand hover:text-brand hover:bg-brand/5 transition-[color,background-color,border-color,box-shadow,opacity,transform]"
                         >
                           <Eye className="h-3.5 w-3.5" />
                           Xem chi tiết
@@ -550,8 +556,8 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
 
           <div className="flex items-center justify-between border-t border-border/70 px-6 py-4 bg-muted/20">
             <p className="text-xs text-muted-foreground">
-              Hiển thị <span className="font-medium text-foreground">{filteredRfqs.length}</span> trên{' '}
-              <span className="font-medium text-foreground">{rfqs.length}</span> RFQ
+              Hiển thị <span className="font-medium text-foreground">{filteredRfqs.length}</span>{' '}
+              trên <span className="font-medium text-foreground">{rfqs.length}</span> RFQ
             </p>
           </div>
         </div>
@@ -581,7 +587,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
               <button
                 type="button"
                 onClick={() => setSelectedRfq(null)}
-                className="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+                className="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-[color,background-color,border-color,box-shadow,opacity,transform]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -621,7 +627,10 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                     <Mail className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
                     <div>
                       <span className="text-xs text-muted-foreground block">Email</span>
-                      <a href={`mailto:${selectedRfq.email}`} className="text-brand hover:underline font-medium break-all">
+                      <a
+                        href={`mailto:${selectedRfq.email}`}
+                        className="text-brand hover:underline font-medium break-all"
+                      >
                         {selectedRfq.email}
                       </a>
                     </div>
@@ -630,7 +639,10 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                     <Phone className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
                     <div>
                       <span className="text-xs text-muted-foreground block">Số điện thoại</span>
-                      <a href={`tel:${selectedRfq.phone}`} className="text-foreground font-medium hover:text-brand transition-colors">
+                      <a
+                        href={`tel:${selectedRfq.phone}`}
+                        className="text-foreground font-medium hover:text-brand transition-colors"
+                      >
                         {selectedRfq.phone || '—'}
                       </a>
                     </div>
@@ -660,17 +672,28 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                   </h3>
                   <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-muted/20 p-3">
                     <div className="h-10 w-10 shrink-0 rounded-full bg-brand/10 flex items-center justify-center text-brand font-semibold border border-brand/20">
-                      {(selectedRfq.assigned_sales.first_name?.[0] || selectedRfq.assigned_sales.email?.[0] || 'S').toUpperCase()}
+                      {(
+                        selectedRfq.assigned_sales.first_name?.[0] ||
+                        selectedRfq.assigned_sales.email?.[0] ||
+                        'S'
+                      ).toUpperCase()}
                     </div>
                     <div>
                       <div className="text-sm font-semibold text-foreground">
-                        {selectedRfq.assigned_sales.first_name || ''} {selectedRfq.assigned_sales.last_name || ''}
-                        {!(selectedRfq.assigned_sales.first_name || selectedRfq.assigned_sales.last_name) && 'Nhân viên Sales'}
+                        {selectedRfq.assigned_sales.first_name || ''}{' '}
+                        {selectedRfq.assigned_sales.last_name || ''}
+                        {!(
+                          selectedRfq.assigned_sales.first_name ||
+                          selectedRfq.assigned_sales.last_name
+                        ) && 'Nhân viên Sales'}
                       </div>
                       {selectedRfq.assigned_sales.email && (
                         <div className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
                           <Mail className="h-3 w-3" />
-                          <a href={`mailto:${selectedRfq.assigned_sales.email}`} className="hover:text-brand hover:underline">
+                          <a
+                            href={`mailto:${selectedRfq.assigned_sales.email}`}
+                            className="hover:text-brand hover:underline"
+                          >
                             {selectedRfq.assigned_sales.email}
                           </a>
                         </div>
@@ -688,14 +711,20 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                 </h3>
                 <div className="grid gap-3 sm:grid-cols-2 text-sm">
                   <div className="space-y-1">
-                    <span className="text-xs text-muted-foreground block">Phương thức giao hàng</span>
+                    <span className="text-xs text-muted-foreground block">
+                      Phương thức giao hàng
+                    </span>
                     <span className="font-medium text-foreground">
-                      {selectedRfq.scheduled_delivery ? 'Lên lịch giao hàng (Scheduled Delivery)' : 'Giao hàng thông thường'}
+                      {selectedRfq.scheduled_delivery
+                        ? 'Lên lịch giao hàng (Scheduled Delivery)'
+                        : 'Giao hàng thông thường'}
                     </span>
                   </div>
                   {selectedRfq.scheduled_delivery && (
                     <div className="space-y-1">
-                      <span className="text-xs text-muted-foreground block">Ngày giao hàng mong muốn</span>
+                      <span className="text-xs text-muted-foreground block">
+                        Ngày giao hàng mong muốn
+                      </span>
                       <span className="font-medium text-foreground">
                         {formatDateOnly(selectedRfq.requested_delivery_date)}
                       </span>
@@ -710,8 +739,10 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                   <FileText className="h-4 w-4 text-brand" />
                   Danh sách sản phẩm yêu cầu
                 </h3>
-                {selectedRfq.line_items && Array.isArray(selectedRfq.line_items) && selectedRfq.line_items.length > 0 ? (
-                  <div className="overflow-hidden rounded-xl border border-border/60">
+                {selectedRfq.line_items &&
+                Array.isArray(selectedRfq.line_items) &&
+                selectedRfq.line_items.length > 0 ? (
+                  <div className="overflow-x-auto rounded-xl border border-border/60">
                     <table className="w-full border-collapse text-left text-xs sm:text-sm">
                       <thead className="bg-muted/40 text-muted-foreground border-b border-border/60">
                         <tr>
@@ -730,7 +761,9 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                     </table>
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground italic">Không có thông tin sản phẩm.</p>
+                  <p className="text-sm text-muted-foreground italic">
+                    Không có thông tin sản phẩm.
+                  </p>
                 )}
               </div>
 
@@ -779,7 +812,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         setActionNote('');
                         setActionError(null);
                       }}
-                      className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-all shadow-sm"
+                      className="rounded-xl bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-700 transition-[color,background-color,border-color,box-shadow,opacity,transform] shadow-sm"
                     >
                       Duyệt
                     </button>
@@ -790,7 +823,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         setActionNote('');
                         setActionError(null);
                       }}
-                      className="rounded-xl bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700 transition-all shadow-sm"
+                      className="rounded-xl bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-700 transition-[color,background-color,border-color,box-shadow,opacity,transform] shadow-sm"
                     >
                       Từ chối
                     </button>
@@ -800,7 +833,7 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
               <button
                 type="button"
                 onClick={() => setSelectedRfq(null)}
-                className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-all"
+                className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-[color,background-color,border-color,box-shadow,opacity,transform]"
               >
                 Đóng
               </button>
@@ -812,13 +845,25 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
       {/* Action Modal (Approve/Reject) */}
       {actionModalType && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-background/80 backdrop-blur-sm" onClick={() => !actionSubmitting && setActionModalType(null)} />
+          <div
+            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+            onClick={() => !actionSubmitting && setActionModalType(null)}
+          />
           <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-border/80 bg-card shadow-xl animate-in fade-in zoom-in-95 duration-200">
             <div className="flex items-center justify-between border-b border-border/80 px-6 py-4 bg-muted/30">
-              <h2 className={cn("text-lg font-semibold", actionModalType === 'approve' ? 'text-emerald-600' : 'text-rose-600')}>
+              <h2
+                className={cn(
+                  'text-lg font-semibold',
+                  actionModalType === 'approve' ? 'text-emerald-600' : 'text-rose-600'
+                )}
+              >
                 {actionModalType === 'approve' ? 'Xác nhận duyệt RFQ' : 'Xác nhận từ chối RFQ'}
               </h2>
-              <button type="button" onClick={() => !actionSubmitting && setActionModalType(null)} className="rounded-lg p-1 text-muted-foreground hover:bg-muted transition-all">
+              <button
+                type="button"
+                onClick={() => !actionSubmitting && setActionModalType(null)}
+                className="rounded-lg p-1 text-muted-foreground hover:bg-muted transition-[color,background-color,border-color,box-shadow,opacity,transform]"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
@@ -831,22 +876,42 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
               )}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground block">
-                  {actionModalType === 'approve' ? 'Ghi chú duyệt (Không bắt buộc)' : 'Lý do từ chối (Bắt buộc) *'}
+                  {actionModalType === 'approve'
+                    ? 'Ghi chú duyệt (Không bắt buộc)'
+                    : 'Lý do từ chối (Bắt buộc) *'}
                 </label>
                 <textarea
                   rows={3}
                   required={actionModalType === 'reject'}
                   value={actionNote}
                   onChange={(e) => setActionNote(e.target.value)}
-                  placeholder={actionModalType === 'approve' ? 'Nhập ghi chú cho bộ phận liên quan...' : 'Nhập lý do chi tiết...'}
-                  className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand resize-none"
+                  placeholder={
+                    actionModalType === 'approve'
+                      ? 'Nhập ghi chú cho bộ phận liên quan...'
+                      : 'Nhập lý do chi tiết...'
+                  }
+                  className="w-full rounded-xl border border-border/80 bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand resize-none"
                 />
               </div>
               <div className="flex justify-end gap-3 pt-4">
-                <button type="button" onClick={() => setActionModalType(null)} disabled={actionSubmitting} className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-all">
+                <button
+                  type="button"
+                  onClick={() => setActionModalType(null)}
+                  disabled={actionSubmitting}
+                  className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-[color,background-color,border-color,box-shadow,opacity,transform]"
+                >
                   Hủy
                 </button>
-                <button type="submit" disabled={actionSubmitting} className={cn("inline-flex items-center gap-1.5 rounded-xl px-5 py-2 text-sm font-semibold text-white shadow transition-all", actionModalType === 'approve' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-rose-600 hover:bg-rose-700')}>
+                <button
+                  type="submit"
+                  disabled={actionSubmitting}
+                  className={cn(
+                    'inline-flex items-center gap-1.5 rounded-xl px-5 py-2 text-sm font-semibold text-white shadow transition-[color,background-color,border-color,box-shadow,opacity,transform]',
+                    actionModalType === 'approve'
+                      ? 'bg-emerald-600 hover:bg-emerald-700'
+                      : 'bg-rose-600 hover:bg-rose-700'
+                  )}
+                >
                   {actionSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
                   {actionModalType === 'approve' ? 'Duyệt RFQ' : 'Từ chối RFQ'}
                 </button>
@@ -875,13 +940,14 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                   Tạo yêu cầu báo giá mới
                 </h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  Điền các thông tin sản phẩm và liên hệ để gửi yêu cầu trực tiếp đến hệ thống ULink.
+                  Điền các thông tin sản phẩm và liên hệ để gửi yêu cầu trực tiếp đến hệ thống
+                  ULink.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setIsCreateOpen(false)}
-                className="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+                className="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground transition-[color,background-color,border-color,box-shadow,opacity,transform]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -904,7 +970,9 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                 </h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Tên công ty *</label>
+                    <label className="text-xs font-medium text-muted-foreground block">
+                      Tên công ty *
+                    </label>
                     <input
                       type="text"
                       required
@@ -914,16 +982,20 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         setFormFieldErrors((p) => ({ ...p, company: '' }));
                       }}
                       className={cn(
-                        "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                        formFieldErrors.company ? "border-rose-500" : "border-border/80"
+                        'w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                        formFieldErrors.company ? 'border-rose-500' : 'border-border/80'
                       )}
                     />
                     {formFieldErrors.company && (
-                      <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.company}</span>
+                      <span className="text-[11px] text-rose-500 block font-medium">
+                        {formFieldErrors.company}
+                      </span>
                     )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Người liên hệ *</label>
+                    <label className="text-xs font-medium text-muted-foreground block">
+                      Người liên hệ *
+                    </label>
                     <input
                       type="text"
                       required
@@ -933,16 +1005,20 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         setFormFieldErrors((p) => ({ ...p, contact: '' }));
                       }}
                       className={cn(
-                        "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                        formFieldErrors.contact ? "border-rose-500" : "border-border/80"
+                        'w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                        formFieldErrors.contact ? 'border-rose-500' : 'border-border/80'
                       )}
                     />
                     {formFieldErrors.contact && (
-                      <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.contact}</span>
+                      <span className="text-[11px] text-rose-500 block font-medium">
+                        {formFieldErrors.contact}
+                      </span>
                     )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Email *</label>
+                    <label className="text-xs font-medium text-muted-foreground block">
+                      Email *
+                    </label>
                     <input
                       type="email"
                       required
@@ -952,16 +1028,20 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         setFormFieldErrors((p) => ({ ...p, email: '' }));
                       }}
                       className={cn(
-                        "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                        formFieldErrors.email ? "border-rose-500" : "border-border/80"
+                        'w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                        formFieldErrors.email ? 'border-rose-500' : 'border-border/80'
                       )}
                     />
                     {formFieldErrors.email && (
-                      <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.email}</span>
+                      <span className="text-[11px] text-rose-500 block font-medium">
+                        {formFieldErrors.email}
+                      </span>
                     )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Số điện thoại *</label>
+                    <label className="text-xs font-medium text-muted-foreground block">
+                      Số điện thoại *
+                    </label>
                     <input
                       type="text"
                       required
@@ -971,19 +1051,23 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         setFormFieldErrors((p) => ({ ...p, phone: '' }));
                       }}
                       className={cn(
-                        "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                        formFieldErrors.phone ? "border-rose-500" : "border-border/80"
+                        'w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                        formFieldErrors.phone ? 'border-rose-500' : 'border-border/80'
                       )}
                     />
                     {formFieldErrors.phone && (
-                      <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.phone}</span>
+                      <span className="text-[11px] text-rose-500 block font-medium">
+                        {formFieldErrors.phone}
+                      </span>
                     )}
                   </div>
                 </div>
 
                 {/* Address */}
                 <div className="space-y-1">
-                  <label className="text-xs font-medium text-muted-foreground block">Địa chỉ *</label>
+                  <label className="text-xs font-medium text-muted-foreground block">
+                    Địa chỉ *
+                  </label>
                   <input
                     type="text"
                     required
@@ -993,13 +1077,15 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                       setFormFieldErrors((p) => ({ ...p, address: '' }));
                     }}
                     className={cn(
-                      "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                      formFieldErrors.address ? "border-rose-500" : "border-border/80"
+                      'w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                      formFieldErrors.address ? 'border-rose-500' : 'border-border/80'
                     )}
                     placeholder="Số nhà, tên đường, khu công nghiệp..."
                   />
                   {formFieldErrors.address && (
-                    <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.address}</span>
+                    <span className="text-[11px] text-rose-500 block font-medium">
+                      {formFieldErrors.address}
+                    </span>
                   )}
                 </div>
               </div>
@@ -1012,7 +1098,9 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                 </h3>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Hub khu vực ưu tiên *</label>
+                    <label className="text-xs font-medium text-muted-foreground block">
+                      Hub khu vực ưu tiên *
+                    </label>
                     <select
                       required
                       value={formHub}
@@ -1021,8 +1109,8 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         setFormFieldErrors((p) => ({ ...p, hub: '' }));
                       }}
                       className={cn(
-                        "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                        formFieldErrors.hub ? "border-rose-500" : "border-border/80"
+                        'w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                        formFieldErrors.hub ? 'border-rose-500' : 'border-border/80'
                       )}
                     >
                       <option value="">Chọn Regional Hub...</option>
@@ -1033,11 +1121,15 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                       ))}
                     </select>
                     {formFieldErrors.hub && (
-                      <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.hub}</span>
+                      <span className="text-[11px] text-rose-500 block font-medium">
+                        {formFieldErrors.hub}
+                      </span>
                     )}
                   </div>
                   <div className="space-y-1">
-                    <label className="text-xs font-medium text-muted-foreground block">Ngành nghề *</label>
+                    <label className="text-xs font-medium text-muted-foreground block">
+                      Ngành nghề *
+                    </label>
                     <select
                       required
                       value={formIndustry}
@@ -1046,8 +1138,8 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                         setFormFieldErrors((p) => ({ ...p, industry: '' }));
                       }}
                       className={cn(
-                        "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand",
-                        formFieldErrors.industry ? "border-rose-500" : "border-border/80"
+                        'w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand',
+                        formFieldErrors.industry ? 'border-rose-500' : 'border-border/80'
                       )}
                     >
                       <option value="">Chọn ngành nghề...</option>
@@ -1058,7 +1150,9 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                       ))}
                     </select>
                     {formFieldErrors.industry && (
-                      <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.industry}</span>
+                      <span className="text-[11px] text-rose-500 block font-medium">
+                        {formFieldErrors.industry}
+                      </span>
                     )}
                   </div>
                 </div>
@@ -1089,14 +1183,19 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                       }}
                       className="h-4 w-4 rounded border-border text-brand focus:ring-brand"
                     />
-                    <label htmlFor="scheduled_delivery" className="text-sm font-medium text-foreground cursor-pointer select-none">
+                    <label
+                      htmlFor="scheduled_delivery"
+                      className="text-sm font-medium text-foreground cursor-pointer select-none"
+                    >
                       Lên lịch giao hàng (Scheduled Delivery)
                     </label>
                   </div>
 
                   {formScheduled && (
                     <div className="space-y-1 animate-in fade-in slide-in-from-top-2 duration-200 max-w-sm">
-                      <label className="text-xs font-medium text-muted-foreground block">Ngày giao hàng mong muốn *</label>
+                      <label className="text-xs font-medium text-muted-foreground block">
+                        Ngày giao hàng mong muốn *
+                      </label>
                       <input
                         type="date"
                         required={formScheduled}
@@ -1111,19 +1210,21 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                           });
                         }}
                         className={cn(
-                          "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand font-medium",
-                          formFieldErrors.requested_delivery_date ? "border-rose-500" : "border-border/80"
+                          'w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand font-medium',
+                          formFieldErrors.requested_delivery_date
+                            ? 'border-rose-500'
+                            : 'border-border/80'
                         )}
                       />
                       {formFieldErrors.requested_delivery_date && (
-                        <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.requested_delivery_date}</span>
+                        <span className="text-[11px] text-rose-500 block font-medium">
+                          {formFieldErrors.requested_delivery_date}
+                        </span>
                       )}
                     </div>
                   )}
                 </div>
               </div>
-
-
 
               {/* Section 4: Notes */}
               <div className="space-y-2">
@@ -1137,12 +1238,14 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                   }}
                   placeholder="Mô tả chi tiết các yêu cầu đặc thù, quy cách đóng gói, tiến độ mong muốn..."
                   className={cn(
-                    "w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-all focus:border-brand focus:ring-1 focus:ring-brand resize-none placeholder:text-muted-foreground",
-                    formFieldErrors.message ? "border-rose-500" : "border-border/80"
+                    'w-full rounded-xl border bg-background px-3 py-2 text-sm outline-none transition-[color,background-color,border-color,box-shadow,opacity,transform] focus:border-brand focus:ring-1 focus:ring-brand resize-none placeholder:text-muted-foreground',
+                    formFieldErrors.message ? 'border-rose-500' : 'border-border/80'
                   )}
                 />
                 {formFieldErrors.message && (
-                  <span className="text-[11px] text-rose-500 block font-medium">{formFieldErrors.message}</span>
+                  <span className="text-[11px] text-rose-500 block font-medium">
+                    {formFieldErrors.message}
+                  </span>
                 )}
               </div>
 
@@ -1152,14 +1255,14 @@ export function RfqsClient({ user }: { user: AuthUser | null }) {
                   type="button"
                   onClick={() => setIsCreateOpen(false)}
                   disabled={submitting}
-                  className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-all disabled:opacity-50"
+                  className="rounded-xl border border-border bg-card px-4 py-2 text-sm font-medium text-foreground hover:bg-muted transition-[color,background-color,border-color,box-shadow,opacity,transform] disabled:opacity-50"
                 >
                   Hủy
                 </button>
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-5 py-2 text-sm font-semibold text-white shadow hover:bg-brand/90 transition-all disabled:opacity-75"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-brand px-5 py-2 text-sm font-semibold text-white shadow hover:bg-brand/90 transition-[color,background-color,border-color,box-shadow,opacity,transform] disabled:opacity-75"
                 >
                   {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
                   {submitting ? 'Đang gửi...' : 'Gửi yêu cầu'}
